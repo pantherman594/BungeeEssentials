@@ -20,37 +20,26 @@
  * SOFTWARE.
  */
 
-package me.hadrondev.commands;
+package me.hadrondev;
 
-import me.hadrondev.BungeeEssentials;
-import me.hadrondev.Settings;
-import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Command;
+import net.md_5.bungee.api.ChatColor;
 
 /**
  * Created by Connor Harries on 17/10/2014.
  */
-@SuppressWarnings("deprecation")
-public class Find extends Command {
-    public Find(String name) {
-        super(name);
-    }
+public class Settings {
+    public static String ALERT = "&8[&a+&8] &7{ALERT}";
+    public static String FIND = "&e{PLAYER} &ais playing on &e{SERVER}";
+    public static String GLIST_HEADER = "&aServers:";
+    public static String GLIST_SERVER = "&a- {SERVER} {DENSITY}";
+    public static String INVALID_ARGS = "&cInvalid arguments provided.";
+    public static String MESSAGE = "&a({SERVER}) &7[{SENDER} » {RECIPIENT}] &f{MESSAGE}";
+    public static String PLAYER_OFFLINE = "&cSorry, that player is offline.";
+    public static String NO_PERMS = "&cYou do not have permission to do that.";
+    public static String NO_SLAP = "&cYou are unworthy of slapping people.";
+    public static String SEND = "&aSending &e{PLAYER} &ato server &e{SERVER}";
 
-    @Override
-    public void execute(CommandSender sender, String[] strings) {
-        if (strings.length > 0) {
-            ProxiedPlayer player = BungeeEssentials.me.getProxy().getPlayer(strings[0]);
-
-            if (player != null) {
-                String message = Settings.FIND;
-                message = message.replace("{SERVER}", player.getServer().getInfo().getName());
-                message = message.replace("{PLAYER}", player.getName());
-
-                player.sendMessage(Settings.colour(message));
-            } else {
-                sender.sendMessage(Settings.colour(Settings.PLAYER_OFFLINE));
-            }
-        }
+    public static String colour(String str) {
+        return ChatColor.translateAlternateColorCodes('&', str);
     }
 }
