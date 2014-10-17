@@ -3,3 +3,11 @@ jdk:
   - oraclejdk8
   - oraclejdk7
   - openjdk6
+deploy:
+  provider: releases
+  api-key: evn.deploy.api-key
+  file: "BungeeEssentials.jar"
+  skip_cleanup: true
+  on:
+    tags: true
+    all_branches: true
