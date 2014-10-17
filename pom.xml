@@ -6,6 +6,12 @@
     <groupId>me.hadrondev</groupId>
     <artifactId>BungeeEssentials</artifactId>
     <version>1.1-SNAPSHOT</version>
+    <url>http://www.spigotmc.org/resources/bungeeessentials.1488/</url>
+    <name>BungeeEssentials</name>
+    <description>
+        Port of my branch of the LilyEssentials plugin.
+    </description>
+    <url>http://www.spigotmc.org/resources/bungeeessentials.1488/</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -17,7 +23,7 @@
     </repositories>
     <build>
         <defaultGoal>clean install</defaultGoal>
-        <finalName>BungeeEssentials</finalName>
+        <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
