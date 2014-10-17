@@ -2,6 +2,7 @@ package me.hadrondev.commands;
 
 import me.hadrondev.BungeeEssentials;
 import me.hadrondev.Chat;
+import me.hadrondev.permissions.Permission;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -23,19 +24,22 @@ public class Reply extends Command {
         if(sender instanceof ProxiedPlayer && strings != null) {
             if (strings.length > 0) {
                 ProxiedPlayer player = (ProxiedPlayer)sender;
-                StringBuilder builder = new StringBuilder();
-                for (String s : strings) {
-                    builder.append(s + " ");
-                }
+                if(Permission.has(sender, Permission.MESSAGE)) {
+                    StringBuilder builder = new StringBuilder();
+                    for (String s : strings) {
+                        builder.append(s).append(" ");
+                    }
 
-                UUID uuid = Chat.reply(player);
+                    UUID uuid = Chat.reply(player);
 
-                ProxiedPlayer recipient = BungeeEssentials.me.getProxy().getPlayer(uuid);
+                    ProxiedPlayer recipient = BungeeEssentials.me.getProxy().getPlayer(uuid);
 
-                if(recipient != null) {
-                    Chat.sendMessage(player, recipient.getName(), builder.toString());
-                } else {
-                    sender.sendMessage(new ComponentBuilder("Sorry, that player is offline.").color(ChatColor.RED).create());
+                    if (recipient != null) {
+                        Chat.sendMessage(player, recipient.getName(), builder.toString());
+                    } else {
+                        sender.sendMessage(new ComponentBuilder("Sorry, that player is offline.")
+                            .color(ChatColor.RED).create());
+                    }
                 }
             } else {
                 sender.sendMessage(

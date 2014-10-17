@@ -5,12 +5,12 @@ import me.hadrondev.permissions.Permission;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
 /**
  * Created by Connor Harries on 17/10/2014.
  */
+@SuppressWarnings("deprecation")
 public class Alert extends Command {
     public Alert(String name) {
         super(name);
@@ -22,14 +22,12 @@ public class Alert extends Command {
 
                 StringBuilder builder = new StringBuilder();
                 for(String s : strings) {
-                    builder.append(s + " ");
+                    builder.append(s).append(" ");
                 }
 
                 String msg = ChatColor.translateAlternateColorCodes('&', "&8[&a&l+&8] &a" + builder.toString());
 
-                for(ProxiedPlayer player : BungeeEssentials.me.getProxy().getPlayers()) {
-                    player.sendMessage(msg);
-                }
+                BungeeEssentials.me.getProxy().broadcast(msg);
             } else {
                 sender.sendMessage(
                     new ComponentBuilder("Invalid arguments provided.").color(ChatColor.RED)

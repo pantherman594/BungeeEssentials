@@ -9,6 +9,7 @@ import net.md_5.bungee.api.plugin.Command;
 /**
  * Created by Connor Harries on 17/10/2014.
  */
+@SuppressWarnings("deprecation")
 public class ServerList extends Command {
     public ServerList(String name) {
         super(name);

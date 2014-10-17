@@ -9,13 +9,14 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
+@SuppressWarnings("deprecation")
 public class Send extends Command {
     public Send(String name) {
         super(name);
     }
 
     @Override
-    public void execute(CommandSender sender, String[] strings) {
+    public void execute(final CommandSender sender, String[] strings) {
         if(Permission.has(sender, Permission.ADMIN_SEND)) {
             if(strings.length > 1) {
                 final ProxiedPlayer player = BungeeEssentials.me.getProxy().getPlayer(strings[0]);
@@ -30,6 +31,8 @@ public class Send extends Command {
                                 if (success) {
                                     player.sendMessage(new ComponentBuilder("Whooooooooooosh!")
                                         .color(ChatColor.LIGHT_PURPLE).create());
+                                } else {
+                                    sender.sendMessage(ChatColor.RED + "Unable to send player to server.");
                                 }
                             }
                         });
