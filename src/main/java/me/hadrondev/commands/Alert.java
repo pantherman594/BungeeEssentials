@@ -23,7 +23,7 @@
 package me.hadrondev.commands;
 
 import me.hadrondev.BungeeEssentials;
-import me.hadrondev.Settings;
+import me.hadrondev.Messages;
 import me.hadrondev.permissions.Permission;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
@@ -33,28 +33,18 @@ import net.md_5.bungee.api.plugin.Command;
  */
 @SuppressWarnings("deprecation")
 public class Alert extends Command {
-    public Alert(String name) {
-        super(name);
+    public Alert() {
+        super("alert", Permission.ADMIN_ALERT.toString());
     }
 
-    @Override public void execute(CommandSender sender, String[] strings) {
-        if (Permission.has(sender, Permission.ADMIN_ALERT)) {
-            if (strings.length > 0) {
-
-                StringBuilder builder = new StringBuilder();
-                for (String s : strings) {
-                    builder.append(s).append(" ");
-                }
-
-                String msg = Settings.ALERT;
-                msg = msg.replace("{ALERT}", builder.toString());
-
-                BungeeEssentials.me.getProxy().broadcast(msg);
-            } else {
-                sender.sendMessage(Settings.colour(Settings.INVALID_ARGS));
-            }
+    @Override
+    public void execute(CommandSender sender, String[] args) {
+        if (args.length > 0) {
+            String msg = Messages.ALERT;
+            msg = msg.replace("{ALERT}", Messages.combine(args));
+            BungeeEssentials.me.getProxy().broadcast(Messages.lazyColour(msg));
         } else {
-            sender.sendMessage(Settings.colour(Settings.NO_PERMS));
+            sender.sendMessage(Messages.lazyColour(Messages.INVALID_ARGS));
         }
     }
 }

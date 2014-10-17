@@ -22,7 +22,7 @@
 
 package me.hadrondev;
 
-import me.hadrondev.commands.CommandStorage;
+import me.hadrondev.commands.CommandRegister;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
@@ -31,6 +31,8 @@ import net.md_5.bungee.config.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.List;
+import java.util.logging.Level;
 
 public class BungeeEssentials extends Plugin {
 
@@ -44,28 +46,37 @@ public class BungeeEssentials extends Plugin {
         try {
             saveConfig();
             config = loadConfig();
-        } catch (Exception ignored) {
-            // Nothing to do really.
+        } catch (Exception ex) {
+            getLogger().log(Level.SEVERE, "Exception thrown whilst loading config, unable to proceed: ", ex);
         }
 
         if(config != null) {
-            Settings.ALERT = config.getString("format.alert", "&8[&a+&8] &7{ALERT}");
-            Settings.FIND = config.getString("format.find", "&e{PLAYER} &ais playing on &e{SERVER}");
-            Settings.MESSAGE = config.getString("format.message", "&a({SERVER}) &7[{SENDER} » {RECIPIENT}] &f{MESSAGE}");
-            Settings.SEND = config.getString("format.send", "&aSending &e{PLAYER} &ato server &e{SERVER}");
 
-            Settings.GLIST_HEADER = config.getString("settings.glist.header", "&aServers:");
-            Settings.GLIST_SERVER = config.getString("settings.glist.body", "&a- {SERVER} {DENSITY}");
+            List<String> nope = config.getStringList("enable");
 
-            Settings.INVALID_ARGS = config.getString("errors.invalid", "&cInvalid arguments provided.");
-            Settings.PLAYER_OFFLINE = config.getString("errors.offline", "&cSorry, that player is offline.");
-            Settings.NO_PERMS = config.getString("errors.permissions", "&cYou do not have permission to do that.");
-            Settings.NO_SLAP = config.getString("errors.slap", "&cYou are unworthy of slapping people.");
+            Messages.ALERT = config.getString("format.alert", "&8[&a+&8] &7{ALERT}");
+            Messages.FIND = config.getString("format.find", "&e{PLAYER} &ais playing on &e{SERVER}");
+            Messages.MESSAGE = config.getString("format.message", "&a({SERVER}) &7[{SENDER} » {RECIPIENT}] &f{MESSAGE}");
+            Messages.SEND = config.getString("format.send", "&aSending &e{PLAYER} &ato server &e{SERVER}");
 
-            getProxy().getPluginManager().registerListener(this, new BungeeEssentialsListener());
+            Messages.GLIST_HEADER = config.getString("settings.glist.header", "&aServers:");
+            Messages.GLIST_SERVER = config.getString("settings.glist.body", "&a- {SERVER} {DENSITY}");
 
-            for (CommandStorage cmd : CommandStorage.values()) {
-                getProxy().getPluginManager().registerCommand(this, cmd.getCommand());
+            Messages.INVALID_ARGS = config.getString("errors.invalid", "&cInvalid arguments provided.");
+            Messages.PLAYER_OFFLINE = config.getString("errors.offline", "&cSorry, that player is offline.");
+            Messages.NO_PERMS = config.getString("errors.permissions", "&cYou do not have permission to do that.");
+            Messages.NO_SLAP = config.getString("errors.slap", "&cYou are unworthy of slapping people.");
+
+            for(CommandRegister registering : CommandRegister.values()) {
+                if(nope != null) {
+                    if (nope.contains(registering.getName())) {
+                        getProxy().getPluginManager().registerCommand(this, registering.getCommand());
+                    } else {
+                        getLogger().info("Skipping registration of command \"" + registering.getName() + "\" as specified by the config.");
+                    }
+                } else {
+                    getProxy().getPluginManager().registerCommand(this, registering.getCommand());
+                }
             }
         }
     }

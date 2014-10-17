@@ -23,7 +23,7 @@
 package me.hadrondev.commands;
 
 import me.hadrondev.BungeeEssentials;
-import me.hadrondev.Settings;
+import me.hadrondev.Messages;
 import me.hadrondev.permissions.Permission;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -36,30 +36,25 @@ import net.md_5.bungee.api.plugin.Command;
 @SuppressWarnings("deprecation")
 public class Slap extends Command {
     public Slap() {
-        super("slap");
+        super("slap", Permission.SLAP.toString(), "punch");
     }
 
     @Override
-    public void execute(CommandSender commandSender, String[] strings) {
-        if (commandSender instanceof ProxiedPlayer) {
-            ProxiedPlayer player = (ProxiedPlayer) commandSender;
-            if (player.getUniqueId().toString().equals("271507d8-f3ec-4d53-852d-6993c1b753d3")
-                || Permission.has(commandSender, Permission.SLAP)) {
-                if (strings.length > 0) {
-                    ProxiedPlayer enemy = BungeeEssentials.me.getProxy().getPlayer(strings[0]);
-                    if (enemy != null) {
-                        commandSender.sendMessage(
-                            ChatColor.GREEN + "You just slapped " + ChatColor.YELLOW + enemy
-                                .getName() + ChatColor.GREEN
-                                + ", I bet that felt good, didn't it?");
-                        enemy.sendMessage(
-                            ChatColor.GREEN + "You have been universally slapped by " + player
-                                .getName());
-                    }
-                }
+    public void execute(CommandSender sender, String[] args) {
+        ProxiedPlayer player = null;
+        if (sender instanceof ProxiedPlayer) {
+            player = (ProxiedPlayer) sender;
+        }
+        if (args.length > 0) {
+            ProxiedPlayer enemy = BungeeEssentials.me.getProxy().getPlayer(args[0]);
+            if (enemy != null) {
+                sender.sendMessage(ChatColor.GREEN + "You just slapped " + ChatColor.YELLOW + enemy.getName() + ChatColor.GREEN + ", I bet that felt good, didn't it?");
+                enemy.sendMessage(ChatColor.GREEN + "You have been universally slapped by " + (player == null ?  "GOD" : player.getName()));
             } else {
-                commandSender.sendMessage(Settings.colour(Settings.NO_SLAP));
+                sender.sendMessage(Messages.lazyColour(Messages.PLAYER_OFFLINE));
             }
+        } else {
+            sender.sendMessage(Messages.lazyColour(Messages.INVALID_ARGS));
         }
     }
 }

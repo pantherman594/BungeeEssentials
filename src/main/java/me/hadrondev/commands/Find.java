@@ -23,7 +23,7 @@
 package me.hadrondev.commands;
 
 import me.hadrondev.BungeeEssentials;
-import me.hadrondev.Settings;
+import me.hadrondev.Messages;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
@@ -33,23 +33,23 @@ import net.md_5.bungee.api.plugin.Command;
  */
 @SuppressWarnings("deprecation")
 public class Find extends Command {
-    public Find(String name) {
-        super(name);
+    public Find() {
+        super("find");
     }
 
     @Override
-    public void execute(CommandSender sender, String[] strings) {
-        if (strings.length > 0) {
-            ProxiedPlayer player = BungeeEssentials.me.getProxy().getPlayer(strings[0]);
+    public void execute(CommandSender sender, String[] args) {
+        if (args.length > 0) {
+            ProxiedPlayer player = BungeeEssentials.me.getProxy().getPlayer(args[0]);
 
             if (player != null) {
-                String message = Settings.FIND;
+                String message = Messages.FIND;
                 message = message.replace("{SERVER}", player.getServer().getInfo().getName());
                 message = message.replace("{PLAYER}", player.getName());
 
-                player.sendMessage(Settings.colour(message));
+                sender.sendMessage(Messages.lazyColour(message));
             } else {
-                sender.sendMessage(Settings.colour(Settings.PLAYER_OFFLINE));
+                sender.sendMessage(Messages.lazyColour(Messages.PLAYER_OFFLINE));
             }
         }
     }

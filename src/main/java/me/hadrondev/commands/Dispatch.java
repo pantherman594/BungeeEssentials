@@ -23,7 +23,7 @@
 package me.hadrondev.commands;
 
 import me.hadrondev.BungeeEssentials;
-import me.hadrondev.Settings;
+import me.hadrondev.Messages;
 import me.hadrondev.permissions.Permission;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -36,33 +36,23 @@ import java.io.UnsupportedEncodingException;
  */
 @SuppressWarnings("deprecation")
 public class Dispatch extends Command {
-    public Dispatch(String name) {
-        super(name);
+    public Dispatch() {
+        super("dispatch", Permission.ADMIN_DISPATCH.toString());
     }
 
     @Override
-    public void execute(CommandSender sender, String[] strings) {
-        if (Permission.has(sender, Permission.ADMIN_DISPATCH)) {
-            if (strings.length > 0) {
-
-                StringBuilder builder = new StringBuilder();
-                for (String s : strings) {
-                    builder.append(s + " ");
+    public void execute(CommandSender sender, String[] args) {
+        if (args.length > 0) {
+            String send = Messages.combine(args);
+            for (ServerInfo server : BungeeEssentials.me.getProxy().getServers().values()) {
+                try {
+                    server.sendData("gssentials.dispatch", send.getBytes("UTF-8"));
+                } catch (UnsupportedEncodingException e) {
+                    BungeeEssentials.me.getLogger().info("Unable to dispatch command, reason: UnsupportedEncodingException.");
                 }
-
-                for (ServerInfo server : BungeeEssentials.me.getProxy().getServers().values()) {
-                    try {
-                        server
-                            .sendData("gssentials.dispatch", builder.toString().getBytes("UTF-8"));
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
-                }
-            } else {
-                sender.sendMessage(Settings.colour(Settings.INVALID_ARGS));
             }
         } else {
-            sender.sendMessage(Settings.colour(Settings.NO_PERMS));
+            sender.sendMessage(Messages.lazyColour(Messages.INVALID_ARGS));
         }
     }
 }

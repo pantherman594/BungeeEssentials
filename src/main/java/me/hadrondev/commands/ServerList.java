@@ -23,7 +23,7 @@
 package me.hadrondev.commands;
 
 import me.hadrondev.BungeeEssentials;
-import me.hadrondev.Settings;
+import me.hadrondev.Messages;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -34,21 +34,21 @@ import net.md_5.bungee.api.plugin.Command;
  */
 @SuppressWarnings("deprecation")
 public class ServerList extends Command {
-    public ServerList(String name) {
-        super(name);
+    public ServerList() {
+        super("glist");
     }
 
     @Override
-    public void execute(CommandSender sender, String[] strings) {
-        sender.sendMessage(Settings.colour(Settings.GLIST_HEADER));
+    public void execute(CommandSender sender, String[] args) {
+        sender.sendMessage(Messages.lazyColour(Messages.GLIST_HEADER));
 
         for (ServerInfo info : BungeeEssentials.me.getProxy().getServers().values()) {
-            String message = Settings.GLIST_SERVER;
+            String message = Messages.GLIST_SERVER;
             message = message.replace("{SERVER}", info.getName());
             message = message.replace("{DENSITY}", getDensity(info.getPlayers().size()));
             message = message.replace("{COUNT}", "" + info.getPlayers().size());
 
-            sender.sendMessage(Settings.colour(message));
+            sender.sendMessage(Messages.lazyColour(message));
         }
     }
 

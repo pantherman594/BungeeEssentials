@@ -27,20 +27,22 @@ import net.md_5.bungee.api.plugin.Command;
 /**
  * Created by Connor Harries on 17/10/2014.
  */
-public enum CommandStorage {
-    ALERT(new Alert("alert")),
-    DISPATCH(new Dispatch("dispatch")),
-    FIND(new Find("find")),
-    LIST(new ServerList("glist")),
-    MESSAGE(new Message()),
-    REPLY(new Reply("r")),
-    SEND(new Send("send")),
-    SEND_ALL(new SendAll("sendall")),
-    SLAP(new Slap());
+public enum CommandRegister {
+    ALERT("alert", new Alert()),
+    DISPATCH("dispatch", new Dispatch()),
+    FIND("find", new Find()),
+    LIST("list", new ServerList()),
+    MESSAGE("message", new Message()),
+    REPLY("message", new Reply()),
+    SEND("send", new Send()),
+    SEND_ALL("sendall", new SendAll()),
+    SLAP("slap", new Slap());
 
     private final Command command;
+    private final String name;
 
-    private CommandStorage(Command command) {
+    private CommandRegister(String name, Command command) {
+        this.name = name;
         this.command = command;
     }
 
@@ -48,4 +50,7 @@ public enum CommandStorage {
         return command;
     }
 
+    public String getName() {
+        return this.name;
+    }
 }

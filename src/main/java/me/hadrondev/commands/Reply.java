@@ -24,8 +24,7 @@ package me.hadrondev.commands;
 
 import me.hadrondev.BungeeEssentials;
 import me.hadrondev.Chat;
-import me.hadrondev.Settings;
-import me.hadrondev.permissions.Permission;
+import me.hadrondev.Messages;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
@@ -37,34 +36,23 @@ import java.util.UUID;
  */
 @SuppressWarnings("deprecation")
 public class Reply extends Command {
-    public Reply(String name) {
-        super(name);
+    public Reply() {
+        super("reply", "", "r");
     }
 
     @Override
-    public void execute(CommandSender sender, String[] strings) {
-        if (sender instanceof ProxiedPlayer && strings != null) {
-            if (strings.length > 0) {
+    public void execute(CommandSender sender, String[] args) {
+        if (sender instanceof ProxiedPlayer) {
+            if (args.length > 0) {
                 ProxiedPlayer player = (ProxiedPlayer) sender;
-                if (Permission.has(sender, Permission.MESSAGE)) {
-                    StringBuilder builder = new StringBuilder();
-                    for (String s : strings) {
-                        builder.append(s).append(" ");
-                    }
-
-                    UUID uuid = Chat.reply(player);
-
-                    ProxiedPlayer recipient = BungeeEssentials.me.getProxy().getPlayer(uuid);
-
-                    if (recipient != null) {
-                        Chat.sendMessage(player, recipient.getName(), builder.toString());
-                    } else {
-                        sender.sendMessage(Settings.colour(Settings.PLAYER_OFFLINE));
-                    }
-                }
+                UUID uuid = Chat.reply(player);
+                ProxiedPlayer recipient = BungeeEssentials.me.getProxy().getPlayer(uuid);
+                Chat.sendMessage(player, recipient, Messages.combine(args));
             } else {
-                sender.sendMessage(Settings.colour(Settings.INVALID_ARGS));
+                sender.sendMessage(Messages.lazyColour(Messages.INVALID_ARGS));
             }
+        } else {
+            sender.sendMessage(Messages.lazyColour("&cSorry, only players can reply to messages."));
         }
     }
 }

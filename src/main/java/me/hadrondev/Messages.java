@@ -27,7 +27,7 @@ import net.md_5.bungee.api.ChatColor;
 /**
  * Created by Connor Harries on 17/10/2014.
  */
-public class Settings {
+public class Messages {
     public static String ALERT = "&8[&a+&8] &7{ALERT}";
     public static String FIND = "&e{PLAYER} &ais playing on &e{SERVER}";
     public static String GLIST_HEADER = "&aServers:";
@@ -39,7 +39,31 @@ public class Settings {
     public static String NO_SLAP = "&cYou are unworthy of slapping people.";
     public static String SEND = "&aSending &e{PLAYER} &ato server &e{SERVER}";
 
-    public static String colour(String str) {
+    public static String lazyColour(String str) {
         return ChatColor.translateAlternateColorCodes('&', str);
+    }
+
+    public static String combine(String[] array) {
+        StringBuilder builder = new StringBuilder();
+        for(String string : array) {
+            builder.append(string);
+            if(!string.equals(array[array.length - 1])) {
+                builder.append(" ");
+            }
+        }
+        return builder.toString();
+    }
+
+    public static String combine(int omit, String[] array) {
+        StringBuilder builder = new StringBuilder();
+        for(String string : array) {
+            if(string != array[omit]) {
+                builder.append(string);
+                if (!string.equals(array[array.length - 1])) {
+                    builder.append(" ");
+                }
+            }
+        }
+        return builder.toString();
     }
 }

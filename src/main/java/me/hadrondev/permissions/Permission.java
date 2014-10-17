@@ -32,8 +32,7 @@ public enum Permission {
     ADMIN_SENDALL("gssentials.admin.sendall"),
     ADMIN_DISPATCH("gssentials.admin.dispatch"),
     ADMIN_ALERT("gssentials.admin.alert"),
-    SLAP("gssentials.slap"),
-    MESSAGE("gseentials.message");
+    SLAP("gssentials.slap");
 
     private final String node;
 

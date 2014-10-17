@@ -24,8 +24,7 @@ package me.hadrondev.commands;
 
 import me.hadrondev.BungeeEssentials;
 import me.hadrondev.Chat;
-import me.hadrondev.Settings;
-import me.hadrondev.permissions.Permission;
+import me.hadrondev.Messages;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
@@ -34,33 +33,18 @@ import net.md_5.bungee.api.plugin.Command;
  * Created by Connor Harries on 17/10/2014.
  */
 @SuppressWarnings("deprecation")
-public class Message extends Command {
+public class Message extends Command  {
     public Message() {
-        super("msg");
+        super("msg", "", "msg", "t", "tell", "w", "whisper");
     }
 
     @Override
-    public void execute(CommandSender sender, String[] strings) {
-        if (sender instanceof ProxiedPlayer && strings != null) {
-            if (strings.length > 1) {
-                if (Permission.has(sender, Permission.MESSAGE)) {
-                    ProxiedPlayer player = (ProxiedPlayer) sender;
-                    ProxiedPlayer recipient = BungeeEssentials.me.getProxy().getPlayer(strings[0]);
-                    if (recipient != null) {
-                        StringBuilder builder = new StringBuilder();
-                        for (String s : strings) {
-                            if (!s.equals(strings[0])) {
-                                builder.append(s).append(" ");
-                            }
-                        }
-                        Chat.sendMessage(player, recipient.getName(), builder.toString());
-                    } else {
-                        sender.sendMessage(Settings.colour(Settings.PLAYER_OFFLINE));
-                    }
-                }
-            } else {
-                sender.sendMessage(Settings.colour(Settings.INVALID_ARGS));
-            }
+    public void execute(CommandSender sender, String[] args) {
+        if (args.length > 1) {
+            ProxiedPlayer recipient = BungeeEssentials.me.getProxy().getPlayer(args[0]);
+            Chat.sendMessage(sender, recipient, Messages.combine(0, args));
+        } else {
+            sender.sendMessage(Messages.lazyColour(Messages.INVALID_ARGS));
         }
     }
 }

@@ -23,7 +23,7 @@
 package me.hadrondev.commands;
 
 import me.hadrondev.BungeeEssentials;
-import me.hadrondev.Settings;
+import me.hadrondev.Messages;
 import me.hadrondev.permissions.Permission;
 import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.ChatColor;
@@ -34,41 +34,37 @@ import net.md_5.bungee.api.plugin.Command;
 
 @SuppressWarnings("deprecation")
 public class Send extends Command {
-    public Send(String name) {
-        super(name);
+    public Send() {
+        super("send", Permission.ADMIN_SEND.toString());
     }
 
     @Override
-    public void execute(final CommandSender sender, String[] strings) {
-        if (Permission.has(sender, Permission.ADMIN_SEND)) {
-            if (strings.length > 1) {
-                final ProxiedPlayer player = BungeeEssentials.me.getProxy().getPlayer(strings[0]);
-                if (player != null) {
-                    String msg = Settings.SEND;
-                    msg = msg.replace("{PLAYER}", strings[0]);
-                    msg = msg.replace("{SERVER}", strings[1]);
-                    sender.sendMessage(Settings.colour(msg));
+    public void execute(final CommandSender sender, String[] args) {
+        if (args.length > 1) {
+            final ProxiedPlayer player = BungeeEssentials.me.getProxy().getPlayer(args[0]);
+            if (player != null) {
+                String msg = Messages.SEND;
+                msg = msg.replace("{PLAYER}", args[0]);
+                msg = msg.replace("{SERVER}", args[1]);
+                sender.sendMessage(Messages.lazyColour(msg));
 
-                    player.connect(BungeeEssentials.me.getProxy().getServerInfo(strings[1]),
+                player.connect(BungeeEssentials.me.getProxy().getServerInfo(args[1]),
                         new Callback<Boolean>() {
-                            @Override public void done(Boolean success, Throwable throwable) {
+                            @Override
+                            public void done(Boolean success, Throwable throwable) {
                                 if (success) {
-                                    player.sendMessage(new ComponentBuilder("Whooooooooooosh!")
-                                        .color(ChatColor.LIGHT_PURPLE).create());
+                                    player.sendMessage(new ComponentBuilder("Whooooooooooosh!").color(ChatColor.LIGHT_PURPLE).create());
                                 } else {
-                                    sender.sendMessage(
-                                        ChatColor.RED + "Unable to send player to server.");
+                                    // Pretend nothing happened for the player being sent
+                                    sender.sendMessage(ChatColor.RED + "Unable to send player to server.");
                                 }
                             }
                         });
-                } else {
-                    sender.sendMessage(Settings.colour(Settings.PLAYER_OFFLINE));
-                }
             } else {
-                sender.sendMessage(Settings.colour(Settings.INVALID_ARGS));
+                sender.sendMessage(Messages.lazyColour(Messages.PLAYER_OFFLINE));
             }
         } else {
-            sender.sendMessage(Settings.colour(Settings.NO_PERMS));
+            sender.sendMessage(Messages.lazyColour(Messages.INVALID_ARGS));
         }
     }
 }

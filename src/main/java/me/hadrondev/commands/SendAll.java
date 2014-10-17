@@ -23,6 +23,7 @@
 package me.hadrondev.commands;
 
 import me.hadrondev.BungeeEssentials;
+import me.hadrondev.Messages;
 import me.hadrondev.permissions.Permission;
 import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.ChatColor;
@@ -35,36 +36,28 @@ import net.md_5.bungee.api.plugin.Command;
 /**
  * Created by Connor Harries on 17/10/2014.
  */
+@SuppressWarnings("deprecation")
 public class SendAll extends Command {
-    public SendAll(String name) {
-        super(name);
+    public SendAll() {
+        super("sendall", Permission.ADMIN_SENDALL.toString());
     }
 
     @Override
-    public void execute(CommandSender sender, String[] strings) {
-        if (Permission.has(sender, Permission.ADMIN_SENDALL)) {
-            if (strings.length > 0) {
-                ServerInfo info = BungeeEssentials.me.getProxy().getServerInfo(strings[1]);
-                for (final ProxiedPlayer player : BungeeEssentials.me.getProxy().getPlayers()) {
-                    player.connect(info, new Callback<Boolean>() {
-                        @Override
-                        public void done(Boolean success, Throwable throwable) {
-                            if (success) {
-                                player.sendMessage(new ComponentBuilder("Whooooooooooosh!")
-                                    .color(ChatColor.LIGHT_PURPLE).create());
-                            }
+    public void execute(CommandSender sender, String[] args) {
+        if (args.length > 0) {
+            ServerInfo info = BungeeEssentials.me.getProxy().getServerInfo(args[0]);
+            for (final ProxiedPlayer player : BungeeEssentials.me.getProxy().getPlayers()) {
+                player.connect(info, new Callback<Boolean>() {
+                    @Override
+                    public void done(Boolean success, Throwable throwable) {
+                        if (success) {
+                            player.sendMessage(new ComponentBuilder("Whooooooooooosh!").color(ChatColor.LIGHT_PURPLE).create());
                         }
-                    });
-                }
-            } else {
-                sender.sendMessage(
-                    new ComponentBuilder("Invalid arguments provided.").color(ChatColor.RED)
-                        .create());
+                    }
+                });
             }
         } else {
-            sender.sendMessage(
-                new ComponentBuilder("You do not have permission to do that.").color(ChatColor.RED)
-                    .create());
+            sender.sendMessage(Messages.lazyColour(Messages.INVALID_ARGS));
         }
     }
 }

@@ -22,6 +22,7 @@
 
 package me.hadrondev;
 
+import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.text.SimpleDateFormat;
@@ -37,24 +38,34 @@ import java.util.WeakHashMap;
 public class Chat {
     private static WeakHashMap<UUID, UUID> messages = new WeakHashMap<>();
 
-    public static void sendMessage(ProxiedPlayer player, String name, String message) {
-        ProxiedPlayer recipient = BungeeEssentials.me.getProxy().getPlayer(name);
+    public static void sendMessage(CommandSender sender, ProxiedPlayer recipient, String message) {
         if(recipient != null) {
-            String msg = Settings.MESSAGE;
-            msg = msg.replace("{SERVER}", player.getServer().getInfo().getName());
-            msg = msg.replace("{SENDER}", player.getName());
+            ProxiedPlayer player = null;
+            if (sender instanceof ProxiedPlayer) {
+                player = (ProxiedPlayer) sender;
+            }
+
+            String msg = Messages.MESSAGE;
+
+            if (player != null) {
+                msg = msg.replace("{SERVER}", player.getServer().getInfo().getName());
+            }
+
+            msg = msg.replace("{SENDER}", sender.getName());
             msg = msg.replace("{RECIPIENT}", recipient.getName());
             msg = msg.replace("{MESSAGE}", message);
             msg = msg.replace("{TIME}", getTime());
 
-            msg = Settings.colour(msg);
+            msg = Messages.lazyColour(msg);
 
-            player.sendMessage(msg);
+            sender.sendMessage(msg);
             recipient.sendMessage(msg);
 
-            messages.put(recipient.getUniqueId(), player.getUniqueId());
+            if(player != null) {
+                messages.put(recipient.getUniqueId(), player.getUniqueId());
+            }
         } else {
-            player.sendMessage(Settings.colour(Settings.PLAYER_OFFLINE));
+            sender.sendMessage(Messages.lazyColour(Messages.PLAYER_OFFLINE));
         }
     }
 

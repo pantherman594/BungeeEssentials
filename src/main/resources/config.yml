@@ -1,3 +1,12 @@
+enable:
+    - alert
+    - dispatch
+    - find
+    - list
+    - message
+    - send
+    - sendall
+    - slap
 format:
     alert: '&8[&a+&8] &7{ALERT}'
     find: '&e{PLAYER} &ais playing on &e{SERVER}'
@@ -10,5 +19,4 @@ settings:
 errors:
     invalid: '&cInvalid arguments provided.'
     offline: '&cSorry, that player is offline.'
-    permissions: '&cYou do not have permission to do that.'
     slap: '&cYou are unworthy of slapping people.'
