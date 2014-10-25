@@ -25,6 +25,7 @@ package me.hadrondev.commands;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import me.hadrondev.BungeeEssentials;
+import me.hadrondev.Messages;
 import me.hadrondev.permissions.Permission;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -45,31 +46,35 @@ public class Dispatch extends Command {
 
     @Override
     public void execute(CommandSender commandSender, String[] args) {
-        String send = Arrays.toString(args);
+        if (args.length > 0) {
+            String send = Arrays.toString(args);
 
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        out.writeUTF("Dispatch");
+            ByteArrayDataOutput out = ByteStreams.newDataOutput();
+            out.writeUTF("Dispatch");
 
-        ByteArrayOutputStream messageBytes = new ByteArrayOutputStream();
-        DataOutputStream stream = new DataOutputStream(messageBytes);
+            ByteArrayOutputStream messageBytes = new ByteArrayOutputStream();
+            DataOutputStream stream = new DataOutputStream(messageBytes);
 
-        try {
-            stream.writeUTF(send);
-        } catch (IOException e) {
-            BungeeEssentials.me.getLogger().severe("Unable to write command to stream");
-            return;
-        }
+            try {
+                stream.writeUTF(send);
+            } catch (IOException e) {
+                BungeeEssentials.me.getLogger().severe("Unable to write command to stream");
+                return;
+            }
 
-        byte[] bytes = messageBytes.toByteArray();
+            byte[] bytes = messageBytes.toByteArray();
 
-        out.writeShort(bytes.length);
-        out.write(bytes);
+            out.writeShort(bytes.length);
+            out.write(bytes);
 
-        bytes = out.toByteArray();
+            bytes = out.toByteArray();
 
-        BungeeEssentials.me.getLogger().info("Sent command via Dispatch channel");
-        for(ServerInfo server : BungeeEssentials.me.getProxy().getServers().values()) {
-            server.sendData("BungeeEssentials", bytes);
+            BungeeEssentials.me.getLogger().info("Sent command via Dispatch channel");
+            for (ServerInfo server : BungeeEssentials.me.getProxy().getServers().values()) {
+                server.sendData("BungeeEssentials", bytes);
+            }
+        } else {
+            commandSender.sendMessage(Messages.lazyColour(Messages.INVALID_ARGS));
         }
     }
 }
