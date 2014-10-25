@@ -1,6 +1,5 @@
 enable:
     - alert
-    - dispatch
     - find
     - list
     - message

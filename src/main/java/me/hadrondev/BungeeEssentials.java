@@ -42,6 +42,8 @@ public class BungeeEssentials extends Plugin {
     public void onEnable() {
         me = this;
 
+        getProxy().registerChannel("BungeeEssentials");
+
         Configuration config = null;
         try {
             saveConfig();
@@ -51,7 +53,6 @@ public class BungeeEssentials extends Plugin {
         }
 
         if(config != null) {
-
             List<String> nope = config.getStringList("enable");
 
             Messages.ALERT = config.getString("format.alert", "&8[&a+&8] &7{ALERT}");

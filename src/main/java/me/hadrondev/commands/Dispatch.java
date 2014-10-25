@@ -22,37 +22,54 @@
 
 package me.hadrondev.commands;
 
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 import me.hadrondev.BungeeEssentials;
-import me.hadrondev.Messages;
 import me.hadrondev.permissions.Permission;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.plugin.Command;
 
-import java.io.UnsupportedEncodingException;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
 
 /**
- * Created by Connor Harries on 17/10/2014.
+ * Created by Connor Harries on 25/10/2014.
  */
-@SuppressWarnings("deprecation")
 public class Dispatch extends Command {
     public Dispatch() {
         super("dispatch", Permission.ADMIN_DISPATCH.toString());
     }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
-        if (args.length > 0) {
-            String send = Messages.combine(args);
-            for (ServerInfo server : BungeeEssentials.me.getProxy().getServers().values()) {
-                try {
-                    server.sendData("gssentials.dispatch", send.getBytes("UTF-8"));
-                } catch (UnsupportedEncodingException e) {
-                    BungeeEssentials.me.getLogger().info("Unable to dispatch command, reason: UnsupportedEncodingException.");
-                }
-            }
-        } else {
-            sender.sendMessage(Messages.lazyColour(Messages.INVALID_ARGS));
+    public void execute(CommandSender commandSender, String[] args) {
+        String send = Arrays.toString(args);
+
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("Dispatch");
+
+        ByteArrayOutputStream messageBytes = new ByteArrayOutputStream();
+        DataOutputStream stream = new DataOutputStream(messageBytes);
+
+        try {
+            stream.writeUTF(send);
+        } catch (IOException e) {
+            BungeeEssentials.me.getLogger().severe("Unable to write command to stream");
+            return;
+        }
+
+        byte[] bytes = messageBytes.toByteArray();
+
+        out.writeShort(bytes.length);
+        out.write(bytes);
+
+        bytes = out.toByteArray();
+
+        BungeeEssentials.me.getLogger().info("Sent command via Dispatch channel");
+        for(ServerInfo server : BungeeEssentials.me.getProxy().getServers().values()) {
+            server.sendData("BungeeEssentials", bytes);
         }
     }
 }
