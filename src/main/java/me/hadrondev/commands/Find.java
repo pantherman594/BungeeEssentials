@@ -34,7 +34,7 @@ import net.md_5.bungee.api.plugin.Command;
 @SuppressWarnings("deprecation")
 public class Find extends Command {
     public Find() {
-        super("find");
+        super("find", Permission.FIND.toString());
     }
 
     @Override
