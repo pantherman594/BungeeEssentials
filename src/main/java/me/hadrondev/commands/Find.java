@@ -22,6 +22,7 @@
 
 package me.hadrondev.commands;
 
+import me.hadrondev.permissions.Permission;
 import me.hadrondev.BungeeEssentials;
 import me.hadrondev.Messages;
 import net.md_5.bungee.api.CommandSender;
