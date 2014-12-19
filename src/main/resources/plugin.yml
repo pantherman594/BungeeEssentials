@@ -1,4 +1,4 @@
 name: BungeeEssentials
-main: me.hadrondev.BungeeEssentials
-version: 1.1-SNAPSHOT
-author: charries96
+main: de.albionco.gssentials.BungeeEssentials
+version: #VERSION#
+author: Albion
