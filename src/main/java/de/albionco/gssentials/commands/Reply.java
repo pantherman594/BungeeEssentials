@@ -24,7 +24,7 @@ package de.albionco.gssentials.commands;
 
 import de.albionco.gssentials.Dictionary;
 import de.albionco.gssentials.Messenger;
-import de.albionco.gssentials.permissions.Permission;
+import de.albionco.gssentials.Permission;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

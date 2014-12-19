@@ -23,7 +23,7 @@
 package de.albionco.gssentials.commands;
 
 import de.albionco.gssentials.Dictionary;
-import de.albionco.gssentials.permissions.Permission;
+import de.albionco.gssentials.Permission;
 import net.md_5.bungee.api.*;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.plugin.Command;
