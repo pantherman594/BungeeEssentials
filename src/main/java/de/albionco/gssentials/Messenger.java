@@ -37,7 +37,8 @@ import java.util.WeakHashMap;
  */
 @SuppressWarnings("deprecation")
 public class Messenger {
-    private static WeakHashMap<UUID, UUID> messages = new WeakHashMap<>();
+    private static WeakHashMap<UUID, UUID> sent = new WeakHashMap<>();
+    private static WeakHashMap<UUID, UUID> received = new WeakHashMap<>();
 
     public static void sendMessage(CommandSender sender, ProxiedPlayer recipient, String message) {
         if (recipient != null) {
@@ -54,7 +55,8 @@ public class Messenger {
             recipient.sendMessage(msg);
 
             if (player != null) {
-                messages.put(player.getUniqueId(), recipient.getUniqueId());
+                sent.put(player.getUniqueId(), recipient.getUniqueId());
+                received.put(recipient.getUniqueId(), player.getUniqueId());
             }
         } else {
             sender.sendMessage(Dictionary.colour(Dictionary.ERRORS_OFFLINE));
@@ -68,8 +70,12 @@ public class Messenger {
     }
 
     public static UUID reply(ProxiedPlayer player) {
-        if(messages.containsKey(player.getUniqueId())) {
-            return messages.get(player.getUniqueId());
+        if (received.containsKey(player.getUniqueId())) {
+            return received.get(player.getUniqueId());
+        }
+
+        if(sent.containsKey(player.getUniqueId())) {
+            return sent.get(player.getUniqueId());
         }
 
         return null;

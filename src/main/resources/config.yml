@@ -14,10 +14,11 @@ format:
     message: '&a({{ SERVER }}) &7[{{ SENDER }} {{ RAQUO }} {{ RECIPIENT }}] &f{{ MESSAGE }}'
     send: '&aSending &e{{ PLAYER }} &ato server &e{{ SERVER }}'
 settings:
-    glist:
+    servers:
         header: '&aServers:'
         body: '&a- {{ SERVER }} {{ DENSITY }}'
 errors:
     invalid: '&cInvalid arguments provided.'
     offline: '&cSorry, that player is offline.'
     slap: '&cYou are unworthy of slapping people.'
+    messages: '&cNobody has messaged you recently.'

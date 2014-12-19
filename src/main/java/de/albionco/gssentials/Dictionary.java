@@ -34,14 +34,15 @@ import java.lang.reflect.Modifier;
  * @author Connor Spencer Harries
  */
 public class Dictionary {
-    public static String FORMAT_STAFF = "&c[{{ SERVER }}, {{ SENDER }}] &7{{ FORMAT_MESSAGE }}";
+    public static String FORMAT_ADMIN = "&c[{{ SERVER }}, {{ SENDER }}] &7{{ FORMAT_MESSAGE }}";
     public static String FORMAT_ALERT = "&8[&a+&8] &7{{ FORMAT_ALERT }}";
     public static String FORMAT_FIND = "&e{{ PLAYER }} &ais playing on &e{{ SERVER }}";
-    public static String SETTINGS_GLIST_HEADER = "&aServers:";
-    public static String SETTINGS_GLIST_SERVER = "&a- {{ SERVER }} {{ DENSITY }}";
+    public static String SETTINGS_SERVERS_HEADER = "&aServers:";
+    public static String SETTINGS_SERVERS_BODY = "&a- {{ SERVER }} {{ DENSITY }}";
     public static String ERRORS_INVALID = "&cInvalid arguments provided.";
     public static String FORMAT_MESSAGE = "&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{{  FORMAT_MESSAGE  }}}";
     public static String ERRORS_OFFLINE = "&cSorry, that player is offline.";
+    public static String ERRORS_MESSAGES = "&cSorry, that player is offline.";
     public static String ERRORS_SLAP = "&cYou are unworthy of slapping people.";
     public static String FORMAT_SEND = "&aSending &e{{ PLAYER }} &ato server &e{{ SERVER }}";
 
@@ -74,9 +75,9 @@ public class Dictionary {
     }
 
     public static String format(String input, boolean colour, String... args) {
-        if(args.length % 2 == 0) {
-            for(int i = 0; i < args.length; i += 2) {
-                input = input.replace("{{ " + args[i].toUpperCase() + " }}", args[i+1]);
+        if (args.length % 2 == 0) {
+            for (int i = 0; i < args.length; i += 2) {
+                input = input.replace("{{ " + args[i].toUpperCase() + " }}", args[i + 1]);
             }
         }
 
@@ -88,9 +89,9 @@ public class Dictionary {
     }
 
     public static void load() throws IllegalAccessException {
-        for(Field field : Dictionary.class.getDeclaredFields()) {
+        for (Field field : Dictionary.class.getDeclaredFields()) {
             int mod = field.getModifiers();
-            if(Modifier.isStatic(mod) && Modifier.isPublic(mod)) {
+            if (Modifier.isStatic(mod) && Modifier.isPublic(mod)) {
                 String name = field.getName().toLowerCase().replace("_", ".");
                 Configuration config = BungeeEssentials.getInstance().getConfig();
 

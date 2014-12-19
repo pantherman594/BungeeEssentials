@@ -42,17 +42,24 @@ public class Admin extends Command {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if(args != null && args.length > 0) {
+        if (args != null && args.length > 0) {
             String server = "CONSOLE";
 
             if (sender instanceof ProxiedPlayer) {
                 server = ((ProxiedPlayer) sender).getServer().getInfo().getName();
             }
 
+            String msg = Dictionary.format(Dictionary.FORMAT_ADMIN, "SERVER", server, "SENDER", sender.getName(), "MESSAGE", Dictionary.combine(args));
+
             for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
                 if (player.hasPermission(Permission.ADMIN_CHAT)) {
-                    player.sendMessage(Dictionary.format(Dictionary.FORMAT_STAFF, "SERVER", server, "SENDER", sender.getName(), "MESSAGE", Dictionary.combine(args)));
+                    player.sendMessage(msg);
                 }
+            }
+
+            CommandSender console = ProxyServer.getInstance().getConsole();
+            if (sender == console) {
+                console.sendMessage(msg);
             }
         } else {
             sender.sendMessage(Dictionary.colour(Dictionary.ERRORS_INVALID));

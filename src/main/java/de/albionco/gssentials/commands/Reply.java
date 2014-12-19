@@ -52,7 +52,7 @@ public class Reply extends Command {
                 ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(uuid);
                 Messenger.sendMessage(player, recipient, Dictionary.combine(args));
             } else {
-                sender.sendMessage(Dictionary.colour(Dictionary.ERRORS_INVALID));
+                sender.sendMessage(Dictionary.colour(Dictionary.ERRORS_MESSAGES));
             }
         } else {
             sender.sendMessage(Dictionary.colour("&cSorry, only players can reply to messages."));

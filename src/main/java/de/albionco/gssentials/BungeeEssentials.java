@@ -40,6 +40,10 @@ public class BungeeEssentials extends Plugin {
 
     private Configuration config = null;
 
+    public static BungeeEssentials getInstance() {
+        return (BungeeEssentials) ProxyServer.getInstance().getPluginManager().getPlugin("BungeeEssentials");
+    }
+
     @Override
     public void onEnable() {
         try {
@@ -47,6 +51,7 @@ public class BungeeEssentials extends Plugin {
             config = loadConfig();
         } catch (Exception ex) {
             getLogger().log(Level.SEVERE, "Exception thrown whilst loading config, unable to proceed: ", ex);
+            return;
         }
 
         if (config != null) {
@@ -54,38 +59,39 @@ public class BungeeEssentials extends Plugin {
                 Dictionary.load();
                 getLogger().info("Successfully loaded configuration values!");
             } catch (IllegalAccessException e) {
+                getLogger().severe("Unable to load config file, will not continue");
                 return;
             }
 
             List<String> enable = config.getStringList("enable");
 
-            if(enable.contains("admin")) {
+            if (enable.contains("admin")) {
                 register(new Admin());
             }
 
-            if(enable.contains("alert")) {
+            if (enable.contains("alert")) {
                 register(new Alert());
             }
 
-            if(enable.contains("find")) {
+            if (enable.contains("find")) {
                 register(new Find());
             }
 
-            if(enable.contains("list")) {
+            if (enable.contains("list")) {
                 register(new ServerList());
             }
 
-            if(enable.contains("message")) {
+            if (enable.contains("message")) {
                 register(new Message());
                 register(new Reply());
             }
 
-            if(enable.contains("send")) {
+            if (enable.contains("send")) {
                 register(new Send());
                 register(new SendAll());
             }
 
-            if(enable.contains("slap")) {
+            if (enable.contains("slap")) {
                 register(new Slap());
             }
         } else {
@@ -115,9 +121,5 @@ public class BungeeEssentials extends Plugin {
 
     public Configuration getConfig() {
         return this.config;
-    }
-
-    public static BungeeEssentials getInstance() {
-        return (BungeeEssentials) ProxyServer.getInstance().getPluginManager().getPlugin("BungeeEssentials");
     }
 }

@@ -42,7 +42,7 @@ public class ServerList extends Command {
 
     @Override
     public void execute(final CommandSender sender, String[] args) {
-        sender.sendMessage(Dictionary.colour(Dictionary.SETTINGS_GLIST_HEADER));
+        sender.sendMessage(Dictionary.colour(Dictionary.SETTINGS_SERVERS_HEADER));
 
         if (args != null) {
             if (args.length > 0) {
@@ -50,7 +50,7 @@ public class ServerList extends Command {
                     sender.sendMessage(Dictionary.colour("&bShowing &aall &bservers"));
                     for (ServerInfo info : ProxyServer.getInstance().getServers().values()) {
                         int num = info.getPlayers().size();
-                        sender.sendMessage(Dictionary.format(Dictionary.SETTINGS_GLIST_SERVER, "SERVER", info.getName(), "DENSITY", getDensity(num), "COUNT", String.valueOf(num)));
+                        sender.sendMessage(Dictionary.format(Dictionary.SETTINGS_SERVERS_BODY, "SERVER", info.getName(), "DENSITY", getDensity(num), "COUNT", String.valueOf(num)));
                     }
                 } else {
                     displayPingServers(sender);
@@ -86,12 +86,8 @@ public class ServerList extends Command {
                 @Override
                 public void done(ServerPing serverPing, Throwable throwable) {
                     if (throwable == null) {
-                        String message = Dictionary.SETTINGS_GLIST_SERVER;
-                        message = message.replace("{SERVER}", info.getName());
-                        message = message.replace("{DENSITY}", getDensity(info.getPlayers().size()));
-                        message = message.replace("{COUNT}", "" + info.getPlayers().size());
-
-                        sender.sendMessage(Dictionary.colour(message));
+                        int num = info.getPlayers().size();
+                        sender.sendMessage(Dictionary.format(Dictionary.SETTINGS_SERVERS_BODY, "SERVER", info.getName(), "DENSITY", getDensity(num), "COUNT", String.valueOf(num)));
                     }
                 }
             });
