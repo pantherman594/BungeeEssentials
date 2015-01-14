@@ -39,6 +39,7 @@ import java.util.logging.Level;
  *
  * @author Connor Spencer Harries
  */
+@SuppressWarnings("deprecation")
 public class Spy extends Command {
 
     public Spy() {

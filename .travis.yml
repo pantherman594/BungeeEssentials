@@ -3,9 +3,12 @@ jdk:
 - oraclejdk7
 - openjdk7
 deploy:
-    provider: releases
-    api-key: ZeRm8KAkHmgfbnhFvjpH95TwFZtQ8g/KJtwnUaEk3UG1i1yO1C5RfDGe2osEKTm9Uasa9/pWjbx3up5isOohUJ2nU6OjrMCz30sHtgZIH2CUflRv3UARGq4J4Sp8Elipl7dlCe68ouFLFvdZt4G0/Dw66uQ8PXEn2cPXsfZQsUI=
-    file: target/BungeeEssentials.jar
-    on:
-        tags: true
-        all_branches: true
+  provider: releases
+  api_key:
+    secure: BpTOmrkA8sxoGObJMBzsvITq0yHFURwm11S6eGnlXziERRUjgwX1za6hGBa3PvPJUw8BWnqLhDAq6BiAdAalYNwndFfl0mP7Ha5ZJUUoH/t01eIAKAv2uYxuowA+QXfMhavZR8N+U4/WCAF2f/bT961kAFNmKUi+LolWHRySPaQ=
+  file: target/BungeeEssentials.jar
+  on:
+    repo: Albioncode/BungeeEssentials
+    jdk: oraclejdk7
+    tags: true
+    all_branches: true
