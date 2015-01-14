@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Connor Spencer Harries
+ * Copyright (c) 2015 Connor Spencer Harries
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@
 package de.albionco.gssentials.commands;
 
 import de.albionco.gssentials.Dictionary;
-import de.albionco.gssentials.Permission;
+import de.albionco.gssentials.Permissions;
 import net.md_5.bungee.api.*;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.plugin.Command;
@@ -37,61 +37,51 @@ import net.md_5.bungee.api.plugin.Command;
 public class ServerList extends Command {
 
     public ServerList() {
-        super("glist", Permission.LIST, "servers", "serverlist");
+        super("glist", Permissions.General.LIST, "servers", "serverlist");
     }
 
     @Override
     public void execute(final CommandSender sender, String[] args) {
-        sender.sendMessage(Dictionary.colour(Dictionary.SETTINGS_SERVERS_HEADER));
+        int online = ProxyServer.getInstance().getPlayers().size();
+        sender.sendMessage(Dictionary.format(Dictionary.FORMAT_SERVERS_HEADER, "COUNT", String.valueOf(online)));
 
-        if (args != null) {
-            if (args.length > 0) {
-                if (args[0].equals("-a") && sender.hasPermission(Permission.LIST_ALL)) {
-                    sender.sendMessage(Dictionary.colour("&bShowing &aall &bservers"));
-                    for (ServerInfo info : ProxyServer.getInstance().getServers().values()) {
-                        int num = info.getPlayers().size();
-                        sender.sendMessage(Dictionary.format(Dictionary.SETTINGS_SERVERS_BODY, "SERVER", info.getName(), "DENSITY", getDensity(num), "COUNT", String.valueOf(num)));
-                    }
-                } else {
-                    displayPingServers(sender);
-                }
-            } else {
-                displayPingServers(sender);
-            }
+        if ((args == null || args.length < 1) || !args[0].equals("-a") && !sender.hasPermission(Permissions.General.LIST_ALL)) {
+            displayPingServers(sender, online);
         } else {
-            displayPingServers(sender);
+            for (ServerInfo info : ProxyServer.getInstance().getServers().values()) {
+                int num = info.getPlayers().size();
+                sender.sendMessage(Dictionary.format(Dictionary.FORMAT_SERVERS_BODY, "SERVER", info.getName(), "DENSITY", getDensity(num, online), "COUNT", String.valueOf(num)));
+            }
         }
     }
 
-    public String getDensity(int players) {
-        return String.valueOf(getColour(players)) + " (" + players + ") ";
+    public String getDensity(int serverPlayers, int onlinePlayers) {
+        return String.valueOf(getColour(serverPlayers, onlinePlayers)) + "(" + serverPlayers + ")";
     }
 
-    public ChatColor getColour(int players) {
-        int online = ProxyServer.getInstance().getOnlineCount();
-        int percent = (int) ((players * 100.0f) / online);
+    public ChatColor getColour(int serverPlayers, int onlinePlayers) {
+        int percent = (int) ((serverPlayers * 100.0f) / onlinePlayers);
 
-        if (percent < 33) {
+        if (percent <= 33) {
             return ChatColor.RED;
-        } else if (percent > 33 && percent < 66) {
+        } else if (percent > 33 && percent <= 66) {
             return ChatColor.GOLD;
         } else {
             return ChatColor.GREEN;
         }
     }
 
-    private void displayPingServers(final CommandSender sender) {
+    private void displayPingServers(final CommandSender sender, final int onlinePlayers) {
         for (final ServerInfo info : ProxyServer.getInstance().getServers().values()) {
             info.ping(new Callback<ServerPing>() {
                 @Override
                 public void done(ServerPing serverPing, Throwable throwable) {
                     if (throwable == null) {
                         int num = info.getPlayers().size();
-                        sender.sendMessage(Dictionary.format(Dictionary.SETTINGS_SERVERS_BODY, "SERVER", info.getName(), "DENSITY", getDensity(num), "COUNT", String.valueOf(num)));
+                        sender.sendMessage(Dictionary.format(Dictionary.FORMAT_SERVERS_BODY, "SERVER", info.getName(), "DENSITY", getDensity(num, onlinePlayers), "COUNT", String.valueOf(num)));
                     }
                 }
             });
         }
-        sender.sendMessage(Dictionary.colour("&bOnly showing &aonline &bservers"));
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Connor Spencer Harries
+ * Copyright (c) 2015 Connor Spencer Harries
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,9 @@ import net.md_5.bungee.config.Configuration;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.logging.Level;
 
 /**
  * Created by Connor Harries on 17/10/2014.
@@ -37,14 +40,17 @@ public class Dictionary {
     public static String FORMAT_ADMIN = "&c[{{ SERVER }}, {{ SENDER }}] &7{{ FORMAT_MESSAGE }}";
     public static String FORMAT_ALERT = "&8[&a+&8] &7{{ FORMAT_ALERT }}";
     public static String FORMAT_FIND = "&e{{ PLAYER }} &ais playing on &e{{ SERVER }}";
-    public static String SETTINGS_SERVERS_HEADER = "&aServers:";
-    public static String SETTINGS_SERVERS_BODY = "&a- {{ SERVER }} {{ DENSITY }}";
+    public static String FORMAT_SERVERS_HEADER = "&aServers:";
+    public static String FORMAT_SERVERS_BODY = "&a- {{ SERVER }} {{ DENSITY }}";
     public static String ERRORS_INVALID = "&cInvalid arguments provided.";
     public static String FORMAT_MESSAGE = "&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{{  FORMAT_MESSAGE  }}}";
     public static String ERRORS_OFFLINE = "&cSorry, that player is offline.";
-    public static String ERRORS_MESSAGES = "&cSorry, that player is offline.";
+    public static String ERRORS_MESSAGES = "&cNobody has messaged you recently.";
     public static String ERRORS_SLAP = "&cYou are unworthy of slapping people.";
+    public static String FORMAT_SPY_MESSAGE = "&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{{  FORMAT_MESSAGE  }}}";
     public static String FORMAT_SEND = "&aSending &e{{ PLAYER }} &ato server &e{{ SERVER }}";
+    public static String FORMAT_SPY_ENABLED = "&aSocialspy has been enabled!";
+    public static String FORMAT_SPY_DISABLED = "&cSocialspy has been disabled!";
 
     public static String colour(String str) {
         return ChatColor.translateAlternateColorCodes('&', str);
@@ -75,6 +81,8 @@ public class Dictionary {
     }
 
     public static String format(String input, boolean colour, String... args) {
+        input = input.replace("{{ TIME }}", getTime());
+        input = input.replace("{{ RAQUO }}", "»");
         if (args.length % 2 == 0) {
             for (int i = 0; i < args.length; i += 2) {
                 input = input.replace("{{ " + args[i].toUpperCase() + " }}", args[i + 1]);
@@ -89,15 +97,24 @@ public class Dictionary {
     }
 
     public static void load() throws IllegalAccessException {
+        Configuration config = BungeeEssentials.getInstance().getConfig();
         for (Field field : Dictionary.class.getDeclaredFields()) {
             int mod = field.getModifiers();
             if (Modifier.isStatic(mod) && Modifier.isPublic(mod)) {
                 String name = field.getName().toLowerCase().replace("_", ".");
-                Configuration config = BungeeEssentials.getInstance().getConfig();
 
                 String value = config.getString(name, "Please see the BungeeEssentials default config");
+                if (value.equals("Please see the BungeeEssentials default config")) {
+                    BungeeEssentials.getInstance().getLogger().log(Level.WARNING, "Error loading \"{0}\" from configuration file", name);
+                }
                 field.set(null, value);
             }
         }
+    }
+
+    private static String getTime() {
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        return sdf.format(cal.getTime());
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Connor Spencer Harries
+ * Copyright (c) 2015 Connor Spencer Harries
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@ package de.albionco.gssentials.commands;
 
 import de.albionco.gssentials.Dictionary;
 import de.albionco.gssentials.Messenger;
-import de.albionco.gssentials.Permission;
+import de.albionco.gssentials.Permissions;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -40,7 +40,7 @@ import java.util.UUID;
 @SuppressWarnings("deprecation")
 public class Reply extends Command {
     public Reply() {
-        super("reply", Permission.MESSAGE, "r");
+        super("reply", Permissions.General.MESSAGE, "r");
     }
 
     @Override
@@ -49,10 +49,14 @@ public class Reply extends Command {
             if (args.length > 0) {
                 ProxiedPlayer player = (ProxiedPlayer) sender;
                 UUID uuid = Messenger.reply(player);
+                if (uuid == null) {
+                    sender.sendMessage(Dictionary.colour(Dictionary.ERRORS_MESSAGES));
+                    return;
+                }
                 ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(uuid);
                 Messenger.sendMessage(player, recipient, Dictionary.combine(args));
             } else {
-                sender.sendMessage(Dictionary.colour(Dictionary.ERRORS_MESSAGES));
+                sender.sendMessage(Dictionary.colour(Dictionary.ERRORS_INVALID));
             }
         } else {
             sender.sendMessage(Dictionary.colour("&cSorry, only players can reply to messages."));

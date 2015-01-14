@@ -22,55 +22,48 @@
 
 package de.albionco.gssentials.commands;
 
-import com.google.common.collect.ImmutableSet;
+import de.albionco.gssentials.BungeeEssentials;
 import de.albionco.gssentials.Dictionary;
 import de.albionco.gssentials.Messenger;
 import de.albionco.gssentials.Permissions;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
-import net.md_5.bungee.api.plugin.TabExecutor;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.logging.Level;
 
 /**
- * Created by Connor Harries on 17/10/2014.
+ * Created by Connor Harries on 14/01/2015.
  *
  * @author Connor Spencer Harries
  */
-@SuppressWarnings("deprecation")
-public class Message extends Command implements TabExecutor {
-    public Message() {
-        super("msg", Permissions.General.MESSAGE, "msg", "t", "tell", "w", "whisper");
+public class Spy extends Command {
+
+    public Spy() {
+        super("spy", Permissions.Admin.SPY, "socialspy", "gspy");
     }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if (args.length > 1) {
-            ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(args[0]);
-            Messenger.sendMessage(sender, recipient, Dictionary.combine(0, args));
-        } else {
-            sender.sendMessage(Dictionary.colour(Dictionary.ERRORS_INVALID));
-        }
-    }
-
-    @Override
-    public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
-        if (args.length > 1 || args.length == 0) {
-            return ImmutableSet.of();
-        }
-
-        Set<String> matches = new HashSet<>();
-        String search = args[0].toLowerCase();
-        for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-            if (!player.getName().equals(sender.getName())) {
-                if (player.getName().toLowerCase().startsWith(search)) {
-                    matches.add(player.getName());
-                }
+        if (sender instanceof ProxiedPlayer) {
+            ProxiedPlayer player = (ProxiedPlayer) sender;
+            boolean spy = Messenger.isSpy(player);
+            boolean success;
+            if (spy) {
+                success = Messenger.removeSpy(player);
+            } else {
+                success = Messenger.addSpy(player);
             }
+            if (success) {
+                player.sendMessage(Dictionary.format(spy ? Dictionary.FORMAT_SPY_DISABLED : Dictionary.FORMAT_SPY_ENABLED));
+            } else {
+                BungeeEssentials.getInstance().getLogger().log(Level.INFO, "Unable to toggle social spy for \"{0}\"", player.getName());
+            }
+        } else {
+            sender.sendMessage(new ComponentBuilder("Social spy cannot be used by console").color(ChatColor.RED).create());
         }
-        return matches;
     }
+
 }

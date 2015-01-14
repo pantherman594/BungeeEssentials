@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Connor Spencer Harries
+ * Copyright (c) 2015 Connor Spencer Harries
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,66 +37,25 @@ import java.util.List;
 import java.util.logging.Level;
 
 public class BungeeEssentials extends Plugin {
-
+    private static BungeeEssentials instance;
     private Configuration config = null;
 
     public static BungeeEssentials getInstance() {
-        return (BungeeEssentials) ProxyServer.getInstance().getPluginManager().getPlugin("BungeeEssentials");
+        return instance;
     }
 
     @Override
     public void onEnable() {
+        instance = this;
         try {
             saveConfig();
-            config = loadConfig();
         } catch (Exception ex) {
-            getLogger().log(Level.SEVERE, "Exception thrown whilst loading config, unable to proceed: ", ex);
+            getLogger().log(Level.SEVERE, "Unable to save configuration file: ", ex);
+            getLogger().log(Level.SEVERE, "Plugin loading aborted!");
             return;
         }
 
-        if (config != null) {
-            try {
-                Dictionary.load();
-                getLogger().info("Successfully loaded configuration values!");
-            } catch (IllegalAccessException e) {
-                getLogger().severe("Unable to load config file, will not continue");
-                return;
-            }
-
-            List<String> enable = config.getStringList("enable");
-
-            if (enable.contains("admin")) {
-                register(new Admin());
-            }
-
-            if (enable.contains("alert")) {
-                register(new Alert());
-            }
-
-            if (enable.contains("find")) {
-                register(new Find());
-            }
-
-            if (enable.contains("list")) {
-                register(new ServerList());
-            }
-
-            if (enable.contains("message")) {
-                register(new Message());
-                register(new Reply());
-            }
-
-            if (enable.contains("send")) {
-                register(new Send());
-                register(new SendAll());
-            }
-
-            if (enable.contains("slap")) {
-                register(new Slap());
-            }
-        } else {
-            getLogger().severe("Unable to load/save the config");
-        }
+        reload();
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -111,8 +70,70 @@ public class BungeeEssentials extends Plugin {
         }
     }
 
-    private Configuration loadConfig() throws IOException {
-        return ConfigurationProvider.getProvider(YamlConfiguration.class).load(new File(getDataFolder(), "config.yml"));
+    private void loadConfig() throws IOException {
+        config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(new File(getDataFolder(), "config.yml"));
+    }
+
+    public boolean reload() {
+        try {
+            loadConfig();
+            Dictionary.load();
+        } catch (IOException e) {
+            return false;
+        } catch (IllegalAccessException e) {
+            return false;
+        }
+
+        ProxyServer.getInstance().getPluginManager().unregisterCommands(this);
+
+        int commands = 0;
+
+        List<String> enable = config.getStringList("enable");
+        if (enable.contains("admin")) {
+            register(new Admin());
+            commands++;
+        }
+
+        if (enable.contains("alert")) {
+            register(new Alert());
+            commands++;
+        }
+
+        if (enable.contains("find")) {
+            register(new Find());
+            commands++;
+        }
+
+        if (enable.contains("list")) {
+            register(new ServerList());
+            commands++;
+        }
+
+        if (enable.contains("message")) {
+            register(new Message());
+            register(new Reply());
+            commands += 2;
+        }
+
+        if (enable.contains("send")) {
+            register(new Send());
+            register(new SendAll());
+            commands += 2;
+        }
+
+        if (enable.contains("slap")) {
+            register(new Slap());
+            commands++;
+        }
+
+        if (enable.contains("spy")) {
+            register(new Spy());
+            commands++;
+        }
+
+        getLogger().log(Level.INFO, "Registered {0} commands successfully", commands);
+        ProxyServer.getInstance().getPluginManager().registerListener(this, new Messenger());
+        return true;
     }
 
     private void register(Command command) {

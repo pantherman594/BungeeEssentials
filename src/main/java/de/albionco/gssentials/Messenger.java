@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Connor Spencer Harries
+ * Copyright (c) 2015 Connor Spencer Harries
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,13 +22,17 @@
 
 package de.albionco.gssentials;
 
+import com.google.common.base.Preconditions;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.PlayerDisconnectEvent;
+import net.md_5.bungee.api.plugin.Listener;
+import net.md_5.bungee.event.EventHandler;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
-import java.util.WeakHashMap;
 
 /**
  * Created by Connor Harries on 17/10/2014.
@@ -36,9 +40,9 @@ import java.util.WeakHashMap;
  * @author Connor Spencer Harries
  */
 @SuppressWarnings("deprecation")
-public class Messenger {
-    private static WeakHashMap<UUID, UUID> sent = new WeakHashMap<>();
-    private static WeakHashMap<UUID, UUID> received = new WeakHashMap<>();
+public class Messenger implements Listener {
+    private static HashMap<UUID, UUID> messages = new HashMap<>();
+    private static Set<UUID> spies = new HashSet<>();
 
     public static void sendMessage(CommandSender sender, ProxiedPlayer recipient, String message) {
         if (recipient != null) {
@@ -49,35 +53,68 @@ public class Messenger {
 
             String server = player != null ? player.getServer().getInfo().getName() : "CONSOLE";
 
-            String msg = Dictionary.format(Dictionary.FORMAT_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message, "TIME", getTime(), "RAQUO", "»");
+            String msg = Dictionary.format(Dictionary.FORMAT_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message);
 
             sender.sendMessage(msg);
             recipient.sendMessage(msg);
 
             if (player != null) {
-                sent.put(player.getUniqueId(), recipient.getUniqueId());
-                received.put(recipient.getUniqueId(), player.getUniqueId());
+                if (!player.hasPermission(Permissions.Admin.SPY_EXEMPT)) {
+                    String spyMessage = Dictionary.format(Dictionary.FORMAT_SPY_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message);
+                    for (ProxiedPlayer onlinePlayer : player.getServer().getInfo().getPlayers()) {
+                        if (onlinePlayer.getUniqueId() != player.getUniqueId() && onlinePlayer.getUniqueId() != recipient.getUniqueId()) {
+                            if (onlinePlayer.hasPermission(Permissions.Admin.SPY)) {
+                                onlinePlayer.sendMessage(spyMessage);
+                            }
+                        }
+                    }
+                }
+                messages.put(recipient.getUniqueId(), player.getUniqueId());
             }
         } else {
             sender.sendMessage(Dictionary.colour(Dictionary.ERRORS_OFFLINE));
         }
     }
 
-    public static String getTime() {
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        return sdf.format(cal.getTime());
+    public static UUID reply(ProxiedPlayer player) {
+        return messages.get(player.getUniqueId());
     }
 
-    public static UUID reply(ProxiedPlayer player) {
-        if (received.containsKey(player.getUniqueId())) {
-            return received.get(player.getUniqueId());
-        }
+    public static boolean isSpy(ProxiedPlayer player) {
+        Preconditions.checkNotNull(player);
+        return isSpy(player.getUniqueId());
+    }
 
-        if(sent.containsKey(player.getUniqueId())) {
-            return sent.get(player.getUniqueId());
-        }
+    public static boolean isSpy(UUID uuid) {
+        Preconditions.checkNotNull(uuid);
+        return spies.contains(uuid);
+    }
 
-        return null;
+    public static boolean addSpy(ProxiedPlayer player) {
+        Preconditions.checkNotNull(player);
+        return addSpy(player.getUniqueId());
+    }
+
+    public static boolean addSpy(UUID uuid) {
+        Preconditions.checkArgument(!spies.contains(uuid), "Player is already a spy!");
+        return spies.add(uuid);
+    }
+
+    public static boolean removeSpy(ProxiedPlayer player) {
+        Preconditions.checkNotNull(player);
+        return removeSpy(player.getUniqueId());
+    }
+
+    public static boolean removeSpy(UUID uuid) {
+        Preconditions.checkArgument(spies.contains(uuid), "Player is not a spy!");
+        return spies.remove(uuid);
+    }
+
+    @EventHandler
+    @SuppressWarnings("unused")
+    public void logout(PlayerDisconnectEvent event) {
+        if (messages.containsKey(event.getPlayer().getUniqueId())) {
+            messages.remove(event.getPlayer().getUniqueId());
+        }
     }
 }

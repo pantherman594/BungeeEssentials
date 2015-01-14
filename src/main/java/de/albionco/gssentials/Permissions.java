@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Connor Spencer Harries
+ * Copyright (c) 2015 Connor Spencer Harries
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,21 +23,30 @@
 package de.albionco.gssentials;
 
 /**
- * Created by Connor Harries on 17/10/2014.
+ * This class was made so anybody with the intention of
+ * editing the plugin can easily do so without having
+ * to scour the source for the correct permissions
  *
  * @author Connor Spencer Harries
  */
-public class Permission {
+public class Permissions {
 
-    public static final String ADMIN_ALERT = "gssentials.admin.alert";
-    public static final String ADMIN_CHAT = "gssentials.admin.chat";
-    public static final String ADMIN_SEND = "gssentials.admin.send";
-    public static final String ADMIN_SENDALL = "gssentials.admin.sendall";
+    public static class Admin {
+        public static final String ALERT = "gssentials.admin.alert";
+        public static final String CHAT = "gssentials.admin.chat";
+        public static final String SEND = "gssentials.admin.send";
+        public static final String SENDALL = "gssentials.admin.sendall";
+        public static final String SPY = "gssentials.admin.spy";
+        public static final String SPY_EXEMPT = SPY + ".exempt";
+        public static final String HIDE = "gssentials.hide";
+    }
 
-    public static final String MESSAGE = "gssentials.message";
-    public static final String FIND = "gssentials.find";
-    public static final String LIST = "gssentials.list";
-    public static final String LIST_ALL = "gssentials.list.all";
-    public static final String SLAP = "gssentials.slap";
+    public static class General {
+        public static final String MESSAGE = "gssentials.message";
+        public static final String FIND = "gssentials.find";
+        public static final String LIST = "gssentials.list";
+        public static final String LIST_ALL = "gssentials.list.all";
+        public static final String SLAP = "gssentials.slap";
+    }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Connor Spencer Harries
+ * Copyright (c) 2015 Connor Spencer Harries
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@ package de.albionco.gssentials.commands;
 
 import com.google.common.collect.ImmutableSet;
 import de.albionco.gssentials.Dictionary;
-import de.albionco.gssentials.Permission;
+import de.albionco.gssentials.Permissions;
 import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -40,7 +40,7 @@ import java.util.Set;
 @SuppressWarnings("deprecation")
 public class Send extends Command implements TabExecutor {
     public Send() {
-        super("send", Permission.ADMIN_SEND);
+        super("send", Permissions.Admin.SEND);
     }
 
     @Override

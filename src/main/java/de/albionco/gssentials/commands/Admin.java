@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Connor Spencer Harries
+ * Copyright (c) 2015 Connor Spencer Harries
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@
 package de.albionco.gssentials.commands;
 
 import de.albionco.gssentials.Dictionary;
-import de.albionco.gssentials.Permission;
+import de.albionco.gssentials.Permissions;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -37,7 +37,7 @@ import net.md_5.bungee.api.plugin.Command;
 @SuppressWarnings("deprecation")
 public class Admin extends Command {
     public Admin() {
-        super("staff", Permission.ADMIN_CHAT, "staff", "adminchat", "a");
+        super("staff", Permissions.Admin.CHAT, "staff", "adminchat", "a", "admin");
     }
 
     @Override
@@ -52,7 +52,7 @@ public class Admin extends Command {
             String msg = Dictionary.format(Dictionary.FORMAT_ADMIN, "SERVER", server, "SENDER", sender.getName(), "MESSAGE", Dictionary.combine(args));
 
             for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-                if (player.hasPermission(Permission.ADMIN_CHAT)) {
+                if (player.hasPermission(Permissions.Admin.CHAT)) {
                     player.sendMessage(msg);
                 }
             }

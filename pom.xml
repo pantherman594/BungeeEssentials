@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (c) 2014 Connor Spencer Harries
+  ~ Copyright (c) 2015 Connor Spencer Harries
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy
   ~ of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.albionco</groupId>
     <artifactId>BungeeEssentials</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <url>http://www.spigotmc.org/resources/bungeeessentials.1488/</url>
     <name>BungeeEssentials</name>
     <description>Port of my branch of the LilyEssentials plugin.</description>
@@ -61,7 +61,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <file>target/classes/plugin.yml</file>
+                    <file>${project.basedir}/target/classes/plugin.yml</file>
                     <replacements>
                         <replacement>
                             <token>#VERSION#</token>
