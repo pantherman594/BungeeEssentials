@@ -23,9 +23,11 @@
 package de.albionco.gssentials.commands;
 
 import de.albionco.gssentials.Dictionary;
+import de.albionco.gssentials.Messenger;
 import de.albionco.gssentials.Permissions;
 import net.md_5.bungee.api.*;
 import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
 /**
@@ -42,17 +44,34 @@ public class ServerList extends Command {
 
     @Override
     public void execute(final CommandSender sender, String[] args) {
-        int online = ProxyServer.getInstance().getPlayers().size();
-        sender.sendMessage(Dictionary.format(Dictionary.FORMAT_SERVERS_HEADER, "COUNT", String.valueOf(online)));
-
-        if ((args == null || args.length < 1) || !args[0].equals("-a") && !sender.hasPermission(Permissions.General.LIST_ALL)) {
-            displayPingServers(sender, online);
-        } else {
-            for (ServerInfo info : ProxyServer.getInstance().getServers().values()) {
-                int num = info.getPlayers().size();
-                sender.sendMessage(Dictionary.format(Dictionary.FORMAT_SERVERS_BODY, "SERVER", info.getName(), "DENSITY", getDensity(num, online), "COUNT", String.valueOf(num)));
+        int online = 0;
+        for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
+            if (!Messenger.isHidden(player)) {
+                online++;
             }
         }
+
+        sender.sendMessage(Dictionary.format(Dictionary.LIST_HEADER, "COUNT", String.valueOf(online)));
+
+        if (sender.hasPermission(Permissions.General.LIST_OFFLINE)) {
+            for (ServerInfo info : ProxyServer.getInstance().getServers().values()) {
+                if (info.canAccess(sender) || sender.hasPermission(Permissions.General.LIST_RESTRICTED)) {
+                    send(online, sender, info);
+                }
+            }
+        } else {
+            displayPingServers(sender, online);
+        }
+    }
+
+    public int getNonHiddenPlayers(ServerInfo info) {
+        int result = 0;
+        for (ProxiedPlayer player : info.getPlayers()) {
+            if (!Messenger.isHidden(player)) {
+                result++;
+            }
+        }
+        return result;
     }
 
     public String getDensity(int serverPlayers, int onlinePlayers) {
@@ -71,17 +90,23 @@ public class ServerList extends Command {
         }
     }
 
+    private void send(int onlinePlayers, CommandSender sender, ServerInfo info) {
+        int num = getNonHiddenPlayers(info);
+        sender.sendMessage(Dictionary.format(Dictionary.LIST_BODY, "SERVER", info.getName(), "DENSITY", getDensity(num, onlinePlayers), "COUNT", String.valueOf(num)));
+    }
+
     private void displayPingServers(final CommandSender sender, final int onlinePlayers) {
         for (final ServerInfo info : ProxyServer.getInstance().getServers().values()) {
-            info.ping(new Callback<ServerPing>() {
-                @Override
-                public void done(ServerPing serverPing, Throwable throwable) {
-                    if (throwable == null) {
-                        int num = info.getPlayers().size();
-                        sender.sendMessage(Dictionary.format(Dictionary.FORMAT_SERVERS_BODY, "SERVER", info.getName(), "DENSITY", getDensity(num, onlinePlayers), "COUNT", String.valueOf(num)));
+            if (info.canAccess(sender) || sender.hasPermission(Permissions.General.LIST_RESTRICTED)) {
+                info.ping(new Callback<ServerPing>() {
+                    @Override
+                    public void done(ServerPing serverPing, Throwable throwable) {
+                        if (throwable == null) {
+                            send(onlinePlayers, sender, info);
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     }
 }

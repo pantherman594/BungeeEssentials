@@ -23,46 +23,34 @@
 package de.albionco.gssentials.commands;
 
 import de.albionco.gssentials.Dictionary;
+import de.albionco.gssentials.Messenger;
 import de.albionco.gssentials.Permissions;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
 /**
- * Created by Connor Harries on 19/12/2014.
+ * Created by Connor Harries on 14/01/2015.
  *
  * @author Connor Spencer Harries
  */
 @SuppressWarnings("deprecation")
-public class Admin extends Command {
-    public Admin() {
-        super("staff", Permissions.Admin.CHAT, "adminchat", "a", "admin");
+public class Hide extends Command {
+    public Hide() {
+        super("hide", Permissions.Admin.HIDE, "hideplayer", "hideself");
     }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if (args != null && args.length > 0) {
-            String server = "CONSOLE";
-
-            if (sender instanceof ProxiedPlayer) {
-                server = ((ProxiedPlayer) sender).getServer().getInfo().getName();
-            }
-
-            String msg = Dictionary.format(Dictionary.FORMAT_ADMIN, "SERVER", server, "SENDER", sender.getName(), "MESSAGE", Dictionary.combine(args));
-
-            for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-                if (player.hasPermission(Permissions.Admin.CHAT)) {
-                    player.sendMessage(msg);
-                }
-            }
-
-            CommandSender console = ProxyServer.getInstance().getConsole();
-            if (sender == console) {
-                console.sendMessage(msg);
+        if (sender instanceof ProxiedPlayer) {
+            ProxiedPlayer player = (ProxiedPlayer) sender;
+            if (Messenger.toggleHidden(player)) {
+                player.sendMessage(Dictionary.format(Dictionary.HIDE_ENABLED));
+            } else {
+                player.sendMessage(Dictionary.format(Dictionary.HIDE_DISABLED));
             }
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERRORS_INVALID));
+            sender.sendMessage(Dictionary.colour("&cConsole cannot hide itself"));
         }
     }
 }

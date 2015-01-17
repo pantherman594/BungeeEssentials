@@ -26,6 +26,7 @@ import de.albionco.gssentials.Dictionary;
 import de.albionco.gssentials.Permissions;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
 /**
@@ -43,9 +44,13 @@ public class Alert extends Command {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (args.length > 0) {
-            ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_ALERT, "ALERT", Dictionary.combine(args)));
+            String server = "";
+            if (sender instanceof ProxiedPlayer) {
+                server = ((ProxiedPlayer) sender).getServer().getInfo().getName();
+            }
+            ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_ALERT, "SENDER", sender.getName(), "SERVER", server, "MESSAGE", Dictionary.combine(args)));
         } else {
-            sender.sendMessage(Dictionary.colour(Dictionary.ERRORS_INVALID));
+            sender.sendMessage(Dictionary.format(Dictionary.ERRORS_INVALID));
         }
     }
 

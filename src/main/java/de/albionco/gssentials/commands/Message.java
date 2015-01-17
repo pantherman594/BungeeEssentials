@@ -43,7 +43,7 @@ import java.util.Set;
 @SuppressWarnings("deprecation")
 public class Message extends Command implements TabExecutor {
     public Message() {
-        super("msg", Permissions.General.MESSAGE, "msg", "t", "tell", "w", "whisper");
+        super("msg", Permissions.General.MESSAGE, "message", "pm", "t", "tell", "w", "whisper");
     }
 
     @Override
@@ -52,7 +52,7 @@ public class Message extends Command implements TabExecutor {
             ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(args[0]);
             Messenger.sendMessage(sender, recipient, Dictionary.combine(0, args));
         } else {
-            sender.sendMessage(Dictionary.colour(Dictionary.ERRORS_INVALID));
+            sender.sendMessage(Dictionary.format(Dictionary.ERRORS_INVALID));
         }
     }
 
@@ -66,7 +66,7 @@ public class Message extends Command implements TabExecutor {
         String search = args[0].toLowerCase();
         for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
             if (!player.getName().equals(sender.getName())) {
-                if (player.getName().toLowerCase().startsWith(search)) {
+                if (player.getName().toLowerCase().startsWith(search) && !Messenger.isHidden(player)) {
                     matches.add(player.getName());
                 }
             }

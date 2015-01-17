@@ -104,6 +104,11 @@ public class BungeeEssentials extends Plugin {
             commands++;
         }
 
+        if (enable.contains("hide")) {
+            register(new Hide());
+            commands++;
+        }
+
         if (enable.contains("list")) {
             register(new ServerList());
             commands++;

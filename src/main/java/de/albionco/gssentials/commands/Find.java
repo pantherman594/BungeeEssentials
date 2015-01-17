@@ -24,6 +24,7 @@ package de.albionco.gssentials.commands;
 
 import com.google.common.collect.ImmutableSet;
 import de.albionco.gssentials.Dictionary;
+import de.albionco.gssentials.Messenger;
 import de.albionco.gssentials.Permissions;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -50,11 +51,13 @@ public class Find extends Command implements TabExecutor {
         if (args.length > 0) {
             ProxiedPlayer player = ProxyServer.getInstance().getPlayer(args[0]);
 
-            if (player != null) {
+            if (player != null && Messenger.isHidden(player)) {
                 sender.sendMessage(Dictionary.format(Dictionary.FORMAT_FIND, "SERVER", player.getServer().getInfo().getName(), "PLAYER", player.getName()));
             } else {
-                sender.sendMessage(Dictionary.colour(Dictionary.ERRORS_OFFLINE));
+                sender.sendMessage(Dictionary.format(Dictionary.ERRORS_OFFLINE));
             }
+        } else {
+            sender.sendMessage(Dictionary.format(Dictionary.ERRORS_INVALID));
         }
     }
 
@@ -64,11 +67,20 @@ public class Find extends Command implements TabExecutor {
             return ImmutableSet.of();
         }
 
+        ProxiedPlayer senderPlayer = null;
+        if (sender instanceof ProxiedPlayer) {
+            senderPlayer = (ProxiedPlayer) sender;
+        }
         Set<String> matches = new HashSet<>();
         String search = args[0].toLowerCase();
         for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
+            if (senderPlayer != null) {
+                if (player.getServer().getInfo().getName().equals(senderPlayer.getServer().getInfo().getName())) {
+                    continue;
+                }
+            }
             if (!player.getName().equals(sender.getName())) {
-                if (player.getName().toLowerCase().startsWith(search)) {
+                if (player.getName().toLowerCase().startsWith(search) && !Messenger.isHidden(player)) {
                     matches.add(player.getName());
                 }
             }

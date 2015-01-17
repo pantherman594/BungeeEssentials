@@ -22,17 +22,12 @@
 
 package de.albionco.gssentials.commands;
 
-import de.albionco.gssentials.BungeeEssentials;
 import de.albionco.gssentials.Dictionary;
 import de.albionco.gssentials.Messenger;
 import de.albionco.gssentials.Permissions;
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
-
-import java.util.logging.Level;
 
 /**
  * Created by Connor Harries on 14/01/2015.
@@ -41,7 +36,6 @@ import java.util.logging.Level;
  */
 @SuppressWarnings("deprecation")
 public class Spy extends Command {
-
     public Spy() {
         super("spy", Permissions.Admin.SPY, "socialspy", "gspy");
     }
@@ -50,20 +44,13 @@ public class Spy extends Command {
     public void execute(CommandSender sender, String[] args) {
         if (sender instanceof ProxiedPlayer) {
             ProxiedPlayer player = (ProxiedPlayer) sender;
-            boolean spy = Messenger.isSpy(player);
-            boolean success;
-            if (spy) {
-                success = Messenger.removeSpy(player);
+            if (Messenger.toggleSpy(player)) {
+                player.sendMessage(Dictionary.format(Dictionary.SPY_ENABLED));
             } else {
-                success = Messenger.addSpy(player);
-            }
-            if (success) {
-                player.sendMessage(Dictionary.format(spy ? Dictionary.FORMAT_SPY_DISABLED : Dictionary.FORMAT_SPY_ENABLED));
-            } else {
-                BungeeEssentials.getInstance().getLogger().log(Level.INFO, "Unable to toggle social spy for \"{0}\"", player.getName());
+                player.sendMessage(Dictionary.format(Dictionary.SPY_DISABLED));
             }
         } else {
-            sender.sendMessage(new ComponentBuilder("Social spy cannot be used by console").color(ChatColor.RED).create());
+            sender.sendMessage(Dictionary.colour("&cSocial spy cannot be used by console"));
         }
     }
 

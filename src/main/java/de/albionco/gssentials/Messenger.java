@@ -42,28 +42,26 @@ import java.util.UUID;
 @SuppressWarnings("deprecation")
 public class Messenger implements Listener {
     private static HashMap<UUID, UUID> messages = new HashMap<>();
+    private static Set<UUID> hidden = new HashSet<>();
     private static Set<UUID> spies = new HashSet<>();
 
     public static void sendMessage(CommandSender sender, ProxiedPlayer recipient, String message) {
-        if (recipient != null) {
+        if (recipient != null && !Messenger.isHidden(recipient)) {
             ProxiedPlayer player = null;
             if (sender instanceof ProxiedPlayer) {
                 player = (ProxiedPlayer) sender;
             }
 
             String server = player != null ? player.getServer().getInfo().getName() : "CONSOLE";
-
-            String msg = Dictionary.format(Dictionary.FORMAT_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message);
-
-            sender.sendMessage(msg);
-            recipient.sendMessage(msg);
+            sender.sendMessage(Dictionary.format(Dictionary.FORMAT_MESSAGE, "SERVER", recipient.getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
+            recipient.sendMessage(Dictionary.format(Dictionary.FORMAT_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
 
             if (player != null) {
-                if (!player.hasPermission(Permissions.Admin.SPY_EXEMPT)) {
-                    String spyMessage = Dictionary.format(Dictionary.FORMAT_SPY_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message);
+                if (!sender.hasPermission(Permissions.Admin.SPY_EXEMPT)) {
+                    String spyMessage = Dictionary.format(Dictionary.SPY_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message);
                     for (ProxiedPlayer onlinePlayer : player.getServer().getInfo().getPlayers()) {
                         if (onlinePlayer.getUniqueId() != player.getUniqueId() && onlinePlayer.getUniqueId() != recipient.getUniqueId()) {
-                            if (onlinePlayer.hasPermission(Permissions.Admin.SPY)) {
+                            if (onlinePlayer.hasPermission(Permissions.Admin.SPY) && Messenger.isSpy(onlinePlayer)) {
                                 onlinePlayer.sendMessage(spyMessage);
                             }
                         }
@@ -72,7 +70,7 @@ public class Messenger implements Listener {
                 messages.put(recipient.getUniqueId(), player.getUniqueId());
             }
         } else {
-            sender.sendMessage(Dictionary.colour(Dictionary.ERRORS_OFFLINE));
+            sender.sendMessage(Dictionary.format(Dictionary.ERRORS_OFFLINE));
         }
     }
 
@@ -81,40 +79,49 @@ public class Messenger implements Listener {
     }
 
     public static boolean isSpy(ProxiedPlayer player) {
-        Preconditions.checkNotNull(player);
-        return isSpy(player.getUniqueId());
+        Preconditions.checkNotNull(player, "Invalid player specified");
+        return spies.contains(player.getUniqueId());
     }
 
-    public static boolean isSpy(UUID uuid) {
-        Preconditions.checkNotNull(uuid);
-        return spies.contains(uuid);
+    public static boolean isHidden(ProxiedPlayer player) {
+        Preconditions.checkNotNull(player, "Invalid player specified");
+        return hidden.contains(player.getUniqueId());
     }
 
-    public static boolean addSpy(ProxiedPlayer player) {
-        Preconditions.checkNotNull(player);
-        return addSpy(player.getUniqueId());
+    public static boolean toggleSpy(ProxiedPlayer player) {
+        Preconditions.checkNotNull(player, "Invalid player specified");
+        if (isSpy(player)) {
+            spies.remove(player.getUniqueId());
+        } else {
+            spies.add(player.getUniqueId());
+        }
+        return isSpy(player);
     }
 
-    public static boolean addSpy(UUID uuid) {
-        Preconditions.checkArgument(!spies.contains(uuid), "Player is already a spy!");
-        return spies.add(uuid);
-    }
-
-    public static boolean removeSpy(ProxiedPlayer player) {
-        Preconditions.checkNotNull(player);
-        return removeSpy(player.getUniqueId());
-    }
-
-    public static boolean removeSpy(UUID uuid) {
-        Preconditions.checkArgument(spies.contains(uuid), "Player is not a spy!");
-        return spies.remove(uuid);
+    public static boolean toggleHidden(ProxiedPlayer player) {
+        Preconditions.checkNotNull(player, "Invalid player specified");
+        if (isHidden(player)) {
+            hidden.remove(player.getUniqueId());
+        } else {
+            hidden.add(player.getUniqueId());
+        }
+        return isHidden(player);
     }
 
     @EventHandler
     @SuppressWarnings("unused")
     public void logout(PlayerDisconnectEvent event) {
-        if (messages.containsKey(event.getPlayer().getUniqueId())) {
-            messages.remove(event.getPlayer().getUniqueId());
+        UUID uuid = event.getPlayer().getUniqueId();
+        if (messages.containsKey(uuid)) {
+            messages.remove(uuid);
+        }
+
+        if (spies.contains(uuid)) {
+            spies.remove(event.getPlayer().getUniqueId());
+        }
+
+        if (hidden.contains(uuid)) {
+            hidden.remove(event.getPlayer().getUniqueId());
         }
     }
 }

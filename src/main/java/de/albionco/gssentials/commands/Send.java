@@ -24,12 +24,12 @@ package de.albionco.gssentials.commands;
 
 import com.google.common.collect.ImmutableSet;
 import de.albionco.gssentials.Dictionary;
+import de.albionco.gssentials.Messenger;
 import de.albionco.gssentials.Permissions;
 import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;
@@ -55,7 +55,7 @@ public class Send extends Command implements TabExecutor {
                             @Override
                             public void done(Boolean success, Throwable throwable) {
                                 if (success) {
-                                    player.sendMessage(new ComponentBuilder("Whooooooooooosh!").color(ChatColor.LIGHT_PURPLE).create());
+                                    player.sendMessage(Dictionary.colour("&dWhooooooooooosh!"));
                                 } else {
                                     // Pretend nothing happened for the player being sent
                                     sender.sendMessage(ChatColor.RED + "Unable to send player to server.");
@@ -63,10 +63,10 @@ public class Send extends Command implements TabExecutor {
                             }
                         });
             } else {
-                sender.sendMessage(Dictionary.colour(Dictionary.ERRORS_OFFLINE));
+                sender.sendMessage(Dictionary.format(Dictionary.ERRORS_OFFLINE));
             }
         } else {
-            sender.sendMessage(Dictionary.colour(Dictionary.ERRORS_INVALID));
+            sender.sendMessage(Dictionary.format(Dictionary.ERRORS_INVALID));
         }
     }
 
@@ -82,7 +82,7 @@ public class Send extends Command implements TabExecutor {
             search = args[0].toLowerCase();
             for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
                 if (!player.getName().equals(sender.getName())) {
-                    if (player.getName().toLowerCase().startsWith(search)) {
+                    if (player.getName().toLowerCase().startsWith(search) && !Messenger.isHidden(player)) {
                         matches.add(player.getName());
                     }
                 }

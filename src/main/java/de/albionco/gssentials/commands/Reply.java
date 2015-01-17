@@ -50,13 +50,13 @@ public class Reply extends Command {
                 ProxiedPlayer player = (ProxiedPlayer) sender;
                 UUID uuid = Messenger.reply(player);
                 if (uuid == null) {
-                    sender.sendMessage(Dictionary.colour(Dictionary.ERRORS_MESSAGES));
+                    sender.sendMessage(Dictionary.format(Dictionary.ERRORS_MESSAGES));
                     return;
                 }
                 ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(uuid);
                 Messenger.sendMessage(player, recipient, Dictionary.combine(args));
             } else {
-                sender.sendMessage(Dictionary.colour(Dictionary.ERRORS_INVALID));
+                sender.sendMessage(Dictionary.format(Dictionary.ERRORS_INVALID));
             }
         } else {
             sender.sendMessage(Dictionary.colour("&cSorry, only players can reply to messages."));

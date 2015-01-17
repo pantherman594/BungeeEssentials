@@ -2,6 +2,7 @@ enable:
     - admin
     - alert
     - find
+    - hide
     - list
     - message
     - send
@@ -10,17 +11,20 @@ enable:
     - spy
 format:
     admin: '&c{{ SERVER }} - {{ SENDER }} » &7{{ MESSAGE }}'
-    alert: '&8[&a+&8] &7{{ ALERT }}'
+    alert: '&8[&a+&8] &7{{ MESSAGE }}'
     find: '&e{{ PLAYER }} &ais playing on &e{{ SERVER }}'
     message: '&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{ MESSAGE }}'
     send: '&aSending &e{{ PLAYER }} &ato server &e{{ SERVER }}'
-    spy:
-        message: '&7[{{ SENDER }} » {{ RECIPIENT }}] &7{{ MESSAGE }}'
-        enabled: '&cSocialspy has been disabled'
-        disabled: '&cSocialspy has been disabled'
-    servers:
-        header: '&aServers:'
-        body: '&a- {{ SERVER }} {{ DENSITY }}'
+list:
+    header: '&aServers:'
+    body: '&a- {{ SERVER }} {{ DENSITY }}'
+spy:
+    message: '&7[{{ SENDER }} » {{ RECIPIENT }}] &7{{ MESSAGE }}'
+    enabled: '&aSocialspy has been enabled'
+    disabled: '&cSocialspy has been disabled'
+hide:
+    enabled: '&aYou are now hidden from all players!'
+    disabled: '&cYou are now visible to all players!'
 errors:
     invalid: '&cInvalid arguments provided.'
     offline: '&cSorry, that player is offline.'

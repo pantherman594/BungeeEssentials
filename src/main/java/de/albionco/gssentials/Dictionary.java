@@ -37,20 +37,26 @@ import java.util.logging.Level;
  * @author Connor Spencer Harries
  */
 public class Dictionary {
-    public static String FORMAT_ADMIN = "&c[{{ SERVER }}, {{ SENDER }}] &7{{ FORMAT_MESSAGE }}";
-    public static String FORMAT_ALERT = "&8[&a+&8] &7{{ FORMAT_ALERT }}";
-    public static String FORMAT_FIND = "&e{{ PLAYER }} &ais playing on &e{{ SERVER }}";
-    public static String FORMAT_SERVERS_HEADER = "&aServers:";
-    public static String FORMAT_SERVERS_BODY = "&a- {{ SERVER }} {{ DENSITY }}";
-    public static String ERRORS_INVALID = "&cInvalid arguments provided.";
-    public static String FORMAT_MESSAGE = "&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{{  FORMAT_MESSAGE  }}}";
-    public static String ERRORS_OFFLINE = "&cSorry, that player is offline.";
     public static String ERRORS_MESSAGES = "&cNobody has messaged you recently.";
     public static String ERRORS_SLAP = "&cYou are unworthy of slapping people.";
-    public static String FORMAT_SPY_MESSAGE = "&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{{  FORMAT_MESSAGE  }}}";
+    public static String ERRORS_OFFLINE = "&cSorry, that player is offline.";
+    public static String ERRORS_INVALID = "&cInvalid arguments provided.";
+
+    public static String FORMAT_MESSAGE = "&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{{  FORMAT_MESSAGE  }}}";
+    public static String FORMAT_ADMIN = "&c[{{ SERVER }}, {{ SENDER }}] &7{{ FORMAT_MESSAGE }}";
     public static String FORMAT_SEND = "&aSending &e{{ PLAYER }} &ato server &e{{ SERVER }}";
-    public static String FORMAT_SPY_ENABLED = "&aSocialspy has been enabled!";
-    public static String FORMAT_SPY_DISABLED = "&cSocialspy has been disabled!";
+    public static String FORMAT_FIND = "&e{{ PLAYER }} &ais playing on &e{{ SERVER }}";
+    public static String FORMAT_ALERT = "&8[&a+&8] &7{{ FORMAT_ALERT }}";
+
+    public static String LIST_HEADER = "&aServers";
+    public static String LIST_BODY = "&a- {{ SERVER }} {{ DENSITY }}";
+
+    public static String SPY_MESSAGE = "&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{{  FORMAT_MESSAGE  }}}";
+    public static String SPY_ENABLED = "&aSocialspy has been enabled!";
+    public static String SPY_DISABLED = "&cSocialspy has been disabled!";
+
+    public static String HIDE_ENABLED = "&aYou are now hidden from all users!";
+    public static String HIDE_DISABLED = "&cYou are no longer hidden!";
 
     public static String colour(String str) {
         return ChatColor.translateAlternateColorCodes('&', str);
@@ -82,13 +88,13 @@ public class Dictionary {
 
     public static String format(String input, boolean colour, String... args) {
         input = input.replace("{{ TIME }}", getTime());
+        // Minor fix for people who suffer from encoding issues
         input = input.replace("{{ RAQUO }}", "»");
         if (args.length % 2 == 0) {
             for (int i = 0; i < args.length; i += 2) {
                 input = input.replace("{{ " + args[i].toUpperCase() + " }}", args[i + 1]);
             }
         }
-
         return colour ? colour(input) : input;
     }
 
