@@ -26,6 +26,7 @@ import com.google.common.base.Preconditions;
 import de.albionco.gssentials.command.admin.*;
 import de.albionco.gssentials.command.general.*;
 import de.albionco.gssentials.integration.IntegrationProvider;
+import de.albionco.gssentials.regex.RuleManager;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -45,6 +46,8 @@ public class BungeeEssentials extends Plugin {
     private Configuration config = null;
     private IntegrationProvider helper;
     private boolean integrated;
+    private File configFile;
+    private boolean rules;
 
     public static BungeeEssentials getInstance() {
         return instance;
@@ -53,31 +56,26 @@ public class BungeeEssentials extends Plugin {
     @Override
     public void onEnable() {
         instance = this;
-        try {
-            saveConfig();
-        } catch (Exception ex) {
-            getLogger().log(Level.SEVERE, "Unable to save configuration file: ", ex);
-            getLogger().log(Level.SEVERE, "Plugin loading aborted!");
-            return;
-        }
-
+        configFile = new File(getDataFolder(), "config.yml");
         reload();
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void saveConfig() throws IOException {
-        if (!getDataFolder().exists())
+        if (!getDataFolder().exists()) {
             getDataFolder().mkdir();
-
+        }
         File file = new File(getDataFolder(), "config.yml");
-
         if (!file.exists()) {
             Files.copy(getResourceAsStream("config.yml"), file.toPath());
         }
     }
 
     private void loadConfig() throws IOException {
-        config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(new File(getDataFolder(), "config.yml"));
+        if (!configFile.exists()) {
+            saveConfig();
+        }
+        config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(configFile);
     }
 
     public boolean reload() {
@@ -85,15 +83,19 @@ public class BungeeEssentials extends Plugin {
             loadConfig();
             Dictionary.load();
         } catch (IOException e) {
+            e.printStackTrace();
             return false;
         } catch (IllegalAccessException e) {
+            e.printStackTrace();
             return false;
         }
 
         ProxyServer.getInstance().getPluginManager().unregisterCommands(this);
 
-        int commands = 0;
+        Messenger.reset();
+        rules = false;
 
+        int commands = 0;
         List<String> enable = config.getStringList("enable");
         if (enable.contains("admin")) {
             register(new ChatCommand());
@@ -147,8 +149,19 @@ public class BungeeEssentials extends Plugin {
             commands++;
         }
 
+        if (enable.contains("rules")) {
+            rules = true;
+            RuleManager.load();
+        }
+
+        register(new ReloadCommand());
+
+        if (enable.contains("spy") || enable.contains("hide")) {
+            ProxyServer.getInstance().getPluginManager().registerListener(this, new Messenger());
+        }
+
         getLogger().log(Level.INFO, "Registered {0} commands successfully", commands);
-        ProxyServer.getInstance().getPluginManager().registerListener(this, new Messenger());
+        setupIntegration();
         return true;
     }
 
@@ -161,8 +174,10 @@ public class BungeeEssentials extends Plugin {
         }
         List<String> ignoredPlugins = Arrays.asList(ignore);
         for (String name : IntegrationProvider.getPlugins()) {
-            boolean found = ProxyServer.getInstance().getPluginManager().getPlugin(name) != null;
-            if (found && !ignoredPlugins.contains(name)) {
+            if (ignoredPlugins.contains(name)) {
+                continue;
+            }
+            if (ProxyServer.getInstance().getPluginManager().getPlugin(name) != null) {
                 integrated = true;
                 helper = IntegrationProvider.get(name);
                 break;
@@ -170,7 +185,7 @@ public class BungeeEssentials extends Plugin {
         }
 
         if (isIntegrated()) {
-            getLogger().log(Level.INFO, "*** Integrating with \"{0}\" plugin ***", getIntegrationProvider().getName());
+            getLogger().log(Level.INFO, "*** Integrating with \"{0}\" plugin ***", helper.getName());
         } else {
             if (ignore.length > 0) {
                 getLogger().log(Level.INFO, "*** No supported plugins detected ***");
@@ -192,5 +207,9 @@ public class BungeeEssentials extends Plugin {
 
     public boolean isIntegrated() {
         return integrated;
+    }
+
+    public boolean useRules() {
+        return rules;
     }
 }

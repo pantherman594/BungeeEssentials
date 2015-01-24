@@ -25,6 +25,8 @@ package de.albionco.gssentials;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.config.Configuration;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.text.SimpleDateFormat;
@@ -37,26 +39,47 @@ import java.util.logging.Level;
  * @author Connor Spencer Harries
  */
 public class Dictionary {
+    @Load
     public static String ERRORS_MESSAGES = "&cNobody has messaged you recently.";
+    @Load
     public static String ERRORS_SLAP = "&cYou are unworthy of slapping people.";
+    @Load
     public static String ERRORS_OFFLINE = "&cSorry, that player is offline.";
+    @Load
     public static String ERRORS_INVALID = "&cInvalid arguments provided.";
 
+    @Load
     public static String FORMAT_MESSAGE = "&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{{  FORMAT_MESSAGE  }}}";
+    @Load
     public static String FORMAT_ADMIN = "&c[{{ SERVER }}, {{ SENDER }}] &7{{ FORMAT_MESSAGE }}";
+    @Load
     public static String FORMAT_SEND = "&aSending &e{{ PLAYER }} &ato server &e{{ SERVER }}";
+    @Load
     public static String FORMAT_FIND = "&e{{ PLAYER }} &ais playing on &e{{ SERVER }}";
+    @Load
     public static String FORMAT_ALERT = "&8[&a+&8] &7{{ FORMAT_ALERT }}";
 
+    @Load
     public static String LIST_HEADER = "&aServers";
+    @Load
     public static String LIST_BODY = "&a- {{ SERVER }} {{ DENSITY }}";
 
+    @Load
     public static String SPY_MESSAGE = "&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{{  FORMAT_MESSAGE  }}}";
+    @Load
     public static String SPY_ENABLED = "&aSocialspy has been enabled!";
+    @Load
     public static String SPY_DISABLED = "&cSocialspy has been disabled!";
 
+    @Load
     public static String HIDE_ENABLED = "&aYou are now hidden from all users!";
+    @Load
     public static String HIDE_DISABLED = "&cYou are no longer hidden!";
+
+    @Load
+    public static String WARNINGS_SWEARING = "&cPlease do not swear at other players!";
+    @Load
+    public static String WARNINGS_ADVERTISING = "&cPlease do not advertise other servers!";
 
     public static String colour(String str) {
         return ChatColor.translateAlternateColorCodes('&', str);
@@ -106,10 +129,9 @@ public class Dictionary {
         Configuration config = BungeeEssentials.getInstance().getConfig();
         for (Field field : Dictionary.class.getDeclaredFields()) {
             int mod = field.getModifiers();
-            if (Modifier.isStatic(mod) && Modifier.isPublic(mod)) {
+            if (Modifier.isStatic(mod) && Modifier.isPublic(mod) && field.isAnnotationPresent(Load.class)) {
                 String name = field.getName().toLowerCase().replace("_", ".");
-
-                String value = config.getString(name, "Please see the BungeeEssentials default config");
+                String value = config.getString(name, "INVALID CONFIGURATION");
                 if (value.equals("Please see the BungeeEssentials default config")) {
                     BungeeEssentials.getInstance().getLogger().log(Level.WARNING, "Error loading \"{0}\" from configuration file", name);
                 }
@@ -122,5 +144,9 @@ public class Dictionary {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         return sdf.format(cal.getTime());
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface Load {
     }
 }

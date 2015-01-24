@@ -53,7 +53,7 @@ public class MessageCommand extends Command implements TabExecutor {
         if (args.length > 1) {
             ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(args[0]);
             if (sender instanceof ProxiedPlayer) {
-                if (BungeeEssentials.getInstance().isIntegrated() && BungeeEssentials.getInstance().getIntegrationProvider().isMuted((ProxiedPlayer) sender)) {
+                if (BungeeEssentials.getInstance().isIntegrated() && (BungeeEssentials.getInstance().getIntegrationProvider() != null && BungeeEssentials.getInstance().getIntegrationProvider().isMuted((ProxiedPlayer) sender))) {
                     sender.sendMessage(ChatColor.RED + "You are muted and cannot message other players!");
                     return;
                 }

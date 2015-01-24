@@ -23,6 +23,7 @@
 package de.albionco.gssentials;
 
 import com.google.common.base.Preconditions;
+import de.albionco.gssentials.regex.RuleManager;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
@@ -33,6 +34,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Matcher;
 
 /**
  * Created by Connor Harries on 17/10/2014.
@@ -50,6 +52,27 @@ public class Messenger implements Listener {
             ProxiedPlayer player = null;
             if (sender instanceof ProxiedPlayer) {
                 player = (ProxiedPlayer) sender;
+                if (BungeeEssentials.getInstance().useRules()) {
+                    RuleManager.MatchResult result = RuleManager.matches(message);
+                    if (result.matched()) {
+                        switch (result.getRule().getHandle()) {
+                            case ADVERTISEMENT:
+                                sender.sendMessage(Dictionary.format(Dictionary.WARNINGS_ADVERTISING));
+                                return;
+                            case CURSING:
+                                sender.sendMessage(Dictionary.format(Dictionary.WARNINGS_SWEARING));
+                                return;
+                            case REPLACE:
+                                if (result.getRule().getReplacement() != null) {
+                                    Matcher matcher = result.getRule().getPattern().matcher(message);
+                                    if (matcher.matches()) {
+                                        message = matcher.replaceAll(result.getRule().getReplacement());
+                                    }
+                                }
+                                break;
+                        }
+                    }
+                }
             }
 
             String server = player != null ? player.getServer().getInfo().getName() : "CONSOLE";
@@ -106,6 +129,12 @@ public class Messenger implements Listener {
             hidden.add(player.getUniqueId());
         }
         return isHidden(player);
+    }
+
+    public static void reset() {
+        messages.clear();
+        hidden.clear();
+        spies.clear();
     }
 
     @EventHandler

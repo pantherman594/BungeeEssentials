@@ -20,50 +20,30 @@
  * SOFTWARE.
  */
 
-package de.albionco.gssentials.integration;
+package de.albionco.gssentials.command.admin;
 
 import de.albionco.gssentials.BungeeEssentials;
-import fr.Alphart.BAT.BAT;
-import fr.Alphart.BAT.Modules.InvalidModuleException;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-
-import java.util.logging.Level;
+import de.albionco.gssentials.Dictionary;
+import de.albionco.gssentials.Permissions;
+import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.plugin.Command;
 
 /**
  * Created by Connor Harries on 24/01/2015.
  *
  * @author Connor Spencer Harries
  */
-public class AdminToolsProvider extends IntegrationProvider {
-    private boolean enabled = false;
-
-    @Override
-    public boolean isMuted(ProxiedPlayer player) {
-        if (!enabled) {
-            enabled = test();
-            if (!enabled) {
-                BungeeEssentials.getInstance().getLogger().log(Level.WARNING, "*** \"{0}\" is not enabled ***", getName());
-                BungeeEssentials.getInstance().setupIntegration("BungeeAdminTools");
-                return false;
-            }
-        }
-        try {
-            return BAT.getInstance().getModules().getMuteModule().isMute(player, "(any)") == 1;
-        } catch (InvalidModuleException e) {
-            return false;
-        }
-    }
-
-    public boolean test() {
-        try {
-            return BAT.getInstance() != null && BAT.getInstance().getModules() != null && BAT.getInstance().getModules().getMuteModule() != null;
-        } catch (InvalidModuleException e) {
-            return false;
-        }
+public class ReloadCommand extends Command {
+    public ReloadCommand() {
+        super("gssentials-reload", Permissions.Admin.RELOAD, "gss-reload");
     }
 
     @Override
-    public String getName() {
-        return "BungeeAdminTools";
+    public void execute(CommandSender sender, String[] args) {
+        if (BungeeEssentials.getInstance().reload()) {
+            sender.sendMessage(Dictionary.colour("&aBungeeEssentials has been reloaded!"));
+        } else {
+            sender.sendMessage(Dictionary.colour("&cUnable to reload BungeeEssentials! :("));
+        }
     }
 }

@@ -39,6 +39,7 @@ public class Permissions {
         public static final String SPY = "gssentials.admin.spy";
         public static final String SPY_EXEMPT = SPY + ".exempt";
         public static final String HIDE = "gssentials.admin.hide";
+        public static final String RELOAD = "gssentials.admin.reload";
     }
 
     public static class General {
