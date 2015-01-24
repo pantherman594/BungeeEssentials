@@ -96,49 +96,54 @@ public class BungeeEssentials extends Plugin {
 
         List<String> enable = config.getStringList("enable");
         if (enable.contains("admin")) {
-            register(new Admin());
+            register(new ChatCommand());
             commands++;
         }
 
         if (enable.contains("alert")) {
-            register(new Alert());
+            register(new AlertCommand());
             commands++;
         }
 
         if (enable.contains("find")) {
-            register(new Find());
+            register(new FindCommand());
             commands++;
         }
 
         if (enable.contains("hide")) {
-            register(new Hide());
+            register(new HideCommand());
+            commands++;
+        }
+
+        if(enable.contains("join")) {
+            register(new JoinCommand());
             commands++;
         }
 
         if (enable.contains("list")) {
-            register(new ServerList());
+            register(new ServerListCommand());
             commands++;
         }
 
         if (enable.contains("message")) {
-            register(new Message());
-            register(new Reply());
+            register(new MessageCommand());
+            register(new ReplyCommand());
             commands += 2;
         }
 
         if (enable.contains("send")) {
-            register(new Send());
-            register(new SendAll());
+            register(new SendCommand());
+            register(new SendAllCommand());
             commands += 2;
         }
 
         if (enable.contains("slap")) {
-            register(new Slap());
+            register(new SlapCommand());
             commands++;
         }
 
         if (enable.contains("spy")) {
-            register(new Spy());
+            register(new SpyCommand());
             commands++;
         }
 
@@ -183,5 +188,9 @@ public class BungeeEssentials extends Plugin {
 
     public IntegrationProvider getIntegrationProvider() {
         return helper;
+    }
+
+    public boolean isIntegrated() {
+        return integrated;
     }
 }
