@@ -48,6 +48,7 @@ public class BungeeEssentials extends Plugin {
     private boolean integrated;
     private File configFile;
     private boolean rules;
+    private boolean spam;
 
     public static BungeeEssentials getInstance() {
         return instance;
@@ -94,6 +95,7 @@ public class BungeeEssentials extends Plugin {
 
         Messenger.reset();
         rules = false;
+        spam = false;
 
         int commands = 0;
         List<String> enable = config.getStringList("enable");
@@ -101,65 +103,55 @@ public class BungeeEssentials extends Plugin {
             register(new ChatCommand());
             commands++;
         }
-
         if (enable.contains("alert")) {
             register(new AlertCommand());
             commands++;
         }
-
         if (enable.contains("find")) {
             register(new FindCommand());
             commands++;
         }
-
         if (enable.contains("hide")) {
             register(new HideCommand());
             commands++;
         }
-
         if(enable.contains("join")) {
             register(new JoinCommand());
             commands++;
         }
-
         if (enable.contains("list")) {
             register(new ServerListCommand());
             commands++;
         }
-
         if (enable.contains("message")) {
             register(new MessageCommand());
             register(new ReplyCommand());
             commands += 2;
         }
-
         if (enable.contains("send")) {
             register(new SendCommand());
             register(new SendAllCommand());
             commands += 2;
         }
-
         if (enable.contains("slap")) {
             register(new SlapCommand());
             commands++;
         }
-
         if (enable.contains("spy")) {
             register(new SpyCommand());
             commands++;
         }
-
         if (enable.contains("rules")) {
             rules = true;
             RuleManager.load();
         }
-
         register(new ReloadCommand());
 
         if (enable.contains("spy") || enable.contains("hide")) {
             ProxyServer.getInstance().getPluginManager().registerListener(this, new Messenger());
         }
 
+        spam = enable.contains("spam");
         getLogger().log(Level.INFO, "Registered {0} commands successfully", commands);
         setupIntegration();
         return true;
@@ -211,5 +203,9 @@ public class BungeeEssentials extends Plugin {
 
     public boolean useRules() {
         return rules;
+    }
+
+    public boolean useSpamProtection() {
+        return spam;
     }
 }

@@ -43,6 +43,7 @@ import java.util.regex.Matcher;
  */
 @SuppressWarnings("deprecation")
 public class Messenger implements Listener {
+    private static HashMap<UUID, String> sentMessages = new HashMap<>();
     private static HashMap<UUID, UUID> messages = new HashMap<>();
     private static Set<UUID> hidden = new HashSet<>();
     private static Set<UUID> spies = new HashSet<>();
@@ -52,7 +53,7 @@ public class Messenger implements Listener {
             ProxiedPlayer player = null;
             if (sender instanceof ProxiedPlayer) {
                 player = (ProxiedPlayer) sender;
-                if (BungeeEssentials.getInstance().useRules()) {
+                if (!sender.hasPermission(Permissions.Admin.BYPASS_FILTER) && BungeeEssentials.getInstance().useRules()) {
                     RuleManager.MatchResult result = RuleManager.matches(message);
                     if (result.matched()) {
                         switch (result.getRule().getHandle()) {
@@ -76,10 +77,21 @@ public class Messenger implements Listener {
             }
 
             String server = player != null ? player.getServer().getInfo().getName() : "CONSOLE";
-            sender.sendMessage(Dictionary.format(Dictionary.FORMAT_MESSAGE, "SERVER", recipient.getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
-            recipient.sendMessage(Dictionary.format(Dictionary.FORMAT_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
-
             if (player != null) {
+                if (BungeeEssentials.getInstance().useSpamProtection() && !player.hasPermission(Permissions.Admin.BYPASS_FILTER)) {
+                    if (sentMessages.get(player.getUniqueId()) != null) {
+                        String last = sentMessages.get(player.getUniqueId());
+                        int length = message.length();
+                        double block = length < 20 ? 0.10 : length < 40 ? 0.20 : 0.30;
+                        if (compare(message, last) > block) {
+                            sender.sendMessage(Dictionary.format(Dictionary.WARNINGS_SIMILARITY));
+                            return;
+                        }
+                    } else {
+                        sentMessages.put(player.getUniqueId(), message);
+                    }
+                }
+
                 if (!sender.hasPermission(Permissions.Admin.SPY_EXEMPT)) {
                     String spyMessage = Dictionary.format(Dictionary.SPY_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message);
                     for (ProxiedPlayer onlinePlayer : player.getServer().getInfo().getPlayers()) {
@@ -92,6 +104,8 @@ public class Messenger implements Listener {
                 }
                 messages.put(recipient.getUniqueId(), player.getUniqueId());
             }
+            sender.sendMessage(Dictionary.format(Dictionary.FORMAT_MESSAGE, "SERVER", recipient.getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
+            recipient.sendMessage(Dictionary.format(Dictionary.FORMAT_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
         } else {
             sender.sendMessage(Dictionary.format(Dictionary.ERRORS_OFFLINE));
         }
@@ -132,9 +146,50 @@ public class Messenger implements Listener {
     }
 
     public static void reset() {
+        sentMessages.clear();
         messages.clear();
         hidden.clear();
         spies.clear();
+    }
+
+    private static double compare(String first, String s2) {
+        String longer = first, shorter = s2;
+        if (first.length() < s2.length()) {
+            longer = s2;
+            shorter = first;
+        }
+        int longerLength = longer.length();
+        if (longerLength == 0) {
+            return 1.0;
+        }
+        return (longerLength - getDistance(longer, shorter)) / (double) longerLength;
+    }
+
+    private static int getDistance(String s1, String s2) {
+        s1 = s1.toLowerCase();
+        s2 = s2.toLowerCase();
+
+        int[] costs = new int[s2.length() + 1];
+        for (int i = 0; i <= s1.length(); i++) {
+            int lastValue = i;
+            for (int j = 0; j <= s2.length(); j++) {
+                if (i == 0)
+                    costs[j] = j;
+                else {
+                    if (j > 0) {
+                        int newValue = costs[j - 1];
+                        if (s1.charAt(i - 1) != s2.charAt(j - 1))
+                            newValue = Math.min(Math.min(newValue, lastValue),
+                                    costs[j]) + 1;
+                        costs[j - 1] = lastValue;
+                        lastValue = newValue;
+                    }
+                }
+            }
+            if (i > 0)
+                costs[s2.length()] = lastValue;
+        }
+        return costs[s2.length()];
     }
 
     @EventHandler

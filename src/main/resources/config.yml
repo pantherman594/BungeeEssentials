@@ -9,6 +9,7 @@ enable:
     - rules
     - send
     - sendall
+    - spam
     - slap
     - spy
 format:
@@ -18,6 +19,7 @@ format:
     message: '&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{ MESSAGE }}'
     send: '&aSending &e{{ PLAYER }} &ato server &e{{ SERVER }}'
 warnings:
+    similarity: '&cPlease do not spam other players!'
     swearing: '&cPlease do not swear at other players!'
     advertising: '&cPlease do not advertise other servers!'
 rules:

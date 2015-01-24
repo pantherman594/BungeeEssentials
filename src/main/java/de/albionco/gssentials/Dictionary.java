@@ -77,6 +77,8 @@ public class Dictionary {
     public static String HIDE_DISABLED = "&cYou are no longer hidden!";
 
     @Load
+    public static String WARNINGS_SIMILARITY = "&cPlease do not spam other players!";
+    @Load
     public static String WARNINGS_SWEARING = "&cPlease do not swear at other players!";
     @Load
     public static String WARNINGS_ADVERTISING = "&cPlease do not advertise other servers!";
