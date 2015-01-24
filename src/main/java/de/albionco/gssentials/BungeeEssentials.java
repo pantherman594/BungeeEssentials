@@ -80,10 +80,6 @@ public class BungeeEssentials extends Plugin {
         config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(new File(getDataFolder(), "config.yml"));
     }
 
-    public boolean isIntegrated() {
-        return integrated;
-    }
-
     public boolean reload() {
         try {
             loadConfig();
@@ -93,68 +89,61 @@ public class BungeeEssentials extends Plugin {
         } catch (IllegalAccessException e) {
             return false;
         }
+
         ProxyServer.getInstance().getPluginManager().unregisterCommands(this);
 
         int commands = 0;
+
         List<String> enable = config.getStringList("enable");
         if (enable.contains("admin")) {
-            register(new ChatCommand());
+            register(new Admin());
             commands++;
         }
 
         if (enable.contains("alert")) {
-            register(new AlertCommand());
+            register(new Alert());
             commands++;
         }
 
         if (enable.contains("find")) {
-            register(new FindCommand());
+            register(new Find());
             commands++;
         }
 
         if (enable.contains("hide")) {
-            register(new HideCommand());
-            commands++;
-        }
-
-        if (enable.contains("join")) {
-            register(new JoinCommand());
+            register(new Hide());
             commands++;
         }
 
         if (enable.contains("list")) {
-            register(new ServerListCommand());
+            register(new ServerList());
             commands++;
         }
 
         if (enable.contains("message")) {
-            register(new MessageCommand());
-            register(new ReplyCommand());
+            register(new Message());
+            register(new Reply());
             commands += 2;
         }
 
         if (enable.contains("send")) {
-            register(new SendCommand());
-            register(new SendAllCommand());
+            register(new Send());
+            register(new SendAll());
             commands += 2;
         }
 
         if (enable.contains("slap")) {
-            register(new SlapCommand());
+            register(new Slap());
             commands++;
         }
 
         if (enable.contains("spy")) {
-            register(new SpyCommand());
+            register(new Spy());
             commands++;
         }
 
         getLogger().log(Level.INFO, "Registered {0} commands successfully", commands);
         ProxyServer.getInstance().getPluginManager().registerListener(this, new Messenger());
-
-        getLogger().log(Level.INFO, "Scanning for compatible mute plugins..");
-        setupIntegration();
-
         return true;
     }
 

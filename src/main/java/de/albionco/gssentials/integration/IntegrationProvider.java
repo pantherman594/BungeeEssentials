@@ -67,8 +67,7 @@ public abstract class IntegrationProvider {
     public static Set<String> getPlugins() {
         return providers.keySet();
     }
-
+    
     public abstract boolean isMuted(ProxiedPlayer player);
-
     public abstract String getName();
 }
