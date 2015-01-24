@@ -20,21 +20,14 @@
  * SOFTWARE.
  */
 
-package de.albionco.gssentials.commands;
+package de.albionco.gssentials.command.admin;
 
-import com.google.common.collect.ImmutableSet;
 import de.albionco.gssentials.Dictionary;
 import de.albionco.gssentials.Permissions;
-import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
-import net.md_5.bungee.api.plugin.TabExecutor;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by Connor Harries on 17/10/2014.
@@ -42,43 +35,23 @@ import java.util.Set;
  * @author Connor Spencer Harries
  */
 @SuppressWarnings("deprecation")
-public class SendAll extends Command implements TabExecutor {
-    public SendAll() {
-        super("sendall", Permissions.Admin.SENDALL);
+public class AlertCommand extends Command {
+
+    public AlertCommand() {
+        super("alert", Permissions.Admin.ALERT, "galert");
     }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (args.length > 0) {
-            ServerInfo info = ProxyServer.getInstance().getServerInfo(args[0]);
-            for (final ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-                player.connect(info, new Callback<Boolean>() {
-                    @Override
-                    public void done(Boolean success, Throwable throwable) {
-                        if (success) {
-                            player.sendMessage(Dictionary.colour("&dWhooooooooooosh!"));
-                        }
-                    }
-                });
+            String server = "";
+            if (sender instanceof ProxiedPlayer) {
+                server = ((ProxiedPlayer) sender).getServer().getInfo().getName();
             }
+            ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_ALERT, "SENDER", sender.getName(), "SERVER", server, "MESSAGE", Dictionary.combine(args)));
         } else {
             sender.sendMessage(Dictionary.format(Dictionary.ERRORS_INVALID));
         }
     }
 
-    @Override
-    public Iterable<String> onTabComplete(CommandSender commandSender, String[] args) {
-        if (args.length > 1 || args.length == 0) {
-            return ImmutableSet.of();
-        }
-
-        Set<String> matches = new HashSet<>();
-        String search = args[0].toLowerCase();
-        for (String server : ProxyServer.getInstance().getServers().keySet()) {
-            if (server.toLowerCase().startsWith(search)) {
-                matches.add(server);
-            }
-        }
-        return matches;
-    }
 }

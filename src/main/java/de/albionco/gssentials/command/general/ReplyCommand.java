@@ -20,49 +20,53 @@
  * SOFTWARE.
  */
 
-package de.albionco.gssentials.commands;
+package de.albionco.gssentials.command.general;
 
+import de.albionco.gssentials.BungeeEssentials;
 import de.albionco.gssentials.Dictionary;
+import de.albionco.gssentials.Messenger;
 import de.albionco.gssentials.Permissions;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
+import java.util.UUID;
+
 /**
- * Created by Connor Harries on 19/12/2014.
+ * Created by Connor Harries on 17/10/2014.
  *
  * @author Connor Spencer Harries
  */
 @SuppressWarnings("deprecation")
-public class Admin extends Command {
-    public Admin() {
-        super("staff", Permissions.Admin.CHAT, "adminchat", "a", "admin");
+public class ReplyCommand extends Command {
+    public ReplyCommand() {
+        super("reply", Permissions.General.MESSAGE, "r");
     }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if (args != null && args.length > 0) {
-            String server = "CONSOLE";
-
-            if (sender instanceof ProxiedPlayer) {
-                server = ((ProxiedPlayer) sender).getServer().getInfo().getName();
-            }
-
-            String msg = Dictionary.format(Dictionary.FORMAT_ADMIN, "SERVER", server, "SENDER", sender.getName(), "MESSAGE", Dictionary.combine(args));
-
-            for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-                if (player.hasPermission(Permissions.Admin.CHAT)) {
-                    player.sendMessage(msg);
+        if (sender instanceof ProxiedPlayer) {
+            if (args.length > 0) {
+                ProxiedPlayer player = (ProxiedPlayer) sender;
+                if (BungeeEssentials.getInstance().isIntegrated() && BungeeEssentials.getInstance().getIntegrationProvider().isMuted(player)) {
+                    sender.sendMessage(ChatColor.RED + "You are muted and cannot message other players!");
+                    return;
                 }
-            }
 
-            CommandSender console = ProxyServer.getInstance().getConsole();
-            if (sender == console) {
-                console.sendMessage(msg);
+                UUID uuid = Messenger.reply(player);
+                if (uuid == null) {
+                    sender.sendMessage(Dictionary.format(Dictionary.ERRORS_MESSAGES));
+                    return;
+                }
+                ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(uuid);
+                Messenger.sendMessage(player, recipient, Dictionary.combine(args));
+            } else {
+                sender.sendMessage(Dictionary.format(Dictionary.ERRORS_INVALID));
             }
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERRORS_INVALID));
+            sender.sendMessage(Dictionary.colour("&cSorry, only players can reply to messages."));
         }
     }
 }

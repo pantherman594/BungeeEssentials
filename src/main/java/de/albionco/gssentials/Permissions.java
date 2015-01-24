@@ -48,6 +48,7 @@ public class Permissions {
         public static final String LIST_OFFLINE = "gssentials.list.offline";
         public static final String LIST_RESTRICTED = "gssentials.list.restricted";
         public static final String SLAP = "gssentials.slap";
+        public static final String JOIN = "gssentials.join";
     }
 
 }

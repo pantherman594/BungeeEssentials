@@ -27,7 +27,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.albionco</groupId>
     <artifactId>BungeeEssentials</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
     <url>http://www.spigotmc.org/resources/bungeeessentials.1488/</url>
     <name>BungeeEssentials</name>
     <description>Port of my branch of the LilyEssentials plugin.</description>
@@ -112,6 +112,25 @@
             <artifactId>guava</artifactId>
             <version>18.0</version>
             <scope>provided</scope>
+        </dependency>
+        <!--
+          ~  If anybody can find a repository that contains these JARs
+          ~  or can convince the authors to upload them to a repo then
+          ~  I will love you for life.
+          -->
+        <dependency>
+            <groupId>fr.Alphart</groupId>
+            <artifactId>bungeeadmintools</artifactId>
+            <version>1.2.11</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/BungeeAdminTools.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.bloodsplat</groupId>
+            <artifactId>BungeeSuite</artifactId>
+            <version>0.51</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/BungeeSuite.jar</systemPath>
         </dependency>
     </dependencies>
 </project>

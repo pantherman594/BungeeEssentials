@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package de.albionco.gssentials.commands;
+package de.albionco.gssentials.command.general;
 
 import com.google.common.collect.ImmutableSet;
 import de.albionco.gssentials.Dictionary;
@@ -41,8 +41,8 @@ import java.util.Set;
  * @author Connor Spencer Harries
  */
 @SuppressWarnings("deprecation")
-public class Find extends Command implements TabExecutor {
-    public Find() {
+public class FindCommand extends Command implements TabExecutor {
+    public FindCommand() {
         super("find", Permissions.General.FIND);
     }
 

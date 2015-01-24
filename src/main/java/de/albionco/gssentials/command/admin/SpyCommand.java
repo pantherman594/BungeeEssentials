@@ -20,38 +20,37 @@
  * SOFTWARE.
  */
 
-package de.albionco.gssentials.commands;
+package de.albionco.gssentials.command.admin;
 
 import de.albionco.gssentials.Dictionary;
+import de.albionco.gssentials.Messenger;
 import de.albionco.gssentials.Permissions;
+import de.albionco.gssentials.command.ServerSpecificCommand;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Command;
 
 /**
- * Created by Connor Harries on 17/10/2014.
+ * Created by Connor Harries on 14/01/2015.
  *
  * @author Connor Spencer Harries
  */
 @SuppressWarnings("deprecation")
-public class Alert extends Command {
-
-    public Alert() {
-        super("alert", Permissions.Admin.ALERT, "galert");
+public class SpyCommand extends ServerSpecificCommand {
+    public SpyCommand() {
+        super("spy", Permissions.Admin.SPY, "gspy");
     }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
-        if (args.length > 0) {
-            String server = "";
-            if (sender instanceof ProxiedPlayer) {
-                server = ((ProxiedPlayer) sender).getServer().getInfo().getName();
+    public void run(CommandSender sender, String[] args) {
+        if (sender instanceof ProxiedPlayer) {
+            ProxiedPlayer player = (ProxiedPlayer) sender;
+            if (Messenger.toggleSpy(player)) {
+                player.sendMessage(Dictionary.format(Dictionary.SPY_ENABLED));
+            } else {
+                player.sendMessage(Dictionary.format(Dictionary.SPY_DISABLED));
             }
-            ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_ALERT, "SENDER", sender.getName(), "SERVER", server, "MESSAGE", Dictionary.combine(args)));
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERRORS_INVALID));
+            sender.sendMessage(Dictionary.colour("&cSocial spy cannot be used by console"));
         }
     }
-
 }

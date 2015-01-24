@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package de.albionco.gssentials.commands;
+package de.albionco.gssentials.command.general;
 
 import de.albionco.gssentials.Dictionary;
 import de.albionco.gssentials.Messenger;
@@ -36,9 +36,9 @@ import net.md_5.bungee.api.plugin.Command;
  * @author Connor Spencer Harries
  */
 @SuppressWarnings("deprecation")
-public class ServerList extends Command {
+public class ServerListCommand extends Command {
 
-    public ServerList() {
+    public ServerListCommand() {
         super("glist", Permissions.General.LIST, "servers", "serverlist");
     }
 
