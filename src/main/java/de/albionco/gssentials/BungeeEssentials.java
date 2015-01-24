@@ -22,7 +22,10 @@
 
 package de.albionco.gssentials;
 
-import de.albionco.gssentials.commands.*;
+import com.google.common.base.Preconditions;
+import de.albionco.gssentials.command.admin.*;
+import de.albionco.gssentials.command.general.*;
+import de.albionco.gssentials.integration.IntegrationProvider;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -33,12 +36,16 @@ import net.md_5.bungee.config.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
 public class BungeeEssentials extends Plugin {
     private static BungeeEssentials instance;
+    private String[] plugins = {"BungeeAdminTools", "BungeeSuite"};
     private Configuration config = null;
+    private IntegrationProvider helper;
+    private boolean integrated;
 
     public static BungeeEssentials getInstance() {
         return instance;
@@ -74,6 +81,10 @@ public class BungeeEssentials extends Plugin {
         config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(new File(getDataFolder(), "config.yml"));
     }
 
+    public boolean isIntegrated() {
+        return integrated;
+    }
+
     public boolean reload() {
         try {
             loadConfig();
@@ -83,62 +94,95 @@ public class BungeeEssentials extends Plugin {
         } catch (IllegalAccessException e) {
             return false;
         }
-
         ProxyServer.getInstance().getPluginManager().unregisterCommands(this);
 
         int commands = 0;
-
         List<String> enable = config.getStringList("enable");
         if (enable.contains("admin")) {
-            register(new Admin());
+            register(new ChatCommand());
             commands++;
         }
 
         if (enable.contains("alert")) {
-            register(new Alert());
+            register(new AlertCommand());
             commands++;
         }
 
         if (enable.contains("find")) {
-            register(new Find());
+            register(new FindCommand());
             commands++;
         }
 
         if (enable.contains("hide")) {
-            register(new Hide());
+            register(new HideCommand());
+            commands++;
+        }
+
+        if (enable.contains("join")) {
+            register(new JoinCommand());
             commands++;
         }
 
         if (enable.contains("list")) {
-            register(new ServerList());
+            register(new ServerListCommand());
             commands++;
         }
 
         if (enable.contains("message")) {
-            register(new Message());
-            register(new Reply());
+            register(new MessageCommand());
+            register(new ReplyCommand());
             commands += 2;
         }
 
         if (enable.contains("send")) {
-            register(new Send());
-            register(new SendAll());
+            register(new SendCommand());
+            register(new SendAllCommand());
             commands += 2;
         }
 
         if (enable.contains("slap")) {
-            register(new Slap());
+            register(new SlapCommand());
             commands++;
         }
 
         if (enable.contains("spy")) {
-            register(new Spy());
+            register(new SpyCommand());
             commands++;
         }
 
         getLogger().log(Level.INFO, "Registered {0} commands successfully", commands);
         ProxyServer.getInstance().getPluginManager().registerListener(this, new Messenger());
+
+        getLogger().log(Level.INFO, "Scanning for compatible mute plugins..");
+        setupIntegration();
+
         return true;
+    }
+
+    public void setupIntegration(String... ignore) {
+        Preconditions.checkNotNull(ignore);
+        integrated = false;
+        helper = null;
+        if (ignore.length > 0) {
+            getLogger().log(Level.INFO, "*** Rescanning for supported plugins ***");
+        }
+        List<String> ignoredPlugins = Arrays.asList(ignore);
+        for (String name : plugins) {
+            boolean found = ProxyServer.getInstance().getPluginManager().getPlugin(name) != null;
+            if (found && !ignoredPlugins.contains(name)) {
+                integrated = true;
+                helper = IntegrationProvider.get(name);
+                break;
+            }
+        }
+
+        if (isIntegrated()) {
+            getLogger().log(Level.INFO, "*** Integrating with \"{0}\" plugin ***", getIntegrationProvider().getName());
+        } else {
+            if (ignore.length > 0) {
+                getLogger().log(Level.INFO, "*** No supported plugins detected ***");
+            }
+        }
     }
 
     private void register(Command command) {
@@ -147,5 +191,9 @@ public class BungeeEssentials extends Plugin {
 
     public Configuration getConfig() {
         return this.config;
+    }
+
+    public IntegrationProvider getIntegrationProvider() {
+        return helper;
     }
 }

@@ -20,31 +20,31 @@
  * SOFTWARE.
  */
 
-package de.albionco.gssentials.commands;
+package de.albionco.gssentials.command.admin;
 
 import com.google.common.collect.ImmutableSet;
 import de.albionco.gssentials.Dictionary;
 import de.albionco.gssentials.Messenger;
 import de.albionco.gssentials.Permissions;
+import de.albionco.gssentials.command.ServerSpecificCommand;
 import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @SuppressWarnings("deprecation")
-public class Send extends Command implements TabExecutor {
-    public Send() {
+public class SendCommand extends ServerSpecificCommand implements TabExecutor {
+    public SendCommand() {
         super("send", Permissions.Admin.SEND);
     }
 
     @Override
-    public void execute(final CommandSender sender, String[] args) {
+    public void run(final CommandSender sender, String[] args) {
         if (args.length > 1) {
             final ProxiedPlayer player = ProxyServer.getInstance().getPlayer(args[0]);
             if (player != null) {

@@ -20,38 +20,46 @@
  * SOFTWARE.
  */
 
-package de.albionco.gssentials.commands;
+package de.albionco.gssentials.integration;
 
-import de.albionco.gssentials.Dictionary;
-import de.albionco.gssentials.Permissions;
-import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.ProxyServer;
+import de.albionco.gssentials.BungeeEssentials;
+import fr.Alphart.BAT.BAT;
+import fr.Alphart.BAT.Modules.InvalidModuleException;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Command;
+
+import java.util.logging.Level;
 
 /**
- * Created by Connor Harries on 17/10/2014.
+ * Created by Connor Harries on 24/01/2015.
  *
  * @author Connor Spencer Harries
  */
-@SuppressWarnings("deprecation")
-public class Alert extends Command {
-
-    public Alert() {
-        super("alert", Permissions.Admin.ALERT, "galert");
-    }
+public class AdminToolsProvider extends IntegrationProvider {
+    private boolean enabled = false;
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
-        if (args.length > 0) {
-            String server = "";
-            if (sender instanceof ProxiedPlayer) {
-                server = ((ProxiedPlayer) sender).getServer().getInfo().getName();
+    public boolean isMuted(ProxiedPlayer player) {
+        if (!enabled) {
+            enabled = test();
+            if (!enabled) {
+                BungeeEssentials.getInstance().getLogger().log(Level.WARNING, "*** \"{0}\" is not enabled ***", getName());
+                BungeeEssentials.getInstance().setupIntegration("BungeeAdminTools");
+                return false;
             }
-            ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_ALERT, "SENDER", sender.getName(), "SERVER", server, "MESSAGE", Dictionary.combine(args)));
-        } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERRORS_INVALID));
+        }
+        try {
+            return BAT.getInstance().getModules().getMuteModule().isMute(player, "(any)") == 1;
+        } catch (InvalidModuleException e) {
+            return false;
         }
     }
 
+    private boolean test() {
+        return BAT.getInstance().getModules() != null;
+    }
+
+    @Override
+    public String getName() {
+        return "BungeeAdminTools";
+    }
 }

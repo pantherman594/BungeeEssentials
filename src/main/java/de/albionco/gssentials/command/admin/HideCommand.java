@@ -20,14 +20,14 @@
  * SOFTWARE.
  */
 
-package de.albionco.gssentials.commands;
+package de.albionco.gssentials.command.admin;
 
 import de.albionco.gssentials.Dictionary;
 import de.albionco.gssentials.Messenger;
 import de.albionco.gssentials.Permissions;
+import de.albionco.gssentials.command.ServerSpecificCommand;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Command;
 
 /**
  * Created by Connor Harries on 14/01/2015.
@@ -35,23 +35,22 @@ import net.md_5.bungee.api.plugin.Command;
  * @author Connor Spencer Harries
  */
 @SuppressWarnings("deprecation")
-public class Spy extends Command {
-    public Spy() {
-        super("spy", Permissions.Admin.SPY, "socialspy", "gspy");
+public class HideCommand extends ServerSpecificCommand {
+    public HideCommand() {
+        super("hide", Permissions.Admin.HIDE, "hideself");
     }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public void run(CommandSender sender, String[] args) {
         if (sender instanceof ProxiedPlayer) {
             ProxiedPlayer player = (ProxiedPlayer) sender;
-            if (Messenger.toggleSpy(player)) {
-                player.sendMessage(Dictionary.format(Dictionary.SPY_ENABLED));
+            if (Messenger.toggleHidden(player)) {
+                player.sendMessage(Dictionary.format(Dictionary.HIDE_ENABLED));
             } else {
-                player.sendMessage(Dictionary.format(Dictionary.SPY_DISABLED));
+                player.sendMessage(Dictionary.format(Dictionary.HIDE_DISABLED));
             }
         } else {
-            sender.sendMessage(Dictionary.colour("&cSocial spy cannot be used by console"));
+            sender.sendMessage(Dictionary.colour("&cConsole cannot hide itself"));
         }
     }
-
 }

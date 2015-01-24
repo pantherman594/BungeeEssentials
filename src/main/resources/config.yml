@@ -3,6 +3,7 @@ enable:
     - alert
     - find
     - hide
+    - join
     - list
     - message
     - send
