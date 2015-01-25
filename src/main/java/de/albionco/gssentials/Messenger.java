@@ -83,12 +83,10 @@ public class Messenger implements Listener {
 
             String server = player != null ? player.getServer().getInfo().getName() : "CONSOLE";
             if (player != null) {
-                if (BungeeEssentials.getInstance().useSpamProtection() && !player.hasPermission(Permissions.Admin.BYPASS_FILTER)) {
+                if (BungeeEssentials.getInstance().useSpamProtection() && !player.hasPermission(Permissions.Admin.BYPASS_FILTER) && message.length() > 10) {
                     if (sentMessages.get(player.getUniqueId()) != null) {
                         String last = sentMessages.get(player.getUniqueId());
-                        int length = message.length();
-                        double block = length < 20 ? 0.10 : length < 40 ? 0.20 : 0.30;
-                        if (compare(message, last) > block) {
+                        if (compare(message, last) > 0.12) {
                             sender.sendMessage(Dictionary.format(Dictionary.WARNING_LEVENSHTEIN_DISTANCE));
                             return;
                         }
