@@ -26,6 +26,7 @@ import com.google.common.base.Preconditions;
 import de.albionco.gssentials.command.admin.*;
 import de.albionco.gssentials.command.general.*;
 import de.albionco.gssentials.integration.IntegrationProvider;
+import de.albionco.gssentials.integration.IntegrationTest;
 import de.albionco.gssentials.regex.RuleManager;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Command;
@@ -39,6 +40,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 public class BungeeEssentials extends Plugin {
@@ -183,6 +185,8 @@ public class BungeeEssentials extends Plugin {
                 getLogger().log(Level.INFO, "*** No supported plugins detected ***");
             }
         }
+
+        ProxyServer.getInstance().getScheduler().schedule(this, new IntegrationTest(), 7, TimeUnit.SECONDS);
     }
 
     private void register(Command command) {

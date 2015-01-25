@@ -23,11 +23,9 @@
 package de.albionco.gssentials.command.general;
 
 import com.google.common.collect.ImmutableSet;
-import de.albionco.gssentials.BungeeEssentials;
 import de.albionco.gssentials.Dictionary;
 import de.albionco.gssentials.Messenger;
 import de.albionco.gssentials.Permissions;
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -45,28 +43,22 @@ import java.util.Set;
 @SuppressWarnings("deprecation")
 public class MessageCommand extends Command implements TabExecutor {
     public MessageCommand() {
-        super("message", Permissions.General.MESSAGE, "msg", "pm", "t", "tell", "w", "whisper");
+        super("message", Permissions.General.MESSAGE, "msg", "m", "pm", "t", "tell", "w", "whisper");
     }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (args.length > 1) {
             ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(args[0]);
-            if (sender instanceof ProxiedPlayer) {
-                if (BungeeEssentials.getInstance().isIntegrated() && (BungeeEssentials.getInstance().getIntegrationProvider() != null && BungeeEssentials.getInstance().getIntegrationProvider().isMuted((ProxiedPlayer) sender))) {
-                    sender.sendMessage(ChatColor.RED + "You are muted and cannot message other players!");
-                    return;
-                }
-            }
             Messenger.sendMessage(sender, recipient, Dictionary.combine(0, args));
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERRORS_INVALID));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS));
         }
     }
 
     @Override
     public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
-        if (args.length > 1 || args.length == 0) {
+        if (args.length > 1) {
             return ImmutableSet.of();
         }
 

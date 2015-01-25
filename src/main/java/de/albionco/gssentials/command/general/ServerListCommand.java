@@ -30,6 +30,7 @@ import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
+
 /**
  * Created by Connor Harries on 17/10/2014.
  *
@@ -44,27 +45,25 @@ public class ServerListCommand extends Command {
 
     @Override
     public void execute(final CommandSender sender, String[] args) {
-        int online = 0;
-        for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-            if (!Messenger.isHidden(player)) {
-                online++;
-            }
-        }
-
+        int online = ProxyServer.getInstance().getOnlineCount() - Messenger.howManyHidden();
         sender.sendMessage(Dictionary.format(Dictionary.LIST_HEADER, "COUNT", String.valueOf(online)));
-
-        if (sender.hasPermission(Permissions.General.LIST_OFFLINE)) {
-            for (ServerInfo info : ProxyServer.getInstance().getServers().values()) {
-                if (info.canAccess(sender) || sender.hasPermission(Permissions.General.LIST_RESTRICTED)) {
-                    send(online, sender, info);
-                }
+        for (final ServerInfo info : ProxyServer.getInstance().getServers().values()) {
+            if (sender.hasPermission(Permissions.General.LIST_OFFLINE)) {
+                print(sender, info);
+            } else {
+                info.ping(new Callback<ServerPing>() {
+                    @Override
+                    public void done(ServerPing serverPing, Throwable throwable) {
+                        if (throwable == null) {
+                            print(sender, info);
+                        }
+                    }
+                });
             }
-        } else {
-            displayPingServers(sender, online);
         }
     }
 
-    public int getNonHiddenPlayers(ServerInfo info) {
+    private int getNonHiddenPlayers(ServerInfo info) {
         int result = 0;
         for (ProxiedPlayer player : info.getPlayers()) {
             if (!Messenger.isHidden(player)) {
@@ -74,13 +73,17 @@ public class ServerListCommand extends Command {
         return result;
     }
 
-    public String getDensity(int serverPlayers, int onlinePlayers) {
-        return String.valueOf(getColour(serverPlayers, onlinePlayers)) + "(" + serverPlayers + ")";
+    private String getDensity(int players) {
+        return String.valueOf(getColour(players)) + "(" + players + ")";
     }
 
-    public ChatColor getColour(int serverPlayers, int onlinePlayers) {
-        int percent = (int) ((serverPlayers * 100.0f) / onlinePlayers);
+    private ChatColor getColour(int players) {
+        if (players == 0 || players < 0) {
+            return ChatColor.RED;
+        }
 
+        int total = ProxyServer.getInstance().getOnlineCount() - Messenger.howManyHidden();
+        double percent = (players * 100.0f) / total;
         if (percent <= 33) {
             return ChatColor.RED;
         } else if (percent > 33 && percent <= 66) {
@@ -90,23 +93,10 @@ public class ServerListCommand extends Command {
         }
     }
 
-    private void send(int onlinePlayers, CommandSender sender, ServerInfo info) {
-        int num = getNonHiddenPlayers(info);
-        sender.sendMessage(Dictionary.format(Dictionary.LIST_BODY, "SERVER", info.getName(), "DENSITY", getDensity(num, onlinePlayers), "COUNT", String.valueOf(num)));
-    }
-
-    private void displayPingServers(final CommandSender sender, final int onlinePlayers) {
-        for (final ServerInfo info : ProxyServer.getInstance().getServers().values()) {
-            if (info.canAccess(sender) || sender.hasPermission(Permissions.General.LIST_RESTRICTED)) {
-                info.ping(new Callback<ServerPing>() {
-                    @Override
-                    public void done(ServerPing serverPing, Throwable throwable) {
-                        if (throwable == null) {
-                            send(onlinePlayers, sender, info);
-                        }
-                    }
-                });
-            }
+    private void print(CommandSender sender, ServerInfo info) {
+        if (info.canAccess(sender) || sender.hasPermission(Permissions.General.LIST_RESTRICTED)) {
+            int online = getNonHiddenPlayers(info);
+            sender.sendMessage(Dictionary.format(Dictionary.LIST_BODY, "SERVER", info.getName(), "MOTD", info.getMotd(), "DENSITY", getDensity(online), "COUNT", String.valueOf(online)));
         }
     }
 }

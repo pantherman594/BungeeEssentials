@@ -27,6 +27,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import de.albionco.gssentials.Dictionary;
+import de.albionco.gssentials.Messenger;
 import de.albionco.gssentials.Permissions;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -50,14 +51,14 @@ public class JoinCommand extends Command implements TabExecutor {
     public void execute(CommandSender sender, String[] args) {
         if (sender instanceof ProxiedPlayer) {
             if (args == null || args.length < 1) {
-                sender.sendMessage(Dictionary.format(Dictionary.ERRORS_INVALID));
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS));
                 return;
             }
 
             ProxiedPlayer player = (ProxiedPlayer) sender;
             ProxiedPlayer join = ProxyServer.getInstance().getPlayer(args[0]);
-            if (join == null) {
-                sender.sendMessage(Dictionary.format(Dictionary.ERRORS_OFFLINE));
+            if (join == null || Messenger.isHidden(join)) {
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
                 return;
             }
 

@@ -62,7 +62,7 @@ public class SendAllCommand extends Command implements TabExecutor {
                 });
             }
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERRORS_INVALID));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS));
         }
     }
 

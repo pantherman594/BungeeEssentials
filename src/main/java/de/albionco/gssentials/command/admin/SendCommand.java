@@ -48,7 +48,7 @@ public class SendCommand extends ServerSpecificCommand implements TabExecutor {
         if (args.length > 1) {
             final ProxiedPlayer player = ProxyServer.getInstance().getPlayer(args[0]);
             if (player != null) {
-                sender.sendMessage(Dictionary.format(Dictionary.FORMAT_SEND, "PLAYER", args[0], "SERVER", args[1]));
+                sender.sendMessage(Dictionary.format(Dictionary.FORMAT_SEND_PLAYER, "PLAYER", args[0], "SERVER", args[1]));
 
                 player.connect(ProxyServer.getInstance().getServerInfo(args[1]),
                         new Callback<Boolean>() {
@@ -63,10 +63,10 @@ public class SendCommand extends ServerSpecificCommand implements TabExecutor {
                             }
                         });
             } else {
-                sender.sendMessage(Dictionary.format(Dictionary.ERRORS_OFFLINE));
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
             }
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERRORS_INVALID));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS));
         }
     }
 

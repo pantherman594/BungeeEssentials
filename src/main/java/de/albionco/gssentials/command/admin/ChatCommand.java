@@ -49,7 +49,7 @@ public class ChatCommand extends ServerSpecificCommand {
                 server = ((ProxiedPlayer) sender).getServer().getInfo().getName();
             }
 
-            String msg = Dictionary.format(Dictionary.FORMAT_ADMIN, "SERVER", server, "SENDER", sender.getName(), "MESSAGE", Dictionary.combine(args));
+            String msg = Dictionary.format(Dictionary.FORMAT_STAFF_CHAT, "SERVER", server, "SENDER", sender.getName(), "MESSAGE", Dictionary.combine(args));
 
             for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
                 if (player.hasPermission(Permissions.Admin.CHAT + "." + server) || player.hasPermission(Permissions.Admin.CHAT)) {
@@ -62,7 +62,7 @@ public class ChatCommand extends ServerSpecificCommand {
                 console.sendMessage(msg);
             }
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERRORS_INVALID));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS));
         }
     }
 }

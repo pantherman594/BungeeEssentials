@@ -22,12 +22,9 @@
 
 package de.albionco.gssentials.integration;
 
-import de.albionco.gssentials.BungeeEssentials;
 import fr.Alphart.BAT.BAT;
 import fr.Alphart.BAT.Modules.InvalidModuleException;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-
-import java.util.logging.Level;
 
 /**
  * Created by Connor Harries on 24/01/2015.
@@ -35,18 +32,9 @@ import java.util.logging.Level;
  * @author Connor Spencer Harries
  */
 public class AdminToolsProvider extends IntegrationProvider {
-    private boolean enabled = false;
 
     @Override
     public boolean isMuted(ProxiedPlayer player) {
-        if (!enabled) {
-            enabled = test();
-            if (!enabled) {
-                BungeeEssentials.getInstance().getLogger().log(Level.WARNING, "*** \"{0}\" is not enabled ***", getName());
-                BungeeEssentials.getInstance().setupIntegration("BungeeAdminTools");
-                return false;
-            }
-        }
         try {
             return BAT.getInstance().getModules().getMuteModule().isMute(player, "(any)") == 1;
         } catch (InvalidModuleException e) {
@@ -54,10 +42,11 @@ public class AdminToolsProvider extends IntegrationProvider {
         }
     }
 
-    public boolean test() {
+    @Override
+    public boolean isEnabled() {
         try {
             return BAT.getInstance() != null && BAT.getInstance().getModules() != null && BAT.getInstance().getModules().getMuteModule() != null;
-        } catch (InvalidModuleException e) {
+        } catch (InvalidModuleException ex) {
             return false;
         }
     }

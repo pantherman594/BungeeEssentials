@@ -22,11 +22,9 @@
 
 package de.albionco.gssentials.command.general;
 
-import de.albionco.gssentials.BungeeEssentials;
 import de.albionco.gssentials.Dictionary;
 import de.albionco.gssentials.Messenger;
 import de.albionco.gssentials.Permissions;
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -50,20 +48,15 @@ public class ReplyCommand extends Command {
         if (sender instanceof ProxiedPlayer) {
             if (args.length > 0) {
                 ProxiedPlayer player = (ProxiedPlayer) sender;
-                if (BungeeEssentials.getInstance().isIntegrated() && BungeeEssentials.getInstance().getIntegrationProvider().isMuted(player)) {
-                    sender.sendMessage(ChatColor.RED + "You are muted and cannot message other players!");
-                    return;
-                }
-
                 UUID uuid = Messenger.reply(player);
                 if (uuid == null) {
-                    sender.sendMessage(Dictionary.format(Dictionary.ERRORS_MESSAGES));
+                    sender.sendMessage(Dictionary.format(Dictionary.ERROR_NOBODY_HAS_MESSAGED));
                     return;
                 }
                 ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(uuid);
                 Messenger.sendMessage(player, recipient, Dictionary.combine(args));
             } else {
-                sender.sendMessage(Dictionary.format(Dictionary.ERRORS_INVALID));
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS));
             }
         } else {
             sender.sendMessage(Dictionary.colour("&cSorry, only players can reply to messages."));

@@ -20,40 +20,26 @@
  * SOFTWARE.
  */
 
-package de.albionco.gssentials.command;
+package de.albionco.gssentials.integration;
 
-import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Command;
+import de.albionco.gssentials.BungeeEssentials;
+
+import java.util.logging.Level;
 
 /**
- * Created by Connor Harries on 24/01/2015.
+ * If the manager isn't null then we want to test for supported plugins,
  *
  * @author Connor Spencer Harries
  */
-public abstract class ServerSpecificCommand extends Command {
-    private final String permission;
-
-    public ServerSpecificCommand(String name, String permission, String... aliases) {
-        super(name, "", aliases);
-        this.permission = permission;
-    }
-
+public class IntegrationTest implements Runnable {
     @Override
-    public final void execute(CommandSender sender, String[] args) {
-        if (sender.hasPermission(permission)) {
-            run(sender, args);
-        } else {
-            ProxiedPlayer player = (ProxiedPlayer) sender;
-            String server = player.getServer().getInfo().getName().toLowerCase().replace(" ", "-");
-            if (player.hasPermission(permission + "." + server)) {
-                run(sender, args);
-            } else {
-                player.sendMessage(ProxyServer.getInstance().getTranslation("no_permission"));
+    public void run() {
+        if (BungeeEssentials.getInstance().isIntegrated() || BungeeEssentials.getInstance().getIntegrationProvider() != null) {
+            IntegrationProvider provider = BungeeEssentials.getInstance().getIntegrationProvider();
+            if (!provider.isEnabled()) {
+                BungeeEssentials.getInstance().getLogger().log(Level.WARNING, "*** \"{0}\" is not enabled ***", provider.getName());
+                BungeeEssentials.getInstance().setupIntegration(provider.getName());
             }
         }
     }
-
-    public abstract void run(CommandSender sender, String[] args);
 }

@@ -59,13 +59,13 @@ public class SlapCommand extends Command implements TabExecutor {
                     sender.sendMessage(ChatColor.GREEN + "You just slapped " + ChatColor.YELLOW + enemy.getName() + ChatColor.GREEN + ", I bet that felt good, didn't it?");
                     enemy.sendMessage(ChatColor.GREEN + "You have been universally slapped by " + (player == null ? "GOD" : player.getName()));
                 } else {
-                    sender.sendMessage(Dictionary.format(Dictionary.ERRORS_OFFLINE));
+                    sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
                 }
             } else {
-                sender.sendMessage(Dictionary.format(Dictionary.ERRORS_INVALID));
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS));
             }
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERRORS_SLAP));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_UNWORTHY_OF_SLAP));
         }
     }
 

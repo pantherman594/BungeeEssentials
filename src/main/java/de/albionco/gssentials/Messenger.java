@@ -24,6 +24,7 @@ package de.albionco.gssentials;
 
 import com.google.common.base.Preconditions;
 import de.albionco.gssentials.regex.RuleManager;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
@@ -53,6 +54,10 @@ public class Messenger implements Listener {
             ProxiedPlayer player = null;
             if (sender instanceof ProxiedPlayer) {
                 player = (ProxiedPlayer) sender;
+                if (BungeeEssentials.getInstance().isIntegrated() && (BungeeEssentials.getInstance().getIntegrationProvider() != null && BungeeEssentials.getInstance().getIntegrationProvider().isMuted((ProxiedPlayer) sender))) {
+                    sender.sendMessage(ChatColor.RED + "You are muted and cannot message other players!");
+                    return;
+                }
                 if (!sender.hasPermission(Permissions.Admin.BYPASS_FILTER) && BungeeEssentials.getInstance().useRules()) {
                     RuleManager.MatchResult result = RuleManager.matches(message);
                     if (result.matched()) {
@@ -61,7 +66,7 @@ public class Messenger implements Listener {
                                 sender.sendMessage(Dictionary.format(Dictionary.WARNINGS_ADVERTISING));
                                 return;
                             case CURSING:
-                                sender.sendMessage(Dictionary.format(Dictionary.WARNINGS_SWEARING));
+                                sender.sendMessage(Dictionary.format(Dictionary.WARNING_HANDLE_CURSING));
                                 return;
                             case REPLACE:
                                 if (result.getRule().getReplacement() != null) {
@@ -84,7 +89,7 @@ public class Messenger implements Listener {
                         int length = message.length();
                         double block = length < 20 ? 0.10 : length < 40 ? 0.20 : 0.30;
                         if (compare(message, last) > block) {
-                            sender.sendMessage(Dictionary.format(Dictionary.WARNINGS_SIMILARITY));
+                            sender.sendMessage(Dictionary.format(Dictionary.WARNING_LEVENSHTEIN_DISTANCE));
                             return;
                         }
                     } else {
@@ -95,7 +100,7 @@ public class Messenger implements Listener {
                 if (!sender.hasPermission(Permissions.Admin.SPY_EXEMPT)) {
                     String spyMessage = Dictionary.format(Dictionary.SPY_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message);
                     for (ProxiedPlayer onlinePlayer : player.getServer().getInfo().getPlayers()) {
-                        if (onlinePlayer.getUniqueId() != player.getUniqueId() && onlinePlayer.getUniqueId() != recipient.getUniqueId()) {
+                        if (player.getUniqueId() != onlinePlayer.getUniqueId() && recipient.getUniqueId() != onlinePlayer.getUniqueId()) {
                             if (onlinePlayer.hasPermission(Permissions.Admin.SPY) && Messenger.isSpy(onlinePlayer)) {
                                 onlinePlayer.sendMessage(spyMessage);
                             }
@@ -104,10 +109,10 @@ public class Messenger implements Listener {
                 }
                 messages.put(recipient.getUniqueId(), player.getUniqueId());
             }
-            sender.sendMessage(Dictionary.format(Dictionary.FORMAT_MESSAGE, "SERVER", recipient.getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
-            recipient.sendMessage(Dictionary.format(Dictionary.FORMAT_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
+            sender.sendMessage(Dictionary.format(Dictionary.FORMAT_PRIVATE_MESSAGE, "SERVER", recipient.getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
+            recipient.sendMessage(Dictionary.format(Dictionary.FORMAT_PRIVATE_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERRORS_OFFLINE));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
         }
     }
 
@@ -190,6 +195,10 @@ public class Messenger implements Listener {
                 costs[s2.length()] = lastValue;
         }
         return costs[s2.length()];
+    }
+
+    public static int howManyHidden() {
+        return hidden.size();
     }
 
     @EventHandler

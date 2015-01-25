@@ -51,13 +51,13 @@ public class FindCommand extends Command implements TabExecutor {
         if (args.length > 0) {
             ProxiedPlayer player = ProxyServer.getInstance().getPlayer(args[0]);
 
-            if (player != null && Messenger.isHidden(player)) {
-                sender.sendMessage(Dictionary.format(Dictionary.FORMAT_FIND, "SERVER", player.getServer().getInfo().getName(), "PLAYER", player.getName()));
+            if (player != null && !Messenger.isHidden(player)) {
+                sender.sendMessage(Dictionary.format(Dictionary.FORMAT_FIND_PLAYER, "SERVER", player.getServer().getInfo().getName(), "PLAYER", player.getName()));
             } else {
-                sender.sendMessage(Dictionary.format(Dictionary.ERRORS_OFFLINE));
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
             }
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERRORS_INVALID));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS));
         }
     }
 

@@ -39,6 +39,10 @@ public abstract class IntegrationProvider {
     private static HashMap<Class<? extends IntegrationProvider>, IntegrationProvider> instances = new HashMap<>();
 
     static {
+        /*
+         * If we create new instances of the provider classes and the plugin
+         * doesn't exist or hasn't been registered then exceptions are thrown
+         */
         providers.put("BungeeAdminTools", AdminToolsProvider.class);
         providers.put("BungeeSuite", BungeeSuiteProvider.class);
     }
@@ -69,5 +73,7 @@ public abstract class IntegrationProvider {
     }
     
     public abstract boolean isMuted(ProxiedPlayer player);
+
+    public abstract boolean isEnabled();
     public abstract String getName();
 }

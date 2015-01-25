@@ -37,7 +37,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 @SuppressWarnings("deprecation")
 public class HideCommand extends ServerSpecificCommand {
     public HideCommand() {
-        super("hide", Permissions.Admin.HIDE, "hideself");
+        super("hide", Permissions.Admin.HIDE);
     }
 
     @Override
