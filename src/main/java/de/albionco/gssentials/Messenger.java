@@ -83,16 +83,15 @@ public class Messenger implements Listener {
 
             String server = player != null ? player.getServer().getInfo().getName() : "CONSOLE";
             if (player != null) {
-                if (BungeeEssentials.getInstance().useSpamProtection() && !player.hasPermission(Permissions.Admin.BYPASS_FILTER) && message.length() > 10) {
+                if (BungeeEssentials.getInstance().useSpamProtection() && !player.hasPermission(Permissions.Admin.BYPASS_FILTER)) {
                     if (sentMessages.get(player.getUniqueId()) != null) {
                         String last = sentMessages.get(player.getUniqueId());
-                        if (compare(message, last) > 0.12) {
+                        if (compare(message, last) > 0.85) {
                             sender.sendMessage(Dictionary.format(Dictionary.WARNING_LEVENSHTEIN_DISTANCE));
                             return;
                         }
-                    } else {
-                        sentMessages.put(player.getUniqueId(), message);
                     }
+                    sentMessages.put(player.getUniqueId(), message);
                 }
 
                 if (!sender.hasPermission(Permissions.Admin.SPY_EXEMPT)) {
@@ -203,6 +202,10 @@ public class Messenger implements Listener {
     @SuppressWarnings("unused")
     public void logout(PlayerDisconnectEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
+        if (sentMessages.containsKey(uuid)) {
+            sentMessages.remove(uuid);
+        }
+
         if (messages.containsKey(uuid)) {
             messages.remove(uuid);
         }
