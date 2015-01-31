@@ -40,7 +40,7 @@ import net.md_5.bungee.event.EventHandler;
 public class PlayerListener implements Listener {
     @EventHandler(priority = Byte.MAX_VALUE)
     public void chat(ChatEvent event) {
-        if (event.isCommand() && event.isCancelled()) {
+        if (event.isCommand() || event.isCancelled()) {
             return;
         }
 

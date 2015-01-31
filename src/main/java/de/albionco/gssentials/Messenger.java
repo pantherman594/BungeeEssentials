@@ -144,7 +144,7 @@ public class Messenger implements Listener {
         }
 
         if (BungeeEssentials.getInstance().useSpamProtection()) {
-            if (chatMessages.get(player.getUniqueId()) != null && getDistance(message, chatMessages.get(player.getUniqueId())) > 0.85) {
+            if (chatMessages.get(player.getUniqueId()) != null && compare(message, chatMessages.get(player.getUniqueId())) > 0.85) {
                 event.setCancelled(true);
                 player.sendMessage(Dictionary.format(Dictionary.WARNING_LEVENSHTEIN_DISTANCE));
                 return;
@@ -188,16 +188,17 @@ public class Messenger implements Listener {
     }
 
     public static void reset() {
+        chatMessages.clear();
         sentMessages.clear();
         messages.clear();
         hidden.clear();
         spies.clear();
     }
 
-    private static double compare(String first, String s2) {
-        String longer = first, shorter = s2;
-        if (first.length() < s2.length()) {
-            longer = s2;
+    private static double compare(String first, String second) {
+        String longer = first, shorter = second;
+        if (first.length() < second.length()) {
+            longer = second;
             shorter = first;
         }
         int longerLength = longer.length();
