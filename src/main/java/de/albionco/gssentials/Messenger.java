@@ -27,6 +27,7 @@ import de.albionco.gssentials.regex.RuleManager;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -44,6 +45,7 @@ import java.util.regex.Matcher;
  */
 @SuppressWarnings("deprecation")
 public class Messenger implements Listener {
+    private static HashMap<UUID, String> chatMessages = new HashMap<>();
     private static HashMap<UUID, String> sentMessages = new HashMap<>();
     private static HashMap<UUID, UUID> messages = new HashMap<>();
     private static Set<UUID> hidden = new HashSet<>();
@@ -110,6 +112,44 @@ public class Messenger implements Listener {
             recipient.sendMessage(Dictionary.format(Dictionary.FORMAT_PRIVATE_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
         } else {
             sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
+        }
+    }
+
+    public static void chat(ProxiedPlayer player, ChatEvent event) {
+        Preconditions.checkNotNull(player, "player null");
+        Preconditions.checkNotNull(event, "event null");
+        String message = event.getMessage();
+
+        if (BungeeEssentials.getInstance().useRules()) {
+            RuleManager.MatchResult result = RuleManager.matches(message);
+            if (result.matched()) {
+                switch (result.getRule().getHandle()) {
+                    case ADVERTISEMENT:
+                        player.sendMessage(Dictionary.format(Dictionary.WARNINGS_ADVERTISING));
+                        return;
+                    case CURSING:
+                        player.sendMessage(Dictionary.format(Dictionary.WARNING_HANDLE_CURSING));
+                        return;
+                    case REPLACE:
+                        if (result.getRule().getReplacement() != null) {
+                            Matcher matcher = result.getRule().getPattern().matcher(message);
+                            if (matcher.matches()) {
+                                message = matcher.replaceAll(result.getRule().getReplacement());
+                                event.setMessage(message);
+                            }
+                        }
+                        break;
+                }
+            }
+        }
+
+        if (BungeeEssentials.getInstance().useSpamProtection()) {
+            if (chatMessages.get(player.getUniqueId()) != null && getDistance(message, chatMessages.get(player.getUniqueId())) > 0.85) {
+                event.setCancelled(true);
+                player.sendMessage(Dictionary.format(Dictionary.WARNING_LEVENSHTEIN_DISTANCE));
+                return;
+            }
+            chatMessages.put(player.getUniqueId(), message);
         }
     }
 

@@ -20,16 +20,36 @@
  * SOFTWARE.
  */
 
-package de.albionco.gssentials.regex;
+package de.albionco.gssentials.event;
+
+import de.albionco.gssentials.Messenger;
+import de.albionco.gssentials.Permissions;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.connection.Connection;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.ChatEvent;
+import net.md_5.bungee.api.plugin.Listener;
+import net.md_5.bungee.event.EventHandler;
 
 /**
- * Created by Connor Harries on 24/01/2015.
+ * Created by Connor Harries on 31/01/2015.
  *
  * @author Connor Spencer Harries
  */
-public enum Handle {
-    ADVERTISEMENT,
-    REPLACE,
-    CURSING,
-    ALERT
+@SuppressWarnings("unused")
+public class PlayerListener implements Listener {
+    @EventHandler(priority = Byte.MAX_VALUE)
+    public void chat(ChatEvent event) {
+        if (event.isCommand() && event.isCancelled()) {
+            return;
+        }
+
+        Connection connection = event.getSender();
+        for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
+            if (player.getAddress() == connection.getAddress() && !player.hasPermission(Permissions.Admin.BYPASS_FILTER)) {
+                Messenger.chat(player, event);
+                return;
+            }
+        }
+    }
 }
