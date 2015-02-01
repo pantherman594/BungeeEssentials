@@ -88,7 +88,7 @@ public class Dictionary {
 
     static {
         calendar = Calendar.getInstance();
-        date = new SimpleDateFormat("HH:mm:ss");
+        date = new SimpleDateFormat("H:mm:ss");
     }
 
     public static String colour(String str) {

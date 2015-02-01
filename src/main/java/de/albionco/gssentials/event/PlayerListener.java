@@ -60,7 +60,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = Byte.MAX_VALUE)
     public void chat(ChatEvent event) {
-        if (BungeeEssentials.getInstance().useRules() || BungeeEssentials.getInstance().useSpamProtection()) {
+        if (BungeeEssentials.getInstance().useChatSpamProtetion() || BungeeEssentials.getInstance().useChatRules()) {
             if (event.isCommand() || event.isCancelled()) {
                 return;
             }

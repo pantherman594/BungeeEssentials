@@ -5,12 +5,15 @@ enable:
     - hide
     - join
     - list
+    - log
     - message
     - multilog
     - rules
+    - rules-chat
     - send
     - sendall
     - spam
+    - spam-chat
     - slap
     - spy
 format:
