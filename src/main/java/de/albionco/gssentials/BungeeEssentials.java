@@ -25,6 +25,7 @@ package de.albionco.gssentials;
 import com.google.common.base.Preconditions;
 import de.albionco.gssentials.command.admin.*;
 import de.albionco.gssentials.command.general.*;
+import de.albionco.gssentials.event.PlayerListener;
 import de.albionco.gssentials.integration.IntegrationProvider;
 import de.albionco.gssentials.integration.IntegrationTest;
 import de.albionco.gssentials.regex.RuleManager;
@@ -47,6 +48,7 @@ public class BungeeEssentials extends Plugin {
     private static BungeeEssentials instance;
     private Configuration config = null;
     private IntegrationProvider helper;
+    private boolean watchMultiLog;
     private boolean integrated;
     private File configFile;
     private boolean rules;
@@ -94,8 +96,10 @@ public class BungeeEssentials extends Plugin {
         }
 
         ProxyServer.getInstance().getPluginManager().unregisterCommands(this);
+        ProxyServer.getInstance().getPluginManager().unregisterListeners(this);
 
         Messenger.reset();
+        watchMultiLog = false;
         rules = false;
         spam = false;
 
@@ -153,7 +157,12 @@ public class BungeeEssentials extends Plugin {
             ProxyServer.getInstance().getPluginManager().registerListener(this, new Messenger());
         }
 
+        if (enable.contains("spam") || enable.contains("rules") || enable.contains("multilog")) {
+            ProxyServer.getInstance().getPluginManager().registerListener(this, new PlayerListener());
+        }
+
         spam = enable.contains("spam");
+        watchMultiLog = enable.contains("multilog");
         getLogger().log(Level.INFO, "Registered {0} commands successfully", commands);
         setupIntegration();
         return true;
@@ -191,6 +200,10 @@ public class BungeeEssentials extends Plugin {
 
     private void register(Command command) {
         ProxyServer.getInstance().getPluginManager().registerCommand(this, command);
+    }
+
+    public boolean shouldWatchMultilog() {
+        return this.watchMultiLog;
     }
 
     public Configuration getConfig() {

@@ -22,14 +22,22 @@
 
 package de.albionco.gssentials.event;
 
+import com.google.common.collect.Maps;
+import de.albionco.gssentials.BungeeEssentials;
+import de.albionco.gssentials.Dictionary;
 import de.albionco.gssentials.Messenger;
 import de.albionco.gssentials.Permissions;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
+import net.md_5.bungee.api.event.PlayerDisconnectEvent;
+import net.md_5.bungee.api.event.PreLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
+
+import java.net.InetAddress;
+import java.util.HashMap;
 
 /**
  * Created by Connor Harries on 31/01/2015.
@@ -38,17 +46,59 @@ import net.md_5.bungee.event.EventHandler;
  */
 @SuppressWarnings("unused")
 public class PlayerListener implements Listener {
+    private final HashMap<InetAddress, Integer> connections;
+    private final int max;
+
+    public PlayerListener() {
+        connections = Maps.newHashMap();
+        int max = BungeeEssentials.getInstance().getConfig().getInt("multilog.limit", 3);
+        if (max < 1) {
+            max = 1;
+        }
+        this.max = max;
+    }
+
     @EventHandler(priority = Byte.MAX_VALUE)
     public void chat(ChatEvent event) {
-        if (event.isCommand() || event.isCancelled()) {
-            return;
-        }
-
-        Connection connection = event.getSender();
-        for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-            if (player.getAddress() == connection.getAddress() && !player.hasPermission(Permissions.Admin.BYPASS_FILTER)) {
-                Messenger.chat(player, event);
+        if (BungeeEssentials.getInstance().useRules() || BungeeEssentials.getInstance().useSpamProtection()) {
+            if (event.isCommand() || event.isCancelled()) {
                 return;
+            }
+            Connection connection = event.getSender();
+            for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
+                if (player.getAddress() == connection.getAddress() && !player.hasPermission(Permissions.Admin.BYPASS_FILTER)) {
+                    Messenger.chat(player, event);
+                    return;
+                }
+            }
+        }
+    }
+
+    @EventHandler(priority = Byte.MAX_VALUE)
+    public void login(PreLoginEvent event) {
+        if (BungeeEssentials.getInstance().shouldWatchMultilog()) {
+            InetAddress address = event.getConnection().getAddress().getAddress();
+            if (connections.get(address) == null) {
+                connections.put(address, 1);
+            } else {
+                int newCount = connections.get(address) + 1;
+                if (newCount > max) {
+                    event.setCancelled(true);
+                    event.setCancelReason(Dictionary.format(Dictionary.MULTILOG_KICK_MESSAGE));
+                    return;
+                }
+                connections.put(address, newCount);
+            }
+        }
+    }
+
+    @EventHandler(priority = Byte.MAX_VALUE)
+    public void logout(PlayerDisconnectEvent event) {
+        if (BungeeEssentials.getInstance().shouldWatchMultilog()) {
+            InetAddress address = event.getPlayer().getAddress().getAddress();
+            Integer amount = connections.remove(address);
+            if (amount != null && amount > 1) {
+                connections.put(address, amount - 1);
             }
         }
     }

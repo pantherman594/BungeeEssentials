@@ -80,7 +80,10 @@ public class Dictionary {
     public static String WARNING_HANDLE_CURSING;
     @Load(key = "warnings.advertising", def = "&cPlease do not advertise other servers!")
     public static String WARNINGS_ADVERTISING;
+    @Load(key = "multilog.kicked", def = "&cMaximum number of connections reached!")
+    public static String MULTILOG_KICK_MESSAGE;
     private static SimpleDateFormat date;
+
     private static Calendar calendar;
 
     static {
