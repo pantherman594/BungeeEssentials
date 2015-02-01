@@ -50,7 +50,10 @@ public class BungeeEssentials extends Plugin {
     private IntegrationProvider helper;
     private boolean watchMultiLog;
     private boolean integrated;
+    private boolean chatRules;
+    private boolean chatSpam;
     private File configFile;
+    private boolean useLog;
     private boolean rules;
     private boolean spam;
 
@@ -63,6 +66,11 @@ public class BungeeEssentials extends Plugin {
         instance = this;
         configFile = new File(getDataFolder(), "config.yml");
         reload();
+    }
+
+    @Override
+    public void onDisable() {
+        Log.reset();
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -99,7 +107,10 @@ public class BungeeEssentials extends Plugin {
         ProxyServer.getInstance().getPluginManager().unregisterListeners(this);
 
         Messenger.reset();
+        Log.reset();
         watchMultiLog = false;
+        chatRules = false;
+        chatSpam = false;
         rules = false;
         spam = false;
 
@@ -147,9 +158,16 @@ public class BungeeEssentials extends Plugin {
             register(new SpyCommand());
             commands++;
         }
-        if (enable.contains("rules")) {
-            rules = true;
+        if (enable.contains("rules") || enable.contains("rules-chat")) {
+            rules = enable.contains("rules");
+            chatRules = enable.contains("rules-chat");
             RuleManager.load();
+            if (rules) {
+                getLogger().log(Level.INFO, "Enabled rules for private chat");
+            }
+            if (chatRules) {
+                getLogger().log(Level.INFO, "Enabled rules for public chat");
+            }
         }
         register(new ReloadCommand());
 
@@ -161,7 +179,20 @@ public class BungeeEssentials extends Plugin {
             ProxyServer.getInstance().getPluginManager().registerListener(this, new PlayerListener());
         }
 
+        useLog = enable.contains("log");
+        if (useLog) {
+            if (!Log.setup()) {
+                getLogger().log(Level.WARNING, "Error enabling the chat logger!");
+            }
+        }
         spam = enable.contains("spam");
+        if (spam) {
+            getLogger().log(Level.INFO, "Enabled spam filter for public chat");
+        }
+        chatSpam = enable.contains("spam-chat");
+        if (chatSpam) {
+            getLogger().log(Level.INFO, "Enabled spam filter for private chat");
+        }
         watchMultiLog = enable.contains("multilog");
         getLogger().log(Level.INFO, "Registered {0} commands successfully", commands);
         setupIntegration();
@@ -202,6 +233,10 @@ public class BungeeEssentials extends Plugin {
         ProxyServer.getInstance().getPluginManager().registerCommand(this, command);
     }
 
+    public boolean shouldLog() {
+        return this.useLog;
+    }
+
     public boolean shouldWatchMultilog() {
         return this.watchMultiLog;
     }
@@ -224,5 +259,13 @@ public class BungeeEssentials extends Plugin {
 
     public boolean useSpamProtection() {
         return spam;
+    }
+
+    public boolean useChatSpamProtetion() {
+        return chatSpam;
+    }
+
+    public boolean useChatRules() {
+        return chatRules;
     }
 }

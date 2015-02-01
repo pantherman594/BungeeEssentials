@@ -26,7 +26,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.albionco</groupId>
     <artifactId>BungeeEssentials</artifactId>
-    <version>1.0.8</version>
+    <version>1.0.8a</version>
     <url>http://www.spigotmc.org/resources/bungeeessentials.1488/</url>
     <name>BungeeEssentials</name>
     <description>Port of my branch of the LilyEssentials plugin.</description>

@@ -63,6 +63,7 @@ public class Messenger implements Listener {
                 if (!sender.hasPermission(Permissions.Admin.BYPASS_FILTER) && BungeeEssentials.getInstance().useRules()) {
                     RuleManager.MatchResult result = RuleManager.matches(message);
                     if (result.matched()) {
+                        Log.log(player, result.getRule(), ChatType.PRIVATE);
                         switch (result.getRule().getHandle()) {
                             case ADVERTISEMENT:
                                 sender.sendMessage(Dictionary.format(Dictionary.WARNINGS_ADVERTISING));
@@ -120,15 +121,18 @@ public class Messenger implements Listener {
         Preconditions.checkNotNull(event, "event null");
         String message = event.getMessage();
 
-        if (BungeeEssentials.getInstance().useRules()) {
+        if (BungeeEssentials.getInstance().useChatRules()) {
             RuleManager.MatchResult result = RuleManager.matches(message);
             if (result.matched()) {
+                Log.log(player, result.getRule(), ChatType.PUBLIC);
                 switch (result.getRule().getHandle()) {
                     case ADVERTISEMENT:
                         player.sendMessage(Dictionary.format(Dictionary.WARNINGS_ADVERTISING));
+                        event.setCancelled(true);
                         return;
                     case CURSING:
                         player.sendMessage(Dictionary.format(Dictionary.WARNING_HANDLE_CURSING));
+                        event.setCancelled(true);
                         return;
                     case REPLACE:
                         if (result.getRule().getReplacement() != null) {
@@ -143,7 +147,7 @@ public class Messenger implements Listener {
             }
         }
 
-        if (BungeeEssentials.getInstance().useSpamProtection()) {
+        if (BungeeEssentials.getInstance().useChatSpamProtetion()) {
             if (chatMessages.get(player.getUniqueId()) != null && compare(message, chatMessages.get(player.getUniqueId())) > 0.85) {
                 event.setCancelled(true);
                 player.sendMessage(Dictionary.format(Dictionary.WARNING_LEVENSHTEIN_DISTANCE));
@@ -258,5 +262,10 @@ public class Messenger implements Listener {
         if (hidden.contains(uuid)) {
             hidden.remove(event.getPlayer().getUniqueId());
         }
+    }
+
+    public enum ChatType {
+        PUBLIC,
+        PRIVATE
     }
 }

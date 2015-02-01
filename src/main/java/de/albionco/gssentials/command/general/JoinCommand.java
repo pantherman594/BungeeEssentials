@@ -42,6 +42,7 @@ import net.md_5.bungee.api.plugin.TabExecutor;
  *
  * @author Connor Spencer Harries
  */
+@SuppressWarnings("deprecation")
 public class JoinCommand extends Command implements TabExecutor {
     public JoinCommand() {
         super("join", Permissions.General.JOIN);

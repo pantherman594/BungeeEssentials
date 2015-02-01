@@ -23,8 +23,11 @@
 package de.albionco.gssentials.regex;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -36,8 +39,10 @@ public class Rule {
     private Pattern pattern = null;
     private Handle handle = null;
     private String replacement;
+    private List<String> matches;
 
     private Rule() {
+        matches = Lists.newArrayList();
     }
 
     public static Rule deserialize(Map<String, String> serialized) {
@@ -86,10 +91,23 @@ public class Rule {
 
     public boolean matches(String input) {
         Preconditions.checkNotNull(input);
-        return this.pattern.matcher(input).matches();
+        matches.clear();
+        Matcher matcher = pattern.matcher(input);
+        boolean found = false;
+        while (matcher.find()) {
+            if (!found) {
+                found = true;
+            }
+            matches.add(input.substring(matcher.start(), matcher.end()));
+        }
+        return found;
     }
 
     public Pattern getPattern() {
         return pattern;
+    }
+
+    public List<String> getMatches() {
+        return matches;
     }
 }
