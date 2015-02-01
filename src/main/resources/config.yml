@@ -6,6 +6,7 @@ enable:
     - join
     - list
     - message
+    - multilog
     - rules
     - send
     - sendall
@@ -35,6 +36,9 @@ rules:
 list:
     header: '&aServers:'
     body: '&a- {{ SERVER }} {{ DENSITY }}'
+multilog:
+    limit: 3
+    kicked: '&cMaximum number of connections reached!'
 spy:
     message: '&7[{{ SENDER }} » {{ RECIPIENT }}] &7{{ MESSAGE }}'
     enabled: '&aSocialspy has been enabled'
