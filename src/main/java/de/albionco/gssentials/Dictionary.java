@@ -136,6 +136,14 @@ public class Dictionary {
         return Dictionary.format(input, true, args);
     }
 
+    public static String formatMsg(String input, String... args) {
+        if (args[3].hasPermission(Permissions.General.MESSAGE_COLOR)) {
+            return Dictionary.format(input, true, args);
+        } else {
+            return Dictionary.format(input, false, args);
+        }
+    }
+
     /**
      * Use reflection and the {@link Load} annotation to load values
      * from the configuration file without typing out all the keys
