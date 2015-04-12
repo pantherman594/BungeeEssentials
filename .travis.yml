@@ -1,14 +1,1 @@
-language: java
-jdk:
-- oraclejdk7
-- openjdk7
-deploy:
-  provider: releases
-  api_key:
-    secure: BpTOmrkA8sxoGObJMBzsvITq0yHFURwm11S6eGnlXziERRUjgwX1za6hGBa3PvPJUw8BWnqLhDAq6BiAdAalYNwndFfl0mP7Ha5ZJUUoH/t01eIAKAv2uYxuowA+QXfMhavZR8N+U4/WCAF2f/bT961kAFNmKUi+LolWHRySPaQ=
-  file: target/BungeeEssentials.jar
-  on:
-    repo: Albioncode/BungeeEssentials
-    jdk: oraclejdk7
-    tags: true
-    all_branches: true
+
