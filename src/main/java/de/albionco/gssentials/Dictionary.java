@@ -137,7 +137,8 @@ public class Dictionary {
     }
 
     public static String formatMsg(String input, String... args) {
-        if (args[3].hasPermission(Permissions.General.MESSAGE_COLOR)) {
+        player = args[3].getName();
+        if (player.hasPermission(Permissions.General.MESSAGE_COLOR)) {
             return Dictionary.format(input, true, args);
         } else {
             return Dictionary.format(input, false, args);
