@@ -24,6 +24,7 @@ package de.albionco.gssentials;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.config.Configuration;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -137,7 +138,7 @@ public class Dictionary {
     }
 
     public static String formatMsg(String input, String... args) {
-        player = args[3].getName();
+        ProxiedPlayer player = args[3].getName();
         if (player.hasPermission(Permissions.General.MESSAGE_COLOR)) {
             return Dictionary.format(input, true, args);
         } else {
