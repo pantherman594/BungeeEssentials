@@ -1,0 +1,56 @@
+enable:
+    - admin
+    - alert
+    - find
+    - hide
+    - join
+    - list
+    - log
+    - message
+    - multilog
+    - rules
+    - rules-chat
+    - send
+    - sendall
+    - spam
+    - spam-chat
+    - slap
+    - spy
+format:
+    admin: '&c{{ SERVER }} - {{ SENDER }} » &7{{ MESSAGE }}'
+    alert: '&8[&a+&8] &7{{ MESSAGE }}'
+    find: '&e{{ PLAYER }} &ais playing on &e{{ SERVER }}'
+    message: '&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{ MESSAGE }}'
+    send: '&aSending &e{{ PLAYER }} &ato server &e{{ SERVER }}'
+warnings:
+    similarity: '&cPlease do not spam other players!'
+    swearing: '&cPlease do not swear at other players!'
+    advertising: '&cPlease do not advertise other servers!'
+rules:
+    - pattern: '\bfuck\b'
+      handle: CURSING
+    - pattern: '^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$'
+      handle: ADVERTISEMENT
+    - pattern: '(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\.){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9]))'
+      handle: ADVERTISEMENT
+    - pattern: 'asshole'
+      handle: REPLACE
+      replacement: '******'
+list:
+    header: '&aServers:'
+    body: '&a- {{ SERVER }} {{ DENSITY }}'
+multilog:
+    limit: 3
+    kicked: '&cMaximum number of connections reached!'
+spy:
+    message: '&7[{{ SENDER }} » {{ RECIPIENT }}] &7{{ MESSAGE }}'
+    enabled: '&aSocialspy has been enabled'
+    disabled: '&cSocialspy has been disabled'
+hide:
+    enabled: '&aYou are now hidden from all players!'
+    disabled: '&cYou are now visible to all players!'
+errors:
+    invalid: '&cInvalid arguments provided.'
+    offline: '&cSorry, that player is offline.'
+    slap: '&cYou are unworthy of slapping people.'
+    messages: '&cNobody has messaged you recently.'

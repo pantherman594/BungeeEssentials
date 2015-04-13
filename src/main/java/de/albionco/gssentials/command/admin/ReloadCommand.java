@@ -38,7 +38,8 @@ public class ReloadCommand extends Command {
         super("gssentials-reload", Permissions.Admin.RELOAD, "gss-reload");
     }
 
-    @Override
+    @SuppressWarnings("deprecation")
+	@Override
     public void execute(CommandSender sender, String[] args) {
         if (BungeeEssentials.getInstance().reload()) {
             sender.sendMessage(Dictionary.colour("&aBungeeEssentials has been reloaded!"));

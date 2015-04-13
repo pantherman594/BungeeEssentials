@@ -73,7 +73,6 @@ public class BungeeEssentials extends Plugin {
         Log.reset();
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void saveConfig() throws IOException {
         if (!getDataFolder().exists()) {
             getDataFolder().mkdir();

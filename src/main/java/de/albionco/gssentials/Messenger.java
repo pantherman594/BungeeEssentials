@@ -79,6 +79,8 @@ public class Messenger implements Listener {
                                     }
                                 }
                                 break;
+						default:
+							break;
                         }
                     }
                 }
@@ -143,6 +145,8 @@ public class Messenger implements Listener {
                             }
                         }
                         break;
+				default:
+					break;
                 }
             }
         }
@@ -244,7 +248,6 @@ public class Messenger implements Listener {
     }
 
     @EventHandler
-    @SuppressWarnings("unused")
     public void logout(PlayerDisconnectEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
         if (sentMessages.containsKey(uuid)) {
