@@ -118,6 +118,8 @@ public class Log {
                 case REPLACE:
                     logger.log(Level.WARNING, "{0}''s message was filtered \"{1}\"", new Object[]{sender.getName(), joiner.join(rule.getMatches())});
                     break;
+			default:
+				break;
             }
         }
     }

@@ -40,7 +40,8 @@ public abstract class ServerSpecificCommand extends Command {
         this.permission = permission;
     }
 
-    @Override
+    @SuppressWarnings("deprecation")
+	@Override
     public final void execute(CommandSender sender, String[] args) {
         if (sender.hasPermission(permission)) {
             run(sender, args);

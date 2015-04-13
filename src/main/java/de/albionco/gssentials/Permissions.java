@@ -45,6 +45,7 @@ public class Permissions {
 
     public static class General {
         public static final String MESSAGE = "gssentials.message";
+        public static final String MESSAGE_COLOR = MESSAGE + ".color";
         public static final String FIND = "gssentials.find";
         public static final String LIST = "gssentials.list";
         public static final String LIST_OFFLINE = "gssentials.list.offline";

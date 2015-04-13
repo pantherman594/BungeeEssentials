@@ -44,7 +44,6 @@ import java.util.HashMap;
  *
  * @author Connor Spencer Harries
  */
-@SuppressWarnings("unused")
 public class PlayerListener implements Listener {
     private final HashMap<InetAddress, Integer> connections;
     private final int max;

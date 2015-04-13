@@ -37,7 +37,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 @SuppressWarnings("deprecation")
 public class ChatCommand extends ServerSpecificCommand {
     public ChatCommand() {
-        super("staff", Permissions.Admin.CHAT, "admin");
+        super("staff", Permissions.Admin.CHAT, "admin", "a", "sc");
     }
 
     @Override

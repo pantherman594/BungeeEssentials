@@ -23,7 +23,9 @@
 package de.albionco.gssentials;
 
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.config.Configuration;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -120,6 +122,9 @@ public class Dictionary {
     }
 
     public static String format(String input, boolean colour, String... args) {
+    	if (input == Dictionary.FORMAT_PRIVATE_MESSAGE) {
+    		input = colour(input);
+    	}
         input = input.replace("{{ TIME }}", getTime());
         // Minor fix for people who suffer from encoding issues
         input = input.replace("{{ RAQUO }}", "»");
@@ -134,6 +139,15 @@ public class Dictionary {
 
     public static String format(String input, String... args) {
         return Dictionary.format(input, true, args);
+    }
+
+    public static String formatMsg(String input, String... args) {
+        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(args[3]);
+        if (player.hasPermission(Permissions.General.MESSAGE_COLOR)) {
+            return Dictionary.format(input, true, args);
+        } else {
+            return Dictionary.format(input, false, args);
+        }
     }
 
     /**
