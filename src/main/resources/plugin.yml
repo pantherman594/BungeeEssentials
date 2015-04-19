@@ -1,7 +1,7 @@
 name: BungeeEssentials
 main: de.albionco.gssentials.BungeeEssentials
 version: #VERSION#
-author: Albion
+author: Pantherman594
 softdepends:
 - BungeeAdminTools
 - BungeeSuite

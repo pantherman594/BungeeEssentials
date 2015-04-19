@@ -44,8 +44,9 @@ multilog:
     kicked: '&cMaximum number of connections reached!'
 spy:
     message: '&7[{{ SENDER }} » {{ RECIPIENT }}] &7{{ MESSAGE }}'
-    enabled: '&aSocialspy has been enabled'
-    disabled: '&cSocialspy has been disabled'
+    command: '&7[{{ SENDER }}] &b{{ COMMAND }}'
+    enabled: '&aSpy has been enabled'
+    disabled: '&cSpy has been disabled'
 hide:
     enabled: '&aYou are now hidden from all players!'
     disabled: '&cYou are now visible to all players!'

@@ -50,7 +50,7 @@ public class SpyCommand extends ServerSpecificCommand {
                 player.sendMessage(Dictionary.format(Dictionary.SPY_DISABLED));
             }
         } else {
-            sender.sendMessage(Dictionary.colour("&cSocial spy cannot be used by console"));
+            sender.sendMessage(Dictionary.colour("&cThe console may not be a spy"));
         }
     }
 }

@@ -155,6 +155,7 @@ public class BungeeEssentials extends Plugin {
         }
         if (enable.contains("spy")) {
             register(new SpyCommand());
+            ProxyServer.getInstance().getPluginManager().registerListener(this, new CommandSpy());
             commands++;
         }
         if (enable.contains("rules") || enable.contains("rules-chat")) {
