@@ -68,9 +68,11 @@ public class Dictionary {
     public static String LIST_BODY;
     @Load(key = "spy.message", def = "&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{{ MESSAGE }}}")
     public static String SPY_MESSAGE;
-    @Load(key = "spy.enabled", def = "&aSocialspy has been enabled!")
+    @Load(key = "spy.command", def = "&7[{{ SENDER }}] &b{{ COMMAND }}")
+    public static String SPY_COMMAND;
+    @Load(key = "spy.enabled", def = "&aSpy has been enabled!")
     public static String SPY_ENABLED;
-    @Load(key = "spy.disabled", def = "&cSocialspy has been disabled!")
+    @Load(key = "spy.disabled", def = "&cSpy has been disabled!")
     public static String SPY_DISABLED;
     @Load(key = "hide.enabled", def = "&aYou are now hidden from all users!")
     public static String HIDE_ENABLED;
