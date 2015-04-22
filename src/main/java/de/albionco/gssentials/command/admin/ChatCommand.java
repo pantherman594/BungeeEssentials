@@ -22,6 +22,7 @@
 
 package de.albionco.gssentials.command.admin;
 
+import de.albionco.gssentials.BungeeEssentials;
 import de.albionco.gssentials.Dictionary;
 import de.albionco.gssentials.Permissions;
 import de.albionco.gssentials.command.ServerSpecificCommand;
@@ -37,7 +38,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 @SuppressWarnings("deprecation")
 public class ChatCommand extends ServerSpecificCommand {
     public ChatCommand() {
-        super("staff", Permissions.Admin.CHAT, "admin", "a", "sc");
+        super(BungeeEssentials.StaffChat.MAIN, Permissions.Admin.CHAT, BungeeEssentials.StaffChat.ALIAS);
     }
 
     @Override

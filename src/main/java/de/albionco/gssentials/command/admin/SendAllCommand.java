@@ -23,6 +23,7 @@
 package de.albionco.gssentials.command.admin;
 
 import com.google.common.collect.ImmutableSet;
+import de.albionco.gssentials.BungeeEssentials;
 import de.albionco.gssentials.Dictionary;
 import de.albionco.gssentials.Permissions;
 import net.md_5.bungee.api.Callback;
@@ -44,7 +45,7 @@ import java.util.Set;
 @SuppressWarnings("deprecation")
 public class SendAllCommand extends Command implements TabExecutor {
     public SendAllCommand() {
-        super("sendall", Permissions.Admin.SENDALL);
+        super(BungeeEssentials.SendAll.MAIN, Permissions.Admin.SENDALL, BungeeEssentials.SendAll.ALIAS);
     }
 
     @Override

@@ -22,6 +22,7 @@
 
 package de.albionco.gssentials.command.general;
 
+import de.albionco.gssentials.BungeeEssentials;
 import de.albionco.gssentials.Dictionary;
 import de.albionco.gssentials.Messenger;
 import de.albionco.gssentials.Permissions;
@@ -40,7 +41,7 @@ import net.md_5.bungee.api.plugin.Command;
 public class ServerListCommand extends Command {
 
     public ServerListCommand() {
-        super("glist", Permissions.General.LIST, "servers", "serverlist");
+        super(BungeeEssentials.ServerList.MAIN, Permissions.General.LIST, BungeeEssentials.ServerList.ALIAS);
     }
 
     @Override

@@ -22,6 +22,7 @@
 
 package de.albionco.gssentials.command.admin;
 
+import de.albionco.gssentials.BungeeEssentials;
 import de.albionco.gssentials.Dictionary;
 import de.albionco.gssentials.Permissions;
 import net.md_5.bungee.api.CommandSender;
@@ -38,7 +39,7 @@ import net.md_5.bungee.api.plugin.Command;
 public class AlertCommand extends Command {
 
     public AlertCommand() {
-        super("alert", Permissions.Admin.ALERT, "galert");
+        super(BungeeEssentials.Alert.MAIN, Permissions.Admin.ALERT, BungeeEssentials.Alert.ALIAS);
     }
 
     @Override

@@ -22,6 +22,7 @@
 
 package de.albionco.gssentials.command.admin;
 
+import de.albionco.gssentials.BungeeEssentials;
 import de.albionco.gssentials.Dictionary;
 import de.albionco.gssentials.Messenger;
 import de.albionco.gssentials.Permissions;
@@ -37,7 +38,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 @SuppressWarnings("deprecation")
 public class HideCommand extends ServerSpecificCommand {
     public HideCommand() {
-        super("hide", Permissions.Admin.HIDE);
+        super(BungeeEssentials.Hide.MAIN, Permissions.Admin.HIDE, BungeeEssentials.Hide.ALIAS);
     }
 
     @Override

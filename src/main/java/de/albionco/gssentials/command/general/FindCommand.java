@@ -23,6 +23,7 @@
 package de.albionco.gssentials.command.general;
 
 import com.google.common.collect.ImmutableSet;
+import de.albionco.gssentials.BungeeEssentials;
 import de.albionco.gssentials.Dictionary;
 import de.albionco.gssentials.Messenger;
 import de.albionco.gssentials.Permissions;
@@ -43,7 +44,7 @@ import java.util.Set;
 @SuppressWarnings("deprecation")
 public class FindCommand extends Command implements TabExecutor {
     public FindCommand() {
-        super("find", Permissions.General.FIND);
+        super(BungeeEssentials.Find.MAIN, Permissions.General.FIND, BungeeEssentials.Find.ALIAS);
     }
 
     @Override

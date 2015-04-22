@@ -22,6 +22,7 @@
 
 package de.albionco.gssentials.command.general;
 
+import de.albionco.gssentials.BungeeEssentials;
 import de.albionco.gssentials.Dictionary;
 import de.albionco.gssentials.Messenger;
 import de.albionco.gssentials.Permissions;
@@ -40,7 +41,7 @@ import java.util.UUID;
 @SuppressWarnings("deprecation")
 public class ReplyCommand extends Command {
     public ReplyCommand() {
-        super("reply", Permissions.General.MESSAGE, "r");
+        super(BungeeEssentials.Reply.MAIN, Permissions.General.MESSAGE, BungeeEssentials.Reply.ALIAS);
     }
 
     @Override

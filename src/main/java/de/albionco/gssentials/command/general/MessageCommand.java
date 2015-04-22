@@ -23,6 +23,7 @@
 package de.albionco.gssentials.command.general;
 
 import com.google.common.collect.ImmutableSet;
+import de.albionco.gssentials.BungeeEssentials;
 import de.albionco.gssentials.Dictionary;
 import de.albionco.gssentials.Messenger;
 import de.albionco.gssentials.Permissions;
@@ -43,7 +44,7 @@ import java.util.Set;
 @SuppressWarnings("deprecation")
 public class MessageCommand extends Command implements TabExecutor {
     public MessageCommand() {
-        super("message", Permissions.General.MESSAGE, "msg", "m", "pm", "t", "tell", "w", "whisper");
+        super(BungeeEssentials.Message.MAIN, Permissions.General.MESSAGE, BungeeEssentials.Message.ALIAS);
     }
 
     @Override

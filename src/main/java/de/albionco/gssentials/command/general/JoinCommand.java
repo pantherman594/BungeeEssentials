@@ -26,6 +26,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
+import de.albionco.gssentials.BungeeEssentials;
 import de.albionco.gssentials.Dictionary;
 import de.albionco.gssentials.Messenger;
 import de.albionco.gssentials.Permissions;
@@ -45,7 +46,7 @@ import net.md_5.bungee.api.plugin.TabExecutor;
 @SuppressWarnings("deprecation")
 public class JoinCommand extends Command implements TabExecutor {
     public JoinCommand() {
-        super("join", Permissions.General.JOIN);
+        super(BungeeEssentials.Join.MAIN, Permissions.General.JOIN, BungeeEssentials.Join.ALIAS);
     }
 
     @Override

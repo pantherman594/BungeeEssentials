@@ -47,12 +47,14 @@ import java.util.logging.Level;
 public class BungeeEssentials extends Plugin {
     private static BungeeEssentials instance;
     private Configuration config = null;
+    private static Configuration configStat = null;
     private IntegrationProvider helper;
     private boolean watchMultiLog;
     private boolean integrated;
     private boolean chatRules;
     private boolean chatSpam;
     private File configFile;
+    private static File configFileStat;
     private boolean useLog;
     private boolean rules;
     private boolean spam;
@@ -65,6 +67,7 @@ public class BungeeEssentials extends Plugin {
     public void onEnable() {
         instance = this;
         configFile = new File(getDataFolder(), "config.yml");
+        configFileStat = new File(getDataFolder(), "config.yml");
         reload();
     }
 
@@ -83,11 +86,103 @@ public class BungeeEssentials extends Plugin {
         }
     }
 
+    public static class StaffChat {
+        public static List<String> BASE = configStat.getStringList("commands.staffchat");
+        public static String MAIN = BASE.get(0);
+        private static String[] TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
+        public static String[] ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
+    }
+
+    public static class Alert {
+        public static List<String> BASE = configStat.getStringList("commands.alert");
+        public static String MAIN = BASE.get(0);
+        private static String[] TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
+        public static String[] ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
+    }
+
+    public static class Find {
+        public static List<String> BASE = configStat.getStringList("commands.find");
+        public static String MAIN = BASE.get(0);
+        private static String[] TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
+        public static String[] ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
+    }
+
+    public static class Hide {
+        public static List<String> BASE = configStat.getStringList("commands.hide");
+        public static String MAIN = BASE.get(0);
+        private static String[] TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
+        public static String[] ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
+    }
+
+    public static class Join {
+        public static List<String> BASE = configStat.getStringList("commands.join");
+        public static String MAIN = BASE.get(0);
+        private static String[] TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
+        public static String[] ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
+    }
+
+    public static class ServerList {
+        public static List<String> BASE = configStat.getStringList("commands.list");
+        public static String MAIN = BASE.get(0);
+        private static String[] TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
+        public static String[] ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
+    }
+
+    public static class Message {
+        public static List<String> BASE = configStat.getStringList("commands.message");
+        public static String MAIN = BASE.get(0);
+        private static String[] TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
+        public static String[] ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
+    }
+
+    public static class Reply {
+        public static List<String> BASE = configStat.getStringList("commands.reply");
+        public static String MAIN = BASE.get(0);
+        private static String[] TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
+        public static String[] ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
+    }
+
+    public static class Send {
+        public static List<String> BASE = configStat.getStringList("commands.send");
+        public static String MAIN = BASE.get(0);
+        private static String[] TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
+        public static String[] ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
+    }
+
+    public static class SendAll {
+        public static List<String> BASE = configStat.getStringList("commands.sendall");
+        public static String MAIN = BASE.get(0);
+        private static String[] TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
+        public static String[] ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
+    }
+
+    public static class Slap {
+        public static List<String> BASE = configStat.getStringList("commands.slap");
+        public static String MAIN = BASE.get(0);
+        private static String[] TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
+        public static String[] ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
+    }
+
+    public static class Spy {
+        public static List<String> BASE = configStat.getStringList("commands.spy");
+        public static String MAIN = BASE.get(0);
+        private static String[] TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
+        public static String[] ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
+    }
+
+    public static class Reload {
+        public static List<String> BASE = configStat.getStringList("commands.reload");
+        public static String MAIN = BASE.get(0);
+        private static String[] TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
+        public static String[] ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
+    }
+
     private void loadConfig() throws IOException {
         if (!configFile.exists()) {
             saveConfig();
         }
         config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(configFile);
+        configStat = ConfigurationProvider.getProvider(YamlConfiguration.class).load(configFileStat);
     }
 
     public boolean reload() {
@@ -115,13 +210,13 @@ public class BungeeEssentials extends Plugin {
 
         int commands = 0;
         List<String> enable = config.getStringList("enable");
-        if (enable.contains("admin")) {
+        if (enable.contains("staffchat")) {
             register(new ChatCommand());
             commands++;
         }
         if (enable.contains("alert")) {
             register(new AlertCommand());
-            commands++;
+            commands++; 
         }
         if (enable.contains("find")) {
             register(new FindCommand());

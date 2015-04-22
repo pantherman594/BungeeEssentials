@@ -23,6 +23,7 @@
 package de.albionco.gssentials.command.general;
 
 import com.google.common.collect.ImmutableSet;
+import de.albionco.gssentials.BungeeEssentials;
 import de.albionco.gssentials.Dictionary;
 import de.albionco.gssentials.Permissions;
 import net.md_5.bungee.api.ChatColor;
@@ -43,7 +44,7 @@ import java.util.Set;
 @SuppressWarnings("deprecation")
 public class SlapCommand extends Command implements TabExecutor {
     public SlapCommand() {
-        super("slap", "", "uslap");
+        super(BungeeEssentials.Slap.MAIN, "", BungeeEssentials.Slap.ALIAS);
     }
 
     @Override

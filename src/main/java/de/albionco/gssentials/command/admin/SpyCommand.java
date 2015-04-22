@@ -22,6 +22,7 @@
 
 package de.albionco.gssentials.command.admin;
 
+import de.albionco.gssentials.BungeeEssentials;
 import de.albionco.gssentials.Dictionary;
 import de.albionco.gssentials.Messenger;
 import de.albionco.gssentials.Permissions;
@@ -37,7 +38,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 @SuppressWarnings("deprecation")
 public class SpyCommand extends ServerSpecificCommand {
     public SpyCommand() {
-        super("spy", Permissions.Admin.SPY, "gspy");
+        super(BungeeEssentials.Spy.MAIN, Permissions.Admin.SPY, BungeeEssentials.Spy.ALIAS);
     }
 
     @Override
