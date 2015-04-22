@@ -31,5 +31,6 @@ public enum Handle {
     ADVERTISEMENT,
     REPLACE,
     CURSING,
+    COMMAND,
     ALERT
 }

@@ -26,6 +26,7 @@ import com.google.common.base.Preconditions;
 import de.albionco.gssentials.regex.RuleManager;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
@@ -79,6 +80,13 @@ public class Messenger implements Listener {
                                     }
                                 }
                                 break;
+                            case COMMAND:
+                                CommandSender console = ProxyServer.getInstance().getConsole();
+                                String command = result.getRule().getCommand();
+                                if (command != null) {
+                                    ProxyServer.getInstance().getPluginManager().dispatchCommand(console, command.replace("{{ SENDER }}", sender.getName()));
+                                }
+                                return;
 						default:
 							break;
                         }
@@ -145,6 +153,13 @@ public class Messenger implements Listener {
                             }
                         }
                         break;
+                    case COMMAND:
+                        CommandSender console = ProxyServer.getInstance().getConsole();
+                        String command = result.getRule().getCommand();
+                        if (command != null) {
+                            ProxyServer.getInstance().getPluginManager().dispatchCommand(console, command.replace("{{ SENDER }}", player.getName()));
+                        }
+                        return;
 				default:
 					break;
                 }

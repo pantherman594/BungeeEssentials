@@ -1,5 +1,5 @@
 enable:
-    - admin
+    - staffchat
     - alert
     - find
     - hide
@@ -16,6 +16,52 @@ enable:
     - spam-chat
     - slap
     - spy
+commands:
+    staffchat:
+        - 'staffchat'
+        - 'admin'
+        - 'a'
+        - 'sc'
+    alert:
+        - 'alert'
+        - 'broadcast'
+    find:
+        - 'find'
+        - 'whereis'
+    hide:
+        - 'hide'
+    join:
+        - 'join'
+    list:
+        - 'glist'
+        - 'servers'
+        - 'serverlist'
+    message:
+        - 'message'
+        - 'msg'
+        - 'm'
+        - 'pm,'
+        - 't'
+        - 'tell'
+        - 'w'
+        - 'whisper'
+    reply:
+        - 'reply'
+        - 'r'
+    send:
+        - 'send'
+    sendall:
+        - 'sendall'
+    slap:
+        - 'slap'
+        - 'uslap'
+        - 'smack'
+    spy:
+        - 'spy'
+        - 'socialspy'
+        - 'commandspy'
+    reload:
+        - 'gssreload'
 format:
     admin: '&c{{ SERVER }} - {{ SENDER }} » &7{{ MESSAGE }}'
     alert: '&8[&a+&8] &7{{ MESSAGE }}'
@@ -36,6 +82,9 @@ rules:
     - pattern: 'asshole'
       handle: REPLACE
       replacement: '******'
+    - pattern: 'I hate (this server|your server)'
+      handle: COMMAND
+      command: 'send {{ SENDER }} lobby'
 list:
     header: '&aServers:'
     body: '&a- {{ SERVER }} {{ DENSITY }}'

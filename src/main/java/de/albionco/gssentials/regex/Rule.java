@@ -39,6 +39,7 @@ public class Rule {
     private Pattern pattern = null;
     private Handle handle = null;
     private String replacement;
+    private String command;
     private List<String> matches;
 
     private Rule() {
@@ -56,6 +57,9 @@ public class Rule {
         rule.handle(Handle.valueOf(String.valueOf(serialized.get("handle")).toUpperCase()));
         if (serialized.get("replacement") != null) {
             rule.replacement = serialized.get("replacement");
+        }
+        if (serialized.get("command") != null) {
+            rule.command = serialized.get("command");
         }
         return rule;
     }
@@ -87,6 +91,13 @@ public class Rule {
             return null;
         }
         return replacement;
+    }
+
+    public String getCommand() {
+        if (handle != Handle.COMMAND) {
+            return null;
+        }
+        return command;
     }
 
     public boolean matches(String input) {
