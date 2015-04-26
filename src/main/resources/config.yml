@@ -40,7 +40,7 @@ commands:
         - 'message'
         - 'msg'
         - 'm'
-        - 'pm,'
+        - 'pm'
         - 't'
         - 'tell'
         - 'w'
