@@ -42,9 +42,9 @@ public class ReloadCommand extends Command {
 	@Override
     public void execute(CommandSender sender, String[] args) {
         if (BungeeEssentials.getInstance().reload()) {
-            sender.sendMessage(Dictionary.colour("&aBungeeEssentials has been reloaded!"));
+            sender.sendMessage(Dictionary.colour("&8(&eCrew&aPvP&8) &aBungeeEssentials &7has been reloaded!"));
         } else {
-            sender.sendMessage(Dictionary.colour("&cUnable to reload BungeeEssentials! :("));
+            sender.sendMessage(Dictionary.colour("&8(&eCrew&aPvP&8) &cAn error occured while reloading BungeeEssentials!"));
         }
     }
 }
