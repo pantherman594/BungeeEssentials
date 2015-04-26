@@ -75,7 +75,7 @@ public class ServerListCommand extends Command {
     }
 
     private String getDensity(int players) {
-        return String.valueOf(getColour(players)) + "(" + players + ")";
+        return String.valueOf(getColour(players)) + " + players + ";
     }
 
     private ChatColor getColour(int players) {
