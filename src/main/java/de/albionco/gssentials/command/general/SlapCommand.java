@@ -57,8 +57,8 @@ public class SlapCommand extends Command implements TabExecutor {
             if (args.length > 0) {
                 ProxiedPlayer enemy = ProxyServer.getInstance().getPlayer(args[0]);
                 if (enemy != null) {
-                    sender.sendMessage(ChatColor.GREEN + "You just slapped " + ChatColor.YELLOW + enemy.getName() + ChatColor.GREEN + ", I bet that felt good, didn't it?");
-                    enemy.sendMessage(ChatColor.GREEN + "You have been universally slapped by " + (player == null ? "GOD" : player.getName()));
+                    sender.sendMessage(Dictionary.colour("&8(&aSlap&8) &7You just slapped &e" + enemy.getName() + "&7! I bet that felt good, didn't it?"));
+                    enemy.sendMessage(Dictionary.colour("&8(&aSlap&8) &7You have been slapped by &e" + (player == null ? "Arnold Schwarzenegger" : player.getName()) + "&7!"));
                 } else {
                     sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
                 }
