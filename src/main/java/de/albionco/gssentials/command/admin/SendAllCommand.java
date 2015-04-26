@@ -57,7 +57,7 @@ public class SendAllCommand extends Command implements TabExecutor {
                     @Override
                     public void done(Boolean success, Throwable throwable) {
                         if (success) {
-                            player.sendMessage(Dictionary.colour("&dWhooooooooooosh!"));
+                            player.sendMessage(Dictionary.colour("&8(&eCrew&aPvP&8) &7Wooosh!"));
                         }
                     }
                 });
