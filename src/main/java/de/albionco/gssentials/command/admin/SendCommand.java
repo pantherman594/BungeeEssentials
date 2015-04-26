@@ -56,10 +56,10 @@ public class SendCommand extends ServerSpecificCommand implements TabExecutor {
                             @Override
                             public void done(Boolean success, Throwable throwable) {
                                 if (success) {
-                                    player.sendMessage(Dictionary.colour("&dWhooooooooooosh!"));
+                                    player.sendMessage(Dictionary.colour("&8(&eCrew&aPvP&8) &7Wooosh!"));
                                 } else {
                                     // Pretend nothing happened for the player being sent
-                                    sender.sendMessage(ChatColor.RED + "Unable to send player to server.");
+                                    sender.sendMessage(Dictionary.colour("&8(&eCrew&aPvP&8) &cAn error occured while sending the player to the specified server!"));
                                 }
                             }
                         });
