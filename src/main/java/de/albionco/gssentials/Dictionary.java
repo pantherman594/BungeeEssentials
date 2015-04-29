@@ -60,7 +60,11 @@ public class Dictionary {
     public static String FORMAT_SEND_PLAYER;
     @Load(key = "format.find", def = "&e{{ PLAYER }} &ais playing on &e{{ SERVER }}")
     public static String FORMAT_FIND_PLAYER;
-    @Load(key = "format.alert", def = "&8[&a+&8] &7{{ FORMAT_ALERT }}")
+    @Load(key = "format.join", def = "&8[&b+&8] &7{{ PLAYER }}")
+    public static String FORMAT_JOIN;
+    @Load(key = "format.quit", def = "&8[&a-&8] &7{{ PLAYER }}")
+    public static String FORMAT_QUIT;
+    @Load(key = "format.alert", def = "&8[&c!&8] &7{{ MESSAGE }}")
     public static String FORMAT_ALERT;
     @Load(key = "list.header", def = "&aServers")
     public static String LIST_HEADER;
@@ -68,12 +72,16 @@ public class Dictionary {
     public static String LIST_BODY;
     @Load(key = "spy.message", def = "&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{{ MESSAGE }}}")
     public static String SPY_MESSAGE;
-    @Load(key = "spy.command", def = "&7[{{ SENDER }}] &b{{ COMMAND }}")
-    public static String SPY_COMMAND;
     @Load(key = "spy.enabled", def = "&aSpy has been enabled!")
     public static String SPY_ENABLED;
     @Load(key = "spy.disabled", def = "&cSpy has been disabled!")
     public static String SPY_DISABLED;
+    @Load(key = "commandspy.command", def = "&7[{{ SENDER }}] &b{{ COMMAND }}")
+    public static String CSPY_COMMAND;
+    @Load(key = "commandspy.enabled", def = "&aCommand Spy has been enabled!")
+    public static String CSPY_ENABLED;
+    @Load(key = "commandspy.disabled", def = "&cCommand Spy has been disabled!")
+    public static String CSPY_DISABLED;
     @Load(key = "hide.enabled", def = "&aYou are now hidden from all users!")
     public static String HIDE_ENABLED;
     @Load(key = "hide.disabled", def = "&cYou are no longer hidden!")

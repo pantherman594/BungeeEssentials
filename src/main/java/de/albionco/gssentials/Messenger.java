@@ -51,6 +51,7 @@ public class Messenger implements Listener {
     private static HashMap<UUID, UUID> messages = new HashMap<>();
     private static Set<UUID> hidden = new HashSet<>();
     private static Set<UUID> spies = new HashSet<>();
+    private static Set<UUID> cspies = new HashSet<>();
 
     public static void sendMessage(CommandSender sender, ProxiedPlayer recipient, String message) {
         if (recipient != null && !Messenger.isHidden(recipient)) {
@@ -185,6 +186,11 @@ public class Messenger implements Listener {
         return spies.contains(player.getUniqueId());
     }
 
+    public static boolean isCSpy(ProxiedPlayer player) {
+        Preconditions.checkNotNull(player, "Invalid player specified");
+        return cspies.contains(player.getUniqueId());
+    }
+
     public static boolean isHidden(ProxiedPlayer player) {
         Preconditions.checkNotNull(player, "Invalid player specified");
         return hidden.contains(player.getUniqueId());
@@ -198,6 +204,16 @@ public class Messenger implements Listener {
             spies.add(player.getUniqueId());
         }
         return isSpy(player);
+    }
+
+    public static boolean toggleCSpy(ProxiedPlayer player) {
+        Preconditions.checkNotNull(player, "Invalid player specified");
+        if (isCSpy(player)) {
+            cspies.remove(player.getUniqueId());
+        } else {
+            cspies.add(player.getUniqueId());
+        }
+        return isCSpy(player);
     }
 
     public static boolean toggleHidden(ProxiedPlayer player) {
@@ -216,6 +232,7 @@ public class Messenger implements Listener {
         messages.clear();
         hidden.clear();
         spies.clear();
+        cspies.clear();
     }
 
     private static double compare(String first, String second) {
@@ -275,6 +292,10 @@ public class Messenger implements Listener {
 
         if (spies.contains(uuid)) {
             spies.remove(event.getPlayer().getUniqueId());
+        }
+
+        if (cspies.contains(uuid)) {
+            cspies.remove(event.getPlayer().getUniqueId());
         }
 
         if (hidden.contains(uuid)) {

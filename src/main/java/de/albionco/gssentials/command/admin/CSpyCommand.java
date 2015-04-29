@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Connor Spencer Harries
+ * Copyright (c) 2015 David Shen
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,27 +31,27 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 /**
- * Created by Connor Harries on 14/01/2015.
+ * Created by David on 4/28/2015.
  *
- * @author Connor Spencer Harries
+ * @author David Shen
  */
 @SuppressWarnings("deprecation")
-public class SpyCommand extends ServerSpecificCommand {
-    public SpyCommand() {
-        super(BungeeEssentials.Spy_MAIN, Permissions.Admin.SPY, BungeeEssentials.Spy_ALIAS);
+public class CSpyCommand extends ServerSpecificCommand {
+    public CSpyCommand() {
+        super(BungeeEssentials.CSpy_MAIN, Permissions.Admin.SPY_COMMAND, BungeeEssentials.CSpy_ALIAS);
     }
 
     @Override
     public void run(CommandSender sender, String[] args) {
         if (sender instanceof ProxiedPlayer) {
             ProxiedPlayer player = (ProxiedPlayer) sender;
-            if (Messenger.toggleSpy(player)) {
-                player.sendMessage(Dictionary.format(Dictionary.SPY_ENABLED));
+            if (Messenger.toggleCSpy(player)) {
+                player.sendMessage(Dictionary.format(Dictionary.CSPY_ENABLED));
             } else {
-                player.sendMessage(Dictionary.format(Dictionary.SPY_DISABLED));
+                player.sendMessage(Dictionary.format(Dictionary.CSPY_DISABLED));
             }
         } else {
-            sender.sendMessage(Dictionary.colour("&cConsole may not toggle social spy"));
+            sender.sendMessage(Dictionary.colour("&cConsole may not toggle command spy"));
         }
     }
 }
