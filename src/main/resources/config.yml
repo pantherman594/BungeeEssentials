@@ -1,106 +1,115 @@
 enable:
-    - staffchat
-    - alert
-    - find
-    - hide
-    - join
-    - list
-    - log
-    - message
-    - multilog
-    - rules
-    - rules-chat
-    - send
-    - sendall
-    - spam
-    - spam-chat
-    - slap
-    - spy
+  - staffchat
+  - alert
+  - find
+  - hide
+  - join
+  - list
+  - log
+  - message
+  - multilog
+  - rules
+  - rules-chat
+  - send
+  - sendall
+  - spam
+  - spam-chat
+  - slap
+  - spy
+  - commandspy
+  - joinannounce
 commands:
-    staffchat:
-        - 'staffchat'
-        - 'admin'
-        - 'a'
-        - 'sc'
-    alert:
-        - 'alert'
-        - 'broadcast'
-    find:
-        - 'find'
-        - 'whereis'
-    hide:
-        - 'hide'
-    join:
-        - 'join'
-    list:
-        - 'glist'
-        - 'servers'
-        - 'serverlist'
-    message:
-        - 'message'
-        - 'msg'
-        - 'm'
-        - 'pm,'
-        - 't'
-        - 'tell'
-        - 'w'
-        - 'whisper'
-    reply:
-        - 'reply'
-        - 'r'
-    send:
-        - 'send'
-    sendall:
-        - 'sendall'
-    slap:
-        - 'slap'
-        - 'uslap'
-        - 'smack'
-    spy:
-        - 'spy'
-        - 'socialspy'
-        - 'commandspy'
-    reload:
-        - 'gssreload'
+  staffchat:
+    - 'staffchat'
+    - 'admin'
+    - 'a'
+    - 'sc'
+  alert:
+    - 'alert'
+    - 'broadcast'
+  find:
+    - 'find'
+    - 'whereis'
+  hide:
+    - 'hide'
+  join:
+    - 'join'
+  list:
+    - 'glist'
+    - 'servers'
+    - 'serverlist'
+  message:
+    - 'message'
+    - 'msg'
+    - 'm'
+    - 'pm'
+    - 't'
+    - 'tell'
+    - 'w'
+    - 'whisper'
+  reply:
+    - 'reply'
+    - 'r'
+  send:
+    - 'send'
+  sendall:
+    - 'sendall'
+  slap:
+    - 'slap'
+    - 'uslap'
+    - 'smack'
+  spy:
+    - 'spy'
+    - 'socialspy'
+  commandspy:
+    - 'commandspy'
+    - 'cspy'
+  reload:
+    - 'gssreload'
 format:
-    admin: '&c{{ SERVER }} - {{ SENDER }} » &7{{ MESSAGE }}'
-    alert: '&8[&a+&8] &7{{ MESSAGE }}'
-    find: '&e{{ PLAYER }} &ais playing on &e{{ SERVER }}'
-    message: '&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{ MESSAGE }}'
-    send: '&aSending &e{{ PLAYER }} &ato server &e{{ SERVER }}'
+  admin: '&c{{ SERVER }} - {{ SENDER }} » &7{{ MESSAGE }}'
+  alert: '&8[&b!&8] &7{{ MESSAGE }}'
+  join: '&8[&a+&8] &7{{ PLAYER }}'
+  quit: '&8[&c-&8] &7{{ PLAYER }}'
+  find: '&e{{ PLAYER }} &ais playing on &e{{ SERVER }}'
+  message: '&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{ MESSAGE }}'
+  send: '&aSending &e{{ PLAYER }} &ato server &e{{ SERVER }}'
 warnings:
-    similarity: '&cPlease do not spam other players!'
-    swearing: '&cPlease do not swear at other players!'
-    advertising: '&cPlease do not advertise other servers!'
+  similarity: '&cPlease do not spam other players!'
+  swearing: '&cPlease do not swear at other players!'
+  advertising: '&cPlease do not advertise other servers!'
 rules:
-    - pattern: '\bfuck\b'
-      handle: CURSING
-    - pattern: '^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$'
-      handle: ADVERTISEMENT
-    - pattern: '(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\.){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9]))'
-      handle: ADVERTISEMENT
-    - pattern: 'asshole'
-      handle: REPLACE
-      replacement: '******'
-    - pattern: 'I hate (this server|your server)'
-      handle: COMMAND
-      command: 'send {{ SENDER }} lobby'
+  - pattern: '\bfuck\b'
+    handle: CURSING
+  - pattern: '^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$'
+    handle: ADVERTISEMENT
+  - pattern: '(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\.){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9]))'
+    handle: ADVERTISEMENT
+  - pattern: 'asshole'
+    handle: REPLACE
+    replacement: '******'
+  - pattern: 'I hate (this server|your server)'
+    handle: COMMAND
+    command: 'send {{ SENDER }} lobby'
 list:
-    header: '&aServers:'
-    body: '&a- {{ SERVER }} {{ DENSITY }}'
+  header: '&aServers:'
+  body: '&a- {{ SERVER }} {{ DENSITY }}'
 multilog:
-    limit: 3
-    kicked: '&cMaximum number of connections reached!'
+  limit: 3
+  kicked: '&cMaximum number of connections reached!'
 spy:
-    message: '&7[{{ SENDER }} » {{ RECIPIENT }}] &7{{ MESSAGE }}'
-    command: '&7[{{ SENDER }}] &b{{ COMMAND }}'
-    enabled: '&aSpy has been enabled'
-    disabled: '&cSpy has been disabled'
+  message: '&7[{{ SENDER }} » {{ RECIPIENT }}] &7{{ MESSAGE }}'
+  enabled: '&aSpy has been enabled'
+  disabled: '&cSpy has been disabled'
+commandspy:
+  command: '&7[{{ SENDER }}] &b{{ COMMAND }}'
+  enabled: '&aCommand Spy has been enabled'
+  disabled: '&cCommand Spy has been disabled'
 hide:
-    enabled: '&aYou are now hidden from all players!'
-    disabled: '&cYou are now visible to all players!'
+  enabled: '&aYou are now hidden from all players!'
+  disabled: '&cYou are now visible to all players!'
 errors:
-    invalid: '&cInvalid arguments provided.'
-    offline: '&cSorry, that player is offline.'
-    slap: '&cYou are unworthy of slapping people.'
-    messages: '&cNobody has messaged you recently.'
+  invalid: '&cInvalid arguments provided.'
+  offline: '&cSorry, that player is offline.'
+  slap: '&cYou are unworthy of slapping people.'
+  messages: '&cNobody has messaged you recently.'
