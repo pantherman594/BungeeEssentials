@@ -35,7 +35,7 @@ import net.md_5.bungee.api.plugin.Command;
  */
 public class ReloadCommand extends Command {
     public ReloadCommand() {
-        super(BungeeEssentials.Reload.MAIN, Permissions.Admin.RELOAD, BungeeEssentials.Reload.ALIAS);
+        super(BungeeEssentials.Reload_MAIN, Permissions.Admin.RELOAD, BungeeEssentials.Reload_ALIAS);
     }
 
     @SuppressWarnings("deprecation")

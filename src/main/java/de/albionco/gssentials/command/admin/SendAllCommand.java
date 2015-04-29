@@ -45,7 +45,7 @@ import java.util.Set;
 @SuppressWarnings("deprecation")
 public class SendAllCommand extends Command implements TabExecutor {
     public SendAllCommand() {
-        super(BungeeEssentials.SendAll.MAIN, Permissions.Admin.SENDALL, BungeeEssentials.SendAll.ALIAS);
+        super(BungeeEssentials.SendAll_MAIN, Permissions.Admin.SENDALL, BungeeEssentials.SendAll_ALIAS);
     }
 
     @Override

@@ -44,7 +44,7 @@ import java.util.Set;
 @SuppressWarnings("deprecation")
 public class MessageCommand extends Command implements TabExecutor {
     public MessageCommand() {
-        super(BungeeEssentials.Message.MAIN, Permissions.General.MESSAGE, BungeeEssentials.Message.ALIAS);
+        super(BungeeEssentials.Message_MAIN, Permissions.General.MESSAGE, BungeeEssentials.Message_ALIAS);
     }
 
     @Override

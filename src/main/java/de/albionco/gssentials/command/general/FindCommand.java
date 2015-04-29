@@ -44,7 +44,7 @@ import java.util.Set;
 @SuppressWarnings("deprecation")
 public class FindCommand extends Command implements TabExecutor {
     public FindCommand() {
-        super(BungeeEssentials.Find.MAIN, Permissions.General.FIND, BungeeEssentials.Find.ALIAS);
+        super(BungeeEssentials.Find_MAIN, Permissions.General.FIND, BungeeEssentials.Find_ALIAS);
     }
 
     @Override

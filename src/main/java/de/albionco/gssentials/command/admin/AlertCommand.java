@@ -39,7 +39,7 @@ import net.md_5.bungee.api.plugin.Command;
 public class AlertCommand extends Command {
 
     public AlertCommand() {
-        super(BungeeEssentials.Alert.MAIN, Permissions.Admin.ALERT, BungeeEssentials.Alert.ALIAS);
+        super(BungeeEssentials.Alert_MAIN, Permissions.Admin.ALERT, BungeeEssentials.Alert_ALIAS);
     }
 
     @Override

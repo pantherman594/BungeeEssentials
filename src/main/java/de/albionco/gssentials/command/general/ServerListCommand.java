@@ -41,7 +41,7 @@ import net.md_5.bungee.api.plugin.Command;
 public class ServerListCommand extends Command {
 
     public ServerListCommand() {
-        super(BungeeEssentials.ServerList.MAIN, Permissions.General.LIST, BungeeEssentials.ServerList.ALIAS);
+        super(BungeeEssentials.ServerList_MAIN, Permissions.General.LIST, BungeeEssentials.ServerList_ALIAS);
     }
 
     @Override

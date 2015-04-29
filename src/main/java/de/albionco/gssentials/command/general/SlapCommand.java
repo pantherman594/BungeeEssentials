@@ -44,7 +44,7 @@ import java.util.Set;
 @SuppressWarnings("deprecation")
 public class SlapCommand extends Command implements TabExecutor {
     public SlapCommand() {
-        super(BungeeEssentials.Slap.MAIN, "", BungeeEssentials.Slap.ALIAS);
+        super(BungeeEssentials.Slap_MAIN, "", BungeeEssentials.Slap_ALIAS);
     }
 
     @Override

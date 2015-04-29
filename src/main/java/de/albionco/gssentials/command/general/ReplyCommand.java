@@ -41,7 +41,7 @@ import java.util.UUID;
 @SuppressWarnings("deprecation")
 public class ReplyCommand extends Command {
     public ReplyCommand() {
-        super(BungeeEssentials.Reply.MAIN, Permissions.General.MESSAGE, BungeeEssentials.Reply.ALIAS);
+        super(BungeeEssentials.Reply_MAIN, Permissions.General.MESSAGE, BungeeEssentials.Reply_ALIAS);
     }
 
     @Override

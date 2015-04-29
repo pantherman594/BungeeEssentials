@@ -41,7 +41,7 @@ import java.util.Set;
 @SuppressWarnings("deprecation")
 public class SendCommand extends ServerSpecificCommand implements TabExecutor {
     public SendCommand() {
-        super(BungeeEssentials.Send.MAIN, Permissions.Admin.SEND, BungeeEssentials.Send.ALIAS);
+        super(BungeeEssentials.Send_MAIN, Permissions.Admin.SEND, BungeeEssentials.Send_ALIAS);
     }
 
     @Override
