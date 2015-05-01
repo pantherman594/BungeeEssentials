@@ -73,7 +73,7 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler(priority = Byte.MAX_VALUE)
+    @EventHandler(priority = -65)
     public void login(PreLoginEvent event) {
         if (BungeeEssentials.getInstance().shouldWatchMultilog()) {
             InetAddress address = event.getConnection().getAddress().getAddress();
@@ -99,6 +99,8 @@ public class PlayerListener implements Listener {
             if (amount != null && amount > 1) {
                 connections.put(address, amount - 1);
             }
+            ProxiedPlayer player = event.getPlayer();
+            ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_QUIT, "PLAYER", player.getName()));
         }
     }
 }
