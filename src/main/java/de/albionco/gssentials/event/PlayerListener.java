@@ -99,8 +99,6 @@ public class PlayerListener implements Listener {
             if (amount != null && amount > 1) {
                 connections.put(address, amount - 1);
             }
-            ProxiedPlayer player = event.getPlayer();
-            ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_QUIT, "PLAYER", player.getName()));
         }
     }
 }
