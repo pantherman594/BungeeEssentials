@@ -32,6 +32,7 @@ import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
+import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.event.PreLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -44,6 +45,8 @@ import java.util.HashMap;
  *
  * @author Connor Spencer Harries
  */
+
+@SuppressWarnings("deprecation")
 public class PlayerListener implements Listener {
     private final HashMap<InetAddress, Integer> connections;
     private final int max;
@@ -59,14 +62,24 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = Byte.MAX_VALUE)
     public void chat(ChatEvent event) {
+        ProxiedPlayer player = (ProxiedPlayer) event.getSender();
+        String sender = player.getName();
+        String cmd = event.getMessage();
+        if ((cmd.startsWith("/")) && (!player.hasPermission(Permissions.Admin.SPY_EXEMPT)) && BungeeEssentials.getInstance().shouldCommandSpy()) {
+            for (ProxiedPlayer onlinePlayer : ProxyServer.getInstance().getPlayers()) {
+                if ((onlinePlayer.getUniqueId() != player.getUniqueId()) && (onlinePlayer.hasPermission(Permissions.Admin.SPY_COMMAND)) && Messenger.isCSpy(onlinePlayer)) {
+                    onlinePlayer.sendMessage(Dictionary.format(Dictionary.CSPY_COMMAND, "SENDER", sender, "COMMAND", cmd));
+                }
+            }
+        }
         if (BungeeEssentials.getInstance().useChatSpamProtetion() || BungeeEssentials.getInstance().useChatRules()) {
             if (event.isCommand() || event.isCancelled()) {
                 return;
             }
             Connection connection = event.getSender();
-            for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-                if (player.getAddress() == connection.getAddress() && !player.hasPermission(Permissions.Admin.BYPASS_FILTER)) {
-                    Messenger.chat(player, event);
+            for (ProxiedPlayer onlinePlayer : ProxyServer.getInstance().getPlayers()) {
+                if (onlinePlayer.getAddress() == connection.getAddress() && !onlinePlayer.hasPermission(Permissions.Admin.BYPASS_FILTER)) {
+                    Messenger.chat(onlinePlayer, event);
                     return;
                 }
             }
@@ -92,6 +105,14 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler(priority = Byte.MAX_VALUE)
+    public void postLogin(PostLoginEvent event) {
+        if (BungeeEssentials.getInstance().shouldAnnounce()) {
+            ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_JOIN, "PLAYER", event.getPlayer().getName()));
+        }
+    }
+
+
+    @EventHandler(priority = Byte.MAX_VALUE)
     public void logout(PlayerDisconnectEvent event) {
         if (BungeeEssentials.getInstance().shouldWatchMultilog()) {
             InetAddress address = event.getPlayer().getAddress().getAddress();
@@ -99,6 +120,9 @@ public class PlayerListener implements Listener {
             if (amount != null && amount > 1) {
                 connections.put(address, amount - 1);
             }
+        }
+        if (BungeeEssentials.getInstance().shouldAnnounce()) {
+            ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_QUIT, "PLAYER", event.getPlayer().getName()));
         }
     }
 }

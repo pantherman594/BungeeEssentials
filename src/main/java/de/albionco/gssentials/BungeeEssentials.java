@@ -50,6 +50,9 @@ public class BungeeEssentials extends Plugin {
     private static Configuration configStat = null;
     private IntegrationProvider helper;
     private boolean watchMultiLog;
+    private boolean shouldClean;
+    private boolean joinAnnounce;
+    private boolean commandSpy;
     private boolean integrated;
     private boolean chatRules;
     private boolean chatSpam;
@@ -253,11 +256,6 @@ public class BungeeEssentials extends Plugin {
         }
         if (enable.contains("commandspy")) {
             register(new CSpyCommand());
-            ProxyServer.getInstance().getPluginManager().registerListener(this, new CommandSpy());
-            commands++;
-        }
-        if (enable.contains("joinannounce")) {
-            ProxyServer.getInstance().getPluginManager().registerListener(this, new JoinAnnounce());
             commands++;
         }
         if (enable.contains("rules") || enable.contains("rules-chat")) {
@@ -277,10 +275,11 @@ public class BungeeEssentials extends Plugin {
             ProxyServer.getInstance().getPluginManager().registerListener(this, new Messenger());
         }
 
-        if (enable.contains("spam") || enable.contains("rules") || enable.contains("multilog")) {
+        if (enable.contains("spam") || enable.contains("rules") || enable.contains("multilog") || enable.contains("commandspy")) {
             ProxyServer.getInstance().getPluginManager().registerListener(this, new PlayerListener());
         }
 
+        commandSpy = enable.contains("commandspy");
         useLog = enable.contains("log");
         if (useLog) {
             if (!Log.setup()) {
@@ -296,6 +295,8 @@ public class BungeeEssentials extends Plugin {
             getLogger().log(Level.INFO, "Enabled spam filter for private chat");
         }
         watchMultiLog = enable.contains("multilog");
+        shouldClean = enable.contains("clean");
+        joinAnnounce = enable.contains("joinannounce");
         getLogger().log(Level.INFO, "Registered {0} commands successfully", commands);
         setupIntegration();
         return true;
@@ -341,6 +342,18 @@ public class BungeeEssentials extends Plugin {
 
     public boolean shouldWatchMultilog() {
         return this.watchMultiLog;
+    }
+
+    public boolean shouldClean() {
+        return this.shouldClean;
+    }
+
+    public boolean shouldAnnounce() {
+        return this.joinAnnounce;
+    }
+
+    public boolean shouldCommandSpy() {
+        return this.commandSpy;
     }
 
     public Configuration getConfig() {
