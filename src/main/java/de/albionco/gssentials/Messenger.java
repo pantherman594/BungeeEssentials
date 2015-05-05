@@ -281,25 +281,27 @@ public class Messenger implements Listener {
 
     @EventHandler
     public void logout(PlayerDisconnectEvent event) {
-        UUID uuid = event.getPlayer().getUniqueId();
-        if (sentMessages.containsKey(uuid)) {
-            sentMessages.remove(uuid);
-        }
+        if (BungeeEssentials.getInstance().shouldClean()) {
+            UUID uuid = event.getPlayer().getUniqueId();
+            if (sentMessages.containsKey(uuid)) {
+                sentMessages.remove(uuid);
+            }
 
-        if (messages.containsKey(uuid)) {
-            messages.remove(uuid);
-        }
+            if (messages.containsKey(uuid)) {
+                messages.remove(uuid);
+            }
 
-        if (spies.contains(uuid)) {
-            spies.remove(event.getPlayer().getUniqueId());
-        }
+            if (spies.contains(uuid)) {
+                spies.remove(event.getPlayer().getUniqueId());
+            }
 
-        if (cspies.contains(uuid)) {
-            cspies.remove(event.getPlayer().getUniqueId());
-        }
+            if (cspies.contains(uuid)) {
+                cspies.remove(event.getPlayer().getUniqueId());
+            }
 
-        if (hidden.contains(uuid)) {
-            hidden.remove(event.getPlayer().getUniqueId());
+            if (hidden.contains(uuid)) {
+                hidden.remove(event.getPlayer().getUniqueId());
+            }
         }
     }
 
