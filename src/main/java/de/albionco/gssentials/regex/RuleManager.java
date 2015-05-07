@@ -47,15 +47,15 @@ public class RuleManager {
 
     public static MatchResult matches(String input) {
         for (Rule rule : rules) {
-            if (input.contains(" ")) {
-                for (String string : input.split(" ")) {
-                    if (rule.matches(string)) {
-                        return new MatchResult(true, rule);
-                    }
-                }
+            if (rule.matches(input)) {
+                return new MatchResult(true, rule);
             } else {
-                if (rule.matches(input)) {
-                    return new MatchResult(true, rule);
+                if (input.contains(" ")) {
+                    for (String string : input.split(" ")) {
+                        if (rule.matches(string)) {
+                            return new MatchResult(true, rule);
+                        }
+                    }
                 }
             }
         }

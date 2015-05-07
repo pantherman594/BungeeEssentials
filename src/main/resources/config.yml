@@ -89,7 +89,7 @@ rules:
   - pattern: 'asshole'
     handle: REPLACE
     replacement: '******'
-  - pattern: 'I hate (this server|your server)'
+  - pattern: 'I hate (this|your) server'
     handle: COMMAND
     command: 'send {{ SENDER }} lobby'
 list:
