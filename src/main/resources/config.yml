@@ -18,6 +18,9 @@ enable:
   - spy
   - commandspy
   - joinannounce
+  - announcement
+  - updater
+  - aliases
   # - clean
 commands:
   staffchat:
@@ -67,8 +70,17 @@ commands:
     - 'cspy'
   reload:
     - 'gssreload'
+aliases:
+  - alias: 'greet'
+    commands:
+      - 'msg {0} Hey! How are you doing today?'
+      - 'join {0}'
+  - alias: 'disappear'
+    commands:
+      - 'spy'
+      - 'cspy'
+      - 'hide'
 format:
-  admin: '&c{{ SERVER }} - {{ SENDER }} » &7{{ MESSAGE }}'
   alert: '&8[&b!&8] &7{{ MESSAGE }}'
   join: '&8[&a+&8] &7{{ PLAYER }}'
   quit: '&8[&c-&8] &7{{ PLAYER }}'
@@ -89,9 +101,13 @@ rules:
   - pattern: 'asshole'
     handle: REPLACE
     replacement: '******'
-  - pattern: 'I hate (this server|your server)'
+  - pattern: 'I hate (this|your) server'
     handle: COMMAND
     command: 'send {{ SENDER }} lobby'
+staffchat:
+  message: '&c{{ SERVER }} - {{ SENDER }} » &7{{ MESSAGE }}'
+  enabled: '&aYou have enabled staff chat!'
+  disabled: '&cYou have disabled staff chat!'
 list:
   header: '&aServers:'
   body: '&a- {{ SERVER }} {{ DENSITY }}'
@@ -114,3 +130,11 @@ errors:
   offline: '&cSorry, that player is offline.'
   slap: '&cYou are unworthy of slapping people.'
   messages: '&cNobody has messaged you recently.'
+announcements:
+# Time measured in seconds
+  - delay: 30
+    interval: 60
+    message: 'Vote for our server for great rewards!'
+  - delay: 0
+    interval: 60
+    message: 'Donate to support our server!\n&f&ndonate.myserver.com'
