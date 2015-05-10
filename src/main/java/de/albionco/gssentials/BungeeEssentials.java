@@ -53,7 +53,6 @@ public class BungeeEssentials extends Plugin {
     private boolean watchMultiLog;
     private boolean shouldClean;
     private boolean joinAnnounce;
-    private boolean announcement;
     private boolean commandSpy;
     private boolean integrated;
     private boolean chatRules;
@@ -159,6 +158,9 @@ public class BungeeEssentials extends Plugin {
         List<String> BASE;
         String[] TEMP_ALIAS;
         List<String> enable = config.getStringList("enable");
+        if (enable.contains("updater")) {
+            Updater.update();
+        }
         BASE = configStat.getStringList("commands.reload");
         if (BASE.toString().equals("[]")) {
             getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
@@ -367,7 +369,7 @@ public class BungeeEssentials extends Plugin {
         if (chatSpam) {
             getLogger().log(Level.INFO, "Enabled spam filter for private chat");
         }
-        announcement = enable.contains("announcement");
+        boolean announcement = enable.contains("announcement");
         if (announcement) {
             AnncsManager.load();
             getLogger().log(Level.INFO, "Enabled announcements");

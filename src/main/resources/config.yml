@@ -19,6 +19,7 @@ enable:
   - commandspy
   - joinannounce
   - announcement
+  - updater
   # - clean
 commands:
   staffchat:
