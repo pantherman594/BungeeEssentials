@@ -53,8 +53,6 @@ public class Updater {
             String versionLink = "https://raw.githubusercontent.com/Fireflies/BungeeEssentials/master/version.txt";
             URL url = new URL(versionLink);
             URLConnection con = url.openConnection();
-            con.setConnectTimeout(1000);
-            con.setReadTimeout(1000);
             InputStreamReader isr = new InputStreamReader(con.getInputStream());
             BufferedReader reader = new BufferedReader(isr);
             String newVer = reader.readLine();
@@ -73,8 +71,6 @@ public class Updater {
                     String dlLink = "https://github.com/Fireflies/BungeeEssentials/releases/download/" + newVer + "/BungeeEssentials.jar";
                     url = new URL(dlLink);
                     con = url.openConnection();
-                    con.setConnectTimeout(15000);
-                    con.setReadTimeout(15000);
                     InputStream in = con.getInputStream();
                     FileOutputStream out = new FileOutputStream(path);
                     byte[] buffer = new byte[1024];
@@ -89,10 +85,11 @@ public class Updater {
                     plugin.getLogger().log(Level.INFO, "Reload/restart server to enable changes");
                 }
             } else {
-                plugin.getLogger().log(Level.INFO, "You are running the latest version of BungeeEssentials");
+                plugin.getLogger().log(Level.INFO, "You are running the latest version of BungeeEssentials!");
             }
         } catch(IOException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to auto-update", e);
+            plugin.getLogger().log(Level.SEVERE, "Failed to auto-update, please download from http://www.spigotmc.org/resources/bungeeessentials.1488/", e);
+            plugin.getLogger().log(Level.SEVERE, "Error message: ", e);
         }
     }
 
