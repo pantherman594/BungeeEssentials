@@ -82,18 +82,23 @@ public class AnnouncementManager {
             ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), new Runnable() {
                 @Override
                 public void run() {
-                    ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_ALERT, "MESSAGE", msg));
-                    scheduleAnnc(interval, msg);
+                    String[] newMsg = msg.split("\\n");
+                    for (String singMsg : newMsg) {
+                        ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_ALERT, "MESSAGE", singMsg));
+                    }
+                    scheduleAnnc(interval, newMsg);
                 }
             }, delay, TimeUnit.SECONDS);
         }
     }
 
-    private static void scheduleAnnc(final Integer interval, final String msg) {
+    private static void scheduleAnnc(final Integer interval, final String[] msg) {
         tasks.add(ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), new Runnable() {
             @Override
             public void run() {
-                ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_ALERT, "MESSAGE", msg));
+                for (String singMsg : msg) {
+                    ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_ALERT, "MESSAGE", singMsg));
+                }
                 scheduleAnnc(interval, msg);
             }
         }, interval, TimeUnit.SECONDS));

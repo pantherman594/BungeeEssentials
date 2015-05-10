@@ -137,4 +137,4 @@ announcements:
     message: 'Vote for our server for great rewards!'
   - delay: 0
     interval: 60
-    message: 'Donate to support our server!'
+    message: 'Donate to support our server!\n&f&ndonate.myserver.com'
