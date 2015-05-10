@@ -29,6 +29,7 @@ import de.albionco.gssentials.aliases.AliasManager;
 import de.albionco.gssentials.utils.Dictionary;
 import de.albionco.gssentials.utils.Messenger;
 import de.albionco.gssentials.utils.Permissions;
+import de.albionco.gssentials.utils.Updater;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -139,6 +140,10 @@ public class PlayerListener implements Listener {
     public void postLogin(PostLoginEvent event) {
         if (BungeeEssentials.getInstance().shouldAnnounce()) {
             ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_JOIN, "PLAYER", event.getPlayer().getName()));
+        }
+        if (Updater.hasConfigChange()) {
+            event.getPlayer().sendMessage(Dictionary.format("&cThere is an update available with a config change."));
+            event.getPlayer().sendMessage(Dictionary.format("&cGo to http://www.spigotmc.org/resources/bungeeessentials.1488/ to download it."));
         }
     }
 

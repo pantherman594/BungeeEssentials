@@ -43,6 +43,7 @@ import java.util.logging.Level;
  */
 public class Updater {
     private static Plugin plugin = BungeeEssentials.getInstance();
+    private static boolean newConf = false;
 
     public static void update() {
         int oldVersion = getVersionFromString(plugin.getDescription().getVersion());
@@ -58,27 +59,35 @@ public class Updater {
             BufferedReader reader = new BufferedReader(isr);
             String newVer = reader.readLine();
             int newVersion = getVersionFromString(newVer);
+            String newConfVer = reader.readLine();
+            int newConfVersion = getVersionFromString(newConfVer);
             reader.close();
 
             if(newVersion > oldVersion) {
-                plugin.getLogger().log(Level.INFO, "Update found, downloading...");
-                String dlLink = "https://github.com/Fireflies/BungeeEssentials/releases/download/" + newVer + "/BungeeEssentials.jar";
-                url = new URL(dlLink);
-                con = url.openConnection();
-                con.setConnectTimeout(15000);
-                con.setReadTimeout(15000);
-                InputStream in = con.getInputStream();
-                FileOutputStream out = new FileOutputStream(path);
-                byte[] buffer = new byte[1024];
-                int size;
-                while((size = in.read(buffer)) != -1) {
-                    out.write(buffer, 0, size);
-                }
+                if (newConfVersion > oldVersion) {
+                    newConf = true;
+                    plugin.getLogger().log(Level.INFO, "Update found, but not downloaded because of a config change.");
+                    plugin.getLogger().log(Level.INFO, "Go to http://www.spigotmc.org/resources/bungeeessentials.1488/ to download it.");
+                } else {
+                    plugin.getLogger().log(Level.INFO, "Update found, downloading...");
+                    String dlLink = "https://github.com/Fireflies/BungeeEssentials/releases/download/" + newVer + "/BungeeEssentials.jar";
+                    url = new URL(dlLink);
+                    con = url.openConnection();
+                    con.setConnectTimeout(15000);
+                    con.setReadTimeout(15000);
+                    InputStream in = con.getInputStream();
+                    FileOutputStream out = new FileOutputStream(path);
+                    byte[] buffer = new byte[1024];
+                    int size;
+                    while ((size = in.read(buffer)) != -1) {
+                        out.write(buffer, 0, size);
+                    }
 
-                out.close();
-                in.close();
-                plugin.getLogger().log(Level.INFO, "Succesfully updated plugin to v" + newVer);
-                plugin.getLogger().log(Level.INFO, "Reload/restart server to enable changes");
+                    out.close();
+                    in.close();
+                    plugin.getLogger().log(Level.INFO, "Succesfully updated plugin to v" + newVer);
+                    plugin.getLogger().log(Level.INFO, "Reload/restart server to enable changes");
+                }
             }
         } catch(IOException e) {
             plugin.getLogger().log(Level.SEVERE, "Failed to auto-update", e);
@@ -89,5 +98,9 @@ public class Updater {
         String result = from.replace(".", "");
 
         return result.isEmpty() ? 0 : Integer.parseInt(result);
+    }
+
+    public static boolean hasConfigChange() {
+        return newConf;
     }
 }
