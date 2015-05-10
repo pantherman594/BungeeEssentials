@@ -71,7 +71,7 @@ commands:
   reload:
     - 'gssreload'
 aliases:
-  - alias: 'greet {0}'
+  - alias: 'greet'
     commands:
       - 'msg {0} Hey! How are you doing today?'
       - 'join {0}'
