@@ -28,7 +28,6 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -40,18 +39,31 @@ import java.util.logging.Level;
  * @author David Shen
  */
 @SuppressWarnings("deprecation")
-public class AnncsManager {
+public class AnnouncementManager {
     private static List<ScheduledTask> tasks = new ArrayList<>();
+    private static List<Announcement> anncs = new ArrayList<>();
+
+    public static boolean register(Announcement annc) {
+        if (!anncs.contains(annc)) {
+            anncs.add(annc);
+            return true;
+        }
+        return false;
+    }
 
     @SuppressWarnings("unchecked")
     public static boolean load() {
-        Anncs.annc_Interval = new HashMap<>();
-        Anncs.annc_Msg = new HashMap<>();
+        anncs.clear();
         List<Map<String, String>> section = (List<Map<String, String>>) BungeeEssentials.getInstance().getConfig().getList("announcements");
+        int success = 0;
         for (Map<String, String> map : section) {
-            Anncs.deserialize(map);
+            Announcement annc = Announcement.deserialize(map);
+            if (annc != null) {
+                if (register(annc)) {
+                    success++;
+                }
+            }
         }
-        int success = Anncs.annc_Interval.size();
         if (success > 0) {
             BungeeEssentials.getInstance().getLogger().log(Level.INFO, "Loaded {0} announcements from config", success);
             for (ScheduledTask task : tasks) {
@@ -63,10 +75,10 @@ public class AnncsManager {
     }
 
     private static void scheduleAnnc() {
-        for (Integer num : Anncs.annc_Msg.keySet()) {
-            int delay = Anncs.annc_Delay.get(num);
-            final int interval = Anncs.annc_Interval.get(num);
-            final String msg = Anncs.annc_Msg.get(num);
+        for (Announcement annc : anncs) {
+            int delay = annc.getDelay();
+            final int interval = annc.getInterval();
+            final String msg = annc.getMsg();
             ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), new Runnable() {
                 @Override
                 public void run() {
