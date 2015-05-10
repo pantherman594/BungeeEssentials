@@ -104,11 +104,13 @@ public class BungeeEssentials extends Plugin {
         configFile = new File(getDataFolder(), "config.yml");
         configFileStat = new File(getDataFolder(), "config.yml");
         reload();
+        Messenger.getPlayers();
     }
 
     @Override
     public void onDisable() {
         Log.reset();
+        Messenger.savePlayers();
     }
 
     private void saveConfig() throws IOException {
@@ -146,7 +148,6 @@ public class BungeeEssentials extends Plugin {
         ProxyServer.getInstance().getPluginManager().unregisterCommands(this);
         ProxyServer.getInstance().getPluginManager().unregisterListeners(this);
 
-        Messenger.reset();
         Log.reset();
         watchMultiLog = false;
         chatRules = false;

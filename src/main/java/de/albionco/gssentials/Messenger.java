@@ -33,6 +33,8 @@ import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
+import java.io.*;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -226,13 +228,64 @@ public class Messenger implements Listener {
         return isHidden(player);
     }
 
-    public static void reset() {
-        chatMessages.clear();
-        sentMessages.clear();
-        messages.clear();
-        hidden.clear();
-        spies.clear();
-        cspies.clear();
+    public static void savePlayers() {
+        File playerFile = new File(BungeeEssentials.getInstance().getDataFolder(), "players.txt");
+        try {
+            PrintWriter writer = new PrintWriter(playerFile, "UTF-8");
+            writer.println(hidden.toString());
+            writer.println(spies.toString());
+            writer.println(cspies.toString());
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void getPlayers() {
+        File playerFile = new File(BungeeEssentials.getInstance().getDataFolder(), "players.txt");
+        if (playerFile.exists()) {
+            try {
+                FileInputStream fstream = new FileInputStream(playerFile);
+                DataInputStream in = new DataInputStream(fstream);
+                BufferedReader br = new BufferedReader(new InputStreamReader(in));
+                String strLine;
+                String[] players;
+                if ((strLine = br.readLine()) != null) {
+                    strLine = strLine.replace("[", "").replace("]", "");
+                    if (!strLine.equals("")) {
+                        players = strLine.split(", ");
+                        for (String uuidStr : players) {
+                            UUID uuid = UUID.fromString(uuidStr);
+                            hidden.add(uuid);
+                        }
+                    }
+                }
+                if ((strLine = br.readLine()) != null) {
+                    strLine = strLine.replace("[", "").replace("]", "");
+                    if (!strLine.equals("")) {
+                        players = strLine.split(", ");
+                        for (String uuidStr : players) {
+                            UUID uuid = UUID.fromString(uuidStr);
+                            spies.add(uuid);
+                        }
+                    }
+                }
+                if ((strLine = br.readLine()) != null) {
+                    strLine = strLine.replace("[", "").replace("]", "");
+                    if (!strLine.equals("")) {
+                        players = strLine.split(", ");
+                        for (String uuidStr : players) {
+                            UUID uuid = UUID.fromString(uuidStr);
+                            cspies.add(uuid);
+                        }
+                    }
+                }
+                in.close();
+                Files.deleteIfExists(playerFile.toPath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private static double compare(String first, String second) {
