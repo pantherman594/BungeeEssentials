@@ -23,7 +23,8 @@
 package de.albionco.gssentials;
 
 import com.google.common.base.Preconditions;
-import de.albionco.gssentials.announcement.AnncsManager;
+import de.albionco.gssentials.aliases.AliasManager;
+import de.albionco.gssentials.announcement.AnnouncementManager;
 import de.albionco.gssentials.command.admin.*;
 import de.albionco.gssentials.command.general.*;
 import de.albionco.gssentials.event.PlayerListener;
@@ -375,8 +376,13 @@ public class BungeeEssentials extends Plugin {
         }
         boolean announcement = enable.contains("announcement");
         if (announcement) {
-            AnncsManager.load();
+            AnnouncementManager.load();
             getLogger().log(Level.INFO, "Enabled announcements");
+        }
+        boolean aliases = enable.contains("aliases");
+        if (aliases) {
+            AliasManager.load();
+            getLogger().log(Level.INFO, "Enabled aliases");
         }
         watchMultiLog = enable.contains("multilog");
         shouldClean = enable.contains("clean");

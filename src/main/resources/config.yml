@@ -20,6 +20,7 @@ enable:
   - joinannounce
   - announcement
   - updater
+  - aliases
   # - clean
 commands:
   staffchat:
@@ -69,6 +70,16 @@ commands:
     - 'cspy'
   reload:
     - 'gssreload'
+aliases:
+  - alias: 'greet {0}'
+    commands:
+      - 'msg {0} Hey! How are you doing today?'
+      - 'join {0}'
+  - alias: 'disappear'
+    commands:
+      - 'spy'
+      - 'cspy'
+      - 'hide'
 format:
   admin: '&c{{ SERVER }} - {{ SENDER }} » &7{{ MESSAGE }}'
   alert: '&8[&b!&8] &7{{ MESSAGE }}'

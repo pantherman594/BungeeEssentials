@@ -24,6 +24,8 @@ package de.albionco.gssentials.event;
 
 import com.google.common.collect.Maps;
 import de.albionco.gssentials.BungeeEssentials;
+import de.albionco.gssentials.aliases.Alias;
+import de.albionco.gssentials.aliases.AliasManager;
 import de.albionco.gssentials.utils.Dictionary;
 import de.albionco.gssentials.utils.Messenger;
 import de.albionco.gssentials.utils.Permissions;
@@ -65,10 +67,27 @@ public class PlayerListener implements Listener {
         ProxiedPlayer player = (ProxiedPlayer) event.getSender();
         String sender = player.getName();
         String cmd = event.getMessage();
-        if ((cmd.startsWith("/")) && (!player.hasPermission(Permissions.Admin.SPY_EXEMPT)) && BungeeEssentials.getInstance().shouldCommandSpy()) {
-            for (ProxiedPlayer onlinePlayer : ProxyServer.getInstance().getPlayers()) {
-                if ((onlinePlayer.getUniqueId() != player.getUniqueId()) && (onlinePlayer.hasPermission(Permissions.Admin.SPY_COMMAND)) && Messenger.isCSpy(onlinePlayer)) {
-                    onlinePlayer.sendMessage(Dictionary.format(Dictionary.CSPY_COMMAND, "SENDER", sender, "COMMAND", cmd));
+        if (cmd.startsWith("/")) {
+            if (!player.hasPermission(Permissions.Admin.SPY_EXEMPT) && BungeeEssentials.getInstance().shouldCommandSpy()) {
+                for (ProxiedPlayer onlinePlayer : ProxyServer.getInstance().getPlayers()) {
+                    if ((onlinePlayer.getUniqueId() != player.getUniqueId()) && (onlinePlayer.hasPermission(Permissions.Admin.SPY_COMMAND)) && Messenger.isCSpy(onlinePlayer)) {
+                        onlinePlayer.sendMessage(Dictionary.format(Dictionary.CSPY_COMMAND, "SENDER", sender, "COMMAND", cmd));
+                    }
+                }
+            }
+            for (Alias checkCmd : AliasManager.aliases) {
+                String execCmd = checkCmd.getAlias();
+                if (cmd.startsWith("/" + execCmd)) {
+                    String[] args = cmd.replace("/" + execCmd + " ", "").split(" ");
+                    for (String runCmd : checkCmd.getCommands()) {
+                        int num = 0;
+                        while (runCmd.contains("{" + num + "}")) {
+                            runCmd = runCmd.replace("{" + num + "}", args[num]);
+                            num++;
+                        }
+                        ProxyServer.getInstance().getPluginManager().dispatchCommand(player, runCmd);
+                    }
+                    event.setCancelled(true);
                 }
             }
         }
