@@ -104,6 +104,9 @@ public class BungeeEssentials extends Plugin {
         configFileStat = new File(getDataFolder(), "config.yml");
         reload();
         Messenger.getPlayers();
+        if (getConfig().getStringList("enable").contains("updater")) {
+            Updater.update();
+        }
     }
 
     @Override
@@ -158,9 +161,6 @@ public class BungeeEssentials extends Plugin {
         List<String> BASE;
         String[] TEMP_ALIAS;
         List<String> enable = config.getStringList("enable");
-        if (enable.contains("updater")) {
-            Updater.update();
-        }
         BASE = configStat.getStringList("commands.reload");
         if (BASE.toString().equals("[]")) {
             getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
