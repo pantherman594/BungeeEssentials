@@ -141,7 +141,7 @@ public class PlayerListener implements Listener {
         if (BungeeEssentials.getInstance().shouldAnnounce()) {
             ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_JOIN, "PLAYER", event.getPlayer().getName()));
         }
-        if (Updater.hasConfigChange()) {
+        if (Updater.hasConfigChange() && event.getPlayer().hasPermission(Permissions.Admin.UPDATE)) {
             event.getPlayer().sendMessage(Dictionary.format("&cThere is an update available with a config change."));
             event.getPlayer().sendMessage(Dictionary.format("&cGo to http://www.spigotmc.org/resources/bungeeessentials.1488/ to download it."));
         }
