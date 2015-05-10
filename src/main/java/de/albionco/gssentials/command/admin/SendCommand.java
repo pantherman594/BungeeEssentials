@@ -24,9 +24,9 @@ package de.albionco.gssentials.command.admin;
 
 import com.google.common.collect.ImmutableSet;
 import de.albionco.gssentials.BungeeEssentials;
-import de.albionco.gssentials.Dictionary;
-import de.albionco.gssentials.Messenger;
-import de.albionco.gssentials.Permissions;
+import de.albionco.gssentials.utils.Dictionary;
+import de.albionco.gssentials.utils.Messenger;
+import de.albionco.gssentials.utils.Permissions;
 import de.albionco.gssentials.command.ServerSpecificCommand;
 import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.ChatColor;

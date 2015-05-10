@@ -20,9 +20,10 @@
  * SOFTWARE.
  */
 
-package de.albionco.gssentials;
+package de.albionco.gssentials.utils;
 
 import com.google.common.base.Preconditions;
+import de.albionco.gssentials.BungeeEssentials;
 import de.albionco.gssentials.regex.RuleManager;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;

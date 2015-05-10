@@ -23,7 +23,7 @@
 package de.albionco.gssentials.announcement;
 
 import de.albionco.gssentials.BungeeEssentials;
-import de.albionco.gssentials.Dictionary;
+import de.albionco.gssentials.utils.Dictionary;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 

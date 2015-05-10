@@ -1,5 +1,6 @@
-package de.albionco.gssentials;
+package de.albionco.gssentials.utils;
 
+import de.albionco.gssentials.BungeeEssentials;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 

@@ -23,9 +23,9 @@
 package de.albionco.gssentials.command.general;
 
 import de.albionco.gssentials.BungeeEssentials;
-import de.albionco.gssentials.Dictionary;
-import de.albionco.gssentials.Messenger;
-import de.albionco.gssentials.Permissions;
+import de.albionco.gssentials.utils.Dictionary;
+import de.albionco.gssentials.utils.Messenger;
+import de.albionco.gssentials.utils.Permissions;
 import net.md_5.bungee.api.*;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

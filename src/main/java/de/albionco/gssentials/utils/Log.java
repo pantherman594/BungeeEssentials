@@ -20,9 +20,10 @@
  * SOFTWARE.
  */
 
-package de.albionco.gssentials;
+package de.albionco.gssentials.utils;
 
 import com.google.common.base.Joiner;
+import de.albionco.gssentials.BungeeEssentials;
 import de.albionco.gssentials.regex.Rule;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 

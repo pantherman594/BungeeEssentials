@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package de.albionco.gssentials;
+package de.albionco.gssentials.utils;
 
 /**
  * This class was made so anybody with the intention of
