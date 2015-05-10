@@ -1,3 +1,25 @@
+/*
+ * Copyright (c) 2015 Connor Spencer Harries
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package de.albionco.gssentials.utils;
 
 import de.albionco.gssentials.BungeeEssentials;
@@ -30,6 +52,8 @@ public class Updater {
             String versionLink = "https://raw.githubusercontent.com/Fireflies/BungeeEssentials/master/version.txt";
             URL url = new URL(versionLink);
             URLConnection con = url.openConnection();
+            con.setConnectTimeout(1000);
+            con.setReadTimeout(1000);
             InputStreamReader isr = new InputStreamReader(con.getInputStream());
             BufferedReader reader = new BufferedReader(isr);
             String newVer = reader.readLine();
@@ -41,6 +65,8 @@ public class Updater {
                 String dlLink = "https://github.com/Fireflies/BungeeEssentials/releases/download/" + newVer + "/BungeeEssentials.jar";
                 url = new URL(dlLink);
                 con = url.openConnection();
+                con.setConnectTimeout(15000);
+                con.setReadTimeout(15000);
                 InputStream in = con.getInputStream();
                 FileOutputStream out = new FileOutputStream(path);
                 byte[] buffer = new byte[1024];
