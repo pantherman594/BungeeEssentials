@@ -88,6 +88,8 @@ public class Updater {
                     plugin.getLogger().log(Level.INFO, "Succesfully updated plugin to v" + newVer);
                     plugin.getLogger().log(Level.INFO, "Reload/restart server to enable changes");
                 }
+            } else {
+                plugin.getLogger().log(Level.INFO, "You are running the latest version of BungeeEssentials");
             }
         } catch(IOException e) {
             plugin.getLogger().log(Level.SEVERE, "Failed to auto-update", e);

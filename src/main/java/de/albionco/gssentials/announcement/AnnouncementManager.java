@@ -82,7 +82,7 @@ public class AnnouncementManager {
             ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), new Runnable() {
                 @Override
                 public void run() {
-                    String[] newMsg = msg.split("\\n");
+                    String[] newMsg = msg.split("\n");
                     for (String singMsg : newMsg) {
                         ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_ALERT, "MESSAGE", singMsg));
                     }
