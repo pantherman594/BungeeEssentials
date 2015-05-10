@@ -45,10 +45,20 @@ public class SpyCommand extends ServerSpecificCommand {
     public void run(CommandSender sender, String[] args) {
         if (sender instanceof ProxiedPlayer) {
             ProxiedPlayer player = (ProxiedPlayer) sender;
-            if (Messenger.toggleSpy(player)) {
-                player.sendMessage(Dictionary.format(Dictionary.SPY_ENABLED));
+            if (args != null && args.length == 1) {
+                if (args[0].equals("on")) {
+                    Messenger.enableSpy(player);
+                    player.sendMessage(Dictionary.format(Dictionary.SPY_ENABLED));
+                } else if (args[0].equals("off")) {
+                    Messenger.disableSpy(player);
+                    player.sendMessage(Dictionary.format(Dictionary.SPY_DISABLED));
+                }
             } else {
-                player.sendMessage(Dictionary.format(Dictionary.SPY_DISABLED));
+                if (Messenger.toggleSpy(player)) {
+                    player.sendMessage(Dictionary.format(Dictionary.SPY_ENABLED));
+                } else {
+                    player.sendMessage(Dictionary.format(Dictionary.SPY_DISABLED));
+                }
             }
         } else {
             sender.sendMessage(Dictionary.colour("&cConsole may not toggle social spy"));

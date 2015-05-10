@@ -209,6 +209,22 @@ public class Messenger implements Listener {
         return isSpy(player);
     }
 
+    public static boolean enableSpy(ProxiedPlayer player) {
+        Preconditions.checkNotNull(player, "Invalid player specified");
+        if (!isSpy(player)) {
+            spies.add(player.getUniqueId());
+        }
+        return isSpy(player);
+    }
+
+    public static boolean disableSpy(ProxiedPlayer player) {
+        Preconditions.checkNotNull(player, "Invalid player specified");
+        if (isSpy(player)) {
+            spies.remove(player.getUniqueId());
+        }
+        return isSpy(player);
+    }
+
     public static boolean toggleCSpy(ProxiedPlayer player) {
         Preconditions.checkNotNull(player, "Invalid player specified");
         if (isCSpy(player)) {
@@ -219,12 +235,44 @@ public class Messenger implements Listener {
         return isCSpy(player);
     }
 
+    public static boolean enableCSpy(ProxiedPlayer player) {
+        Preconditions.checkNotNull(player, "Invalid player specified");
+        if (!isCSpy(player)) {
+            cspies.add(player.getUniqueId());
+        }
+        return isCSpy(player);
+    }
+
+    public static boolean disableCSpy(ProxiedPlayer player) {
+        Preconditions.checkNotNull(player, "Invalid player specified");
+        if (isCSpy(player)) {
+            cspies.remove(player.getUniqueId());
+        }
+        return isCSpy(player);
+    }
+
     public static boolean toggleHidden(ProxiedPlayer player) {
         Preconditions.checkNotNull(player, "Invalid player specified");
         if (isHidden(player)) {
             hidden.remove(player.getUniqueId());
         } else {
             hidden.add(player.getUniqueId());
+        }
+        return isHidden(player);
+    }
+
+    public static boolean enableHidden(ProxiedPlayer player) {
+        Preconditions.checkNotNull(player, "Invalid player specified");
+        if (!isHidden(player)) {
+            hidden.add(player.getUniqueId());
+        }
+        return isHidden(player);
+    }
+
+    public static boolean disableHidden(ProxiedPlayer player) {
+        Preconditions.checkNotNull(player, "Invalid player specified");
+        if (isHidden(player)) {
+            hidden.remove(player.getUniqueId());
         }
         return isHidden(player);
     }

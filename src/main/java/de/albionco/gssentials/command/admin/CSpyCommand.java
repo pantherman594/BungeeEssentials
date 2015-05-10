@@ -45,10 +45,20 @@ public class CSpyCommand extends ServerSpecificCommand {
     public void run(CommandSender sender, String[] args) {
         if (sender instanceof ProxiedPlayer) {
             ProxiedPlayer player = (ProxiedPlayer) sender;
-            if (Messenger.toggleCSpy(player)) {
-                player.sendMessage(Dictionary.format(Dictionary.CSPY_ENABLED));
+            if (args != null && args.length == 1) {
+                if (args[0].equals("on")) {
+                    Messenger.enableCSpy(player);
+                    player.sendMessage(Dictionary.format(Dictionary.CSPY_ENABLED));
+                } else if (args[0].equals("off")) {
+                    Messenger.disableCSpy(player);
+                    player.sendMessage(Dictionary.format(Dictionary.CSPY_DISABLED));
+                }
             } else {
-                player.sendMessage(Dictionary.format(Dictionary.CSPY_DISABLED));
+                if (Messenger.toggleCSpy(player)) {
+                    player.sendMessage(Dictionary.format(Dictionary.CSPY_ENABLED));
+                } else {
+                    player.sendMessage(Dictionary.format(Dictionary.CSPY_DISABLED));
+                }
             }
         } else {
             sender.sendMessage(Dictionary.colour("&cConsole may not toggle command spy"));

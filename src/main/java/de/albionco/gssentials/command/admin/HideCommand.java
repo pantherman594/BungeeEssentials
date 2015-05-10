@@ -45,10 +45,20 @@ public class HideCommand extends ServerSpecificCommand {
     public void run(CommandSender sender, String[] args) {
         if (sender instanceof ProxiedPlayer) {
             ProxiedPlayer player = (ProxiedPlayer) sender;
-            if (Messenger.toggleHidden(player)) {
-                player.sendMessage(Dictionary.format(Dictionary.HIDE_ENABLED));
+            if (args != null && args.length == 1) {
+                if (args[0].equals("on")) {
+                    Messenger.enableHidden(player);
+                    player.sendMessage(Dictionary.format(Dictionary.HIDE_ENABLED));
+                } else if (args[0].equals("off")) {
+                    Messenger.disableHidden(player);
+                    player.sendMessage(Dictionary.format(Dictionary.HIDE_DISABLED));
+                }
             } else {
-                player.sendMessage(Dictionary.format(Dictionary.HIDE_DISABLED));
+                if (Messenger.toggleHidden(player)) {
+                    player.sendMessage(Dictionary.format(Dictionary.HIDE_ENABLED));
+                } else {
+                    player.sendMessage(Dictionary.format(Dictionary.HIDE_DISABLED));
+                }
             }
         } else {
             sender.sendMessage(Dictionary.colour("&cConsole cannot hide itself"));
