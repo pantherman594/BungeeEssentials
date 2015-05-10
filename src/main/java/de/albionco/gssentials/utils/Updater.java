@@ -82,7 +82,7 @@ public class Updater {
                     out.close();
                     in.close();
                     plugin.getLogger().log(Level.INFO, "Succesfully updated plugin to v" + newVer);
-                    plugin.getLogger().log(Level.INFO, "Reload/restart server to enable changes");
+                    plugin.getLogger().log(Level.INFO, "Restart the server to enable changes");
                 }
             } else {
                 plugin.getLogger().log(Level.INFO, "You are running the latest version of BungeeEssentials!");
