@@ -24,6 +24,7 @@ package de.albionco.gssentials.command.admin;
 
 import de.albionco.gssentials.BungeeEssentials;
 import de.albionco.gssentials.utils.Dictionary;
+import de.albionco.gssentials.utils.Messenger;
 import de.albionco.gssentials.utils.Permissions;
 import de.albionco.gssentials.command.ServerSpecificCommand;
 import net.md_5.bungee.api.CommandSender;
@@ -47,7 +48,19 @@ public class ChatCommand extends ServerSpecificCommand {
             String server = "CONSOLE";
 
             if (sender instanceof ProxiedPlayer) {
-                server = ((ProxiedPlayer) sender).getServer().getInfo().getName();
+                ProxiedPlayer player = (ProxiedPlayer) sender;
+                server = player.getServer().getInfo().getName();
+                if (args.length == 1) {
+                    if (args[0].equals("on")) {
+                        Messenger.enableStaffChat(player);
+                        player.sendMessage(Dictionary.format(Dictionary.SCHAT_ENABLED));
+                        return;
+                    } else if (args[0].equals("off")) {
+                        Messenger.disableStaffChat(player);
+                        player.sendMessage(Dictionary.format(Dictionary.SCHAT_DISABLED));
+                        return;
+                    }
+                }
             }
 
             String msg = Dictionary.format(Dictionary.FORMAT_STAFF_CHAT, "SERVER", server, "SENDER", sender.getName(), "MESSAGE", Dictionary.combine(args));
@@ -63,7 +76,17 @@ public class ChatCommand extends ServerSpecificCommand {
                 console.sendMessage(msg);
             }
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS));
+            ProxiedPlayer player;
+            if (sender instanceof ProxiedPlayer) {
+                player = (ProxiedPlayer) sender;
+                if (Messenger.toggleStaffChat((ProxiedPlayer) sender)) {
+                    player.sendMessage(Dictionary.format(Dictionary.SCHAT_ENABLED));
+                } else {
+                    player.sendMessage(Dictionary.format(Dictionary.SCHAT_DISABLED));
+                }
+            } else {
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS));
+            }
         }
     }
 }

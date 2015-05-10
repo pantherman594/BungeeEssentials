@@ -55,6 +55,7 @@ public class Messenger implements Listener {
     private static Set<UUID> hidden = new HashSet<>();
     private static Set<UUID> spies = new HashSet<>();
     private static Set<UUID> cspies = new HashSet<>();
+    private static Set<UUID> chatting = new HashSet<>();
 
     public static void sendMessage(CommandSender sender, ProxiedPlayer recipient, String message) {
         if (recipient != null && !Messenger.isHidden(recipient)) {
@@ -199,6 +200,11 @@ public class Messenger implements Listener {
         return hidden.contains(player.getUniqueId());
     }
 
+    public static boolean isChatting(ProxiedPlayer player) {
+        Preconditions.checkNotNull(player, "Invalid player specified");
+        return chatting.contains(player.getUniqueId());
+    }
+
     public static boolean toggleSpy(ProxiedPlayer player) {
         Preconditions.checkNotNull(player, "Invalid player specified");
         if (isSpy(player)) {
@@ -277,6 +283,32 @@ public class Messenger implements Listener {
         return isHidden(player);
     }
 
+    public static boolean toggleStaffChat(ProxiedPlayer player) {
+        Preconditions.checkNotNull(player, "Invalid player specified");
+        if (isChatting(player)) {
+            chatting.remove(player.getUniqueId());
+        } else {
+            chatting.add(player.getUniqueId());
+        }
+        return isChatting(player);
+    }
+
+    public static boolean enableStaffChat(ProxiedPlayer player) {
+        Preconditions.checkNotNull(player, "Invalid player specified");
+        if (!isChatting(player)) {
+            chatting.add(player.getUniqueId());
+        }
+        return isChatting(player);
+    }
+
+    public static boolean disableStaffChat(ProxiedPlayer player) {
+        Preconditions.checkNotNull(player, "Invalid player specified");
+        if (isChatting(player)) {
+            chatting.remove(player.getUniqueId());
+        }
+        return isChatting(player);
+    }
+
     public static void savePlayers() {
         File playerFile = new File(BungeeEssentials.getInstance().getDataFolder(), "players.txt");
         try {
@@ -284,6 +316,7 @@ public class Messenger implements Listener {
             writer.println(hidden.toString());
             writer.println(spies.toString());
             writer.println(cspies.toString());
+            writer.println(chatting.toString());
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -326,6 +359,16 @@ public class Messenger implements Listener {
                         for (String uuidStr : players) {
                             UUID uuid = UUID.fromString(uuidStr);
                             cspies.add(uuid);
+                        }
+                    }
+                }
+                if ((strLine = br.readLine()) != null) {
+                    strLine = strLine.replace("[", "").replace("]", "");
+                    if (!strLine.equals("")) {
+                        players = strLine.split(", ");
+                        for (String uuidStr : players) {
+                            UUID uuid = UUID.fromString(uuidStr);
+                            chatting.add(uuid);
                         }
                     }
                 }

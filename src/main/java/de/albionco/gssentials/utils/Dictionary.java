@@ -55,8 +55,6 @@ public class Dictionary {
     public static String ERROR_INVALID_ARGUMENTS;
     @Load(key = "format.message", def = "&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{{ MESSAGE }}}")
     public static String FORMAT_PRIVATE_MESSAGE;
-    @Load(key = "format.admin", def = "&c[{{ SERVER }}, {{ SENDER }}] &7{{ FORMAT_MESSAGE }}")
-    public static String FORMAT_STAFF_CHAT;
     @Load(key = "format.send", def = "&aSending &e{{ PLAYER }} &ato server &e{{ SERVER }}")
     public static String FORMAT_SEND_PLAYER;
     @Load(key = "format.find", def = "&e{{ PLAYER }} &ais playing on &e{{ SERVER }}")
@@ -87,6 +85,12 @@ public class Dictionary {
     public static String HIDE_ENABLED;
     @Load(key = "hide.disabled", def = "&cYou are no longer hidden!")
     public static String HIDE_DISABLED;
+    @Load(key = "staffchat.message", def = "&c[{{ SERVER }}, {{ SENDER }}] &7{{ FORMAT_MESSAGE }}")
+    public static String FORMAT_STAFF_CHAT;
+    @Load(key = "staffchat.enabled", def = "&aYou have enabled staff chat!")
+    public static String SCHAT_ENABLED;
+    @Load(key = "staffchat.disabled", def = "&cYou have disabled staff chat!")
+    public static String SCHAT_DISABLED;
     @Load(key = "warnings.similarity", def = "&cPlease do not spam other players!")
     public static String WARNING_LEVENSHTEIN_DISTANCE;
     @Load(key = "warnings.swearing", def = "&cPlease do not swear at other players!")

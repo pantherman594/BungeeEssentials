@@ -41,6 +41,7 @@ import net.md_5.bungee.event.EventHandler;
 
 import java.net.InetAddress;
 import java.util.HashMap;
+import java.util.logging.Level;
 
 /**
  * Created by Connor Harries on 31/01/2015.
@@ -90,6 +91,17 @@ public class PlayerListener implements Listener {
                     event.setCancelled(true);
                 }
             }
+        }
+        if (Messenger.isChatting(player) && !event.isCancelled() && !event.isCommand()) {
+            String server = player.getServer().getInfo().getName();
+            String msg = Dictionary.format(Dictionary.FORMAT_STAFF_CHAT, "SERVER", server, "SENDER", sender, "MESSAGE", event.getMessage());
+
+            for (ProxiedPlayer onlineP : ProxyServer.getInstance().getPlayers()) {
+                if (onlineP.hasPermission(Permissions.Admin.CHAT + "." + server) || onlineP.hasPermission(Permissions.Admin.CHAT)) {
+                    onlineP.sendMessage(msg);
+                }
+            }
+            event.setCancelled(true);
         }
         if (BungeeEssentials.getInstance().useChatSpamProtetion() || BungeeEssentials.getInstance().useChatRules()) {
             if (event.isCommand() || event.isCancelled()) {
