@@ -81,7 +81,6 @@ aliases:
       - 'cspy'
       - 'hide'
 format:
-  admin: '&c{{ SERVER }} - {{ SENDER }} » &7{{ MESSAGE }}'
   alert: '&8[&b!&8] &7{{ MESSAGE }}'
   join: '&8[&a+&8] &7{{ PLAYER }}'
   quit: '&8[&c-&8] &7{{ PLAYER }}'
@@ -105,6 +104,10 @@ rules:
   - pattern: 'I hate (this|your) server'
     handle: COMMAND
     command: 'send {{ SENDER }} lobby'
+staffchat:
+  message: '&c{{ SERVER }} - {{ SENDER }} » &7{{ MESSAGE }}'
+  enabled: '&aYou have enabled staff chat!'
+  disabled: '&cYou have disabled staff chat!'
 list:
   header: '&aServers:'
   body: '&a- {{ SERVER }} {{ DENSITY }}'
