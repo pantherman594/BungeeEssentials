@@ -33,6 +33,7 @@ import java.util.Map;
  * @author David Shen
  */
 public class Anncs {
+    public static HashMap<Integer, Integer> annc_Delay = new HashMap<>();
     public static HashMap<Integer, Integer> annc_Interval = new HashMap<>();
     public static HashMap<Integer, String> annc_Msg = new HashMap<>();
 
@@ -40,10 +41,12 @@ public class Anncs {
         int size = annc_Interval.size();
         Preconditions.checkNotNull(serialized);
         Preconditions.checkArgument(!serialized.isEmpty());
+        Preconditions.checkNotNull(serialized.get("delay"), "invalid delay");
         Preconditions.checkNotNull(serialized.get("interval"), "invalid interval");
         Preconditions.checkNotNull(serialized.get("message"), "invalid message");
 
         size++;
+        annc_Delay.put(size, Integer.parseInt(String.valueOf(serialized.get("delay"))));
         annc_Interval.put(size, Integer.parseInt(String.valueOf(serialized.get("interval"))));
         annc_Msg.put(size, String.valueOf(serialized.get("message")));
     }

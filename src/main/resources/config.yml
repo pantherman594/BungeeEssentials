@@ -116,7 +116,10 @@ errors:
   slap: '&cYou are unworthy of slapping people.'
   messages: '&cNobody has messaged you recently.'
 announcements:
-  - delay: 5
+# Time measured in seconds
+  - delay: 30
+    interval: 60
     message: 'Vote for our server for great rewards!'
-  - delay: 15
+  - delay: 0
+    interval: 60
     message: 'Donate to support our server!'

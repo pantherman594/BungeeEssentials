@@ -25,6 +25,7 @@ package de.albionco.gssentials.announcement;
 import de.albionco.gssentials.BungeeEssentials;
 import de.albionco.gssentials.Dictionary;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.scheduler.ScheduledTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,13 +41,12 @@ import java.util.logging.Level;
  */
 @SuppressWarnings("deprecation")
 public class AnncsManager {
-    private static List<Anncs> anncs = new ArrayList<>();
+    private static List<ScheduledTask> tasks = new ArrayList<>();
 
     @SuppressWarnings("unchecked")
     public static boolean load() {
         Anncs.annc_Interval = new HashMap<>();
         Anncs.annc_Msg = new HashMap<>();
-        anncs.clear();
         List<Map<String, String>> section = (List<Map<String, String>>) BungeeEssentials.getInstance().getConfig().getList("announcements");
         for (Map<String, String> map : section) {
             Anncs.deserialize(map);
@@ -54,34 +54,36 @@ public class AnncsManager {
         int success = Anncs.annc_Interval.size();
         if (success > 0) {
             BungeeEssentials.getInstance().getLogger().log(Level.INFO, "Loaded {0} announcements from config", success);
+            for (ScheduledTask task : tasks) {
+                task.cancel();
+            }
             scheduleAnnc();
         }
         return true;
     }
 
     private static void scheduleAnnc() {
-        for (final Integer num : Anncs.annc_Interval.keySet()) {
+        for (Integer num : Anncs.annc_Msg.keySet()) {
+            int delay = Anncs.annc_Delay.get(num);
             final int interval = Anncs.annc_Interval.get(num);
             final String msg = Anncs.annc_Msg.get(num);
             ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), new Runnable() {
                 @Override
                 public void run() {
                     ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_ALERT, "MESSAGE", msg));
-                    scheduleAnnc(num, interval, msg);
+                    scheduleAnnc(interval, msg);
                 }
-            }, interval, TimeUnit.SECONDS);
+            }, delay, TimeUnit.SECONDS);
         }
     }
 
-    private static void scheduleAnnc(final Integer num, final Integer interval, final String msg) {
-        if (interval == Anncs.annc_Interval.get(num) && msg.equals(Anncs.annc_Msg.get(num))) {
-            ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_ALERT, "MESSAGE", msg));
-                    scheduleAnnc(num, interval, msg);
-                }
-            }, interval, TimeUnit.SECONDS);
-        }
+    private static void scheduleAnnc(final Integer interval, final String msg) {
+        tasks.add(ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), new Runnable() {
+            @Override
+            public void run() {
+                ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_ALERT, "MESSAGE", msg));
+                scheduleAnnc(interval, msg);
+            }
+        }, interval, TimeUnit.SECONDS));
     }
 }
