@@ -77,21 +77,6 @@ public class PlayerListener implements Listener {
                     }
                 }
             }
-            for (Alias checkCmd : AliasManager.aliases) {
-                String execCmd = checkCmd.getAlias();
-                if (cmd.startsWith("/" + execCmd)) {
-                    String[] args = cmd.replace("/" + execCmd + " ", "").split(" ");
-                    for (String runCmd : checkCmd.getCommands()) {
-                        int num = 0;
-                        while (runCmd.contains("{" + num + "}")) {
-                            runCmd = runCmd.replace("{" + num + "}", args[num]);
-                            num++;
-                        }
-                        ProxyServer.getInstance().getPluginManager().dispatchCommand(player, runCmd);
-                    }
-                    event.setCancelled(true);
-                }
-            }
         }
         if (Messenger.isChatting(player) && !event.isCancelled() && !event.isCommand()) {
             String server = player.getServer().getInfo().getName();
