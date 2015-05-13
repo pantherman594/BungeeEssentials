@@ -53,7 +53,6 @@ import java.util.logging.Level;
 public class BungeeEssentials extends Plugin {
     private static BungeeEssentials instance;
     private Configuration config = null;
-    private static Configuration configStat = null;
     private IntegrationProvider helper;
     private boolean watchMultiLog;
     private boolean shouldClean;
@@ -64,7 +63,6 @@ public class BungeeEssentials extends Plugin {
     private boolean chatRules;
     private boolean chatSpam;
     private File configFile;
-    private static File configFileStat;
     private boolean useLog;
     private boolean rules;
     private boolean spam;
@@ -107,7 +105,6 @@ public class BungeeEssentials extends Plugin {
     public void onEnable() {
         instance = this;
         configFile = new File(getDataFolder(), "config.yml");
-        configFileStat = new File(getDataFolder(), "config.yml");
         reload();
         Messenger.getPlayers();
         if (getConfig().getStringList("enable").contains("updater")) {
@@ -138,7 +135,6 @@ public class BungeeEssentials extends Plugin {
             saveConfig();
         }
         config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(configFile);
-        configStat = ConfigurationProvider.getProvider(YamlConfiguration.class).load(configFileStat);
     }
 
     public boolean reload() {
@@ -167,7 +163,7 @@ public class BungeeEssentials extends Plugin {
         List<String> BASE;
         String[] TEMP_ALIAS;
         List<String> enable = config.getStringList("enable");
-        BASE = configStat.getStringList("commands.reload");
+        BASE = config.getStringList("commands.reload");
         if (BASE.toString().equals("[]")) {
             getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
             getLogger().log(Level.WARNING, "Falling back to default value for key commands.reload");
@@ -177,7 +173,7 @@ public class BungeeEssentials extends Plugin {
         TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
         Reload_ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
         if (enable.contains("staffchat")) {
-            BASE = configStat.getStringList("commands.staffchat");
+            BASE = config.getStringList("commands.staffchat");
             if (BASE.toString().equals("[]")) {
                 getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
                 getLogger().log(Level.WARNING, "Falling back to default value for key commands.staffchat");
@@ -190,7 +186,7 @@ public class BungeeEssentials extends Plugin {
             commands++;
         }
         if (enable.contains("alert")) {
-            BASE = configStat.getStringList("commands.alert");
+            BASE = config.getStringList("commands.alert");
             if (BASE.toString().equals("[]")) {
                 getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
                 getLogger().log(Level.WARNING, "Falling back to default value for key commands.alert");
@@ -203,7 +199,7 @@ public class BungeeEssentials extends Plugin {
             commands++;
         }
         if (enable.contains("find")) {
-            BASE = configStat.getStringList("commands.find");
+            BASE = config.getStringList("commands.find");
             if (BASE.toString().equals("[]")) {
                 getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
                 getLogger().log(Level.WARNING, "Falling back to default value for key commands.find");
@@ -216,7 +212,7 @@ public class BungeeEssentials extends Plugin {
             commands++;
         }
         if (enable.contains("hide")) {
-            BASE = configStat.getStringList("commands.hide");
+            BASE = config.getStringList("commands.hide");
             if (BASE.toString().equals("[]")) {
                 getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
                 getLogger().log(Level.WARNING, "Falling back to default value for key commands.hide");
@@ -229,7 +225,7 @@ public class BungeeEssentials extends Plugin {
             commands++;
         }
         if(enable.contains("join")) {
-            BASE = configStat.getStringList("commands.join");
+            BASE = config.getStringList("commands.join");
             if (BASE.toString().equals("[]")) {
                 getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
                 getLogger().log(Level.WARNING, "Falling back to default value for key commands.join");
@@ -242,7 +238,7 @@ public class BungeeEssentials extends Plugin {
             commands++;
         }
         if (enable.contains("list")) {
-            BASE = configStat.getStringList("commands.list");
+            BASE = config.getStringList("commands.list");
             if (BASE.toString().equals("[]")) {
                 getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
                 getLogger().log(Level.WARNING, "Falling back to default value for key commands.list");
@@ -255,7 +251,7 @@ public class BungeeEssentials extends Plugin {
             commands++;
         }
         if (enable.contains("message")) {
-            BASE = configStat.getStringList("commands.message");
+            BASE = config.getStringList("commands.message");
             if (BASE.toString().equals("[]")) {
                 getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
                 getLogger().log(Level.WARNING, "Falling back to default value for key commands.message");
@@ -264,7 +260,7 @@ public class BungeeEssentials extends Plugin {
             Message_MAIN = BASE.get(0);
             TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
             Message_ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
-            BASE = configStat.getStringList("commands.reply");
+            BASE = config.getStringList("commands.reply");
             if (BASE.toString().equals("[]")) {
                 getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
                 getLogger().log(Level.WARNING, "Falling back to default value for key commands.reply");
@@ -278,7 +274,7 @@ public class BungeeEssentials extends Plugin {
             commands += 2;
         }
         if (enable.contains("send")) {
-            BASE = configStat.getStringList("commands.send");
+            BASE = config.getStringList("commands.send");
             if (BASE.toString().equals("[]")) {
                 getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
                 getLogger().log(Level.WARNING, "Falling back to default value for key commands.send");
@@ -287,7 +283,7 @@ public class BungeeEssentials extends Plugin {
             Send_MAIN = BASE.get(0);
             TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
             Send_ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
-            BASE = configStat.getStringList("commands.sendall");
+            BASE = config.getStringList("commands.sendall");
             if (BASE.toString().equals("[]")) {
                 getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
                 getLogger().log(Level.WARNING, "Falling back to default value for key commands.sendall");
@@ -301,7 +297,7 @@ public class BungeeEssentials extends Plugin {
             commands += 2;
         }
         if (enable.contains("slap")) {
-            BASE = configStat.getStringList("commands.slap");
+            BASE = config.getStringList("commands.slap");
             if (BASE.toString().equals("[]")) {
                 getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
                 getLogger().log(Level.WARNING, "Falling back to default value for key commands.slap");
@@ -314,7 +310,7 @@ public class BungeeEssentials extends Plugin {
             commands++;
         }
         if (enable.contains("spy")) {
-            BASE = configStat.getStringList("commands.spy");
+            BASE = config.getStringList("commands.spy");
             if (BASE.toString().equals("[]")) {
                 getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
                 getLogger().log(Level.WARNING, "Falling back to default value for key commands.spy");
@@ -327,7 +323,7 @@ public class BungeeEssentials extends Plugin {
             commands++;
         }
         if (enable.contains("commandspy")) {
-            BASE = configStat.getStringList("commands.commandspy");
+            BASE = config.getStringList("commands.commandspy");
             if (BASE.toString().equals("[]")) {
                 getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
                 getLogger().log(Level.WARNING, "Falling back to default value for key commands.commandspy");
