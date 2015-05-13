@@ -23,7 +23,6 @@
 package de.albionco.gssentials.aliases;
 
 import de.albionco.gssentials.BungeeEssentials;
-import net.md_5.bungee.api.ProxyServer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +40,6 @@ public class AliasManager {
     public static boolean register(Alias alias) {
         if (!aliases.contains(alias)) {
             aliases.add(alias);
-            ProxyServer.getInstance().getPluginManager().registerCommand(BungeeEssentials.getInstance(), new LoadCmds(alias.getAlias(), alias.getCommands()));
             return true;
         }
         return false;
