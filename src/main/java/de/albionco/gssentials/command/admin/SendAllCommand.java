@@ -34,6 +34,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -50,9 +51,14 @@ public class SendAllCommand extends Command implements TabExecutor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+        ServerInfo info = ProxyServer.getInstance().getServerInfo(args[0]);
+        Collection<ProxiedPlayer> players = ProxyServer.getInstance().getPlayers();
+        if (args.length > 1) {
+            info = ProxyServer.getInstance().getServerInfo(args[1]);
+            players = ProxyServer.getInstance().getServerInfo(args[0]).getPlayers();
+        }
         if (args.length > 0) {
-            ServerInfo info = ProxyServer.getInstance().getServerInfo(args[0]);
-            for (final ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
+            for (final ProxiedPlayer player : players) {
                 player.connect(info, new Callback<Boolean>() {
                     @Override
                     public void done(Boolean success, Throwable throwable) {
@@ -69,17 +75,16 @@ public class SendAllCommand extends Command implements TabExecutor {
 
     @Override
     public Iterable<String> onTabComplete(CommandSender commandSender, String[] args) {
-        if (args.length > 1 || args.length == 0) {
-            return ImmutableSet.of();
-        }
-
-        Set<String> matches = new HashSet<>();
-        String search = args[0].toLowerCase();
-        for (String server : ProxyServer.getInstance().getServers().keySet()) {
-            if (server.toLowerCase().startsWith(search)) {
-                matches.add(server);
+        if (args.length == 1 || args.length == 2) {
+            Set<String> matches = new HashSet<>();
+            String search = args[args.length - 1].toLowerCase();
+            for (String server : ProxyServer.getInstance().getServers().keySet()) {
+                if (server.toLowerCase().startsWith(search)) {
+                    matches.add(server);
+                }
             }
+            return matches;
         }
-        return matches;
+        return ImmutableSet.of();
     }
 }
