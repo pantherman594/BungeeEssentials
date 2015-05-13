@@ -24,8 +24,6 @@ package de.albionco.gssentials.event;
 
 import com.google.common.collect.Maps;
 import de.albionco.gssentials.BungeeEssentials;
-import de.albionco.gssentials.aliases.Alias;
-import de.albionco.gssentials.aliases.AliasManager;
 import de.albionco.gssentials.utils.Dictionary;
 import de.albionco.gssentials.utils.Messenger;
 import de.albionco.gssentials.utils.Permissions;
@@ -42,7 +40,6 @@ import net.md_5.bungee.event.EventHandler;
 
 import java.net.InetAddress;
 import java.util.HashMap;
-import java.util.logging.Level;
 
 /**
  * Created by Connor Harries on 31/01/2015.
@@ -95,7 +92,7 @@ public class PlayerListener implements Listener {
             }
             Connection connection = event.getSender();
             for (ProxiedPlayer onlinePlayer : ProxyServer.getInstance().getPlayers()) {
-                if (onlinePlayer.getAddress() == connection.getAddress() && !onlinePlayer.hasPermission(Permissions.Admin.BYPASS_FILTER)) {
+                if (onlinePlayer.getAddress() == connection.getAddress()) {
                     Messenger.chat(onlinePlayer, event);
                     return;
                 }

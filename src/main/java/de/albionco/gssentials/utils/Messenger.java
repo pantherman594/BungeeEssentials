@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 
 /**
@@ -136,48 +137,62 @@ public class Messenger implements Listener {
         Preconditions.checkNotNull(event, "event null");
         String message = event.getMessage();
 
-        if (BungeeEssentials.getInstance().useChatRules()) {
-            RuleManager.MatchResult result = RuleManager.matches(message);
-            if (result.matched()) {
-                Log.log(player, result.getRule(), ChatType.PUBLIC);
-                switch (result.getRule().getHandle()) {
-                    case ADVERTISEMENT:
-                        player.sendMessage(Dictionary.format(Dictionary.WARNINGS_ADVERTISING));
-                        event.setCancelled(true);
-                        return;
-                    case CURSING:
-                        player.sendMessage(Dictionary.format(Dictionary.WARNING_HANDLE_CURSING));
-                        event.setCancelled(true);
-                        return;
-                    case REPLACE:
-                        if (result.getRule().getReplacement() != null) {
-                            Matcher matcher = result.getRule().getPattern().matcher(message);
-                            if (matcher.matches()) {
-                                message = matcher.replaceAll(result.getRule().getReplacement());
-                                event.setMessage(message);
+        if(!player.hasPermission(Permissions.Admin.BYPASS_FILTER)) {
+            if (BungeeEssentials.getInstance().useChatRules()) {
+                RuleManager.MatchResult result = RuleManager.matches(message);
+                if (result.matched()) {
+                    Log.log(player, result.getRule(), ChatType.PUBLIC);
+                    switch (result.getRule().getHandle()) {
+                        case ADVERTISEMENT:
+                            player.sendMessage(Dictionary.format(Dictionary.WARNINGS_ADVERTISING));
+                            event.setCancelled(true);
+                            return;
+                        case CURSING:
+                            player.sendMessage(Dictionary.format(Dictionary.WARNING_HANDLE_CURSING));
+                            event.setCancelled(true);
+                            return;
+                        case REPLACE:
+                            if (result.getRule().getReplacement() != null) {
+                                Matcher matcher = result.getRule().getPattern().matcher(message);
+                                if (matcher.matches()) {
+                                    message = matcher.replaceAll(result.getRule().getReplacement());
+                                    event.setMessage(message);
+                                }
                             }
-                        }
-                        break;
-                    case COMMAND:
-                        CommandSender console = ProxyServer.getInstance().getConsole();
-                        String command = result.getRule().getCommand();
-                        if (command != null) {
-                            ProxyServer.getInstance().getPluginManager().dispatchCommand(console, command.replace("{{ SENDER }}", player.getName()));
-                        }
-                        return;
-				default:
-					break;
+                            break;
+                        case COMMAND:
+                            CommandSender console = ProxyServer.getInstance().getConsole();
+                            String command = result.getRule().getCommand();
+                            if (command != null) {
+                                ProxyServer.getInstance().getPluginManager().dispatchCommand(console, command.replace("{{ SENDER }}", player.getName()));
+                            }
+                            return;
+                        default:
+                            break;
+                    }
                 }
+            }
+
+            if (BungeeEssentials.getInstance().useChatSpamProtetion()) {
+                if (chatMessages.get(player.getUniqueId()) != null && compare(message, chatMessages.get(player.getUniqueId())) > 0.85) {
+                    event.setCancelled(true);
+                    player.sendMessage(Dictionary.format(Dictionary.WARNING_LEVENSHTEIN_DISTANCE));
+                    return;
+                }
+                chatMessages.put(player.getUniqueId(), message);
             }
         }
 
-        if (BungeeEssentials.getInstance().useChatSpamProtetion()) {
-            if (chatMessages.get(player.getUniqueId()) != null && compare(message, chatMessages.get(player.getUniqueId())) > 0.85) {
+        if (message.startsWith("!") && BungeeEssentials.getInstance().useGlobalChat()) {
+            message = message.substring(1);
+            if ((player.hasPermission(Permissions.General.CHAT)) && (!message.replace(" ","").replace("/","").equals(""))) {
                 event.setCancelled(true);
-                player.sendMessage(Dictionary.format(Dictionary.WARNING_LEVENSHTEIN_DISTANCE));
-                return;
+                for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
+                    if ((p != null) && (p.hasPermission(Permissions.General.CHAT))) {
+                        p.sendMessage(Dictionary.format(Dictionary.FORMAT_CHAT, "SERVER", player.getServer().getInfo().getName(), "SENDER", player.getName(), "MESSAGE", message));
+                    }
+                }
             }
-            chatMessages.put(player.getUniqueId(), message);
         }
     }
 

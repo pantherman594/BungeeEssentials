@@ -65,6 +65,8 @@ public class Dictionary {
     public static String FORMAT_QUIT;
     @Load(key = "format.alert", def = "&8[&c!&8] &7{{ MESSAGE }}")
     public static String FORMAT_ALERT;
+    @Load(key = "format.chat", def = "&e{{ SERVER }}, {{ SENDER }} » &7{{ MESSAGE }}")
+    public static String FORMAT_CHAT;
     @Load(key = "list.header", def = "&aServers")
     public static String LIST_HEADER;
     @Load(key = "list.body", def = "&a- {{ SERVER }} {{ DENSITY }}")
@@ -85,7 +87,7 @@ public class Dictionary {
     public static String HIDE_ENABLED;
     @Load(key = "hide.disabled", def = "&cYou are no longer hidden!")
     public static String HIDE_DISABLED;
-    @Load(key = "staffchat.message", def = "&c[{{ SERVER }}, {{ SENDER }}] &7{{ FORMAT_MESSAGE }}")
+    @Load(key = "staffchat.message", def = "&c[{{ SERVER }}, {{ SENDER }}] » &7{{ MESSAGE }}")
     public static String FORMAT_STAFF_CHAT;
     @Load(key = "staffchat.enabled", def = "&aYou have enabled staff chat!")
     public static String SCHAT_ENABLED;

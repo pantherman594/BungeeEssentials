@@ -57,6 +57,7 @@ public class BungeeEssentials extends Plugin {
     private IntegrationProvider helper;
     private boolean watchMultiLog;
     private boolean shouldClean;
+    private boolean globalChat;
     private boolean joinAnnounce;
     private boolean commandSpy;
     private boolean integrated;
@@ -386,6 +387,7 @@ public class BungeeEssentials extends Plugin {
         }
         watchMultiLog = enable.contains("multilog");
         shouldClean = enable.contains("clean");
+        globalChat = enable.contains("chat");
         joinAnnounce = enable.contains("joinannounce");
         getLogger().log(Level.INFO, "Registered {0} commands successfully", commands);
         setupIntegration();
@@ -436,6 +438,10 @@ public class BungeeEssentials extends Plugin {
 
     public boolean shouldClean() {
         return this.shouldClean;
+    }
+
+    public boolean useGlobalChat() {
+        return this.globalChat;
     }
 
     public boolean shouldAnnounce() {

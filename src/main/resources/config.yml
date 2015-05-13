@@ -21,6 +21,7 @@ enable:
   - announcement
   - updater
   - aliases
+  - chat
   # - clean
 commands:
   staffchat:
@@ -87,6 +88,7 @@ format:
   find: '&e{{ PLAYER }} &ais playing on &e{{ SERVER }}'
   message: '&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{ MESSAGE }}'
   send: '&aSending &e{{ PLAYER }} &ato server &e{{ SERVER }}'
+  chat: '&e{{ SERVER }}, {{ SENDER }} » &7{{ MESSAGE }}'
 warnings:
   similarity: '&cPlease do not spam other players!'
   swearing: '&cPlease do not swear at other players!'
