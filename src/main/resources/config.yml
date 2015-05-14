@@ -29,6 +29,9 @@ commands:
     - 'admin'
     - 'a'
     - 'sc'
+  chat:
+    - 'g'
+    - 'global'
   alert:
     - 'alert'
     - 'broadcast'
@@ -88,7 +91,6 @@ format:
   find: '&e{{ PLAYER }} &ais playing on &e{{ SERVER }}'
   message: '&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{ MESSAGE }}'
   send: '&aSending &e{{ PLAYER }} &ato server &e{{ SERVER }}'
-  chat: '&e{{ SERVER }}, {{ SENDER }} » &7{{ MESSAGE }}'
 warnings:
   similarity: '&cPlease do not spam other players!'
   swearing: '&cPlease do not swear at other players!'
@@ -108,8 +110,12 @@ rules:
     command: 'send {{ SENDER }} lobby'
 staffchat:
   message: '&c{{ SERVER }} - {{ SENDER }} » &7{{ MESSAGE }}'
-  enabled: '&aYou have enabled staff chat!'
-  disabled: '&cYou have disabled staff chat!'
+  enabled: '&aYou are now chatting in staff chat!'
+  disabled: '&cYou are no longer chatting in staff chat!'
+chat:
+  message: '&e{{ SERVER }} - {{ SENDER }} » &7{{ MESSAGE }}'
+  enabled: '&aYou have are now chatting in global chat!'
+  disabled: '&cYou are no longer chatting in global chat!'
 list:
   header: '&aServers:'
   body: '&a- {{ SERVER }} {{ DENSITY }}'
