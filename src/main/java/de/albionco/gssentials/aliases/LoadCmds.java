@@ -27,8 +27,6 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Command;
 
-import java.util.logging.Level;
-
 /**
  * Created by David on 5/11/2015.
  *
@@ -40,9 +38,6 @@ public class LoadCmds extends Command {
     public LoadCmds(String main, String[] commands) {
         super(main);
         this.commands = commands;
-        for (String command : commands) {
-            ProxyServer.getInstance().getLogger().log(Level.INFO, command);
-        }
     }
 
     @Override
