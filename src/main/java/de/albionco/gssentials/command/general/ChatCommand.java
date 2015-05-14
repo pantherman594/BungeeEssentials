@@ -20,26 +20,26 @@
  * SOFTWARE.
  */
 
-package de.albionco.gssentials.command.admin;
+package de.albionco.gssentials.command.general;
 
 import de.albionco.gssentials.BungeeEssentials;
+import de.albionco.gssentials.command.ServerSpecificCommand;
 import de.albionco.gssentials.utils.Dictionary;
 import de.albionco.gssentials.utils.Messenger;
 import de.albionco.gssentials.utils.Permissions;
-import de.albionco.gssentials.command.ServerSpecificCommand;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 /**
- * Created by Connor Harries on 19/12/2014.
+ * Created by David on 5/13/2015.
  *
- * @author Connor Spencer Harries
+ * @author David Shen
  */
 @SuppressWarnings("deprecation")
 public class ChatCommand extends ServerSpecificCommand {
     public ChatCommand() {
-        super(BungeeEssentials.StaffChat_MAIN, Permissions.Admin.CHAT, BungeeEssentials.StaffChat_ALIAS);
+        super(BungeeEssentials.Chat_MAIN, Permissions.General.CHAT, BungeeEssentials.Chat_ALIAS);
     }
 
     @Override
@@ -52,11 +52,11 @@ public class ChatCommand extends ServerSpecificCommand {
                 server = player.getServer().getInfo().getName();
                 if (args.length == 1) {
                     if (args[0].equals("on")) {
-                        Messenger.enableStaffChat(player);
+                        Messenger.enableGlobalChat(player);
                         player.sendMessage(Dictionary.format(Dictionary.SCHAT_ENABLED));
                         return;
                     } else if (args[0].equals("off")) {
-                        Messenger.disableStaffChat(player);
+                        Messenger.disableGlobalChat(player);
                         player.sendMessage(Dictionary.format(Dictionary.SCHAT_DISABLED));
                         return;
                     }
@@ -71,9 +71,9 @@ public class ChatCommand extends ServerSpecificCommand {
             }
 
             if (msg != null) {
-                msg = Dictionary.format(Dictionary.FORMAT_STAFF_CHAT, "SERVER", server, "SENDER", sender.getName(), "MESSAGE", msg);
+                msg = Dictionary.format(Dictionary.FORMAT_CHAT, "SERVER", server, "SENDER", sender.getName(), "MESSAGE", msg);
                 for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-                    if (player.hasPermission(Permissions.Admin.CHAT + "." + server) || player.hasPermission(Permissions.Admin.CHAT)) {
+                    if (player.hasPermission(Permissions.General.CHAT + "." + server) || player.hasPermission(Permissions.General.CHAT)) {
                         player.sendMessage(msg);
                     }
                 }
@@ -87,10 +87,10 @@ public class ChatCommand extends ServerSpecificCommand {
             ProxiedPlayer player;
             if (sender instanceof ProxiedPlayer) {
                 player = (ProxiedPlayer) sender;
-                if (Messenger.toggleStaffChat((ProxiedPlayer) sender)) {
-                    player.sendMessage(Dictionary.format(Dictionary.SCHAT_ENABLED));
+                if (Messenger.toggleGlobalChat((ProxiedPlayer) sender)) {
+                    player.sendMessage(Dictionary.format(Dictionary.CHAT_ENABLED));
                 } else {
-                    player.sendMessage(Dictionary.format(Dictionary.SCHAT_DISABLED));
+                    player.sendMessage(Dictionary.format(Dictionary.CHAT_DISABLED));
                 }
             } else {
                 sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS));

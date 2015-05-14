@@ -77,11 +77,28 @@ public class PlayerListener implements Listener {
         }
         if (Messenger.isChatting(player) && !event.isCancelled() && !event.isCommand()) {
             String server = player.getServer().getInfo().getName();
-            String msg = Dictionary.format(Dictionary.FORMAT_STAFF_CHAT, "SERVER", server, "SENDER", sender, "MESSAGE", event.getMessage());
+            String msg = Messenger.filter(player, event.getMessage());
 
-            for (ProxiedPlayer onlineP : ProxyServer.getInstance().getPlayers()) {
-                if (onlineP.hasPermission(Permissions.Admin.CHAT + "." + server) || onlineP.hasPermission(Permissions.Admin.CHAT)) {
-                    onlineP.sendMessage(msg);
+            if (msg != null) {
+                msg = Dictionary.format(Dictionary.FORMAT_STAFF_CHAT, "SERVER", server, "SENDER", sender, "MESSAGE", msg);
+                for (ProxiedPlayer onlineP : ProxyServer.getInstance().getPlayers()) {
+                    if (onlineP.hasPermission(Permissions.Admin.CHAT + "." + server) || onlineP.hasPermission(Permissions.Admin.CHAT)) {
+                        onlineP.sendMessage(msg);
+                    }
+                }
+            }
+            event.setCancelled(true);
+        }
+        if (Messenger.isGlobalChat(player) && !event.isCancelled() && !event.isCommand()) {
+            String server = player.getServer().getInfo().getName();
+            String msg = Messenger.filter(player, event.getMessage());
+
+            if (msg != null) {
+                msg = Dictionary.format(Dictionary.FORMAT_CHAT, "SERVER", server, "SENDER", sender, "MESSAGE", msg);
+                for (ProxiedPlayer onlineP : ProxyServer.getInstance().getPlayers()) {
+                    if (onlineP.hasPermission(Permissions.General.CHAT + "." + server) || onlineP.hasPermission(Permissions.General.CHAT)) {
+                        onlineP.sendMessage(msg);
+                    }
                 }
             }
             event.setCancelled(true);

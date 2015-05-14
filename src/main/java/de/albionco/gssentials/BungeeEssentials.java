@@ -56,7 +56,6 @@ public class BungeeEssentials extends Plugin {
     private IntegrationProvider helper;
     private boolean watchMultiLog;
     private boolean shouldClean;
-    private boolean globalChat;
     private boolean joinAnnounce;
     private boolean commandSpy;
     private boolean integrated;
@@ -68,6 +67,7 @@ public class BungeeEssentials extends Plugin {
     private boolean spam;
 
     public static String StaffChat_MAIN;
+    public static String Chat_MAIN;
     public static String Alert_MAIN;
     public static String Find_MAIN;
     public static String Hide_MAIN;
@@ -83,6 +83,7 @@ public class BungeeEssentials extends Plugin {
     public static String Reload_MAIN;
 
     public static String[] StaffChat_ALIAS;
+    public static String[] Chat_ALIAS;
     public static String[] Alert_ALIAS;
     public static String[] Find_ALIAS;
     public static String[] Hide_ALIAS;
@@ -178,11 +179,24 @@ public class BungeeEssentials extends Plugin {
                 getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
                 getLogger().log(Level.WARNING, "Falling back to default value for key commands.staffchat");
                 BASE = Arrays.asList("staffchat","admin","a","sc");
-        }
+            }
             StaffChat_MAIN = BASE.get(0);
             TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
             StaffChat_ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
-            register(new ChatCommand());
+            register(new de.albionco.gssentials.command.admin.ChatCommand());
+            commands++;
+        }
+        if (enable.contains("chat")) {
+            BASE = config.getStringList("commands.chat");
+            if (BASE.toString().equals("[]")) {
+                getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
+                getLogger().log(Level.WARNING, "Falling back to default value for key commands.chat");
+                BASE = Arrays.asList("g", "global");
+            }
+            Chat_MAIN = BASE.get(0);
+            TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
+            Chat_ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
+            register(new de.albionco.gssentials.command.general.ChatCommand());
             commands++;
         }
         if (enable.contains("alert")) {
@@ -383,7 +397,6 @@ public class BungeeEssentials extends Plugin {
         }
         watchMultiLog = enable.contains("multilog");
         shouldClean = enable.contains("clean");
-        globalChat = enable.contains("chat");
         joinAnnounce = enable.contains("joinannounce");
         getLogger().log(Level.INFO, "Registered {0} commands successfully", commands);
         setupIntegration();
@@ -434,10 +447,6 @@ public class BungeeEssentials extends Plugin {
 
     public boolean shouldClean() {
         return this.shouldClean;
-    }
-
-    public boolean useGlobalChat() {
-        return this.globalChat;
     }
 
     public boolean shouldAnnounce() {
