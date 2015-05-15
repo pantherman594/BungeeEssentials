@@ -44,6 +44,7 @@ import net.md_5.bungee.config.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
@@ -53,6 +54,7 @@ import java.util.logging.Level;
 public class BungeeEssentials extends Plugin {
     private static BungeeEssentials instance;
     private Configuration config = null;
+    private Configuration players = null;
     private IntegrationProvider helper;
     private boolean watchMultiLog;
     private boolean shouldClean;
@@ -62,6 +64,7 @@ public class BungeeEssentials extends Plugin {
     private boolean chatRules;
     private boolean chatSpam;
     private File configFile;
+    private File playerFile;
     private boolean useLog;
     private boolean rules;
     private boolean spam;
@@ -81,6 +84,7 @@ public class BungeeEssentials extends Plugin {
     public static String Spy_MAIN;
     public static String CSpy_MAIN;
     public static String Reload_MAIN;
+    public static String Lookup_MAIN;
 
     public static String[] StaffChat_ALIAS;
     public static String[] Chat_ALIAS;
@@ -97,6 +101,7 @@ public class BungeeEssentials extends Plugin {
     public static String[] Spy_ALIAS;
     public static String[] CSpy_ALIAS;
     public static String[] Reload_ALIAS;
+    public static String[] Lookup_ALIAS;
 
     public static BungeeEssentials getInstance() {
         return instance;
@@ -106,6 +111,7 @@ public class BungeeEssentials extends Plugin {
     public void onEnable() {
         instance = this;
         configFile = new File(getDataFolder(), "config.yml");
+        playerFile = new File(getDataFolder(), "players.yml");
         reload();
         Messenger.getPlayers();
         if (getConfig().getStringList("enable").contains("updater")) {
@@ -129,13 +135,21 @@ public class BungeeEssentials extends Plugin {
         if (!file.exists()) {
             Files.copy(getResourceAsStream("config.yml"), file.toPath());
         }
+        File file2 = new File(getDataFolder(), "players.yml");
+        if (!file2.exists()) {
+            Files.copy(getResourceAsStream("players.yml"), file2.toPath());
+        }
     }
 
     private void loadConfig() throws IOException {
         if (!configFile.exists()) {
             saveConfig();
         }
+        if (!playerFile.exists()) {
+            saveConfig();
+        }
         config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(configFile);
+        players = ConfigurationProvider.getProvider(YamlConfiguration.class).load(playerFile);
     }
 
     public boolean reload() {
@@ -397,6 +411,19 @@ public class BungeeEssentials extends Plugin {
         }
         watchMultiLog = enable.contains("multilog");
         shouldClean = enable.contains("clean");
+        if (enable.contains("lookup")) {
+            BASE = config.getStringList("commands.lookup");
+            if (BASE.toString().equals("[]")) {
+                getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
+                getLogger().log(Level.WARNING, "Falling back to default value for key commands.lookup");
+                BASE = Arrays.asList("lookup","");
+            }
+            Lookup_MAIN = BASE.get(0);
+            TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
+            Lookup_ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
+            register(new LookupCommand());
+            commands++;
+        }
         joinAnnounce = enable.contains("joinannounce");
         getLogger().log(Level.INFO, "Registered {0} commands successfully", commands);
         setupIntegration();
@@ -461,6 +488,27 @@ public class BungeeEssentials extends Plugin {
         return this.config;
     }
 
+    public Configuration getPlayerConfig() {
+        return this.players;
+    }
+
+    public void savePlayerConfig(String player) {
+        try {
+            this.players = ConfigurationProvider.getProvider(YamlConfiguration.class).load(playerFile);
+            List<String> players = getPlayerConfig().getStringList("players");
+            players.add(player);
+            getLogger().log(Level.INFO, players.toString());
+            PrintWriter writer = new PrintWriter(playerFile, "UTF-8");
+            writer.println("players:");
+            for (String pl : players) {
+                writer.println("  - " + pl);
+            }
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public IntegrationProvider getIntegrationProvider() {
         return helper;
     }
@@ -477,7 +525,7 @@ public class BungeeEssentials extends Plugin {
         return spam;
     }
 
-    public boolean useChatSpamProtetion() {
+    public boolean useChatSpamProtection() {
         return chatSpam;
     }
 

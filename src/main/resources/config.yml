@@ -22,6 +22,7 @@ enable:
   - updater
   - aliases
   - chat
+  - lookup
   # - clean
 commands:
   staffchat:
@@ -74,6 +75,8 @@ commands:
     - 'cspy'
   reload:
     - 'gssreload'
+  lookup:
+    - 'lookup'
 aliases:
   - alias: 'greet'
     commands:

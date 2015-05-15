@@ -62,17 +62,57 @@ public class Messenger implements Listener {
         if (recipient != null && !Messenger.isHidden(recipient)) {
             ProxiedPlayer player = null;
             if (sender instanceof ProxiedPlayer) {
-                String msg = filter((ProxiedPlayer) sender, message);
                 player = (ProxiedPlayer) sender;
-                if (msg == null) {
+                if (BungeeEssentials.getInstance().isIntegrated() && (BungeeEssentials.getInstance().getIntegrationProvider() != null && BungeeEssentials.getInstance().getIntegrationProvider().isMuted((ProxiedPlayer) sender))) {
+                    sender.sendMessage(ChatColor.RED + "You are muted and cannot message other players!");
                     return;
-                } else {
-                    message = msg;
+                }
+                if (!sender.hasPermission(Permissions.Admin.BYPASS_FILTER) && BungeeEssentials.getInstance().useRules()) {
+                    RuleManager.MatchResult result = RuleManager.matches(message);
+                    if (result.matched()) {
+                        Log.log(player, result.getRule(), ChatType.PRIVATE);
+                        switch (result.getRule().getHandle()) {
+                            case ADVERTISEMENT:
+                                sender.sendMessage(Dictionary.format(Dictionary.WARNINGS_ADVERTISING));
+                                return;
+                            case CURSING:
+                                sender.sendMessage(Dictionary.format(Dictionary.WARNING_HANDLE_CURSING));
+                                return;
+                            case REPLACE:
+                                if (result.getRule().getReplacement() != null) {
+                                    Matcher matcher = result.getRule().getPattern().matcher(message);
+                                    if (matcher.matches()) {
+                                        message = matcher.replaceAll(result.getRule().getReplacement());
+                                    }
+                                }
+                                break;
+                            case COMMAND:
+                                CommandSender console = ProxyServer.getInstance().getConsole();
+                                String command = result.getRule().getCommand();
+                                if (command != null) {
+                                    ProxyServer.getInstance().getPluginManager().dispatchCommand(console, command.replace("{{ SENDER }}", sender.getName()));
+                                }
+                                return;
+						default:
+							break;
+                        }
+                    }
                 }
             }
 
             String server = player != null ? player.getServer().getInfo().getName() : "CONSOLE";
             if (player != null) {
+                if (BungeeEssentials.getInstance().useSpamProtection() && !player.hasPermission(Permissions.Admin.BYPASS_FILTER)) {
+                    if (sentMessages.get(player.getUniqueId()) != null) {
+                        String last = sentMessages.get(player.getUniqueId());
+                        if (compare(message, last) > 0.85) {
+                            sender.sendMessage(Dictionary.format(Dictionary.WARNING_LEVENSHTEIN_DISTANCE));
+                            return;
+                        }
+                    }
+                    sentMessages.put(player.getUniqueId(), message);
+                }
+
                 if (!sender.hasPermission(Permissions.Admin.SPY_EXEMPT)) {
                     String spyMessage = Dictionary.format(Dictionary.SPY_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message);
                     for (ProxiedPlayer onlinePlayer : player.getServer().getInfo().getPlayers()) {
@@ -145,7 +185,7 @@ public class Messenger implements Listener {
                 }
             }
 
-            if (BungeeEssentials.getInstance().useChatSpamProtetion()) {
+            if (BungeeEssentials.getInstance().useChatSpamProtection()) {
                 if (message != null && chatMessages.get(player.getUniqueId()) != null && compare(message, chatMessages.get(player.getUniqueId())) > 0.85) {
                     player.sendMessage(Dictionary.format(Dictionary.WARNING_LEVENSHTEIN_DISTANCE));
                     return null;

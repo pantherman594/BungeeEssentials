@@ -43,6 +43,7 @@ public class Permissions {
         public static final String RELOAD = "gssentials.admin.reload";
         public static final String BYPASS_FILTER = "gssentials.admin.bypass-filter";
         public static final String UPDATE = "gssentials.admin.update";
+        public static final String LOOKUP = "gssentials.admin.lookup";
     }
 
     public static class General {

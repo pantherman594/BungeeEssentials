@@ -28,18 +28,20 @@ import de.albionco.gssentials.utils.Dictionary;
 import de.albionco.gssentials.utils.Messenger;
 import de.albionco.gssentials.utils.Permissions;
 import de.albionco.gssentials.utils.Updater;
+import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.event.ChatEvent;
-import net.md_5.bungee.api.event.PlayerDisconnectEvent;
-import net.md_5.bungee.api.event.PostLoginEvent;
-import net.md_5.bungee.api.event.PreLoginEvent;
+import net.md_5.bungee.api.event.*;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
 import java.net.InetAddress;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
 
 /**
  * Created by Connor Harries on 31/01/2015.
@@ -103,7 +105,7 @@ public class PlayerListener implements Listener {
             }
             event.setCancelled(true);
         }
-        if (BungeeEssentials.getInstance().useChatSpamProtetion() || BungeeEssentials.getInstance().useChatRules()) {
+        if (BungeeEssentials.getInstance().useChatSpamProtection() || BungeeEssentials.getInstance().useChatRules()) {
             if (event.isCommand() || event.isCancelled()) {
                 return;
             }
@@ -137,6 +139,10 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = Byte.MAX_VALUE)
     public void postLogin(PostLoginEvent event) {
+        List<String> players = BungeeEssentials.getInstance().getPlayerConfig().getStringList("players");
+        if (!players.contains(event.getPlayer().getName())) {
+            BungeeEssentials.getInstance().savePlayerConfig(event.getPlayer().getName());
+        }
         if (BungeeEssentials.getInstance().shouldAnnounce()) {
             ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_JOIN, "PLAYER", event.getPlayer().getName()));
         }
