@@ -64,26 +64,25 @@ public class Updater {
             if(newVersion > oldVersion) {
                 if (newConfVersion > oldVersion) {
                     newConf = true;
-                    plugin.getLogger().log(Level.INFO, "Update found, but not downloaded because of a config change.");
-                    plugin.getLogger().log(Level.INFO, "Go to http://www.spigotmc.org/resources/bungeeessentials.1488/ to download it.");
-                } else {
-                    plugin.getLogger().log(Level.INFO, "Update found, downloading...");
-                    String dlLink = "https://github.com/Fireflies/BungeeEssentials/releases/download/" + newVer + "/BungeeEssentials.jar";
-                    url = new URL(dlLink);
-                    con = url.openConnection();
-                    InputStream in = con.getInputStream();
-                    FileOutputStream out = new FileOutputStream(path);
-                    byte[] buffer = new byte[1024];
-                    int size;
-                    while ((size = in.read(buffer)) != -1) {
-                        out.write(buffer, 0, size);
-                    }
-
-                    out.close();
-                    in.close();
-                    plugin.getLogger().log(Level.INFO, "Succesfully updated plugin to v" + newVer);
-                    plugin.getLogger().log(Level.INFO, "Restart the server to enable changes");
+                    plugin.getLogger().log(Level.WARNING, "Update found with a config change.");
+                    plugin.getLogger().log(Level.WARNING, "Go to http://www.spigotmc.org/resources/bungeeessentials.1488/ to compare and update your config.");
                 }
+                plugin.getLogger().log(Level.INFO, "Update found, downloading...");
+                String dlLink = "https://github.com/Fireflies/BungeeEssentials/releases/download/" + newVer + "/BungeeEssentials.jar";
+                url = new URL(dlLink);
+                con = url.openConnection();
+                InputStream in = con.getInputStream();
+                FileOutputStream out = new FileOutputStream(path);
+                byte[] buffer = new byte[1024];
+                int size;
+                while ((size = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, size);
+                }
+
+                out.close();
+                in.close();
+                plugin.getLogger().log(Level.INFO, "Succesfully updated plugin to v" + newVer);
+                plugin.getLogger().log(Level.INFO, "Restart the server to enable changes");
             } else {
                 plugin.getLogger().log(Level.INFO, "You are running the latest version of BungeeEssentials!");
             }

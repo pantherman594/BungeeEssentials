@@ -147,8 +147,8 @@ public class PlayerListener implements Listener {
             ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_JOIN, "PLAYER", event.getPlayer().getName()));
         }
         if (Updater.hasConfigChange() && event.getPlayer().hasPermission(Permissions.Admin.UPDATE)) {
-            event.getPlayer().sendMessage(Dictionary.format("&cThere is an update available with a config change."));
-            event.getPlayer().sendMessage(Dictionary.format("&cGo to http://www.spigotmc.org/resources/bungeeessentials.1488/ to download it."));
+            event.getPlayer().sendMessage(Dictionary.format("&cBungeeEssentials updated with a config change."));
+            event.getPlayer().sendMessage(Dictionary.format("&cGo to http://www.spigotmc.org/resources/bungeeessentials.1488/ to compare and update your config."));
         }
     }
 
