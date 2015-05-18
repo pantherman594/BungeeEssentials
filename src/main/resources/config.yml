@@ -111,6 +111,9 @@ rules:
   - pattern: 'I hate (this|your) server'
     handle: COMMAND
     command: 'send {{ SENDER }} lobby'
+  - pattern: 'I hate (this|your) server'
+    handle: REPLACE
+    replacement: 'I love this server'
 staffchat:
   message: '&c{{ SERVER }} - {{ SENDER }} » &7{{ MESSAGE }}'
   enabled: '&aYou are now chatting in staff chat!'

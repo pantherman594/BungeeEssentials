@@ -55,7 +55,8 @@ public class Messenger implements Listener {
     private static Set<UUID> chatting = new HashSet<>();
     private static Set<UUID> globalChat = new HashSet<>();
 
-    public static void sendMessage(CommandSender sender, ProxiedPlayer recipient, String message) {
+    public static void sendMessage(CommandSender sender, ProxiedPlayer recipient, String msg) {
+        String message = msg;
         if (recipient != null && !Messenger.isHidden(recipient)) {
             ProxiedPlayer player = null;
             if (sender instanceof ProxiedPlayer) {
@@ -65,7 +66,7 @@ public class Messenger implements Listener {
                     return;
                 }
                 if (!sender.hasPermission(Permissions.Admin.BYPASS_FILTER) && BungeeEssentials.getInstance().useRules()) {
-                    List<RuleManager.MatchResult> results = RuleManager.matches(message);
+                    List<RuleManager.MatchResult> results = RuleManager.matches(msg);
                     for (RuleManager.MatchResult result : results) {
                         if (result.matched()) {
                             Log.log(player, result.getRule(), ChatType.PRIVATE);
@@ -78,7 +79,7 @@ public class Messenger implements Listener {
                                     return;
                                 case REPLACE:
                                     if (result.getRule().getReplacement() != null) {
-                                        Matcher matcher = result.getRule().getPattern().matcher(message);
+                                        Matcher matcher = result.getRule().getPattern().matcher(msg);
                                         if (matcher.matches()) {
                                             message = matcher.replaceAll(result.getRule().getReplacement());
                                         }
@@ -104,12 +105,12 @@ public class Messenger implements Listener {
                 if (BungeeEssentials.getInstance().useSpamProtection() && !player.hasPermission(Permissions.Admin.BYPASS_FILTER)) {
                     if (sentMessages.get(player.getUniqueId()) != null) {
                         String last = sentMessages.get(player.getUniqueId());
-                        if (compare(message, last) > 0.85) {
+                        if (compare(msg, last) > 0.85) {
                             sender.sendMessage(Dictionary.format(Dictionary.WARNING_LEVENSHTEIN_DISTANCE));
                             return;
                         }
                     }
-                    sentMessages.put(player.getUniqueId(), message);
+                    sentMessages.put(player.getUniqueId(), msg);
                 }
 
                 if (!sender.hasPermission(Permissions.Admin.SPY_EXEMPT)) {
@@ -143,15 +144,16 @@ public class Messenger implements Listener {
         }
     }
 
-    public static String filter(ProxiedPlayer player, String message) {
+    public static String filter(ProxiedPlayer player, String msg) {
         Preconditions.checkNotNull(player, "player null");
+        String message = msg;
 
         if (BungeeEssentials.getInstance().isIntegrated() && (BungeeEssentials.getInstance().getIntegrationProvider() != null && BungeeEssentials.getInstance().getIntegrationProvider().isMuted(player))) {
             player.sendMessage(ChatColor.RED + "You are muted and cannot message other players!");
             return null;
         }
         if (!player.hasPermission(Permissions.Admin.BYPASS_FILTER) && BungeeEssentials.getInstance().useChatRules()) {
-            List<RuleManager.MatchResult> results = RuleManager.matches(message);
+            List<RuleManager.MatchResult> results = RuleManager.matches(msg);
             for (RuleManager.MatchResult result : results) {
                 if (result.matched()) {
                     Log.log(player, result.getRule(), ChatType.PUBLIC);
@@ -166,7 +168,7 @@ public class Messenger implements Listener {
                             break;
                         case REPLACE:
                             if (result.getRule().getReplacement() != null) {
-                                Matcher matcher = result.getRule().getPattern().matcher(message);
+                                Matcher matcher = result.getRule().getPattern().matcher(msg);
                                 if (matcher.matches()) {
                                     message = matcher.replaceAll(result.getRule().getReplacement());
                                 }
@@ -187,11 +189,11 @@ public class Messenger implements Listener {
             }
 
             if (BungeeEssentials.getInstance().useChatSpamProtection()) {
-                if (message != null && chatMessages.get(player.getUniqueId()) != null && compare(message, chatMessages.get(player.getUniqueId())) > 0.85) {
+                if (chatMessages.get(player.getUniqueId()) != null && compare(msg, chatMessages.get(player.getUniqueId())) > 0.85) {
                     player.sendMessage(Dictionary.format(Dictionary.WARNING_LEVENSHTEIN_DISTANCE));
                     return null;
                 }
-                chatMessages.put(player.getUniqueId(), message);
+                chatMessages.put(player.getUniqueId(), msg);
             }
         }
         return message;
