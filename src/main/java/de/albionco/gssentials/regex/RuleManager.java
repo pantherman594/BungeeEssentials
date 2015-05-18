@@ -45,21 +45,28 @@ public class RuleManager {
         return false;
     }
 
-    public static MatchResult matches(String input) {
+    public static List<MatchResult> matches(String input) {
+        List<MatchResult> results = new ArrayList<>();
+        Boolean contains = false;
         for (Rule rule : rules) {
             if (rule.matches(input)) {
-                return new MatchResult(true, rule);
+                results.add(new MatchResult(true, rule));
+                contains = true;
             } else {
                 if (input.contains(" ")) {
                     for (String string : input.split(" ")) {
                         if (rule.matches(string)) {
-                            return new MatchResult(true, rule);
+                            results.add(new MatchResult(true, rule));
+                            contains = true;
                         }
                     }
                 }
             }
         }
-        return new MatchResult(false, null);
+        if (!contains) {
+            results.add(new MatchResult(false, null));
+        }
+        return results;
     }
 
     @SuppressWarnings("unchecked")
