@@ -115,7 +115,7 @@ public class Messenger implements Listener {
 
                 if (!sender.hasPermission(Permissions.Admin.SPY_EXEMPT)) {
                     String spyMessage = Dictionary.format(Dictionary.SPY_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message);
-                    for (ProxiedPlayer onlinePlayer : player.getServer().getInfo().getPlayers()) {
+                    for (ProxiedPlayer onlinePlayer : ProxyServer.getInstance().getPlayers()) {
                         if (player.getUniqueId() != onlinePlayer.getUniqueId() && recipient.getUniqueId() != onlinePlayer.getUniqueId()) {
                             if (onlinePlayer.hasPermission(Permissions.Admin.SPY) && Messenger.isSpy(onlinePlayer)) {
                                 onlinePlayer.sendMessage(spyMessage);
