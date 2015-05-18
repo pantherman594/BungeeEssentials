@@ -21,6 +21,8 @@ enable:
   - announcement
   - updater
   - aliases
+  - chat
+  - lookup
   # - clean
 commands:
   staffchat:
@@ -28,6 +30,9 @@ commands:
     - 'admin'
     - 'a'
     - 'sc'
+  chat:
+    - 'g'
+    - 'global'
   alert:
     - 'alert'
     - 'broadcast'
@@ -70,6 +75,8 @@ commands:
     - 'cspy'
   reload:
     - 'gssreload'
+  lookup:
+    - 'lookup'
 aliases:
   - alias: 'greet'
     commands:
@@ -102,12 +109,19 @@ rules:
     handle: REPLACE
     replacement: '******'
   - pattern: 'I hate (this|your) server'
+    handle: REPLACE
+    replacement: 'I love this server'
+  - pattern: 'I hate (this|your) server'
     handle: COMMAND
     command: 'send {{ SENDER }} lobby'
 staffchat:
   message: '&c{{ SERVER }} - {{ SENDER }} » &7{{ MESSAGE }}'
-  enabled: '&aYou have enabled staff chat!'
-  disabled: '&cYou have disabled staff chat!'
+  enabled: '&aYou are now chatting in staff chat!'
+  disabled: '&cYou are no longer chatting in staff chat!'
+chat:
+  message: '&e{{ SERVER }} - {{ SENDER }} » &7{{ MESSAGE }}'
+  enabled: '&aYou have are now chatting in global chat!'
+  disabled: '&cYou are no longer chatting in global chat!'
 list:
   header: '&aServers:'
   body: '&a- {{ SERVER }} {{ DENSITY }}'
@@ -137,4 +151,4 @@ announcements:
     message: 'Vote for our server for great rewards!'
   - delay: 0
     interval: 60
-    message: 'Donate to support our server!\n&f&ndonate.myserver.com'
+    message: 'Donate to support our server!/n&f&ndonate.myserver.com'
