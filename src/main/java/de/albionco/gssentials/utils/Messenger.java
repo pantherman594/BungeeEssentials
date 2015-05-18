@@ -36,7 +36,10 @@ import net.md_5.bungee.event.EventHandler;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Matcher;
 
 /**
@@ -65,35 +68,33 @@ public class Messenger implements Listener {
                     return;
                 }
                 if (!sender.hasPermission(Permissions.Admin.BYPASS_FILTER) && BungeeEssentials.getInstance().useRules()) {
-                    List<RuleManager.MatchResult> results = RuleManager.matches(message);
-                    for (RuleManager.MatchResult result : results) {
-                        if (result.matched()) {
-                            Log.log(player, result.getRule(), ChatType.PRIVATE);
-                            switch (result.getRule().getHandle()) {
-                                case ADVERTISEMENT:
-                                    sender.sendMessage(Dictionary.format(Dictionary.WARNINGS_ADVERTISING));
-                                    return;
-                                case CURSING:
-                                    sender.sendMessage(Dictionary.format(Dictionary.WARNING_HANDLE_CURSING));
-                                    return;
-                                case REPLACE:
-                                    if (result.getRule().getReplacement() != null) {
-                                        Matcher matcher = result.getRule().getPattern().matcher(message);
-                                        if (matcher.matches()) {
-                                            message = matcher.replaceAll(result.getRule().getReplacement());
-                                        }
+                    RuleManager.MatchResult result = RuleManager.matches(message);
+                    if (result.matched()) {
+                        Log.log(player, result.getRule(), ChatType.PRIVATE);
+                        switch (result.getRule().getHandle()) {
+                            case ADVERTISEMENT:
+                                sender.sendMessage(Dictionary.format(Dictionary.WARNINGS_ADVERTISING));
+                                return;
+                            case CURSING:
+                                sender.sendMessage(Dictionary.format(Dictionary.WARNING_HANDLE_CURSING));
+                                return;
+                            case REPLACE:
+                                if (result.getRule().getReplacement() != null) {
+                                    Matcher matcher = result.getRule().getPattern().matcher(message);
+                                    if (matcher.matches()) {
+                                        message = matcher.replaceAll(result.getRule().getReplacement());
                                     }
-                                    break;
-                                case COMMAND:
-                                    CommandSender console = ProxyServer.getInstance().getConsole();
-                                    String command = result.getRule().getCommand();
-                                    if (command != null) {
-                                        ProxyServer.getInstance().getPluginManager().dispatchCommand(console, command.replace("{{ SENDER }}", sender.getName()));
-                                    }
-                                    return;
-                                default:
-                                    break;
-                            }
+                                }
+                                break;
+                            case COMMAND:
+                                CommandSender console = ProxyServer.getInstance().getConsole();
+                                String command = result.getRule().getCommand();
+                                if (command != null) {
+                                    ProxyServer.getInstance().getPluginManager().dispatchCommand(console, command.replace("{{ SENDER }}", sender.getName()));
+                                }
+                                return;
+						default:
+							break;
                         }
                     }
                 }
@@ -151,38 +152,36 @@ public class Messenger implements Listener {
             return null;
         }
         if (!player.hasPermission(Permissions.Admin.BYPASS_FILTER) && BungeeEssentials.getInstance().useChatRules()) {
-            List<RuleManager.MatchResult> results = RuleManager.matches(message);
-            for (RuleManager.MatchResult result : results) {
-                if (result.matched()) {
-                    Log.log(player, result.getRule(), ChatType.PUBLIC);
-                    switch (result.getRule().getHandle()) {
-                        case ADVERTISEMENT:
-                            player.sendMessage(Dictionary.format(Dictionary.WARNINGS_ADVERTISING));
-                            message = null;
-                            break;
-                        case CURSING:
-                            player.sendMessage(Dictionary.format(Dictionary.WARNING_HANDLE_CURSING));
-                            message = null;
-                            break;
-                        case REPLACE:
-                            if (result.getRule().getReplacement() != null) {
-                                Matcher matcher = result.getRule().getPattern().matcher(message);
-                                if (matcher.matches()) {
-                                    message = matcher.replaceAll(result.getRule().getReplacement());
-                                }
+            RuleManager.MatchResult result = RuleManager.matches(message);
+            if (result.matched()) {
+                Log.log(player, result.getRule(), ChatType.PUBLIC);
+                switch (result.getRule().getHandle()) {
+                    case ADVERTISEMENT:
+                        player.sendMessage(Dictionary.format(Dictionary.WARNINGS_ADVERTISING));
+                        message = null;
+                        break;
+                    case CURSING:
+                        player.sendMessage(Dictionary.format(Dictionary.WARNING_HANDLE_CURSING));
+                        message = null;
+                        break;
+                    case REPLACE:
+                        if (result.getRule().getReplacement() != null) {
+                            Matcher matcher = result.getRule().getPattern().matcher(message);
+                            if (matcher.matches()) {
+                                message = matcher.replaceAll(result.getRule().getReplacement());
                             }
-                            break;
-                        case COMMAND:
-                            CommandSender console = ProxyServer.getInstance().getConsole();
-                            String command = result.getRule().getCommand();
-                            if (command != null) {
-                                ProxyServer.getInstance().getPluginManager().dispatchCommand(console, command.replace("{{ SENDER }}", player.getName()));
-                            }
-                            message = null;
-                            break;
-                        default:
-                            break;
-                    }
+                        }
+                        break;
+                    case COMMAND:
+                        CommandSender console = ProxyServer.getInstance().getConsole();
+                        String command = result.getRule().getCommand();
+                        if (command != null) {
+                            ProxyServer.getInstance().getPluginManager().dispatchCommand(console, command.replace("{{ SENDER }}", player.getName()));
+                        }
+                        message = null;
+                        break;
+                    default:
+                        break;
                 }
             }
 
