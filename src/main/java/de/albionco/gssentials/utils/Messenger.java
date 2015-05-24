@@ -78,11 +78,9 @@ public class Messenger implements Listener {
                                     sender.sendMessage(Dictionary.format(Dictionary.WARNING_HANDLE_CURSING));
                                     return;
                                 case REPLACE:
-                                    if (result.getRule().getReplacement() != null) {
-                                        Matcher matcher = result.getRule().getPattern().matcher(msg);
-                                        if (matcher.matches()) {
-                                            message = matcher.replaceAll(result.getRule().getReplacement());
-                                        }
+                                    if (result.getRule().getReplacement() != null && message != null) {
+                                        Matcher matcher = result.getRule().getPattern().matcher(message);
+                                        message = matcher.replaceAll(result.getRule().getReplacement());
                                     }
                                     break;
                                 case COMMAND:
@@ -167,11 +165,9 @@ public class Messenger implements Listener {
                             message = null;
                             break;
                         case REPLACE:
-                            if (result.getRule().getReplacement() != null) {
-                                Matcher matcher = result.getRule().getPattern().matcher(msg);
-                                if (matcher.matches()) {
-                                    message = matcher.replaceAll(result.getRule().getReplacement());
-                                }
+                            if (result.getRule().getReplacement() != null && message != null) {
+                                Matcher matcher = result.getRule().getPattern().matcher(message);
+                                message = matcher.replaceAll(result.getRule().getReplacement());
                             }
                             break;
                         case COMMAND:
