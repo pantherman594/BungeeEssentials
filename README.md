@@ -1,5 +1,9 @@
-BungeeEssentials [![Build Status](https://travis-ci.org/Fireflies/BungeeEssentials.svg?branch=master)](https://travis-ci.org/Fireflies/BungeeEssentials)
+BungeeEssentials
 ================
+
+[![Build Status](https://travis-ci.org/Fireflies/BungeeEssentials.svg?branch=master)](https://travis-ci.org/Fireflies/BungeeEssentials)
+[![Downloads](https://img.shields.io/github/downloads/Fireflies/BungeeEssentials/latest/total.svg)](https://github.com/Fireflies/BungeeEssentials/releases/latest)
+[![Issues](https://img.shields.io/github/issues/Fireflies/BungeeEssentials.svg)](https://github.com/Fireflies/BungeeEssentials/issues)
 
 Port of [charries96/LilyEssentials](https://github.com/charries96/LilyEssentials) for BungeeCord. The latest version of this plugin is always available [here](https://drone.io/github.com/charries96/BungeeEssentials/files).
 
