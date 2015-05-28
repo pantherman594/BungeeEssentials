@@ -101,9 +101,9 @@ warnings:
 rules:
   - pattern: '\bfuck\b'
     handle: CURSING
-  - pattern: '^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$'
+  - pattern: '^.+((\.|dot).+)*(\.|dot)\s*[a-zA-Z]{2,5}'
     handle: ADVERTISEMENT
-  - pattern: '(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\.){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9]))'
+  - pattern: '(\d{1,4}\.){3}\d{1,4}'
     handle: ADVERTISEMENT
   - pattern: 'asshole'
     handle: REPLACE
