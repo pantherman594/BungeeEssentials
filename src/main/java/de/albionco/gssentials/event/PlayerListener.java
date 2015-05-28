@@ -122,10 +122,25 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = -65)
     public void login(PreLoginEvent event) {
         if (BungeeEssentials.getInstance().shouldWatchMultilog()) {
+            BungeeEssentials.getInstance().getLogger().log(Level.INFO, "TEST");
             InetAddress address = event.getConnection().getAddress().getAddress();
+            BungeeEssentials.getInstance().getLogger().log(Level.INFO, "ip: " + address);
             if (connections.get(address) == null) {
                 connections.put(address, 1);
             } else {
+                int currPlayers = 0;
+                for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
+                    BungeeEssentials.getInstance().getLogger().log(Level.INFO, "new ip: " + p.getAddress().getAddress());
+                    if (p.getAddress().getAddress().toString().equals(address.toString())) {
+                        currPlayers++;
+                    }
+                }
+                BungeeEssentials.getInstance().getLogger().log(Level.INFO, connections.get(address) + " connections");
+                BungeeEssentials.getInstance().getLogger().log(Level.INFO, currPlayers + " players");
+                if (currPlayers != connections.get(address)) {
+                    connections.put(address, currPlayers);
+                }
+                BungeeEssentials.getInstance().getLogger().log(Level.INFO, connections.get(address) + " new connections");
                 int newCount = connections.get(address) + 1;
                 if (newCount > max) {
                     event.setCancelled(true);
