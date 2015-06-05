@@ -73,18 +73,18 @@ public class Messenger implements Listener {
                             switch (result.getRule().getHandle()) {
                                 case ADVERTISEMENT:
                                     sender.sendMessage(Dictionary.format(Dictionary.WARNINGS_ADVERTISING));
-                                    ruleNotify(Dictionary.NOTIFY_ADVERTISEMENT, (ProxiedPlayer) sender);
+                                    ruleNotify(Dictionary.NOTIFY_ADVERTISEMENT, (ProxiedPlayer) sender, msg);
                                     return;
                                 case CURSING:
                                     sender.sendMessage(Dictionary.format(Dictionary.WARNING_HANDLE_CURSING));
-                                    ruleNotify(Dictionary.NOTIFY_CURSING, (ProxiedPlayer) sender);
+                                    ruleNotify(Dictionary.NOTIFY_CURSING, (ProxiedPlayer) sender, msg);
                                     return;
                                 case REPLACE:
                                     if (result.getRule().getReplacement() != null && message != null) {
                                         Matcher matcher = result.getRule().getPattern().matcher(message);
                                         message = matcher.replaceAll(result.getRule().getReplacement());
                                     }
-                                    ruleNotify(Dictionary.NOTIFY_REPLACE, (ProxiedPlayer) sender);
+                                    ruleNotify(Dictionary.NOTIFY_REPLACE, (ProxiedPlayer) sender, msg);
                                     break;
                                 case COMMAND:
                                     CommandSender console = ProxyServer.getInstance().getConsole();
@@ -92,7 +92,7 @@ public class Messenger implements Listener {
                                     if (command != null) {
                                         ProxyServer.getInstance().getPluginManager().dispatchCommand(console, command.replace("{{ SENDER }}", sender.getName()));
                                     }
-                                    ruleNotify(Dictionary.NOTIFY_COMMAND, (ProxiedPlayer) sender);
+                                    ruleNotify(Dictionary.NOTIFY_COMMAND, (ProxiedPlayer) sender, msg);
                                     return;
                                 default:
                                     break;
@@ -163,19 +163,19 @@ public class Messenger implements Listener {
                         case ADVERTISEMENT:
                             player.sendMessage(Dictionary.format(Dictionary.WARNINGS_ADVERTISING));
                             message = null;
-                            ruleNotify(Dictionary.NOTIFY_ADVERTISEMENT, player);
+                            ruleNotify(Dictionary.NOTIFY_ADVERTISEMENT, player, msg);
                             break;
                         case CURSING:
                             player.sendMessage(Dictionary.format(Dictionary.WARNING_HANDLE_CURSING));
                             message = null;
-                            ruleNotify(Dictionary.NOTIFY_CURSING, player);
+                            ruleNotify(Dictionary.NOTIFY_CURSING, player, msg);
                             break;
                         case REPLACE:
                             if (result.getRule().getReplacement() != null && message != null) {
                                 Matcher matcher = result.getRule().getPattern().matcher(message);
                                 message = matcher.replaceAll(result.getRule().getReplacement());
                             }
-                            ruleNotify(Dictionary.NOTIFY_REPLACE, player);
+                            ruleNotify(Dictionary.NOTIFY_REPLACE, player, msg);
                             break;
                         case COMMAND:
                             CommandSender console = ProxyServer.getInstance().getConsole();
@@ -183,7 +183,7 @@ public class Messenger implements Listener {
                             if (command != null) {
                                 ProxyServer.getInstance().getPluginManager().dispatchCommand(console, command.replace("{{ SENDER }}", player.getName()));
                             }
-                            ruleNotify(Dictionary.NOTIFY_COMMAND, player);
+                            ruleNotify(Dictionary.NOTIFY_COMMAND, player, msg);
                             message = null;
                             break;
                         default:
@@ -203,10 +203,11 @@ public class Messenger implements Listener {
         return message;
     }
 
-    public static void ruleNotify(String message, ProxiedPlayer player) {
+    public static void ruleNotify(String message, ProxiedPlayer player, String sentMessage) {
         for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
             if (p.hasPermission(Permissions.Admin.RULE_NOTIFY)) {
                 p.sendMessage(Dictionary.format(message, "PLAYER", player.getName()));
+                p.sendMessage(sentMessage);
             }
         }
     }

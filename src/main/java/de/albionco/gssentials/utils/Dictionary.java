@@ -87,11 +87,11 @@ public class Dictionary {
     public static String HIDE_DISABLED;
     @Load(key = "rulenotify.advertisement", def = "&7{{ PLAYER }} just advertised!")
     public static String NOTIFY_ADVERTISEMENT;
-    @Load(key = "rulenotify.advertisement", def = "&7{{ PLAYER }} just sweared!")
+    @Load(key = "rulenotify.cursing", def = "&7{{ PLAYER }} just sweared!")
     public static String NOTIFY_CURSING;
-    @Load(key = "rulenotify.advertisement", def = "&7{{ PLAYER }} sweared but was replaced!")
+    @Load(key = "rulenotify.replace", def = "&7{{ PLAYER }} sweared but was replaced!")
     public static String NOTIFY_REPLACE;
-    @Load(key = "rulenotify.advertisement", def = "&7{{ PLAYER }} sweared, triggering a command!")
+    @Load(key = "rulenotify.command", def = "&7{{ PLAYER }} sweared, triggering a command!")
     public static String NOTIFY_COMMAND;
     @Load(key = "staffchat.message", def = "&c[{{ SERVER }} - {{ SENDER }}] » &7{{ MESSAGE }}")
     public static String FORMAT_STAFF_CHAT;
