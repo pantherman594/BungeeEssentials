@@ -101,9 +101,9 @@ warnings:
 rules:
   - pattern: '\bfuck\b'
     handle: CURSING
-  - pattern: '^.+((\.|dot).+)*(\.|dot)\s*[a-zA-Z]{2,5}'
+  - pattern: '^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$'
     handle: ADVERTISEMENT
-  - pattern: '(\d{1,4}\.){3}\d{1,4}'
+  - pattern: '(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\.){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9]))'
     handle: ADVERTISEMENT
   - pattern: 'asshole'
     handle: REPLACE
@@ -114,11 +114,6 @@ rules:
   - pattern: 'I hate (this|your) server'
     handle: COMMAND
     command: 'send {{ SENDER }} lobby'
-rulenotify:
-  advertisement: '&7{{ PLAYER }} just advertised!'
-  cursing: '&7{{ PLAYER }} just sweared!'
-  replace: '&7{{ PLAYER }} sweared but was replaced!'
-  command: '&7{{ PLAYER }} sweared, triggering a command!'
 staffchat:
   message: '&c{{ SERVER }} - {{ SENDER }} » &7{{ MESSAGE }}'
   enabled: '&aYou are now chatting in staff chat!'
