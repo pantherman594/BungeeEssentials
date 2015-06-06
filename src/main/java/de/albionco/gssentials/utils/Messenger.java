@@ -207,7 +207,7 @@ public class Messenger implements Listener {
         for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
             if (p.hasPermission(Permissions.Admin.RULE_NOTIFY)) {
                 p.sendMessage(Dictionary.format(message, "PLAYER", player.getName()));
-                p.sendMessage(sentMessage);
+                p.sendMessage(ChatColor.GRAY + "Original Message: " + sentMessage);
             }
         }
     }
