@@ -134,6 +134,16 @@ public class PlayerListener implements Listener {
                 }
                 if (currPlayers != connections.get(address)) {
                     connections.put(address, currPlayers);
+                    BungeeEssentials.getInstance().getLogger().log(Level.INFO, "test!");
+                    BungeeEssentials.getInstance().getLogger().log(Level.INFO, "test!");
+                    BungeeEssentials.getInstance().getLogger().log(Level.INFO, "test!");
+                    BungeeEssentials.getInstance().getLogger().log(Level.INFO, "test!");
+                    BungeeEssentials.getInstance().getLogger().log(Level.INFO, "test!");
+                    BungeeEssentials.getInstance().getLogger().log(Level.INFO, "test!");
+                    BungeeEssentials.getInstance().getLogger().log(Level.INFO, "test!");
+                    BungeeEssentials.getInstance().getLogger().log(Level.INFO, "test!");
+                    BungeeEssentials.getInstance().getLogger().log(Level.INFO, "test!");
+                    BungeeEssentials.getInstance().getLogger().log(Level.INFO, "test!");
                 }
                 int newCount = connections.get(address) + 1;
                 if (newCount > max) {
