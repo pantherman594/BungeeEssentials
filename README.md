@@ -1,7 +1,7 @@
 BungeeEssentials
 ================
 
-[![Build Status](https://travis-ci.org/PantherMan594/BungeeEssentials.svg?branch=master)](https://travis-ci.org/PantherMan594/BungeeEssentials)
+[![Build Status](http://ci.cubexmc.net/job/BungeeEssentials/badge/icon)](http://ci.cubexmc.net/job/BungeeEssentials/)
 [![Downloads](https://img.shields.io/github/downloads/PantherMan594/BungeeEssentials/latest/total.svg)](https://github.com/PantherMan594/BungeeEssentials/releases/latest)
 [![Issues](https://img.shields.io/github/issues/PantherMan594/BungeeEssentials.svg)](https://github.com/PantherMan594/BungeeEssentials/issues)
 
