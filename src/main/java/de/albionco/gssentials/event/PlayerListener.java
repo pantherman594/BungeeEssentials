@@ -30,6 +30,7 @@ import de.albionco.gssentials.utils.Permissions;
 import de.albionco.gssentials.utils.Updater;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.*;
@@ -174,5 +175,14 @@ public class PlayerListener implements Listener {
         if (BungeeEssentials.getInstance().shouldAnnounce()) {
             ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_QUIT, "PLAYER", event.getPlayer().getName()));
         }
+    }
+
+    @EventHandler(priority = Byte.MAX_VALUE)
+    public void ping(ProxyPingEvent event) {
+        ServerPing response = event.getResponse();
+        ServerPing.Players players = response.getPlayers();
+        players = new ServerPing.Players(players.getMax(), players.getOnline() - Messenger.hiddenNum(), players.getSample());
+        final ServerPing ping = new ServerPing(response.getVersion(), players, response.getDescription(), response.getFaviconObject());
+        event.setResponse(ping);
     }
 }

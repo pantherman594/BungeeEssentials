@@ -231,6 +231,16 @@ public class Messenger implements Listener {
         return hidden.contains(player.getUniqueId());
     }
 
+    public static Integer hiddenNum() {
+        int hiddenNum = 0;
+        for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
+            if (isHidden(p)) {
+                hiddenNum++;
+            }
+        }
+        return hiddenNum;
+    }
+
     public static boolean isChatting(ProxiedPlayer player) {
         Preconditions.checkNotNull(player, "Invalid player specified");
         return chatting.contains(player.getUniqueId());
