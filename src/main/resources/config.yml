@@ -125,7 +125,7 @@ staffchat:
   disabled: '&cYou are no longer chatting in staff chat!'
 chat:
   message: '&e{{ SERVER }} - {{ SENDER }} » &7{{ MESSAGE }}'
-  enabled: '&aYou have are now chatting in global chat!'
+  enabled: '&aYou are now chatting in global chat!'
   disabled: '&cYou are no longer chatting in global chat!'
 list:
   header: '&aServers:'
