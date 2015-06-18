@@ -497,12 +497,8 @@ public class BungeeEssentials extends Plugin {
             this.players = ConfigurationProvider.getProvider(YamlConfiguration.class).load(playerFile);
             List<String> players = getPlayerConfig().getStringList("players");
             players.add(player);
-            PrintWriter writer = new PrintWriter(playerFile, "UTF-8");
-            writer.println("players:");
-            for (String pl : players) {
-                writer.println("  - " + pl);
-            }
-            writer.close();
+            getPlayerConfig().set("players", players);
+            ConfigurationProvider.getProvider(YamlConfiguration.class).save(getPlayerConfig(), playerFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
