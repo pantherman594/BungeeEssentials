@@ -48,7 +48,7 @@ public class LookupCommand extends Command {
         if (args.length > 0) {
             String partialPlayerName = args[0].toLowerCase();
             for (String p : BungeeEssentials.getInstance().getPlayerConfig().getStringList("players")) {
-                if (p.toLowerCase().startsWith(partialPlayerName)) {
+                if (p.toLowerCase().startsWith(partialPlayerName.toLowerCase())) {
                     matches.add(p);
                 }
             }
