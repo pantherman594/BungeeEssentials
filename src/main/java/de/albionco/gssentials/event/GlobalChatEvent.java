@@ -28,6 +28,7 @@ public class GlobalChatEvent extends Event {
                 if ((player.hasPermission(Permissions.General.CHAT + "." + server) || player.hasPermission(Permissions.General.CHAT)) && !Messenger.isIgnoring(player, ProxyServer.getInstance().getPlayer(sender)))
                     player.sendMessage(msg);
             }
+            ProxyServer.getInstance().getConsole().sendMessage(msg);
         }
     }
 

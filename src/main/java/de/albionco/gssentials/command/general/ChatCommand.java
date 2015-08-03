@@ -73,10 +73,6 @@ public class ChatCommand extends ServerSpecificCommand {
 
             ProxyServer.getInstance().getPluginManager().callEvent(new GlobalChatEvent(server, sender.getName(), msg));
 
-            CommandSender console = ProxyServer.getInstance().getConsole();
-            if (sender == console) {
-                console.sendMessage(msg);
-            }
         } else {
             ProxiedPlayer player;
             if (sender instanceof ProxiedPlayer) {

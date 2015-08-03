@@ -28,6 +28,7 @@ public class StaffChatEvent extends Event {
                     player.sendMessage(msg);
                 }
             }
+            ProxyServer.getInstance().getConsole().sendMessage(msg);
         }
     }
 

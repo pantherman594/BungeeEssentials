@@ -27,8 +27,12 @@ public class IgnoreCommand extends Command implements TabExecutor {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (sender instanceof ProxiedPlayer) {
-            if (args.length > 1) {
-                Messenger.ignore((ProxiedPlayer) sender, ProxyServer.getInstance().getPlayer(args[0]));
+            if (args.length > 0) {
+                if (ProxyServer.getInstance().getPlayer(args[0]) != null && !Messenger.isHidden(ProxyServer.getInstance().getPlayer(args[0]))) {
+                    if (ProxyServer.getInstance().getPlayer(args[0]) != sender)
+                        Messenger.ignore((ProxiedPlayer) sender, ProxyServer.getInstance().getPlayer(args[0]));
+                    else sender.sendMessage(Dictionary.colour("&cError: You can't ignore yourself!"));
+                } else sender.sendMessage(Dictionary.colour("&cError: Player is offline!"));
             } else {
                 sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS));
             }

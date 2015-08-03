@@ -167,7 +167,7 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler(priority = Byte.MAX_VALUE)
-    public void tab(TabCompleteEvent event) {
+    public void tab(TabCompleteResponseEvent event) {
         List<String> suggestions = event.getSuggestions();
         for (String p : suggestions) {
             if (Messenger.isHidden(ProxyServer.getInstance().getPlayer(p))) suggestions.remove(p);

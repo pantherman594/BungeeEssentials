@@ -433,7 +433,7 @@ public class BungeeEssentials extends Plugin {
             Ignore_MAIN = BASE.get(0);
             TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
             Ignore_ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
-            register(new LookupCommand());
+            register(new IgnoreCommand());
             commands++;
         }
         joinAnnounce = enable.contains("joinannounce");
