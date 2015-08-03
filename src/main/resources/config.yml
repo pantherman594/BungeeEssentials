@@ -7,7 +7,7 @@ enable:
   - list
   - log
   - message
-  - multilog
+  # - multilog
   - rules
   - rules-chat
   - send
