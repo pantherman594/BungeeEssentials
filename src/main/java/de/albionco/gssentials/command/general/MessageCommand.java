@@ -24,6 +24,7 @@ package de.albionco.gssentials.command.general;
 
 import com.google.common.collect.ImmutableSet;
 import de.albionco.gssentials.BungeeEssentials;
+import de.albionco.gssentials.event.MessageEvent;
 import de.albionco.gssentials.utils.Dictionary;
 import de.albionco.gssentials.utils.Messenger;
 import de.albionco.gssentials.utils.Permissions;
@@ -51,7 +52,7 @@ public class MessageCommand extends Command implements TabExecutor {
     public void execute(CommandSender sender, String[] args) {
         if (args.length > 1) {
             ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(args[0]);
-            Messenger.sendMessage(sender, recipient, Dictionary.combine(0, args));
+            ProxyServer.getInstance().getPluginManager().callEvent(new MessageEvent(sender, recipient, Dictionary.combine(0, args)));
         } else {
             sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS));
         }

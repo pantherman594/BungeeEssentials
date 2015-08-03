@@ -46,93 +46,14 @@ import java.util.regex.Matcher;
  */
 @SuppressWarnings("deprecation")
 public class Messenger implements Listener {
+    public static HashMap<UUID, String> sentMessages = new HashMap<>();
+    public static HashMap<UUID, UUID> messages = new HashMap<>();
     private static HashMap<UUID, String> chatMessages = new HashMap<>();
-    private static HashMap<UUID, String> sentMessages = new HashMap<>();
-    private static HashMap<UUID, UUID> messages = new HashMap<>();
     private static Set<UUID> hidden = new HashSet<>();
     private static Set<UUID> spies = new HashSet<>();
     private static Set<UUID> cspies = new HashSet<>();
     private static Set<UUID> chatting = new HashSet<>();
     private static Set<UUID> globalChat = new HashSet<>();
-
-    public static void sendMessage(CommandSender sender, ProxiedPlayer recipient, String msg) {
-        String message = msg;
-        if (recipient != null && !Messenger.isHidden(recipient)) {
-            ProxiedPlayer player = null;
-            if (sender instanceof ProxiedPlayer) {
-                player = (ProxiedPlayer) sender;
-                if (BungeeEssentials.getInstance().isIntegrated() && (BungeeEssentials.getInstance().getIntegrationProvider() != null && BungeeEssentials.getInstance().getIntegrationProvider().isMuted((ProxiedPlayer) sender))) {
-                    sender.sendMessage(ChatColor.RED + "You are muted and cannot message other players!");
-                    return;
-                }
-                if (!sender.hasPermission(Permissions.Admin.BYPASS_FILTER) && BungeeEssentials.getInstance().useRules()) {
-                    List<RuleManager.MatchResult> results = RuleManager.matches(msg);
-                    for (RuleManager.MatchResult result : results) {
-                        if (result.matched()) {
-                            Log.log(player, result.getRule(), ChatType.PRIVATE);
-                            switch (result.getRule().getHandle()) {
-                                case ADVERTISEMENT:
-                                    sender.sendMessage(Dictionary.format(Dictionary.WARNINGS_ADVERTISING));
-                                    ruleNotify(Dictionary.NOTIFY_ADVERTISEMENT, (ProxiedPlayer) sender, msg);
-                                    return;
-                                case CURSING:
-                                    sender.sendMessage(Dictionary.format(Dictionary.WARNING_HANDLE_CURSING));
-                                    ruleNotify(Dictionary.NOTIFY_CURSING, (ProxiedPlayer) sender, msg);
-                                    return;
-                                case REPLACE:
-                                    if (result.getRule().getReplacement() != null && message != null) {
-                                        Matcher matcher = result.getRule().getPattern().matcher(message);
-                                        message = matcher.replaceAll(result.getRule().getReplacement());
-                                    }
-                                    ruleNotify(Dictionary.NOTIFY_REPLACE, (ProxiedPlayer) sender, msg);
-                                    break;
-                                case COMMAND:
-                                    CommandSender console = ProxyServer.getInstance().getConsole();
-                                    String command = result.getRule().getCommand();
-                                    if (command != null) {
-                                        ProxyServer.getInstance().getPluginManager().dispatchCommand(console, command.replace("{{ SENDER }}", sender.getName()));
-                                    }
-                                    ruleNotify(Dictionary.NOTIFY_COMMAND, (ProxiedPlayer) sender, msg);
-                                    return;
-                                default:
-                                    break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            String server = player != null ? player.getServer().getInfo().getName() : "CONSOLE";
-            if (player != null) {
-                if (BungeeEssentials.getInstance().useSpamProtection() && !player.hasPermission(Permissions.Admin.BYPASS_FILTER)) {
-                    if (sentMessages.get(player.getUniqueId()) != null) {
-                        String last = sentMessages.get(player.getUniqueId());
-                        if (compare(msg, last) > 0.85) {
-                            sender.sendMessage(Dictionary.format(Dictionary.WARNING_LEVENSHTEIN_DISTANCE));
-                            return;
-                        }
-                    }
-                    sentMessages.put(player.getUniqueId(), msg);
-                }
-
-                if (!sender.hasPermission(Permissions.Admin.SPY_EXEMPT)) {
-                    String spyMessage = Dictionary.format(Dictionary.SPY_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message);
-                    for (ProxiedPlayer onlinePlayer : ProxyServer.getInstance().getPlayers()) {
-                        if (player.getUniqueId() != onlinePlayer.getUniqueId() && recipient.getUniqueId() != onlinePlayer.getUniqueId()) {
-                            if (onlinePlayer.hasPermission(Permissions.Admin.SPY) && Messenger.isSpy(onlinePlayer)) {
-                                onlinePlayer.sendMessage(spyMessage);
-                            }
-                        }
-                    }
-                }
-                messages.put(recipient.getUniqueId(), player.getUniqueId());
-            }
-            sender.sendMessage(Dictionary.formatMsg(Dictionary.FORMAT_PRIVATE_MESSAGE, "SERVER", recipient.getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
-            recipient.sendMessage(Dictionary.formatMsg(Dictionary.FORMAT_PRIVATE_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
-        } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
-        }
-    }
 
     public static void chat(ProxiedPlayer player, ChatEvent event) {
         Preconditions.checkNotNull(player, "player null");
@@ -463,7 +384,7 @@ public class Messenger implements Listener {
         }
     }
 
-    private static double compare(String first, String second) {
+    public static double compare(String first, String second) {
         String longer = first, shorter = second;
         if (first.length() < second.length()) {
             longer = second;

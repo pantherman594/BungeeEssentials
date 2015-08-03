@@ -23,6 +23,7 @@
 package de.albionco.gssentials.command.general;
 
 import de.albionco.gssentials.BungeeEssentials;
+import de.albionco.gssentials.event.MessageEvent;
 import de.albionco.gssentials.utils.Dictionary;
 import de.albionco.gssentials.utils.Messenger;
 import de.albionco.gssentials.utils.Permissions;
@@ -55,7 +56,7 @@ public class ReplyCommand extends Command {
                     return;
                 }
                 ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(uuid);
-                Messenger.sendMessage(player, recipient, Dictionary.combine(args));
+                ProxyServer.getInstance().getPluginManager().callEvent(new MessageEvent(sender, recipient, Dictionary.combine(0, args)));
             } else {
                 sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS));
             }
