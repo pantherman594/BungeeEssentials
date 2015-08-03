@@ -28,7 +28,6 @@ import de.albionco.gssentials.utils.Dictionary;
 import de.albionco.gssentials.utils.Messenger;
 import de.albionco.gssentials.utils.Permissions;
 import de.albionco.gssentials.utils.Updater;
-import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.connection.Connection;
@@ -39,10 +38,7 @@ import net.md_5.bungee.event.EventHandler;
 
 import java.net.InetAddress;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
 
 /**
  * Created by Connor Harries on 31/01/2015.
@@ -184,5 +180,13 @@ public class PlayerListener implements Listener {
         players = new ServerPing.Players(players.getMax(), players.getOnline() - Messenger.hiddenNum(), players.getSample());
         final ServerPing ping = new ServerPing(response.getVersion(), players, response.getDescription(), response.getFaviconObject());
         event.setResponse(ping);
+    }
+
+    @EventHandler(priority = Byte.MAX_VALUE)
+    public void tab(TabCompleteEvent event) {
+        List<String> suggestions = event.getSuggestions();
+        for (String p : suggestions) {
+            if (Messenger.isHidden(ProxyServer.getInstance().getPlayer(p))) suggestions.remove(p);
+        }
     }
 }
