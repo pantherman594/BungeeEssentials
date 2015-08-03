@@ -77,15 +77,7 @@ public class PlayerListener implements Listener {
         if (Messenger.isChatting(player) && !event.isCancelled() && !event.isCommand()) {
             String server = player.getServer().getInfo().getName();
             String msg = Messenger.filter(player, event.getMessage());
-
-            if (msg != null) {
-                msg = Dictionary.format(Dictionary.FORMAT_STAFF_CHAT, "SERVER", server, "SENDER", sender, "MESSAGE", msg);
-                for (ProxiedPlayer onlineP : ProxyServer.getInstance().getPlayers()) {
-                    if (onlineP.hasPermission(Permissions.Admin.CHAT + "." + server) || onlineP.hasPermission(Permissions.Admin.CHAT)) {
-                        onlineP.sendMessage(msg);
-                    }
-                }
-            }
+            ProxyServer.getInstance().getPluginManager().callEvent(new StaffChatEvent(server, sender, msg));
             event.setCancelled(true);
         }
         if (Messenger.isGlobalChat(player) && !event.isCancelled() && !event.isCommand()) {
