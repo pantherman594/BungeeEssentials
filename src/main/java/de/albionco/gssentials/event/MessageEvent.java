@@ -100,8 +100,13 @@ public class MessageEvent extends Event {
                 }
                 Messenger.messages.put(recipient.getUniqueId(), player.getUniqueId());
             }
-            sender.sendMessage(Dictionary.formatMsg(Dictionary.FORMAT_PRIVATE_MESSAGE, "SERVER", recipient.getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
-            recipient.sendMessage(Dictionary.formatMsg(Dictionary.FORMAT_PRIVATE_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
+            if (!Messenger.isIgnoring((ProxiedPlayer) sender, recipient)) {
+                if (!Messenger.isIgnoring(recipient, (ProxiedPlayer) sender)) {
+                    sender.sendMessage(Dictionary.formatMsg(Dictionary.FORMAT_PRIVATE_MESSAGE, "SERVER", recipient.getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
+                    recipient.sendMessage(Dictionary.formatMsg(Dictionary.FORMAT_PRIVATE_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
+                }
+                sender.sendMessage(Dictionary.colour("&cError: Cannot send message, " + recipient.getName() + " is ignoring you!"));
+            } else sender.sendMessage(Dictionary.colour("&cError: Cannot send message to someone you're ignoring!"));
         } else {
             sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
         }

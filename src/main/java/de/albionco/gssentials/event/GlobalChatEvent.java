@@ -1,6 +1,7 @@
 package de.albionco.gssentials.event;
 
 import de.albionco.gssentials.utils.Dictionary;
+import de.albionco.gssentials.utils.Messenger;
 import de.albionco.gssentials.utils.Permissions;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -24,9 +25,8 @@ public class GlobalChatEvent extends Event {
         if (msg != null) {
             msg = Dictionary.format(Dictionary.FORMAT_CHAT, "SERVER", server, "SENDER", sender, "MESSAGE", msg);
             for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-                if (player.hasPermission(Permissions.General.CHAT + "." + server) || player.hasPermission(Permissions.General.CHAT)) {
+                if ((player.hasPermission(Permissions.General.CHAT + "." + server) || player.hasPermission(Permissions.General.CHAT)) && !Messenger.isIgnoring(player, ProxyServer.getInstance().getPlayer(sender)))
                     player.sendMessage(msg);
-                }
             }
         }
     }

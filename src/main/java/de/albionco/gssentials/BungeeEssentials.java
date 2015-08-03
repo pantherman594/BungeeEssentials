@@ -44,7 +44,6 @@ import net.md_5.bungee.config.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
@@ -52,23 +51,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 public class BungeeEssentials extends Plugin {
-    private static BungeeEssentials instance;
-    private Configuration config = null;
-    private Configuration players = null;
-    private IntegrationProvider helper;
-    private boolean watchMultiLog;
-    private boolean shouldClean;
-    private boolean joinAnnounce;
-    private boolean commandSpy;
-    private boolean integrated;
-    private boolean chatRules;
-    private boolean chatSpam;
-    private File configFile;
-    private File playerFile;
-    private boolean useLog;
-    private boolean rules;
-    private boolean spam;
-
     public static String StaffChat_MAIN;
     public static String Chat_MAIN;
     public static String Alert_MAIN;
@@ -85,7 +67,7 @@ public class BungeeEssentials extends Plugin {
     public static String CSpy_MAIN;
     public static String Reload_MAIN;
     public static String Lookup_MAIN;
-
+    public static String Ignore_MAIN;
     public static String[] StaffChat_ALIAS;
     public static String[] Chat_ALIAS;
     public static String[] Alert_ALIAS;
@@ -102,6 +84,23 @@ public class BungeeEssentials extends Plugin {
     public static String[] CSpy_ALIAS;
     public static String[] Reload_ALIAS;
     public static String[] Lookup_ALIAS;
+    public static String[] Ignore_ALIAS;
+    private static BungeeEssentials instance;
+    private Configuration config = null;
+    private Configuration players = null;
+    private IntegrationProvider helper;
+    private boolean watchMultiLog;
+    private boolean shouldClean;
+    private boolean joinAnnounce;
+    private boolean commandSpy;
+    private boolean integrated;
+    private boolean chatRules;
+    private boolean chatSpam;
+    private File configFile;
+    private File playerFile;
+    private boolean useLog;
+    private boolean rules;
+    private boolean spam;
 
     public static BungeeEssentials getInstance() {
         return instance;
@@ -421,6 +420,19 @@ public class BungeeEssentials extends Plugin {
             Lookup_MAIN = BASE.get(0);
             TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
             Lookup_ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
+            register(new LookupCommand());
+            commands++;
+        }
+        if (enable.contains("ignore")) {
+            BASE = config.getStringList("commands.ignore");
+            if (BASE.toString().equals("[]")) {
+                getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
+                getLogger().log(Level.WARNING, "Falling back to default value for key commands.ignore");
+                BASE = Arrays.asList("ignore", "");
+            }
+            Ignore_MAIN = BASE.get(0);
+            TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
+            Ignore_ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
             register(new LookupCommand());
             commands++;
         }

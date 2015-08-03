@@ -48,6 +48,7 @@ import java.util.regex.Matcher;
 public class Messenger implements Listener {
     public static HashMap<UUID, String> sentMessages = new HashMap<>();
     public static HashMap<UUID, UUID> messages = new HashMap<>();
+    public static HashMap<UUID, Set<UUID>> ignoreList = new HashMap<>();
     private static HashMap<UUID, String> chatMessages = new HashMap<>();
     private static Set<UUID> hidden = new HashSet<>();
     private static Set<UUID> spies = new HashSet<>();
@@ -426,6 +427,31 @@ public class Messenger implements Listener {
 
     public static int howManyHidden() {
         return hidden.size();
+    }
+
+    public static void ignore(ProxiedPlayer ignorer, ProxiedPlayer ignored) {
+        if (Messenger.ignoreList.containsKey(ignorer.getUniqueId())) {
+            Set<UUID> ignoredList = Messenger.ignoreList.get(ignorer.getUniqueId());
+            if (isIgnoring(ignorer, ignored)) {
+                ignoredList.remove(ignored.getUniqueId());
+                ignorer.sendMessage(Dictionary.colour("&6Now ignoring &c" + ignored.getName() + "&6."));
+            } else {
+                ignoredList.add(ignored.getUniqueId());
+                ignorer.sendMessage(Dictionary.colour("&eNo longer ignoring &c" + ignored.getName() + "&6."));
+            }
+        } else {
+            Set<UUID> ignoredList = new HashSet<>();
+            ignoredList.add(ignored.getUniqueId());
+            Messenger.ignoreList.put(ignorer.getUniqueId(), ignoredList);
+            ignorer.sendMessage(Dictionary.colour("&6Now ignoring &c" + ignored.getName() + "&6."));
+        }
+    }
+
+    public static boolean isIgnoring(ProxiedPlayer ignorer, ProxiedPlayer ignored) {
+        if (Messenger.ignoreList.containsKey(ignorer.getUniqueId())) {
+            Set<UUID> ignoredList = Messenger.ignoreList.get(ignorer.getUniqueId());
+            return (ignoredList.contains(ignored.getUniqueId()));
+        } else return false;
     }
 
     @EventHandler

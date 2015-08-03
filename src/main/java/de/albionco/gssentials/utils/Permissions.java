@@ -57,6 +57,7 @@ public class Permissions {
         public static final String SLAP = "gssentials.slap";
         public static final String JOIN = "gssentials.join";
         public static final String CHAT = "gssentials.chat";
+        public static final String IGNORE = "gssentials.ignore";
     }
 
 }

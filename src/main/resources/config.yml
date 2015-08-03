@@ -23,6 +23,7 @@ enable:
   - aliases
   - chat
   - lookup
+  - ignore
   # - clean
 commands:
   staffchat:
@@ -77,6 +78,8 @@ commands:
     - 'gssreload'
   lookup:
     - 'lookup'
+  ignore:
+    - 'bignore'
 aliases:
   - alias: 'greet'
     commands:
