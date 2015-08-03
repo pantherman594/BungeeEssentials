@@ -24,7 +24,7 @@ public class GlobalChatEvent extends Event {
         if (msg != null) {
             msg = Dictionary.format(Dictionary.FORMAT_CHAT, "SERVER", server, "SENDER", sender, "MESSAGE", msg);
             for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-                if (player.hasPermission(Permissions.Admin.CHAT + "." + server) || player.hasPermission(Permissions.Admin.CHAT)) {
+                if (player.hasPermission(Permissions.General.CHAT + "." + server) || player.hasPermission(Permissions.General.CHAT)) {
                     player.sendMessage(msg);
                 }
             }
