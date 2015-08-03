@@ -83,15 +83,7 @@ public class PlayerListener implements Listener {
         if (Messenger.isGlobalChat(player) && !event.isCancelled() && !event.isCommand()) {
             String server = player.getServer().getInfo().getName();
             String msg = Messenger.filter(player, event.getMessage());
-
-            if (msg != null) {
-                msg = Dictionary.format(Dictionary.FORMAT_CHAT, "SERVER", server, "SENDER", sender, "MESSAGE", msg);
-                for (ProxiedPlayer onlineP : ProxyServer.getInstance().getPlayers()) {
-                    if (onlineP.hasPermission(Permissions.General.CHAT + "." + server) || onlineP.hasPermission(Permissions.General.CHAT)) {
-                        onlineP.sendMessage(msg);
-                    }
-                }
-            }
+            ProxyServer.getInstance().getPluginManager().callEvent(new GlobalChatEvent(server, sender, msg));
             event.setCancelled(true);
         }
         if (BungeeEssentials.getInstance().useChatSpamProtection() || BungeeEssentials.getInstance().useChatRules()) {

@@ -24,6 +24,7 @@ package de.albionco.gssentials.command.general;
 
 import de.albionco.gssentials.BungeeEssentials;
 import de.albionco.gssentials.command.ServerSpecificCommand;
+import de.albionco.gssentials.event.GlobalChatEvent;
 import de.albionco.gssentials.utils.Dictionary;
 import de.albionco.gssentials.utils.Messenger;
 import de.albionco.gssentials.utils.Permissions;
@@ -70,14 +71,7 @@ public class ChatCommand extends ServerSpecificCommand {
                 msg = Dictionary.combine(args);
             }
 
-            if (msg != null) {
-                msg = Dictionary.format(Dictionary.FORMAT_CHAT, "SERVER", server, "SENDER", sender.getName(), "MESSAGE", msg);
-                for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-                    if (player.hasPermission(Permissions.General.CHAT + "." + server) || player.hasPermission(Permissions.General.CHAT)) {
-                        player.sendMessage(msg);
-                    }
-                }
-            }
+            ProxyServer.getInstance().getPluginManager().callEvent(new GlobalChatEvent(server, sender.getName(), msg));
 
             CommandSender console = ProxyServer.getInstance().getConsole();
             if (sender == console) {
