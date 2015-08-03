@@ -59,7 +59,7 @@ public class MessageCommand extends Command implements TabExecutor {
 
     @Override
     public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
-        if (args.length > 1) {
+        if (args.length > 1 || args.length == 0) {
             return ImmutableSet.of();
         }
 

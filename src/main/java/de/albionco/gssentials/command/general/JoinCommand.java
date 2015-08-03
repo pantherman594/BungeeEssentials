@@ -22,10 +22,7 @@
 
 package de.albionco.gssentials.command.general;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 import de.albionco.gssentials.BungeeEssentials;
 import de.albionco.gssentials.utils.Dictionary;
 import de.albionco.gssentials.utils.Messenger;
@@ -37,6 +34,9 @@ import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Connor Harries on 24/01/2015.
@@ -82,22 +82,20 @@ public class JoinCommand extends Command implements TabExecutor {
     }
 
     @Override
-    public Iterable<String> onTabComplete(CommandSender commandSender, String[] args) {
-        if (args.length < 1 || args.length > 1) {
+    public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
+        if (args.length > 1 || args.length == 0) {
             return ImmutableSet.of();
         }
 
-        final String search = args[0].toLowerCase();
-        return Iterables.transform(Iterables.filter(ProxyServer.getInstance().getPlayers(), new Predicate<ProxiedPlayer>() {
-            @Override
-            public boolean apply(ProxiedPlayer player) {
-                return player.getName().toLowerCase().startsWith(search);
+        Set<String> matches = new HashSet<>();
+        String search = args[0].toLowerCase();
+        for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
+            if (!player.getName().equals(sender.getName())) {
+                if (player.getName().toLowerCase().startsWith(search) && !Messenger.isHidden(player)) {
+                    matches.add(player.getName());
+                }
             }
-        }), new Function<ProxiedPlayer, String>() {
-            @Override
-            public String apply(ProxiedPlayer player) {
-                return player.getName();
-            }
-        });
+        }
+        return matches;
     }
 }

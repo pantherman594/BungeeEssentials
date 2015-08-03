@@ -25,6 +25,7 @@ package de.albionco.gssentials.command.general;
 import com.google.common.collect.ImmutableSet;
 import de.albionco.gssentials.BungeeEssentials;
 import de.albionco.gssentials.utils.Dictionary;
+import de.albionco.gssentials.utils.Messenger;
 import de.albionco.gssentials.utils.Permissions;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -81,7 +82,7 @@ public class SlapCommand extends Command implements TabExecutor {
         String search = args[0].toLowerCase();
         for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
             if (!player.getName().equals(sender.getName())) {
-                if (player.getName().toLowerCase().startsWith(search)) {
+                if (player.getName().toLowerCase().startsWith(search) && !Messenger.isHidden(player)) {
                     matches.add(player.getName());
                 }
             }
