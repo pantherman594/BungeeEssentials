@@ -7,7 +7,7 @@ enable:
   - list
   - log
   - message
-  # - multilog
+  - multilog
   - rules
   - rules-chat
   - send
@@ -23,7 +23,6 @@ enable:
   - aliases
   - chat
   - lookup
-  - ignore
   # - clean
 commands:
   staffchat:
@@ -78,8 +77,6 @@ commands:
     - 'gssreload'
   lookup:
     - 'lookup'
-  ignore:
-    - 'bignore'
 aliases:
   - alias: 'greet'
     commands:
