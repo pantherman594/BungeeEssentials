@@ -86,6 +86,7 @@ public class BungeeEssentials extends Plugin {
     public static String[] Lookup_ALIAS;
     public static String[] Ignore_ALIAS;
     private static BungeeEssentials instance;
+    boolean ignore;
     private Configuration config = null;
     private Configuration players = null;
     private IntegrationProvider helper;
@@ -423,7 +424,8 @@ public class BungeeEssentials extends Plugin {
             register(new LookupCommand());
             commands++;
         }
-        if (enable.contains("ignore")) {
+        ignore = enable.contains("ignore");
+        if (ignore) {
             BASE = config.getStringList("commands.ignore");
             if (BASE.toString().equals("[]")) {
                 getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
@@ -538,5 +540,9 @@ public class BungeeEssentials extends Plugin {
 
     public boolean useChatRules() {
         return chatRules;
+    }
+
+    public boolean ignore() {
+        return ignore;
     }
 }

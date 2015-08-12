@@ -1,5 +1,6 @@
 package de.albionco.gssentials.event;
 
+import de.albionco.gssentials.BungeeEssentials;
 import de.albionco.gssentials.utils.Dictionary;
 import de.albionco.gssentials.utils.Messenger;
 import de.albionco.gssentials.utils.Permissions;
@@ -25,7 +26,7 @@ public class GlobalChatEvent extends Event {
         if (msg != null) {
             msg = Dictionary.format(Dictionary.FORMAT_CHAT, "SERVER", server, "SENDER", sender, "MESSAGE", msg);
             for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-                if ((player.hasPermission(Permissions.General.CHAT + "." + server) || player.hasPermission(Permissions.General.CHAT)) && !Messenger.isIgnoring(player, ProxyServer.getInstance().getPlayer(sender)))
+                if ((player.hasPermission(Permissions.General.CHAT + "." + server) || player.hasPermission(Permissions.General.CHAT)) && (!BungeeEssentials.getInstance().ignore() || !Messenger.isIgnoring(player, ProxyServer.getInstance().getPlayer(sender))))
                     player.sendMessage(msg);
             }
             ProxyServer.getInstance().getConsole().sendMessage(msg);
