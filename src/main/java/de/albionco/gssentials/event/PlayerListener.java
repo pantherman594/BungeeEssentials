@@ -133,7 +133,7 @@ public class PlayerListener implements Listener {
         if (!players.contains(event.getPlayer().getName())) {
             BungeeEssentials.getInstance().savePlayerConfig(event.getPlayer().getName());
         }
-        if (BungeeEssentials.getInstance().shouldAnnounce() && !(Messenger.isHidden(event.getPlayer()))) {
+        if (BungeeEssentials.getInstance().shouldAnnounce() && !(Messenger.isHidden(event.getPlayer())) && !(Dictionary.FORMAT_JOIN.equals(""))) {
             ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_JOIN, "PLAYER", event.getPlayer().getName()));
         }
         if (Updater.hasConfigChange() && event.getPlayer().hasPermission(Permissions.Admin.UPDATE)) {
@@ -152,7 +152,7 @@ public class PlayerListener implements Listener {
                 connections.put(address, amount - 1);
             }
         }
-        if (BungeeEssentials.getInstance().shouldAnnounce() && !(Messenger.isHidden(event.getPlayer()))) {
+        if (BungeeEssentials.getInstance().shouldAnnounce() && !(Messenger.isHidden(event.getPlayer())) && !(Dictionary.FORMAT_QUIT.equals(""))) {
             ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_QUIT, "PLAYER", event.getPlayer().getName()));
         }
     }
