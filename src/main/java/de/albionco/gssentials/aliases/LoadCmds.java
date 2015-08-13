@@ -55,7 +55,7 @@ public class LoadCmds extends Command {
     @SuppressWarnings("deprecation")
     private String parseCommands(String command, String[] args) {
         int num = 0;
-        while (command.contains("{" + num + "}")) {
+        while (args.length > num && command.contains("{" + num + "}")) {
             if ((args[num] != null) && (!args[num].equals(""))) {
                 command = command.replace("{" + num + "}", args[num]);
             } else {
