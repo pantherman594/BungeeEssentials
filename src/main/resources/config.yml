@@ -133,6 +133,9 @@ chat:
 list:
   header: '&aServers:'
   body: '&a- {{ SERVER }} {{ DENSITY }}'
+lookup:
+  header: '&6Found {{ SIZE }} player(s):'
+  body: '&f - {{ PLAYER }}'
 multilog:
   limit: 3
   kicked: '&cMaximum number of connections reached!'
@@ -147,11 +150,17 @@ commandspy:
 hide:
   enabled: '&aYou are now hidden from all players!'
   disabled: '&cYou are now visible to all players!'
+ignore:
+  enabled: '&6Now ignoring {{ PLAYER }}.'
+  disabled: '&6No longer ignoring {{ PLAYER }}.'
 errors:
   invalid: '&cInvalid arguments provided.'
   offline: '&cSorry, that player is offline.'
   slap: '&cYou are unworthy of slapping people.'
   messages: '&cNobody has messaged you recently.'
+  ignoreself: '&cYou can't ignore yourself!'
+  ignoring: '&cYou can't send a message to someone you're ignoring!'
+  sendfail: '&cUnable to send {{ PLAYER }} to {{ SERVER }}.'
 announcements:
 # Time measured in seconds
   - delay: 30

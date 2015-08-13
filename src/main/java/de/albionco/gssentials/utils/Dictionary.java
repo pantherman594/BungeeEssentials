@@ -25,8 +25,8 @@ package de.albionco.gssentials.utils;
 import de.albionco.gssentials.BungeeEssentials;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.config.Configuration;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -53,6 +53,12 @@ public class Dictionary {
     public static String ERROR_PLAYER_OFFLINE;
     @Load(key = "errors.invalid", def = "&cInvalid arguments provided.")
     public static String ERROR_INVALID_ARGUMENTS;
+    @Load(key = "errors.ignoreself", def = "&cYou can't ignore yourself!")
+    public static String ERROR_IGNORE_SELF;
+    @Load(key = "errors.ignoring", def = "&cYou can't send a message to someone you're ignoring!")
+    public static String ERROR_IGNORING;
+    @Load(key = "errors.sendfail", def = "&cUnable to send {{ PLAYER }} to {{ SERVER }}.")
+    public static String ERROR_SENDFAIL;
     @Load(key = "format.message", def = "&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{{ MESSAGE }}}")
     public static String FORMAT_PRIVATE_MESSAGE;
     @Load(key = "format.send", def = "&aSending &e{{ PLAYER }} &ato server &e{{ SERVER }}")
@@ -69,6 +75,10 @@ public class Dictionary {
     public static String LIST_HEADER;
     @Load(key = "list.body", def = "&a- {{ SERVER }} {{ DENSITY }}")
     public static String LIST_BODY;
+    @Load(key = "lookup.header", def = "&6Found {{ SIZE }} player(s):")
+    public static String LOOKUP_HEADER;
+    @Load(key = "lookup.body", def = "&f - {{ PLAYER }}")
+    public static String LOOKUP_BODY;
     @Load(key = "spy.message", def = "&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{{ MESSAGE }}}")
     public static String SPY_MESSAGE;
     @Load(key = "spy.enabled", def = "&aSpy has been enabled!")
@@ -85,6 +95,10 @@ public class Dictionary {
     public static String HIDE_ENABLED;
     @Load(key = "hide.disabled", def = "&cYou are no longer hidden!")
     public static String HIDE_DISABLED;
+    @Load(key = "ignore.enabled", def = "&6Now ignoring &{ PLAYER }}.")
+    public static String IGNORE_ENABLED;
+    @Load(key = "ignore.disabled", def = "&&6No longer ignoring {{ PLAYER }}.")
+    public static String IGNORE_DISABLED;
     @Load(key = "rulenotify.advertisement", def = "&7{{ PLAYER }} just advertised!")
     public static String NOTIFY_ADVERTISEMENT;
     @Load(key = "rulenotify.cursing", def = "&7{{ PLAYER }} just sweared!")

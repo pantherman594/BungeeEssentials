@@ -52,9 +52,9 @@ public class LookupCommand extends Command {
                     matches.add(p);
                 }
             }
-            sender.sendMessage(Dictionary.format("&6Found &f" + matches.size() + " &6" + (matches.size() == 1 ? "player" : "players") + ":"));
+            sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_HEADER, "SIZE", String.valueOf(matches.size())));
             for (String match : matches) {
-                sender.sendMessage(Dictionary.format("&f - " + match));
+                sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_BODY, "PLAYER", match));
             }
         } else {
             sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS));

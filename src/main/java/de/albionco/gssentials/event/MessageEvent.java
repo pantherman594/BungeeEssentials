@@ -107,7 +107,7 @@ public class MessageEvent extends Event {
                         recipient.sendMessage(Dictionary.formatMsg(Dictionary.FORMAT_PRIVATE_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
                     }
                 } else {
-                    sender.sendMessage(Dictionary.colour("&cError: Cannot send message to someone you're ignoring!"));
+                    sender.sendMessage(Dictionary.format(Dictionary.ERROR_IGNORING));
                 }
             } else {
                 sender.sendMessage(Dictionary.formatMsg(Dictionary.FORMAT_PRIVATE_MESSAGE, "SERVER", recipient.getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));

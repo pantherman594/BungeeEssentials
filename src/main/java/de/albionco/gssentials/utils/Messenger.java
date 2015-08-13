@@ -434,16 +434,16 @@ public class Messenger implements Listener {
             Set<UUID> ignoredList = Messenger.ignoreList.get(ignorer.getUniqueId());
             if (isIgnoring(ignorer, ignored)) {
                 ignoredList.remove(ignored.getUniqueId());
-                ignorer.sendMessage(Dictionary.colour("&6No longer ignoring &c" + ignored.getName() + "&6."));
+                ignorer.sendMessage(Dictionary.format(Dictionary.IGNORE_DISABLED, "PLAYER", ignored.getName()));
             } else {
                 ignoredList.add(ignored.getUniqueId());
-                ignorer.sendMessage(Dictionary.colour("&6Now ignoring &c" + ignored.getName() + "&6."));
+                ignorer.sendMessage(Dictionary.format(Dictionary.IGNORE_ENABLED, "PLAYER", ignored.getName()));
             }
         } else {
             Set<UUID> ignoredList = new HashSet<>();
             ignoredList.add(ignored.getUniqueId());
             Messenger.ignoreList.put(ignorer.getUniqueId(), ignoredList);
-            ignorer.sendMessage(Dictionary.colour("&6Now ignoring &c" + ignored.getName() + "&6."));
+            ignorer.sendMessage(Dictionary.format(Dictionary.IGNORE_ENABLED, "PLAYER", ignored.getName()));
         }
     }
 
