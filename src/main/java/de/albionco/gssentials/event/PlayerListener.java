@@ -170,7 +170,9 @@ public class PlayerListener implements Listener {
     public void tab(TabCompleteResponseEvent event) {
         List<String> suggestions = event.getSuggestions();
         for (String p : suggestions) {
-            if (Messenger.isHidden(ProxyServer.getInstance().getPlayer(p))) suggestions.remove(p);
+            if (ProxyServer.getInstance().getPlayer(p) instanceof ProxiedPlayer && Messenger.isHidden(ProxyServer.getInstance().getPlayer(p))) {
+                suggestions.remove(p);
+            }
         }
     }
 }
