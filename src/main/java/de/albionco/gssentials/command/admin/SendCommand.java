@@ -24,14 +24,14 @@ package de.albionco.gssentials.command.admin;
 
 import com.google.common.collect.ImmutableSet;
 import de.albionco.gssentials.BungeeEssentials;
+import de.albionco.gssentials.command.ServerSpecificCommand;
 import de.albionco.gssentials.utils.Dictionary;
 import de.albionco.gssentials.utils.Messenger;
 import de.albionco.gssentials.utils.Permissions;
-import de.albionco.gssentials.command.ServerSpecificCommand;
 import net.md_5.bungee.api.Callback;
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
@@ -45,21 +45,18 @@ public class SendCommand extends ServerSpecificCommand implements TabExecutor {
     }
 
     @Override
-    public void run(final CommandSender sender, String[] args) {
+    public void run(final CommandSender sender, final String[] args) {
         if (args.length > 1) {
             final ProxiedPlayer player = ProxyServer.getInstance().getPlayer(args[0]);
             if (player != null) {
                 sender.sendMessage(Dictionary.format(Dictionary.FORMAT_SEND_PLAYER, "PLAYER", args[0], "SERVER", args[1]));
-
-                player.connect(ProxyServer.getInstance().getServerInfo(args[1]),
+                final ServerInfo info = ProxyServer.getInstance().getServerInfo(args[1]);
+                player.connect(info,
                         new Callback<Boolean>() {
                             @Override
                             public void done(Boolean success, Throwable throwable) {
-                                if (success) {
-                                    player.sendMessage(Dictionary.colour("&dWhooooooooooosh!"));
-                                } else {
-                                    // Pretend nothing happened for the player being sent
-                                    sender.sendMessage(ChatColor.RED + "Unable to send player to server.");
+                                if (!success) {
+                                    sender.sendMessage(Dictionary.format(Dictionary.ERROR_SENDFAIL, "PLAYER", player.getName(), "SERVER", info.getName()));
                                 }
                             }
                         });

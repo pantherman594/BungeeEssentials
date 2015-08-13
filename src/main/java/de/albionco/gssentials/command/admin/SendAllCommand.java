@@ -50,20 +50,21 @@ public class SendAllCommand extends Command implements TabExecutor {
     }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
-        ServerInfo info = ProxyServer.getInstance().getServerInfo(args[0]);
+    public void execute(final CommandSender sender, String[] args) {
+        ServerInfo sInfo = ProxyServer.getInstance().getServerInfo(args[0]);
         Collection<ProxiedPlayer> players = ProxyServer.getInstance().getPlayers();
         if (args.length > 1) {
-            info = ProxyServer.getInstance().getServerInfo(args[1]);
+            sInfo = ProxyServer.getInstance().getServerInfo(args[1]);
             players = ProxyServer.getInstance().getServerInfo(args[0]).getPlayers();
         }
+        final ServerInfo info = sInfo;
         if (args.length > 0) {
             for (final ProxiedPlayer player : players) {
                 player.connect(info, new Callback<Boolean>() {
                     @Override
                     public void done(Boolean success, Throwable throwable) {
-                        if (success) {
-                            player.sendMessage(Dictionary.colour("&dWhooooooooooosh!"));
+                        if (!success) {
+                            sender.sendMessage(Dictionary.format(Dictionary.ERROR_SENDFAIL, "PLAYER", player.getName(), "SERVER", info.getName()));
                         }
                     }
                 });
