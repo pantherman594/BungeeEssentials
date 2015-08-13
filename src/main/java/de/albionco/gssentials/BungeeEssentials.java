@@ -115,7 +115,11 @@ public class BungeeEssentials extends Plugin {
         reload();
         Messenger.getPlayers();
         if (getConfig().getStringList("enable").contains("updater")) {
-            Updater.update();
+            if (getConfig().getStringList("enable").contains("betaupdates")) {
+                Updater.update(true);
+            } else {
+                Updater.update(false);
+            }
         }
     }
 

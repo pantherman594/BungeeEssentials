@@ -26,12 +26,7 @@ import de.albionco.gssentials.BungeeEssentials;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.logging.Level;
@@ -45,7 +40,7 @@ public class Updater {
     private static Plugin plugin = BungeeEssentials.getInstance();
     private static boolean newConf = false;
 
-    public static void update() {
+    public static void update(boolean beta) {
         int oldVersion = getVersionFromString(plugin.getDescription().getVersion());
         File path = new File(ProxyServer.getInstance().getPluginsFolder(), "BungeeEssentials.jar");
 
@@ -56,9 +51,18 @@ public class Updater {
             InputStreamReader isr = new InputStreamReader(con.getInputStream());
             BufferedReader reader = new BufferedReader(isr);
             String newVer = reader.readLine();
-            int newVersion = getVersionFromString(newVer);
             String newConfVer = reader.readLine();
-            int newConfVersion = getVersionFromString(newConfVer);
+            String newBVer = reader.readLine();
+            String newBConfVer = reader.readLine();
+            int newVersion;
+            int newConfVersion;
+            if (beta) {
+                newVersion = getVersionFromString(newBVer);
+                newConfVersion = getVersionFromString(newBConfVer);
+            } else {
+                newVersion = getVersionFromString(newVer);
+                newConfVersion = getVersionFromString(newConfVer);
+            }
             reader.close();
 
             if(newVersion > oldVersion) {

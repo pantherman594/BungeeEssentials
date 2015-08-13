@@ -25,6 +25,7 @@ enable:
   - lookup
   - ignore
   # - clean
+  # - betaupdates
 commands:
   staffchat:
     - 'staffchat'
