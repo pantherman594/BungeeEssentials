@@ -6,7 +6,6 @@ import de.albionco.gssentials.utils.Dictionary;
 import de.albionco.gssentials.utils.Log;
 import de.albionco.gssentials.utils.Messenger;
 import de.albionco.gssentials.utils.Permissions;
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -34,8 +33,7 @@ public class MessageEvent extends Event {
             ProxiedPlayer player = null;
             if (sender instanceof ProxiedPlayer) {
                 player = (ProxiedPlayer) sender;
-                if (BungeeEssentials.getInstance().isIntegrated() && (BungeeEssentials.getInstance().getIntegrationProvider() != null && BungeeEssentials.getInstance().getIntegrationProvider().isMuted((ProxiedPlayer) sender))) {
-                    sender.sendMessage(ChatColor.RED + "You are muted and cannot message other players!");
+                if (Messenger.isMutedF(player)) {
                     return;
                 }
                 if (!sender.hasPermission(Permissions.Admin.BYPASS_FILTER) && BungeeEssentials.getInstance().useRules()) {

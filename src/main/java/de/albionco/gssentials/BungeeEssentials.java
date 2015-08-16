@@ -68,6 +68,7 @@ public class BungeeEssentials extends Plugin {
     public static String Reload_MAIN;
     public static String Lookup_MAIN;
     public static String Ignore_MAIN;
+    public static String Mute_MAIN;
     public static String[] StaffChat_ALIAS;
     public static String[] Chat_ALIAS;
     public static String[] Alert_ALIAS;
@@ -85,8 +86,8 @@ public class BungeeEssentials extends Plugin {
     public static String[] Reload_ALIAS;
     public static String[] Lookup_ALIAS;
     public static String[] Ignore_ALIAS;
+    public static String[] Mute_ALIAS;
     private static BungeeEssentials instance;
-    boolean ignore;
     private Configuration config = null;
     private Configuration players = null;
     private IntegrationProvider helper;
@@ -97,6 +98,8 @@ public class BungeeEssentials extends Plugin {
     private boolean integrated;
     private boolean chatRules;
     private boolean chatSpam;
+    private boolean ignore;
+    private boolean mute;
     private File configFile;
     private File playerFile;
     private boolean useLog;
@@ -442,6 +445,20 @@ public class BungeeEssentials extends Plugin {
             register(new IgnoreCommand());
             commands++;
         }
+        mute = enable.contains("mute");
+        if (mute) {
+            BASE = config.getStringList("commands.mute");
+            if (BASE.toString().equals("[]")) {
+                getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
+                getLogger().log(Level.WARNING, "Falling back to default value for key commands.mute");
+                BASE = Arrays.asList("mute", "");
+            }
+            Mute_MAIN = BASE.get(0);
+            TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
+            Mute_ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
+            register(new MuteCommand());
+            commands++;
+        }
         joinAnnounce = enable.contains("joinannounce");
         getLogger().log(Level.INFO, "Registered {0} commands successfully", commands);
         setupIntegration();
@@ -548,5 +565,9 @@ public class BungeeEssentials extends Plugin {
 
     public boolean ignore() {
         return ignore;
+    }
+
+    public boolean mute() {
+        return mute;
     }
 }

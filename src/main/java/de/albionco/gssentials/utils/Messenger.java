@@ -54,6 +54,7 @@ public class Messenger implements Listener {
     private static Set<UUID> spies = new HashSet<>();
     private static Set<UUID> cspies = new HashSet<>();
     private static Set<UUID> chatting = new HashSet<>();
+    private static Set<UUID> muted = new HashSet<>();
     private static Set<UUID> globalChat = new HashSet<>();
 
     public static void chat(ProxiedPlayer player, ChatEvent event) {
@@ -72,8 +73,7 @@ public class Messenger implements Listener {
         Preconditions.checkNotNull(player, "player null");
         String message = msg;
 
-        if (BungeeEssentials.getInstance().isIntegrated() && (BungeeEssentials.getInstance().getIntegrationProvider() != null && BungeeEssentials.getInstance().getIntegrationProvider().isMuted(player))) {
-            player.sendMessage(ChatColor.RED + "You are muted and cannot message other players!");
+        if (isMutedF(player)) {
             return null;
         }
         if (!player.hasPermission(Permissions.Admin.BYPASS_FILTER) && BungeeEssentials.getInstance().useChatRules()) {
@@ -168,6 +168,26 @@ public class Messenger implements Listener {
         return chatting.contains(player.getUniqueId());
     }
 
+    public static boolean isMuted(ProxiedPlayer player) {
+        Preconditions.checkNotNull(player, "Invalid player specified");
+        return muted.contains(player.getUniqueId());
+    }
+
+    public static boolean isMutedF(ProxiedPlayer player) {
+        Preconditions.checkNotNull(player, "Invalid player specified");
+        if (player.hasPermission(Permissions.Admin.MUTE_EXEMPT)) {
+            return false;
+        }
+        if (muted.contains(player.getUniqueId())) {
+            player.sendMessage(Dictionary.format(Dictionary.MUTE_ERROR));
+            return true;
+        } else if (BungeeEssentials.getInstance().isIntegrated() && (BungeeEssentials.getInstance().getIntegrationProvider() != null && BungeeEssentials.getInstance().getIntegrationProvider().isMuted(player))) {
+            player.sendMessage(Dictionary.format(Dictionary.MUTE_ERROR));
+            return true;
+        }
+        return false;
+    }
+
     public static boolean isGlobalChat(ProxiedPlayer player) {
         Preconditions.checkNotNull(player, "Invalid player specified");
         return globalChat.contains(player.getUniqueId());
@@ -259,6 +279,16 @@ public class Messenger implements Listener {
             chatting.add(player.getUniqueId());
         }
         return isChatting(player);
+    }
+
+    public static boolean toggleMute(ProxiedPlayer player) {
+        Preconditions.checkNotNull(player, "Invalid player specified");
+        if (isMuted(player)) {
+            muted.remove(player.getUniqueId());
+        } else {
+            muted.add(player.getUniqueId());
+        }
+        return isMuted(player);
     }
 
     public static boolean enableStaffChat(ProxiedPlayer player) {

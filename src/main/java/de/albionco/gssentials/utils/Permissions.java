@@ -45,6 +45,8 @@ public class Permissions {
         public static final String UPDATE = "gssentials.admin.update";
         public static final String LOOKUP = "gssentials.admin.lookup";
         public static final String RULE_NOTIFY = "gssentials.admin.notify";
+        public static final String MUTE = "gssentials.admin.mute";
+        public static final String MUTE_EXEMPT = MUTE + ".exempt";
     }
 
     public static class General {
