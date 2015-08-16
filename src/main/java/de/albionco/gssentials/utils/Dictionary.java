@@ -51,7 +51,7 @@ public class Dictionary {
     public static String ERROR_UNWORTHY_OF_SLAP;
     @Load(key = "errors.offline", def = "&cSorry, that player is offline.")
     public static String ERROR_PLAYER_OFFLINE;
-    @Load(key = "errors.invalid", def = "&cInvalid arguments provided.")
+    @Load(key = "errors.invalid", def = "&cInvalid arguments provided. Usage: {{ HELP }}")
     public static String ERROR_INVALID_ARGUMENTS;
     @Load(key = "errors.ignoreself", def = "&cYou can't ignore yourself!")
     public static String ERROR_IGNORE_SELF;

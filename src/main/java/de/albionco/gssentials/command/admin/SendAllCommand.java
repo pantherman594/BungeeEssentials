@@ -70,7 +70,7 @@ public class SendAllCommand extends Command implements TabExecutor {
                 });
             }
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", BungeeEssentials.SendAll_MAIN + " [from server] <to server>"));
         }
     }
 

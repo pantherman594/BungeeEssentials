@@ -34,7 +34,7 @@ public class IgnoreCommand extends Command implements TabExecutor {
                     else sender.sendMessage(Dictionary.format(Dictionary.ERROR_IGNORE_SELF));
                 } else sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
             } else {
-                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS));
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", BungeeEssentials.Ignore_MAIN + " <player>"));
             }
         } else {
             sender.sendMessage(Dictionary.colour("&cConsole cannot ignore players (how are you seeing messages in the first place?)"));

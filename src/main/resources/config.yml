@@ -155,7 +155,7 @@ ignore:
   enabled: '&6Now ignoring {{ PLAYER }}.'
   disabled: '&6No longer ignoring {{ PLAYER }}.'
 errors:
-  invalid: '&cInvalid arguments provided.'
+  invalid: '&cInvalid arguments provided. Usage: {{ HELP }}'
   offline: '&cSorry, that player is offline.'
   slap: '&cYou are unworthy of slapping people.'
   messages: '&cNobody has messaged you recently.'

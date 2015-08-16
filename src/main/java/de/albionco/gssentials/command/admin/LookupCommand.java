@@ -57,7 +57,7 @@ public class LookupCommand extends Command {
                 sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_BODY, "PLAYER", match));
             }
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", BungeeEssentials.Lookup_MAIN + " <beginning of name>"));
         }
     }
 }

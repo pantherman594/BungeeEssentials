@@ -53,7 +53,7 @@ public class JoinCommand extends Command implements TabExecutor {
     public void execute(CommandSender sender, String[] args) {
         if (sender instanceof ProxiedPlayer) {
             if (args == null || args.length < 1) {
-                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS));
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", BungeeEssentials.Join_MAIN + " <player>"));
                 return;
             }
 

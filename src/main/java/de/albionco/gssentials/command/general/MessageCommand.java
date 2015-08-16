@@ -54,7 +54,7 @@ public class MessageCommand extends Command implements TabExecutor {
             ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(args[0]);
             ProxyServer.getInstance().getPluginManager().callEvent(new MessageEvent(sender, recipient, Dictionary.combine(0, args)));
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", BungeeEssentials.Message_MAIN + " <player> <message>"));
         }
     }
 

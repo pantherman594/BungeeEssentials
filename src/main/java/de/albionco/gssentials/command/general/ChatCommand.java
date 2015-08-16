@@ -83,7 +83,7 @@ public class ChatCommand extends ServerSpecificCommand {
                     player.sendMessage(Dictionary.format(Dictionary.CHAT_DISABLED));
                 }
             } else {
-                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS));
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", BungeeEssentials.Chat_MAIN + " [on|off]"));
             }
         }
     }

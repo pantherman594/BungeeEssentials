@@ -58,7 +58,7 @@ public class ReplyCommand extends Command {
                 ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(uuid);
                 ProxyServer.getInstance().getPluginManager().callEvent(new MessageEvent(sender, recipient, Dictionary.combine(0, args)));
             } else {
-                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS));
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", BungeeEssentials.Reply_MAIN + " <message>"));
             }
         } else {
             sender.sendMessage(Dictionary.colour("&cSorry, only players can reply to messages."));

@@ -64,7 +64,7 @@ public class SlapCommand extends Command implements TabExecutor {
                     sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
                 }
             } else {
-                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS));
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", BungeeEssentials.Slap_MAIN + " <player>"));
             }
         } else {
             sender.sendMessage(Dictionary.format(Dictionary.ERROR_UNWORTHY_OF_SLAP));

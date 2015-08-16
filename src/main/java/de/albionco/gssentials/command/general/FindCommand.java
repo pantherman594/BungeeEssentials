@@ -58,7 +58,7 @@ public class FindCommand extends Command implements TabExecutor {
                 sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
             }
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", BungeeEssentials.Find_MAIN + " <player>"));
         }
     }
 

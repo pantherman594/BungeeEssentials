@@ -64,7 +64,7 @@ public class SendCommand extends ServerSpecificCommand implements TabExecutor {
                 sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
             }
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", BungeeEssentials.Send_MAIN + " <player> <server>"));
         }
     }
 

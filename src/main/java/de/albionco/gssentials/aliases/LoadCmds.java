@@ -47,7 +47,7 @@ public class LoadCmds extends Command {
             if (command != null) {
                 ProxyServer.getInstance().getPluginManager().dispatchCommand(sender, command);
             } else {
-                sender.sendMessage(Dictionary.ERROR_INVALID_ARGUMENTS);
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "VARIES"));
             }
         }
     }
