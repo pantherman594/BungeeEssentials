@@ -103,9 +103,9 @@ public class MessageEvent extends Event {
             if (BungeeEssentials.getInstance().ignore()) {
                 if (!Messenger.isIgnoring((ProxiedPlayer) sender, recipient)) {
                     if (!Messenger.isIgnoring(recipient, (ProxiedPlayer) sender)) {
-                        sender.sendMessage(Dictionary.formatMsg(Dictionary.FORMAT_PRIVATE_MESSAGE, "SERVER", recipient.getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
                         recipient.sendMessage(Dictionary.formatMsg(Dictionary.FORMAT_PRIVATE_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
                     }
+                    sender.sendMessage(Dictionary.formatMsg(Dictionary.FORMAT_PRIVATE_MESSAGE, "SERVER", recipient.getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
                 } else {
                     sender.sendMessage(Dictionary.format(Dictionary.ERROR_IGNORING));
                 }
