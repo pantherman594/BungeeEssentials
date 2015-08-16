@@ -97,7 +97,7 @@ public class Dictionary {
     public static String HIDE_DISABLED;
     @Load(key = "ignore.enabled", def = "&6Now ignoring &{ PLAYER }}.")
     public static String IGNORE_ENABLED;
-    @Load(key = "ignore.disabled", def = "&&6No longer ignoring {{ PLAYER }}.")
+    @Load(key = "ignore.disabled", def = "&6No longer ignoring {{ PLAYER }}.")
     public static String IGNORE_DISABLED;
     @Load(key = "slap.slapper", def = "&aYou just slapped &e{{ SLAPPED }}&a. I bet that felt good, didn't it?")
     public static String SLAPPER_MSG;
@@ -169,8 +169,9 @@ public class Dictionary {
     }
 
     public static String format(String input, boolean colour, String... args) {
-    	if (input == Dictionary.FORMAT_PRIVATE_MESSAGE) {
-    		input = colour(input);
+        //noinspection StringEquality
+        if (input == Dictionary.FORMAT_PRIVATE_MESSAGE) {
+            input = colour(input);
     	}
         input = input.replace("{{ TIME }}", getTime());
         // Minor fix for people who suffer from encoding issues
