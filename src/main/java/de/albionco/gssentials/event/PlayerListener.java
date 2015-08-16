@@ -37,6 +37,7 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -169,10 +170,14 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = Byte.MAX_VALUE)
     public void tab(TabCompleteResponseEvent event) {
         List<String> suggestions = event.getSuggestions();
-        for (String p : suggestions) {
-            if (ProxyServer.getInstance().getPlayer(p) instanceof ProxiedPlayer && Messenger.isHidden(ProxyServer.getInstance().getPlayer(p))) {
-                suggestions.remove(p);
+        List<String> remove = new ArrayList<>();
+        for (String suggestion : suggestions) {
+            if (ProxyServer.getInstance().getPlayer(suggestion) instanceof ProxiedPlayer && Messenger.isHidden(ProxyServer.getInstance().getPlayer(suggestion))) {
+                remove.add(suggestion);
             }
+        }
+        for (String player : remove) {
+            suggestions.remove(player);
         }
     }
 }
