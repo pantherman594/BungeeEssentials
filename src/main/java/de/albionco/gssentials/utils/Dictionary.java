@@ -99,6 +99,10 @@ public class Dictionary {
     public static String IGNORE_ENABLED;
     @Load(key = "ignore.disabled", def = "&&6No longer ignoring {{ PLAYER }}.")
     public static String IGNORE_DISABLED;
+    @Load(key = "slap.slapper", def = "&aYou just slapped &e{{ SLAPPED }}&a. I bet that felt good, didn't it?")
+    public static String SLAPPER_MSG;
+    @Load(key = "slap.slapped", def = "&cYou were just slapped by &e{{ SLAPPER }}&c! Ouch! (/slap him back!)")
+    public static String SLAPPED_MSG;
     @Load(key = "rulenotify.advertisement", def = "&7{{ PLAYER }} just advertised!")
     public static String NOTIFY_ADVERTISEMENT;
     @Load(key = "rulenotify.cursing", def = "&7{{ PLAYER }} just sweared!")

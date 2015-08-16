@@ -27,7 +27,6 @@ import de.albionco.gssentials.BungeeEssentials;
 import de.albionco.gssentials.utils.Dictionary;
 import de.albionco.gssentials.utils.Messenger;
 import de.albionco.gssentials.utils.Permissions;
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -58,8 +57,8 @@ public class SlapCommand extends Command implements TabExecutor {
             if (args.length > 0) {
                 ProxiedPlayer enemy = ProxyServer.getInstance().getPlayer(args[0]);
                 if (enemy != null) {
-                    sender.sendMessage(ChatColor.GREEN + "You just slapped " + ChatColor.YELLOW + enemy.getName() + ChatColor.GREEN + ", I bet that felt good, didn't it?");
-                    enemy.sendMessage(ChatColor.GREEN + "You have been universally slapped by " + (player == null ? "GOD" : player.getName()));
+                    sender.sendMessage(Dictionary.format(Dictionary.SLAPPER_MSG, "SLAPPED", enemy.getName()));
+                    enemy.sendMessage(Dictionary.format(Dictionary.SLAPPED_MSG, "SLAPPER", player == null ? "GOD" : player.getName()));
                 } else {
                     sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
                 }
