@@ -25,6 +25,7 @@ package de.albionco.gssentials.aliases;
 import de.albionco.gssentials.utils.Dictionary;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
 /**
@@ -43,7 +44,7 @@ public class LoadCmds extends Command {
     @Override
     public void execute(CommandSender sender, String[] args) {
         for (String command : commands) {
-            command = parseCommands(command, args);
+            command = parseCommands(command, (ProxiedPlayer) sender, args);
             if (command != null) {
                 ProxyServer.getInstance().getPluginManager().dispatchCommand(sender, command);
             } else {
@@ -53,11 +54,11 @@ public class LoadCmds extends Command {
     }
 
     @SuppressWarnings("deprecation")
-    private String parseCommands(String command, String[] args) {
+    private String parseCommands(String command, ProxiedPlayer player, String[] args) {
         int num = 0;
         while (args.length > num && command.contains("{" + num + "}")) {
             if ((args[num] != null) && (!args[num].equals(""))) {
-                command = command.replace("{" + num + "}", args[num]);
+                command = command.replace("{" + num + "}", args[num]).replace("{{ PLAYER }}", player.getName()).replace("{{ SERVER }}", player.getServer().getInfo().getName());
             } else {
                 return null;
             }

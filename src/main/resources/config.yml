@@ -87,7 +87,7 @@ commands:
 aliases:
   - alias: 'greet'
     commands:
-      - 'msg {0} Hey! How are you doing today?'
+      - 'msg {0} Hey! How are you doing today? I was at {{ SERVER }} but I'm coming to join you!'
       - 'join {0}'
   - alias: 'disappear'
     commands:
