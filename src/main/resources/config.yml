@@ -160,19 +160,19 @@ ignore:
   enabled: '&6Now ignoring {{ PLAYER }}.'
   disabled: '&6No longer ignoring {{ PLAYER }}.'
 slap:
-  slapper: '&aYou just slapped &e{{ SLAPPED }}&a. I bet that felt good, didn't it?'
+  slapper: '&aYou just slapped &e{{ SLAPPED }}&a. I bet that felt good, didn''t it?'
   slapped: '&cYou were just slapped by &e{{ SLAPPER }}&c! Ouch! (/slap him back!)'
 mute:
   enabled: '&cYou are now muted!'
   disabled: '&aYou are no longer muted!'
-  error: '&cHey, you can't chat while muted!'
+  error: '&cHey, you can''t chat while muted!'
 errors:
   invalid: '&cInvalid arguments provided. Usage: {{ HELP }}'
   offline: '&cSorry, that player is offline.'
   slap: '&cYou are unworthy of slapping people.'
   messages: '&cNobody has messaged you recently.'
-  ignoreself: '&cYou can't ignore yourself!'
-  ignoring: '&cYou can't send a message to someone you're ignoring!'
+  ignoreself: '&cYou can''t ignore yourself!'
+  ignoring: '&cYou can''t send a message to someone you''re ignoring!'
   sendfail: '&cUnable to send {{ PLAYER }} to {{ SERVER }}.'
 announcements:
 # Time measured in seconds
