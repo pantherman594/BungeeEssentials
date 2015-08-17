@@ -98,6 +98,8 @@ format:
   alert: '&8[&b!&8] &7{{ MESSAGE }}'
   join: '&8[&a+&8] &7{{ PLAYER }}'
   quit: '&8[&c-&8] &7{{ PLAYER }}'
+  kick: '{{ PLAYER }} was kicked for {{ REASON }}'
+  chat: '{{ PLAYER }}: {{ MESSAGE }}'
   find: '&e{{ PLAYER }} &ais playing on &e{{ SERVER }}'
   message: '&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{ MESSAGE }}'
   send: '&aSending &e{{ PLAYER }} &ato server &e{{ SERVER }}'

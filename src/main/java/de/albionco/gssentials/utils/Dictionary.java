@@ -69,6 +69,10 @@ public class Dictionary {
     public static String FORMAT_JOIN;
     @Load(key = "format.quit", def = "&8[&a-&8] &7{{ PLAYER }}")
     public static String FORMAT_QUIT;
+    @Load(key = "format.quit", def = "{{ PLAYER }} was kicked for {{ REASON }}")
+    public static String FORMAT_KICK;
+    @Load(key = "format.chat", def = "{{ PLAYER }}: {{ MESSAGE }}")
+    public static String FORMAT_CHAT;
     @Load(key = "format.alert", def = "&8[&c!&8] &7{{ MESSAGE }}")
     public static String FORMAT_ALERT;
     @Load(key = "list.header", def = "&aServers")
@@ -124,11 +128,11 @@ public class Dictionary {
     @Load(key = "staffchat.disabled", def = "&cYou are no longer chatting in staff chat!")
     public static String SCHAT_DISABLED;
     @Load(key = "chat.message", def = "&e{{ SERVER }} - {{ SENDER }} » &7{{ MESSAGE }}")
-    public static String FORMAT_CHAT;
+    public static String FORMAT_GCHAT;
     @Load(key = "chat.enabled", def = "&aYou are now chatting in global chat!")
-    public static String CHAT_ENABLED;
+    public static String GCHAT_ENABLED;
     @Load(key = "chat.disabled", def = "&cYou are no longer chatting in global chat!")
-    public static String CHAT_DISABLED;
+    public static String GCHAT_DISABLED;
     @Load(key = "warnings.similarity", def = "&cPlease do not spam other players!")
     public static String WARNING_LEVENSHTEIN_DISTANCE;
     @Load(key = "warnings.swearing", def = "&cPlease do not swear at other players!")

@@ -29,7 +29,7 @@ public class GlobalChatEvent extends Event {
         }
         if (!(senderP != null && Messenger.isMutedF(senderP))) {
             if (msg != null) {
-                msg = Dictionary.format(Dictionary.FORMAT_CHAT, "SERVER", server, "SENDER", sender, "MESSAGE", msg);
+                msg = Dictionary.format(Dictionary.FORMAT_GCHAT, "SERVER", server, "SENDER", sender, "MESSAGE", msg);
                 for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
                     if ((player.hasPermission(Permissions.General.CHAT + "." + server) || player.hasPermission(Permissions.General.CHAT)) && (!BungeeEssentials.getInstance().ignore() || !Messenger.isIgnoring(player, ProxyServer.getInstance().getPlayer(sender))))
                         player.sendMessage(msg);

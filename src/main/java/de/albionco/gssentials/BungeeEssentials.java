@@ -103,6 +103,7 @@ public class BungeeEssentials extends Plugin {
     private File configFile;
     private File playerFile;
     private boolean useLog;
+    private boolean logAll;
     private boolean rules;
     private boolean spam;
 
@@ -393,6 +394,7 @@ public class BungeeEssentials extends Plugin {
 
         commandSpy = enable.contains("commandspy");
         useLog = enable.contains("log");
+        logAll = enable.contains("fulllog");
         if (useLog) {
             if (!Log.setup()) {
                 getLogger().log(Level.WARNING, "Error enabling the chat logger!");
@@ -501,6 +503,10 @@ public class BungeeEssentials extends Plugin {
 
     public boolean shouldLog() {
         return this.useLog;
+    }
+
+    public boolean logAll() {
+        return this.logAll;
     }
 
     public boolean shouldWatchMultilog() {

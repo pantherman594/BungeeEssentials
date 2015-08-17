@@ -78,9 +78,9 @@ public class ChatCommand extends ServerSpecificCommand {
             if (sender instanceof ProxiedPlayer) {
                 player = (ProxiedPlayer) sender;
                 if (Messenger.toggleGlobalChat((ProxiedPlayer) sender)) {
-                    player.sendMessage(Dictionary.format(Dictionary.CHAT_ENABLED));
+                    player.sendMessage(Dictionary.format(Dictionary.GCHAT_ENABLED));
                 } else {
-                    player.sendMessage(Dictionary.format(Dictionary.CHAT_DISABLED));
+                    player.sendMessage(Dictionary.format(Dictionary.GCHAT_DISABLED));
                 }
             } else {
                 sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", BungeeEssentials.Chat_MAIN + " [on|off]"));

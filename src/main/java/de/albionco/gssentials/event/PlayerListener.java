@@ -40,6 +40,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  * Created by Connor Harries on 31/01/2015.
@@ -99,6 +100,9 @@ public class PlayerListener implements Listener {
                 }
             }
         }
+        if (BungeeEssentials.getInstance().logAll()) {
+            BungeeEssentials.getInstance().getLogger().log(Level.INFO, Dictionary.format(Dictionary.FORMAT_CHAT, "PLAYER", sender, "MESSAGE", cmd));
+        }
     }
 
     @EventHandler(priority = -65)
@@ -141,6 +145,9 @@ public class PlayerListener implements Listener {
             event.getPlayer().sendMessage(Dictionary.format("&cBungeeEssentials updated with a config change."));
             event.getPlayer().sendMessage(Dictionary.format("&cGo to http://www.spigotmc.org/resources/bungeeessentials.1488/ to compare and update your config."));
         }
+        if (BungeeEssentials.getInstance().logAll()) {
+            BungeeEssentials.getInstance().getLogger().log(Level.INFO, Dictionary.format(Dictionary.FORMAT_JOIN, "PLAYER", event.getPlayer().getName()));
+        }
     }
 
 
@@ -155,6 +162,16 @@ public class PlayerListener implements Listener {
         }
         if (BungeeEssentials.getInstance().shouldAnnounce() && !(Messenger.isHidden(event.getPlayer())) && !(Dictionary.FORMAT_QUIT.equals("")) && event.getPlayer().hasPermission(Permissions.General.QUITANNC)) {
             ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_QUIT, "PLAYER", event.getPlayer().getName()));
+        }
+        if (BungeeEssentials.getInstance().logAll()) {
+            BungeeEssentials.getInstance().getLogger().log(Level.INFO, Dictionary.format(Dictionary.FORMAT_QUIT, "PLAYER", event.getPlayer().getName()));
+        }
+    }
+
+    @EventHandler(priority = Byte.MAX_VALUE)
+    public void kick(ServerKickEvent event) {
+        if (BungeeEssentials.getInstance().logAll()) {
+            BungeeEssentials.getInstance().getLogger().log(Level.INFO, Dictionary.format(Dictionary.FORMAT_KICK, "PLAYER", event.getPlayer().getName(), "REASON", event.getKickReason()));
         }
     }
 
