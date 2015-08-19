@@ -160,7 +160,7 @@ ignore:
   enabled: '&6Now ignoring {{ PLAYER }}.'
   disabled: '&6No longer ignoring {{ PLAYER }}.'
 slap:
-  slapper: '&aYou just slapped &e{{ SLAPPED }}&a. I bet that felt good, didn't it?'
+  slapper: '&aYou just slapped &e{{ SLAPPED }}&a. I bet that felt good, didn''t it?'
   slapped: '&cYou were just slapped by &e{{ SLAPPER }}&c! Ouch! (/slap him back!)'
 mute:
   enabled: '&cYou are now muted!'
