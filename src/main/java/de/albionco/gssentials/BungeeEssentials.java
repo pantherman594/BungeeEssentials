@@ -89,6 +89,7 @@ public class BungeeEssentials extends Plugin {
     public static String[] Mute_ALIAS;
     private static BungeeEssentials instance;
     private Configuration config = null;
+    private Configuration messages = null;
     private Configuration players = null;
     private IntegrationProvider helper;
     private boolean watchMultiLog;
@@ -101,6 +102,7 @@ public class BungeeEssentials extends Plugin {
     private boolean ignore;
     private boolean mute;
     private File configFile;
+    private File messageFile;
     private File playerFile;
     private boolean useLog;
     private boolean logAll;
@@ -115,6 +117,7 @@ public class BungeeEssentials extends Plugin {
     public void onEnable() {
         instance = this;
         configFile = new File(getDataFolder(), "config.yml");
+        messageFile = new File(getDataFolder(), "messages.yml");
         playerFile = new File(getDataFolder(), "players.yml");
         reload();
         Messenger.getPlayers();
@@ -153,10 +156,14 @@ public class BungeeEssentials extends Plugin {
         if (!configFile.exists()) {
             saveConfig();
         }
+        if (!messageFile.exists()) {
+            saveConfig();
+        }
         if (!playerFile.exists()) {
             saveConfig();
         }
         config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(configFile);
+        messages = ConfigurationProvider.getProvider(YamlConfiguration.class).load(messageFile);
         players = ConfigurationProvider.getProvider(YamlConfiguration.class).load(playerFile);
     }
 
@@ -527,6 +534,10 @@ public class BungeeEssentials extends Plugin {
 
     public Configuration getConfig() {
         return this.config;
+    }
+
+    public Configuration getMessages() {
+        return this.messages;
     }
 
     public Configuration getPlayerConfig() {

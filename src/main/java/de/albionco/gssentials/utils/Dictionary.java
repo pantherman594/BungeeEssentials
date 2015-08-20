@@ -215,12 +215,12 @@ public class Dictionary {
      * @throws IllegalAccessException
      */
     public static void load() throws IllegalAccessException {
-        Configuration config = BungeeEssentials.getInstance().getConfig();
+        Configuration messages = BungeeEssentials.getInstance().getMessages();
         for (Field field : Dictionary.class.getDeclaredFields()) {
             int mod = field.getModifiers();
             if (Modifier.isStatic(mod) && Modifier.isPublic(mod) && field.isAnnotationPresent(Load.class)) {
                 Load load = field.getAnnotation(Load.class);
-                String value = config.getString(load.key(), DEFAULT_CONFIG_VALUE);
+                String value = messages.getString(load.key(), DEFAULT_CONFIG_VALUE);
                 if (value.equals(DEFAULT_CONFIG_VALUE)) {
                     /*
                      * Why not just load the default value?

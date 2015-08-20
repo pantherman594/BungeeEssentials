@@ -72,7 +72,7 @@ public class RuleManager {
     @SuppressWarnings("unchecked")
     public static boolean load() {
         rules.clear();
-        List<Map<String, String>> section = (List<Map<String, String>>) BungeeEssentials.getInstance().getConfig().getList("rules");
+        List<Map<String, String>> section = (List<Map<String, String>>) BungeeEssentials.getInstance().getMessages().getList("rules");
         int success = 0;
         for (Map<String, String> map : section) {
             Rule rule = Rule.deserialize(map);
