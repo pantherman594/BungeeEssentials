@@ -56,7 +56,7 @@ public class ReplyCommand extends Command {
                     return;
                 }
                 ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(uuid);
-                ProxyServer.getInstance().getPluginManager().callEvent(new MessageEvent(sender, recipient, Dictionary.combine(0, args)));
+                ProxyServer.getInstance().getPluginManager().callEvent(new MessageEvent(sender, recipient, Dictionary.combine(args)));
             } else {
                 sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", BungeeEssentials.Reply_MAIN + " <message>"));
             }
