@@ -50,11 +50,15 @@ public class MessageCommand extends Command implements TabExecutor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if (args.length > 1) {
-            ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(args[0]);
-            ProxyServer.getInstance().getPluginManager().callEvent(new MessageEvent(sender, recipient, Dictionary.combine(0, args)));
+        if (sender instanceof ProxiedPlayer) {
+            if (args.length > 1) {
+                ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(args[0]);
+                ProxyServer.getInstance().getPluginManager().callEvent(new MessageEvent(sender, recipient, Dictionary.combine(0, args)));
+            } else {
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", BungeeEssentials.Message_MAIN + " <player> <message>"));
+            }
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", BungeeEssentials.Message_MAIN + " <player> <message>"));
+            sender.sendMessage(Dictionary.colour("&cSorry, only players can send messages."));
         }
     }
 
