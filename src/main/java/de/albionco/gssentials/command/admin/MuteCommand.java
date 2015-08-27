@@ -26,8 +26,18 @@ public class MuteCommand extends Command {
             if (player != null) {
                 if (Messenger.toggleMute(player)) {
                     player.sendMessage(Dictionary.format(Dictionary.MUTE_ENABLED));
+                    for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
+                        if (p.hasPermission(Permissions.Admin.MUTE_NOTIFY)) {
+                            sender.sendMessage(Dictionary.format(Dictionary.MUTE_ENABLEDN));
+                        }
+                    }
                 } else {
                     player.sendMessage(Dictionary.format(Dictionary.MUTE_DISABLED));
+                    for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
+                        if (p.hasPermission(Permissions.Admin.MUTE_NOTIFY)) {
+                            sender.sendMessage(Dictionary.format(Dictionary.MUTE_DISABLEDN));
+                        }
+                    }
                 }
             }
         } else {

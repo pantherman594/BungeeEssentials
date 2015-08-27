@@ -67,9 +67,13 @@ slap:
   slapper: '&aYou just slapped &e{{ SLAPPED }}&a. I bet that felt good, didn''t it?'
   slapped: '&cYou were just slapped by &e{{ SLAPPER }}&c! Ouch! (/slap him back!)'
 mute:
-  enabled: '&cYou are now muted!'
-  disabled: '&aYou are no longer muted!'
-  error: '&cHey, you can''t chat while muted!'
+  muted:
+    enabled: '&cYou are now muted!'
+    disabled: '&aYou are no longer muted!'
+    error: '&cHey, you can''t chat while muted!'
+  muter:
+    enabled: '&c{{ PLAYER }} is now muted!'
+    disabled: '&a{{ PLAYER }} is no longer muted!'
 errors:
   invalid: '&cInvalid arguments provided. Usage: {{ HELP }}'
   offline: '&cSorry, that player is offline.'
