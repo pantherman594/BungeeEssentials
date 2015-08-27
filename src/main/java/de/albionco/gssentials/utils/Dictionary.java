@@ -107,12 +107,14 @@ public class Dictionary {
     public static String MUTE_ENABLED;
     @Load(key = "mute.muted.disabled", def = "&aYou are no longer muted!")
     public static String MUTE_DISABLED;
+    @Load(key = "mute.muted.error", def = "&cHey, you can't chat while muted!")
+    public static String MUTE_ERROR;
     @Load(key = "mute.muter.enabled", def = "&c{{ PLAYER }} is now muted!")
     public static String MUTE_ENABLEDN;
     @Load(key = "mute.muter.disabled", def = "&a{{ PLAYER }} is no longer muted!")
     public static String MUTE_DISABLEDN;
-    @Load(key = "mute.error", def = "&cHey, you can't chat while muted!")
-    public static String MUTE_ERROR;
+    @Load(key = "mute.muter.error", def = "&cHey, you can't mute that player!")
+    public static String MUTE_EXEMPT;
     @Load(key = "slap.slapper", def = "&aYou just slapped &e{{ SLAPPED }}&a. I bet that felt good, didn't it?")
     public static String SLAPPER_MSG;
     @Load(key = "slap.slapped", def = "&cYou were just slapped by &e{{ SLAPPER }}&c! Ouch! (/slap him back!)")
