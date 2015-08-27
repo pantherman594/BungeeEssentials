@@ -48,7 +48,7 @@ public class LoadCmds extends Command {
     public void execute(CommandSender sender, String[] args) {
         if (sender.hasPermission(Permissions.General.ALIAS) || sender.hasPermission(Permissions.General.ALIAS + "." + main)) {
             for (String command : commands) {
-                command = parseCommands(command, (ProxiedPlayer) sender, args);
+                command = parseCommands(command, sender, args);
                 if (command != null) {
                     ProxyServer.getInstance().getPluginManager().dispatchCommand(sender, command);
                 } else {
@@ -61,11 +61,17 @@ public class LoadCmds extends Command {
     }
 
     @SuppressWarnings("deprecation")
-    private String parseCommands(String command, ProxiedPlayer player, String[] args) {
+    private String parseCommands(String command, CommandSender sender, String[] args) {
         int num = 0;
+        String server;
+        if (sender instanceof ProxiedPlayer) {
+            server = ((ProxiedPlayer) sender).getServer().getInfo().getName();
+        } else {
+            server = "CONSOLE";
+        }
         while (args.length > num && command.contains("{" + num + "}")) {
             if ((args[num] != null) && (!args[num].equals(""))) {
-                command = command.replace("{" + num + "}", args[num]).replace("{{ PLAYER }}", player.getName()).replace("{{ SERVER }}", player.getServer().getInfo().getName());
+                command = command.replace("{" + num + "}", args[num]).replace("{{ PLAYER }}", sender.getName()).replace("{{ SERVER }}", server);
             } else {
                 return null;
             }
