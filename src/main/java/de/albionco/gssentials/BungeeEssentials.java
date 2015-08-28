@@ -146,9 +146,13 @@ public class BungeeEssentials extends Plugin {
         if (!file.exists()) {
             Files.copy(getResourceAsStream("config.yml"), file.toPath());
         }
-        File file2 = new File(getDataFolder(), "players.yml");
-        if (!file2.exists()) {
-            Files.copy(getResourceAsStream("players.yml"), file2.toPath());
+        file = new File(getDataFolder(), "players.yml");
+        if (!file.exists()) {
+            Files.copy(getResourceAsStream("players.yml"), file.toPath());
+        }
+        file = new File(getDataFolder(), "messages.yml");
+        if (!file.exists()) {
+            Files.copy(getResourceAsStream("messages.yml"), file.toPath());
         }
     }
 
