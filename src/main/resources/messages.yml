@@ -74,7 +74,7 @@ mute:
   muter:
     enabled: '&c{{ PLAYER }} is now muted!'
     disabled: '&a{{ PLAYER }} is no longer muted!'
-    error: '&cHey, you can''t mute that player!';
+    error: '&cHey, you can''t mute that player!'
 errors:
   invalid: '&cInvalid arguments provided. Usage: {{ HELP }}'
   offline: '&cSorry, that player is offline.'
