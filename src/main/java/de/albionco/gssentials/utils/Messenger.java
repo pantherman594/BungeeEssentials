@@ -46,7 +46,7 @@ public class Messenger implements Listener {
         Preconditions.checkNotNull(player, "player null");
         String message = msg;
 
-        if (isMutedF(player)) {
+        if (isMutedF(player, msg)) {
             return null;
         }
         if (!player.hasPermission(Permissions.Admin.BYPASS_FILTER) && BungeeEssentials.getInstance().useChatRules()) {
@@ -98,10 +98,10 @@ public class Messenger implements Listener {
         return message;
     }
 
-    public static void ruleNotify(String message, ProxiedPlayer player, String sentMessage) {
+    public static void ruleNotify(String notification, ProxiedPlayer player, String sentMessage) {
         for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
             if (p.hasPermission(Permissions.Admin.RULE_NOTIFY)) {
-                p.sendMessage(Dictionary.format(message, "PLAYER", player.getName()));
+                p.sendMessage(Dictionary.format(notification, "PLAYER", player.getName()));
                 p.sendMessage(ChatColor.GRAY + "Original Message: " + sentMessage);
             }
         }
@@ -146,16 +146,12 @@ public class Messenger implements Listener {
         return muted.contains(player.getUniqueId());
     }
 
-    public static boolean isMutedF(ProxiedPlayer player) {
+    public static boolean isMutedF(ProxiedPlayer player, String msg) {
         Preconditions.checkNotNull(player, "Invalid player specified");
-        if (player.hasPermission(Permissions.Admin.MUTE_EXEMPT)) {
-            return false;
-        }
-        if (muted.contains(player.getUniqueId())) {
+        BungeeEssentials bInst = BungeeEssentials.getInstance();
+        if (!player.hasPermission(Permissions.Admin.MUTE_EXEMPT) && (muted.contains(player.getUniqueId()) || (bInst.isIntegrated() && bInst.getIntegrationProvider().isMuted(player)))) {
             player.sendMessage(Dictionary.format(Dictionary.MUTE_ERROR));
-            return true;
-        } else if (BungeeEssentials.getInstance().isIntegrated() && (BungeeEssentials.getInstance().getIntegrationProvider() != null && BungeeEssentials.getInstance().getIntegrationProvider().isMuted(player))) {
-            player.sendMessage(Dictionary.format(Dictionary.MUTE_ERROR));
+            ruleNotify(Dictionary.format(Dictionary.MUTE_ERRORN), player, msg);
             return true;
         }
         return false;

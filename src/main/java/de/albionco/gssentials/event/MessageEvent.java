@@ -28,7 +28,7 @@ public class MessageEvent extends Event {
             ProxiedPlayer player = null;
             if (sender instanceof ProxiedPlayer) {
                 player = (ProxiedPlayer) sender;
-                if (Messenger.isMutedF(player)) {
+                if (Messenger.isMutedF(player, msg)) {
                     return;
                 }
                 if (!sender.hasPermission(Permissions.Admin.BYPASS_FILTER) && BungeeEssentials.getInstance().useRules()) {

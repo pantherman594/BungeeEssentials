@@ -543,7 +543,7 @@ public class BungeeEssentials extends Plugin {
     }
 
     public boolean isIntegrated() {
-        return integrated;
+        return integrated && helper != null;
     }
 
     public boolean useRules() {

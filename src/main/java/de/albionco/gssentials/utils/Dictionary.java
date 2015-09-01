@@ -86,7 +86,9 @@ public class Dictionary {
     public static String MUTE_ENABLEDN;
     @Load(key = "mute.muter.disabled", def = "&a{{ PLAYER }} is no longer muted!")
     public static String MUTE_DISABLEDN;
-    @Load(key = "mute.muter.error", def = "&cHey, you can't mute that player!")
+    @Load(key = "mute.muter.error", def = "&7{{ PLAYER }} tried to chat while muted!")
+    public static String MUTE_ERRORN;
+    @Load(key = "mute.muter.exempt", def = "&cHey, you can't mute that player!")
     public static String MUTE_EXEMPT;
     @Load(key = "slap.slapper", def = "&aYou just slapped &e{{ SLAPPED }}&a. I bet that felt good, didn't it?")
     public static String SLAPPER_MSG;
