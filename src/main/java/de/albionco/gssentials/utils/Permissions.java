@@ -1,3 +1,21 @@
+/*
+ * BungeeEssentials: Full customization of a few necessary features for your server!
+ * Copyright (C) 2015  David Shen (PantherMan594)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package de.albionco.gssentials.utils;
 
 public class Permissions {
@@ -15,7 +33,7 @@ public class Permissions {
         public static final String BYPASS_FILTER = "gssentials.admin.bypass-filter";
         public static final String UPDATE = "gssentials.admin.update";
         public static final String LOOKUP = "gssentials.admin.lookup";
-        public static final String RULE_NOTIFY = "gssentials.admin.notify";
+        public static final String NOTIFY = "gssentials.admin.notify";
         public static final String MUTE = "gssentials.admin.mute";
         public static final String MUTE_EXEMPT = MUTE + ".exempt";
     }

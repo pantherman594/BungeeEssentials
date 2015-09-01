@@ -1,3 +1,21 @@
+/*
+ * BungeeEssentials: Full customization of a few necessary features for your server!
+ * Copyright (C) 2015  David Shen (PantherMan594)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package de.albionco.gssentials.command.admin;
 
 import de.albionco.gssentials.BungeeEssentials;
@@ -23,14 +41,14 @@ public class MuteCommand extends Command {
                     if (Messenger.toggleMute(player)) {
                         player.sendMessage(Dictionary.format(Dictionary.MUTE_ENABLED));
                         for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
-                            if (p.hasPermission(Permissions.Admin.RULE_NOTIFY)) {
+                            if (p.hasPermission(Permissions.Admin.NOTIFY)) {
                                 sender.sendMessage(Dictionary.format(Dictionary.MUTE_ENABLEDN));
                             }
                         }
                     } else {
                         player.sendMessage(Dictionary.format(Dictionary.MUTE_DISABLED));
                         for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
-                            if (p.hasPermission(Permissions.Admin.RULE_NOTIFY)) {
+                            if (p.hasPermission(Permissions.Admin.NOTIFY)) {
                                 sender.sendMessage(Dictionary.format(Dictionary.MUTE_DISABLEDN));
                             }
                         }
