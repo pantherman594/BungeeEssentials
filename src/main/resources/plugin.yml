@@ -1,5 +1,5 @@
 name: BungeeEssentials
-main: de.albionco.gssentials.BungeeEssentials
+main: BungeeEssentials
 version: #VERSION#
 author: PantherMan594
 softdepends:
