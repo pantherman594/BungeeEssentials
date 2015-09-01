@@ -1,5 +1,5 @@
 name: BungeeEssentials
-main: BungeeEssentials
+main: com.pantherman594.gssentials.BungeeEssentials
 version: #VERSION#
 author: PantherMan594
 softdepends:
