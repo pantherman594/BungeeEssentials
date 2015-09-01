@@ -3,3 +3,5 @@ target/
 .idea/
 
 /bin/
+/libs/
+/pom.xml
