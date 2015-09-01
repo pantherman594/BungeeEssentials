@@ -26,7 +26,7 @@ public class Messenger implements Listener {
     private static Set<UUID> hidden = new HashSet<>();
     private static Set<UUID> spies = new HashSet<>();
     private static Set<UUID> cspies = new HashSet<>();
-    private static Set<UUID> chatting = new HashSet<>();
+    private static Set<UUID> staffChat = new HashSet<>();
     private static Set<UUID> muted = new HashSet<>();
     private static Set<UUID> globalChat = new HashSet<>();
 
@@ -136,9 +136,9 @@ public class Messenger implements Listener {
         return hiddenNum;
     }
 
-    public static boolean isChatting(ProxiedPlayer player) {
+    public static boolean isStaffChat(ProxiedPlayer player) {
         Preconditions.checkNotNull(player, "Invalid player specified");
-        return chatting.contains(player.getUniqueId());
+        return staffChat.contains(player.getUniqueId());
     }
 
     public static boolean isMuted(ProxiedPlayer player) {
@@ -242,12 +242,12 @@ public class Messenger implements Listener {
 
     public static boolean toggleStaffChat(ProxiedPlayer player) {
         Preconditions.checkNotNull(player, "Invalid player specified");
-        if (isChatting(player)) {
-            chatting.remove(player.getUniqueId());
+        if (isStaffChat(player)) {
+            staffChat.remove(player.getUniqueId());
         } else {
-            chatting.add(player.getUniqueId());
+            staffChat.add(player.getUniqueId());
         }
-        return isChatting(player);
+        return isStaffChat(player);
     }
 
     public static boolean toggleMute(ProxiedPlayer player) {
@@ -262,18 +262,18 @@ public class Messenger implements Listener {
 
     public static boolean enableStaffChat(ProxiedPlayer player) {
         Preconditions.checkNotNull(player, "Invalid player specified");
-        if (!isChatting(player)) {
-            chatting.add(player.getUniqueId());
+        if (!isStaffChat(player)) {
+            staffChat.add(player.getUniqueId());
         }
-        return isChatting(player);
+        return isStaffChat(player);
     }
 
     public static boolean disableStaffChat(ProxiedPlayer player) {
         Preconditions.checkNotNull(player, "Invalid player specified");
-        if (isChatting(player)) {
-            chatting.remove(player.getUniqueId());
+        if (isStaffChat(player)) {
+            staffChat.remove(player.getUniqueId());
         }
-        return isChatting(player);
+        return isStaffChat(player);
     }
 
     public static boolean toggleGlobalChat(ProxiedPlayer player) {
@@ -309,7 +309,7 @@ public class Messenger implements Listener {
             writer.println(hidden.toString());
             writer.println(spies.toString());
             writer.println(cspies.toString());
-            writer.println(chatting.toString());
+            writer.println(staffChat.toString());
             writer.println(globalChat.toString());
             writer.close();
         } catch (IOException e) {
@@ -362,7 +362,7 @@ public class Messenger implements Listener {
                         players = strLine.split(", ");
                         for (String uuidStr : players) {
                             UUID uuid = UUID.fromString(uuidStr);
-                            chatting.add(uuid);
+                            staffChat.add(uuid);
                         }
                     }
                 }

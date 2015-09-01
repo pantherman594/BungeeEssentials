@@ -47,8 +47,9 @@ public class PlayerListener implements Listener {
                     }
                 }
             }
+            return;
         }
-        if (Messenger.isChatting(player) && !event.isCancelled() && !event.isCommand()) {
+        if (Messenger.isStaffChat(player) && !event.isCancelled() && !event.isCommand()) {
             String server = player.getServer().getInfo().getName();
             String msg = Messenger.filter(player, event.getMessage());
             ProxyServer.getInstance().getPluginManager().callEvent(new StaffChatEvent(server, sender, msg));
