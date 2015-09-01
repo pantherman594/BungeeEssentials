@@ -18,7 +18,6 @@ public class Permissions {
         public static final String RULE_NOTIFY = "gssentials.admin.notify";
         public static final String MUTE = "gssentials.admin.mute";
         public static final String MUTE_EXEMPT = MUTE + ".exempt";
-        public static final String MUTE_NOTIFY = MUTE + ".notify";
     }
 
     public static class General {
