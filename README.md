@@ -6,7 +6,7 @@ BungeeEssentials
 [![Issues](https://img.shields.io/github/issues/PantherMan594/BungeeEssentials.svg)](https://github.com/PantherMan594/BungeeEssentials/issues)
 
 Hello and welcome to [BungeeEssentials](http://www.spigotmc.org/resources/bungeeessentials.1488/) by PantherMan594!
-This project was originally created by charries96 as a port of [charries96/LilyEssentials](https://github.com/charries96/LilyEssentials) for BungeeCord. Since then, it has gone far beyond just a port, thanks to the awesome suggestions made by the you, community! The latest version of this plugin is always available [here](http://ci.cubexmc.net/job/BungeeEssentials/).
+This project was originally created by @Fireflies as a port of [The-Zip/LilyEssentials](https://github.com/The-Zip/LilyEssentials) for BungeeCord. Since then, it has gone far beyond just a port, thanks to the awesome suggestions made by the you, community! The latest version of this plugin is always available [here](http://ci.cubexmc.net/job/BungeeEssentials/).
 
 ### Developers
 
@@ -39,7 +39,7 @@ Please try to follow the formats below to make it easier for both of us. You may
 
 ### Support
 
-If you like the project and it's helped you out, please consider donating [here for PantherMan594][donate] (current developer) or [here for Fireflies][donate2] (original author) to show your appreciation, or leave a rating on the resource page [here][resource]. I hope you enjoy using BungeeEssentials!
+If you like the project and it's helped you out, please consider donating [here for PantherMan594][donate] (current developer) or [here for @Fireflies][donate2] (original author) to show your appreciation, or leave a rating on the resource page [here][resource]. I hope you enjoy using BungeeEssentials!
 
 [donate]: https://www.paypal.me/PantherMan594
 [donate2]: https://www.paypal.com/cgi-bin/webscr?hosted_button_id=2GM2W8Z9VHN94&item_name=BungeeEssentials+%28from+github.com%29&cmd=_s-xclick
