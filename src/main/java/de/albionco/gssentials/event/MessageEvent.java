@@ -14,11 +14,6 @@ import net.md_5.bungee.api.plugin.Event;
 import java.util.List;
 import java.util.regex.Matcher;
 
-/**
- * Created by David on 8/3/2015.
- *
- * @author David
- */
 public class MessageEvent extends Event {
     private CommandSender sender;
     private ProxiedPlayer recipient;

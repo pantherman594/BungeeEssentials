@@ -8,11 +8,6 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Event;
 
-/**
- * Created by David on 8/2/2015.
- *
- * @author David
- */
 public class GlobalChatEvent extends Event {
     private String server;
     private String sender;

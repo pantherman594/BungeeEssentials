@@ -9,11 +9,6 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
-/**
- * Created by David on 8/16/2015.
- *
- * @author David
- */
 public class MuteCommand extends Command {
     public MuteCommand() {
         super(BungeeEssentials.Mute_MAIN, Permissions.Admin.MUTE, BungeeEssentials.Mute_ALIAS);

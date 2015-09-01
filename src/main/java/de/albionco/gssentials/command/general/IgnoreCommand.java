@@ -14,11 +14,6 @@ import net.md_5.bungee.api.plugin.TabExecutor;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created by David on 8/3/2015.
- *
- * @author David
- */
 public class IgnoreCommand extends Command implements TabExecutor {
     public IgnoreCommand() {
         super(BungeeEssentials.Ignore_MAIN, Permissions.General.IGNORE, BungeeEssentials.Ignore_ALIAS);
