@@ -5,36 +5,45 @@ BungeeEssentials
 [![Downloads](https://img.shields.io/github/downloads/PantherMan594/BungeeEssentials/latest/total.svg)](https://github.com/PantherMan594/BungeeEssentials/releases/latest)
 [![Issues](https://img.shields.io/github/issues/PantherMan594/BungeeEssentials.svg)](https://github.com/PantherMan594/BungeeEssentials/issues)
 
-Port of [charries96/LilyEssentials](https://github.com/charries96/LilyEssentials) for BungeeCord. The latest version of this plugin is always available [here](https://drone.io/github.com/charries96/BungeeEssentials/files).
+Hello and welcome to [BungeeEssentials](http://www.spigotmc.org/resources/bungeeessentials.1488/) by PantherMan594!
+This project was originally created by charries96 as a port of [charries96/LilyEssentials](https://github.com/charries96/LilyEssentials) for BungeeCord. Since then, it has gone far beyond just a port, thanks to the awesome suggestions made by the you, community! The latest version of this plugin is always available [here](http://ci.cubexmc.net/job/BungeeEssentials/).
 
-View this resource on spigot [here](http://www.spigotmc.org/resources/bungeeessentials.1488/).
+### Developers
 
-### Bugs
+If you know how to code, great! Feel free to add featues or fix bugs via pull requests or use the API to develop your own plugins that hook onto BungeeEssentials!
+##### License
+You can use and view the source code for BungeeEssentials, as it has a GNU General Public License (GPL). However, if you distribute anything with the contained code, you must pass down this freedom, i.e. it must also have a GPL license and its recipients must be able to get the source code. The full license and its terms may be viewed [here][license].
 
-Please follow the format below as it helps me to keep track of things more easily. 
+### Issues
+
+Issues are one of the main ways you server owners, admins, developers, and other awesome people can communicate with me! If you want me to add a new feature to this plugin, or have a nasty bug to report, you're in the right place.
+
+Please try to follow the formats below to make it easier for both of us. You may include or omit any details as deemed necessary. I have also provided links for a pre-filled template to make the process as simple as possible. If you don't use them, please remember to include the appropriate label so I know what I'm reading right from the start!
+
+#### [Bugs][bugs]
 
 ```
-**Description:** <description>
 **Steps to replicate:** <steps>
+**BungeeEssentials Version:** <beversion>
+**Minecraft Version:** <mcversion>
+**Description:** <description>
 ```
 
-If the bug has no steps to replicate it then please either omit this or put "N/A", thankyou.
-To automatically create an issue using this template click [here][bugs].
-
-### Suggestions
-
-Please follow the format below if you wish for your suggestion to be processed faster, it's easier for me to keep track of things when they are formatted.
+#### [Suggestions][suggestion]
 
 ```
-**Command:** <yes | no>
 **Commands:** <list>
-**Permission:** <yes | no>
 **Permissions:** <list>
 **Description:** <description>
 ```
 
-Attach the "suggestion" label to your issue. If you want then you can click [here][suggestion] to automatically copy the format. 
+### Support
 
+If you like the project and it's helped you out, please consider donating [here for PantherMan594][donate] (current developer) or [here for Fireflies][donate2] (original author) to show your appreciation, or leave a rating on the resource page [here][resource]. I hope you enjoy using BungeeEssentials!
 
-[suggestion]: https://github.com/PantherMan594/BungeeEssentials/issues/new?title=My%20Awesome%20Suggestion&body=**Command%3A**%20%3Cyes%20%7C%20no%3E%0A**Commands%3A**%20%3Clist%3E%0A**Permission%3A**%20%3Cyes%20%7C%20no%3E%0A**Permissions%3A**%20%3Clist%3E%0A**Description%3A**%20%3Cdescription%3E%0A%0APlease%20try%20to%20follow%20the%20format%20displayed%20here%3A%20https%3A%2F%2Fgithub.com%2FAlbioncode%2FBungeeEssentials%2Fblob%2Fmaster%2FREADME.md&labels=suggestion
-[bugs]: https://github.com/PantherMan594/BungeeEssentials/issues/new?title=My%20Bug%20Report&body=**Description%3A**%20%3Cdescription%3E%0A**Steps%20to%20replicate%3A**%20%3Csteps%3E%0A%0APlease%20try%20to%20follow%20the%20format%20displayed%20here%3A%20https%3A%2F%2Fgithub.com%2FAlbioncode%2FBungeeEssentials%2Fblob%2Fmaster%2FREADME.md&labels=bug
+[donate]: https://www.paypal.me/PantherMan594
+[donate2]: https://www.paypal.com/cgi-bin/webscr?hosted_button_id=2GM2W8Z9VHN94&item_name=BungeeEssentials+%28from+github.com%29&cmd=_s-xclick
+[suggestion]: https://github.com/PantherMan594/BungeeEssentials/issues/new?title=A%20Suggestion&body=**Commands%3A**%20%3Clist%3E%0A**Permissions%3A**%20%3Clist%3E%0A**Description%3A**%20%3Cdescription%3E&labels=suggestion
+[bugs]: https://github.com/PantherMan594/BungeeEssentials/issues/new?title=Bug%20Report&body=**Steps%20to%20replicate%3A**%20%3Csteps%3E%0A**BungeeEssentials%20Version%3A**%20%3Cbeversion%3E%0A**Minecraft%20Version%3A**%20%3Cmcversion%3E%0A**Description%3A**%20%3Cdescription%3E&labels=bug
+[resource]: http://www.spigotmc.org/resources/bungeeessentials.1488/
+[license]: https://github.com/PantherMan594/BungeeEssentials/blob/master/LICENSE
