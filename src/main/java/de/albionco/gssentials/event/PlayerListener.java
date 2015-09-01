@@ -49,6 +49,10 @@ public class PlayerListener implements Listener {
             }
             return;
         }
+        if (Messenger.isMutedF(player, event.getMessage())) {
+            event.setCancelled(true);
+            return;
+        }
         if (Messenger.isStaffChat(player) && !event.isCancelled() && !event.isCommand()) {
             String server = player.getServer().getInfo().getName();
             String msg = Messenger.filter(player, event.getMessage());

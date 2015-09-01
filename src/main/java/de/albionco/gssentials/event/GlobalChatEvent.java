@@ -22,15 +22,13 @@ public class GlobalChatEvent extends Event {
         if (ProxyServer.getInstance().getPlayer(sender) != null) {
             senderP = ProxyServer.getInstance().getPlayer(sender);
         }
-        if (msg != null) {
-            if (!(senderP != null && Messenger.isMutedF(senderP, msg))) {
-                msg = Dictionary.format(Dictionary.FORMAT_GCHAT, "SERVER", server, "SENDER", sender, "MESSAGE", msg);
-                for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-                    if ((player.hasPermission(Permissions.General.CHAT + "." + server) || player.hasPermission(Permissions.General.CHAT)) && (!BungeeEssentials.getInstance().ignore() || !Messenger.isIgnoring(player, ProxyServer.getInstance().getPlayer(sender))))
-                        player.sendMessage(msg);
-                }
-                ProxyServer.getInstance().getConsole().sendMessage(msg);
+        if (msg != null && senderP != null) {
+            msg = Dictionary.format(Dictionary.FORMAT_GCHAT, "SERVER", server, "SENDER", sender, "MESSAGE", msg);
+            for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
+                if ((player.hasPermission(Permissions.General.CHAT + "." + server) || player.hasPermission(Permissions.General.CHAT)) && (!BungeeEssentials.getInstance().ignore() || !Messenger.isIgnoring(player, ProxyServer.getInstance().getPlayer(sender))))
+                    player.sendMessage(msg);
             }
+            ProxyServer.getInstance().getConsole().sendMessage(msg);
         }
     }
 
