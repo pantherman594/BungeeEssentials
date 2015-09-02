@@ -116,15 +116,23 @@ public class BungeeEssentials extends Plugin {
         configFile = new File(getDataFolder(), "config.yml");
         messageFile = new File(getDataFolder(), "messages.yml");
         playerFile = new File(getDataFolder(), "players.yml");
-        reload();
-        Messenger.getPlayers();
+        try {
+            loadConfig();
+        } catch (Exception ignored) {
+        }
         if (getConfig().getStringList("enable").contains("updater")) {
+            boolean updated;
             if (getConfig().getStringList("enable").contains("betaupdates")) {
-                Updater.update(true);
+                updated = Updater.update(true);
             } else {
-                Updater.update(false);
+                updated = Updater.update(false);
+            }
+            if (updated) {
+                return;
             }
         }
+        reload();
+        Messenger.getPlayers();
     }
 
     @Override

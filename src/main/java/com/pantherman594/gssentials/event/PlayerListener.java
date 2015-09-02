@@ -23,7 +23,6 @@ import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.Messenger;
 import com.pantherman594.gssentials.utils.Permissions;
-import com.pantherman594.gssentials.utils.Updater;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.connection.Connection;
@@ -135,10 +134,6 @@ public class PlayerListener implements Listener {
         }
         if (BungeeEssentials.getInstance().shouldAnnounce() && !(Messenger.isHidden(event.getPlayer())) && !(Dictionary.FORMAT_JOIN.equals("")) && event.getPlayer().hasPermission(Permissions.General.JOINANNC)) {
             ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_JOIN, "PLAYER", event.getPlayer().getName()));
-        }
-        if (Updater.hasConfigChange() && event.getPlayer().hasPermission(Permissions.Admin.UPDATE)) {
-            event.getPlayer().sendMessage(Dictionary.format("&cBungeeEssentials updated with a config change."));
-            event.getPlayer().sendMessage(Dictionary.format("&cGo to http://www.spigotmc.org/resources/bungeeessentials.1488/ to compare and update your config."));
         }
         if (BungeeEssentials.getInstance().logAll()) {
             BungeeEssentials.getInstance().getLogger().log(Level.INFO, Dictionary.format(Dictionary.FORMAT_JOIN, "PLAYER", event.getPlayer().getName()));

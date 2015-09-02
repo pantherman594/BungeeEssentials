@@ -94,3 +94,6 @@ aliases:
       - 'spy'
       - 'cspy'
       - 'hide'
+
+#DO NOT CHANGE!
+configversion: '2.4.4'

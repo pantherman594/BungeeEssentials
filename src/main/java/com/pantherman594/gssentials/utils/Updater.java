@@ -21,6 +21,7 @@ package com.pantherman594.gssentials.utils;
 import com.pantherman594.gssentials.BungeeEssentials;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.config.Configuration;
 
 import java.io.*;
 import java.net.URL;
@@ -29,41 +30,30 @@ import java.util.logging.Level;
 
 public class Updater {
     private static Plugin plugin = BungeeEssentials.getInstance();
-    private static boolean newConf = false;
 
-    public static void update(boolean beta) {
-        int oldVersion = getVersionFromString(plugin.getDescription().getVersion());
+    public static boolean update(boolean beta) {
+        final int oldVersion = getVersionFromString(plugin.getDescription().getVersion());
         File path = new File(ProxyServer.getInstance().getPluginsFolder(), "BungeeEssentials.jar");
 
         try {
-            String versionLink = "https://raw.githubusercontent.com/Fireflies/BungeeEssentials/master/version.txt";
+            String versionLink = "https://raw.githubusercontent.com/PantherMan594/BungeeEssentials/master/version.txt";
             URL url = new URL(versionLink);
             URLConnection con = url.openConnection();
             InputStreamReader isr = new InputStreamReader(con.getInputStream());
             BufferedReader reader = new BufferedReader(isr);
             String newVer = reader.readLine();
-            String newConfVer = reader.readLine();
             String newBVer = reader.readLine();
-            String newBConfVer = reader.readLine();
             int newVersion;
-            int newConfVersion;
             if (beta) {
                 newVersion = getVersionFromString(newBVer);
-                newConfVersion = getVersionFromString(newBConfVer);
             } else {
                 newVersion = getVersionFromString(newVer);
-                newConfVersion = getVersionFromString(newConfVer);
             }
             reader.close();
 
             if(newVersion > oldVersion) {
-                if (newConfVersion > oldVersion) {
-                    newConf = true;
-                    plugin.getLogger().log(Level.WARNING, "Update found with a config change.");
-                    plugin.getLogger().log(Level.WARNING, "Go to http://www.spigotmc.org/resources/bungeeessentials.1488/ to compare and update your config.");
-                }
                 plugin.getLogger().log(Level.INFO, "Update found, downloading...");
-                String dlLink = "https://github.com/Fireflies/BungeeEssentials/releases/download/" + newVer + "/BungeeEssentials.jar";
+                String dlLink = "https://github.com/PantherMan594/BungeeEssentials/releases/download/" + newVer + "/BungeeEssentials.jar";
                 url = new URL(dlLink);
                 con = url.openConnection();
                 InputStream in = con.getInputStream();
@@ -73,18 +63,21 @@ public class Updater {
                 while ((size = in.read(buffer)) != -1) {
                     out.write(buffer, 0, size);
                 }
-
                 out.close();
                 in.close();
                 plugin.getLogger().log(Level.INFO, "Succesfully updated plugin to v" + newVer);
-                plugin.getLogger().log(Level.INFO, "Restart the server to enable changes");
+                plugin.getLogger().log(Level.INFO, "Plugin disabling, restart the server to enable changes!");
+                return true;
             } else {
-                plugin.getLogger().log(Level.INFO, "You are running the latest version of BungeeEssentials!");
+                plugin.getLogger().log(Level.INFO, "You are running the latest version of BungeeEssentials (v" + oldVersion + ")!");
+                updateConfig();
             }
         } catch(IOException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to auto-update, please download from http://www.spigotmc.org/resources/bungeeessentials.1488/", e);
-            plugin.getLogger().log(Level.SEVERE, "Error message: ", e);
+            plugin.getLogger().log(Level.WARNING, "Failed to download update, please update manually from http://www.spigotmc.org/resources/bungeeessentials.1488/");
+            plugin.getLogger().log(Level.WARNING, "Please report this error message: ");
+            e.printStackTrace();
         }
+        return false;
     }
 
     private static int getVersionFromString(String from) {
@@ -93,7 +86,31 @@ public class Updater {
         return result.isEmpty() ? 0 : Integer.parseInt(result);
     }
 
-    public static boolean hasConfigChange() {
-        return newConf;
+    public static void updateConfig() {
+        Configuration config = BungeeEssentials.getInstance().getConfig();
+        Configuration messages = BungeeEssentials.getInstance().getMessages();
+        int oldVersion = getVersionFromString(config.getString("configversion"));
+        final int newVersion = getVersionFromString(plugin.getDescription().getVersion());
+        if (oldVersion == newVersion) {
+            return;
+        }
+        if (oldVersion == 243) {
+            String muteEnabled = messages.getString("mute.enabled");
+            String muteDisabled = messages.getString("mute.disabled");
+            String muteError = messages.getString("mute.error");
+            messages.set("mute.muted.enabled", muteEnabled);
+            messages.set("mute.muted.disabled", muteDisabled);
+            messages.set("mute.muted.error", muteError);
+            messages.set("mute.muter.enabled", "&c{{ PLAYER }} is now muted!");
+            messages.set("mute.muter.disabled", "&a{{ PLAYER }} is no longer muted!");
+            messages.set("mute.muter.error", "&cHey, you can''t mute that player!");
+            oldVersion = 244;
+        }
+        if (oldVersion == 244) {
+            String muterExemptError = messages.getString("mute.muted.error");
+            messages.set("mute.muted.exempt", muterExemptError);
+            messages.set("mute.muted.error", "&7{{ PLAYER }} tried to chat while muted!");
+        }
+        plugin.getLogger().log(Level.INFO, "Config updated. You may edit new values to your liking.");
     }
 }
