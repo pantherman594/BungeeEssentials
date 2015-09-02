@@ -26,7 +26,7 @@ import net.md_5.bungee.config.Configuration;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.channels.FileChannel;
+import java.nio.file.Files;
 import java.util.logging.Level;
 
 public class Updater {
@@ -97,8 +97,12 @@ public class Updater {
             }
         }
         try {
-            copyFile(new File(BungeeEssentials.getInstance().getDataFolder(), "config.yml"), new File(BungeeEssentials.getInstance().getDataFolder(), "config_v" + oldVersion + ".yml"));
-            copyFile(new File(BungeeEssentials.getInstance().getDataFolder(), "messages.yml"), new File(BungeeEssentials.getInstance().getDataFolder(), "messages_v" + oldVersion + ".yml"));
+            File newConf = new File(BungeeEssentials.getInstance().getDataFolder(), "config.yml");
+            File oldConf = new File(BungeeEssentials.getInstance().getDataFolder(), "config_v" + oldVersion + ".yml");
+            File newMess = new File(BungeeEssentials.getInstance().getDataFolder(), "messages.yml");
+            File oldMess = new File(BungeeEssentials.getInstance().getDataFolder(), "messages_v" + oldVersion + ".yml");
+            Files.copy(newConf.toPath(), oldConf.toPath());
+            Files.copy(newMess.toPath(), oldMess.toPath());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -132,27 +136,5 @@ public class Updater {
         String result = from.replace(".", "");
 
         return result.isEmpty() ? 0 : Integer.parseInt(result);
-    }
-
-    public static void copyFile(File sourceFile, File destFile) throws IOException {
-        if (!destFile.exists()) {
-            destFile.createNewFile();
-        }
-
-        FileChannel source = null;
-        FileChannel destination = null;
-
-        try {
-            source = new FileInputStream(sourceFile).getChannel();
-            destination = new FileOutputStream(destFile).getChannel();
-            destination.transferFrom(source, 0, source.size());
-        } finally {
-            if (source != null) {
-                source.close();
-            }
-            if (destination != null) {
-                destination.close();
-            }
-        }
     }
 }
