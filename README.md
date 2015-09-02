@@ -1,16 +1,16 @@
 BungeeEssentials
 ================
 
-[![Build Status](http://ci.cubexmc.net/job/BungeeEssentials/badge/icon)](http://ci.cubexmc.net/job/BungeeEssentials/)
+[![Build Status](http://ci.pantherman594.com/job/BungeeEssentials/badge/icon)](http://ci.pantherman594.com/job/BungeeEssentials/)
 [![Downloads](https://img.shields.io/github/downloads/PantherMan594/BungeeEssentials/latest/total.svg)](https://github.com/PantherMan594/BungeeEssentials/releases/latest)
 [![Issues](https://img.shields.io/github/issues/PantherMan594/BungeeEssentials.svg)](https://github.com/PantherMan594/BungeeEssentials/issues)
 
 Hello and welcome to [BungeeEssentials](http://www.spigotmc.org/resources/bungeeessentials.1488/) by PantherMan594!
-This project was originally created by Fireflies as a port of [The-Zip/LilyEssentials](https://github.com/The-Zip/LilyEssentials) for BungeeCord. Since then, it has gone far beyond just a port, thanks to the awesome suggestions made by the you, community! The latest version of this plugin is always available [here](http://ci.cubexmc.net/job/BungeeEssentials/).
+This project was originally created by Fireflies as a port of [The-Zip/LilyEssentials](https://github.com/The-Zip/LilyEssentials) for BungeeCord. Since then, it has gone far beyond just a port, thanks to the awesome suggestions made by the you, community! The latest version of this plugin is always available [here](http://ci.pantherman594.com/job/BungeeEssentials/lastSuccessfulBuild/artifact/target/BungeeEssentials.jar).
 
 ### Developers
 
-If you know how to code, great! Feel free to add featues or fix bugs via pull requests or use the API to develop your own plugins that hook onto BungeeEssentials!
+If you know how to code, great! Feel free to add features or fix bugs via pull requests or use the API to develop your own plugins that hook onto BungeeEssentials!
 ##### License
 You can use and view the source code for BungeeEssentials, as it has a GNU General Public License (GPL). However, if you distribute anything with the contained code, you must pass down this freedom, i.e. it must also have a GPL license and its recipients must be able to get the source code. The full license and its terms may be viewed [here][license].
 
