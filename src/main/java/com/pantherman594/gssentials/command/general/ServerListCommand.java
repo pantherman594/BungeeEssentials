@@ -18,20 +18,19 @@
 
 package com.pantherman594.gssentials.command.general;
 
-import com.pantherman594.gssentials.BungeeEssentials;
+import com.pantherman594.gssentials.command.BECommand;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.Messenger;
 import com.pantherman594.gssentials.utils.Permissions;
 import net.md_5.bungee.api.*;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Command;
 
 @SuppressWarnings("deprecation")
-public class ServerListCommand extends Command {
+public class ServerListCommand extends BECommand {
 
     public ServerListCommand() {
-        super(BungeeEssentials.ServerList_MAIN, Permissions.General.LIST, BungeeEssentials.ServerList_ALIAS);
+        super("list", Permissions.General.LIST);
     }
 
     @Override

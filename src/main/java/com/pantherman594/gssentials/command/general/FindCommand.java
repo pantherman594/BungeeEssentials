@@ -19,23 +19,22 @@
 package com.pantherman594.gssentials.command.general;
 
 import com.google.common.collect.ImmutableSet;
-import com.pantherman594.gssentials.BungeeEssentials;
+import com.pantherman594.gssentials.command.BECommand;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.Messenger;
 import com.pantherman594.gssentials.utils.Permissions;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @SuppressWarnings("deprecation")
-public class FindCommand extends Command implements TabExecutor {
+public class FindCommand extends BECommand implements TabExecutor {
     public FindCommand() {
-        super(BungeeEssentials.Find_MAIN, Permissions.General.FIND, BungeeEssentials.Find_ALIAS);
+        super("find", Permissions.General.FIND);
     }
 
     @Override
@@ -49,7 +48,7 @@ public class FindCommand extends Command implements TabExecutor {
                 sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
             }
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", BungeeEssentials.Find_MAIN + " <player>"));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <player>"));
         }
     }
 

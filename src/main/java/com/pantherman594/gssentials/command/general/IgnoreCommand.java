@@ -19,22 +19,21 @@
 package com.pantherman594.gssentials.command.general;
 
 import com.google.common.collect.ImmutableSet;
-import com.pantherman594.gssentials.BungeeEssentials;
+import com.pantherman594.gssentials.command.BECommand;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.Messenger;
 import com.pantherman594.gssentials.utils.Permissions;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class IgnoreCommand extends Command implements TabExecutor {
+public class IgnoreCommand extends BECommand implements TabExecutor {
     public IgnoreCommand() {
-        super(BungeeEssentials.Ignore_MAIN, Permissions.General.IGNORE, BungeeEssentials.Ignore_ALIAS);
+        super("ignore", Permissions.General.IGNORE);
     }
 
     @Override
@@ -47,7 +46,7 @@ public class IgnoreCommand extends Command implements TabExecutor {
                     else sender.sendMessage(Dictionary.format(Dictionary.ERROR_IGNORE_SELF));
                 } else sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
             } else {
-                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", BungeeEssentials.Ignore_MAIN + " <player>"));
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <player>"));
             }
         } else {
             sender.sendMessage(Dictionary.colour("&cConsole cannot ignore players (how are you seeing messages in the first place?)"));

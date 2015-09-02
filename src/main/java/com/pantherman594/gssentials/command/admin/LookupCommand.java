@@ -19,18 +19,18 @@
 package com.pantherman594.gssentials.command.admin;
 
 import com.pantherman594.gssentials.BungeeEssentials;
+import com.pantherman594.gssentials.command.BECommand;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.Permissions;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.plugin.Command;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @SuppressWarnings("deprecation")
-public class LookupCommand extends Command {
+public class LookupCommand extends BECommand {
     public LookupCommand() {
-        super(BungeeEssentials.Lookup_MAIN, Permissions.Admin.LOOKUP, BungeeEssentials.Lookup_ALIAS);
+        super("lookup", Permissions.Admin.LOOKUP);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class LookupCommand extends Command {
                 sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_BODY, "PLAYER", match));
             }
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", BungeeEssentials.Lookup_MAIN + " <beginning of name>"));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <beginning of name>"));
         }
     }
 }

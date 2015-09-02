@@ -16,26 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.pantherman594.gssentials.command.admin;
+package com.pantherman594.gssentials.command;
 
 import com.pantherman594.gssentials.BungeeEssentials;
-import com.pantherman594.gssentials.command.BECommand;
-import com.pantherman594.gssentials.utils.Dictionary;
-import com.pantherman594.gssentials.utils.Permissions;
-import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.plugin.Command;
 
-public class ReloadCommand extends BECommand {
-    public ReloadCommand() {
-        super("reload", Permissions.Admin.RELOAD);
-    }
-
-    @SuppressWarnings("deprecation")
-	@Override
-    public void execute(CommandSender sender, String[] args) {
-        if (BungeeEssentials.getInstance().reload()) {
-            sender.sendMessage(Dictionary.colour("&aBungeeEssentials has been reloaded!"));
-        } else {
-            sender.sendMessage(Dictionary.colour("&cUnable to reload BungeeEssentials! :("));
-        }
+/**
+ * Created by David on 9/2/2015.
+ *
+ * @author David
+ */
+public abstract class BECommand extends Command {
+    public BECommand(String name, String permission) {
+        super(BungeeEssentials.getMain(name), permission, BungeeEssentials.getAlias(name));
     }
 }

@@ -18,7 +18,7 @@
 
 package com.pantherman594.gssentials.command.general;
 
-import com.pantherman594.gssentials.BungeeEssentials;
+import com.pantherman594.gssentials.command.BECommand;
 import com.pantherman594.gssentials.event.MessageEvent;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.Messenger;
@@ -26,14 +26,13 @@ import com.pantherman594.gssentials.utils.Permissions;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Command;
 
 import java.util.UUID;
 
 @SuppressWarnings("deprecation")
-public class ReplyCommand extends Command {
+public class ReplyCommand extends BECommand {
     public ReplyCommand() {
-        super(BungeeEssentials.Reply_MAIN, Permissions.General.MESSAGE, BungeeEssentials.Reply_ALIAS);
+        super("reply", Permissions.General.MESSAGE);
     }
 
     @Override
@@ -49,7 +48,7 @@ public class ReplyCommand extends Command {
                 ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(uuid);
                 ProxyServer.getInstance().getPluginManager().callEvent(new MessageEvent(sender, recipient, Dictionary.combine(args)));
             } else {
-                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", BungeeEssentials.Reply_MAIN + " <message>"));
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <message>"));
             }
         } else {
             sender.sendMessage(Dictionary.colour("&cSorry, only players can reply to messages."));

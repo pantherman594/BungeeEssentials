@@ -18,7 +18,6 @@
 
 package com.pantherman594.gssentials.command.admin;
 
-import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.command.ServerSpecificCommand;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.Messenger;
@@ -29,7 +28,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 @SuppressWarnings("deprecation")
 public class HideCommand extends ServerSpecificCommand {
     public HideCommand() {
-        super(BungeeEssentials.Hide_MAIN, Permissions.Admin.HIDE, BungeeEssentials.Hide_ALIAS);
+        super("hide", Permissions.Admin.HIDE);
     }
 
     @Override
@@ -43,6 +42,8 @@ public class HideCommand extends ServerSpecificCommand {
                 } else if (args[0].equals("off")) {
                     Messenger.disableHidden(player);
                     player.sendMessage(Dictionary.format(Dictionary.HIDE_DISABLED));
+                } else {
+                    sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " [on|off]"));
                 }
             } else {
                 if (Messenger.toggleHidden(player)) {

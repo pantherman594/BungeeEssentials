@@ -18,7 +18,6 @@
 
 package com.pantherman594.gssentials.command.general;
 
-import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.command.ServerSpecificCommand;
 import com.pantherman594.gssentials.event.GlobalChatEvent;
 import com.pantherman594.gssentials.utils.Dictionary;
@@ -31,7 +30,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 @SuppressWarnings("deprecation")
 public class ChatCommand extends ServerSpecificCommand {
     public ChatCommand() {
-        super(BungeeEssentials.Chat_MAIN, Permissions.General.CHAT, BungeeEssentials.Chat_ALIAS);
+        super("chat", Permissions.General.CHAT);
     }
 
     @Override
@@ -74,7 +73,7 @@ public class ChatCommand extends ServerSpecificCommand {
                     player.sendMessage(Dictionary.format(Dictionary.GCHAT_DISABLED));
                 }
             } else {
-                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", BungeeEssentials.Chat_MAIN + " [on|off]"));
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " [on|off|msg]"));
             }
         }
     }

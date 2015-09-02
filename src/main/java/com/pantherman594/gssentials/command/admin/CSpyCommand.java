@@ -18,7 +18,6 @@
 
 package com.pantherman594.gssentials.command.admin;
 
-import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.command.ServerSpecificCommand;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.Messenger;
@@ -29,7 +28,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 @SuppressWarnings("deprecation")
 public class CSpyCommand extends ServerSpecificCommand {
     public CSpyCommand() {
-        super(BungeeEssentials.CSpy_MAIN, Permissions.Admin.SPY_COMMAND, BungeeEssentials.CSpy_ALIAS);
+        super("commandspy", Permissions.Admin.SPY_COMMAND);
     }
 
     @Override
@@ -43,6 +42,8 @@ public class CSpyCommand extends ServerSpecificCommand {
                 } else if (args[0].equals("off")) {
                     Messenger.disableCSpy(player);
                     player.sendMessage(Dictionary.format(Dictionary.CSPY_DISABLED));
+                } else {
+                    sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " [on|off]"));
                 }
             } else {
                 if (Messenger.toggleCSpy(player)) {

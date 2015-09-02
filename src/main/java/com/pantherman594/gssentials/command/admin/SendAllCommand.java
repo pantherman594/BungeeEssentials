@@ -19,7 +19,7 @@
 package com.pantherman594.gssentials.command.admin;
 
 import com.google.common.collect.ImmutableSet;
-import com.pantherman594.gssentials.BungeeEssentials;
+import com.pantherman594.gssentials.command.BECommand;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.Permissions;
 import net.md_5.bungee.api.Callback;
@@ -27,7 +27,6 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
 import java.util.Collection;
@@ -35,21 +34,21 @@ import java.util.HashSet;
 import java.util.Set;
 
 @SuppressWarnings("deprecation")
-public class SendAllCommand extends Command implements TabExecutor {
+public class SendAllCommand extends BECommand implements TabExecutor {
     public SendAllCommand() {
-        super(BungeeEssentials.SendAll_MAIN, Permissions.Admin.SENDALL, BungeeEssentials.SendAll_ALIAS);
+        super("sendall", Permissions.Admin.SENDALL);
     }
 
     @Override
     public void execute(final CommandSender sender, String[] args) {
-        ServerInfo sInfo = ProxyServer.getInstance().getServerInfo(args[0]);
-        Collection<ProxiedPlayer> players = ProxyServer.getInstance().getPlayers();
-        if (args.length > 1) {
-            sInfo = ProxyServer.getInstance().getServerInfo(args[1]);
-            players = ProxyServer.getInstance().getServerInfo(args[0]).getPlayers();
-        }
-        final ServerInfo info = sInfo;
         if (args.length > 0) {
+            ServerInfo sInfo = ProxyServer.getInstance().getServerInfo(args[0]);
+            Collection<ProxiedPlayer> players = ProxyServer.getInstance().getPlayers();
+            if (args.length > 1) {
+                sInfo = ProxyServer.getInstance().getServerInfo(args[1]);
+                players = ProxyServer.getInstance().getServerInfo(args[0]).getPlayers();
+            }
+            final ServerInfo info = sInfo;
             for (final ProxiedPlayer player : players) {
                 player.connect(info, new Callback<Boolean>() {
                     @Override
@@ -61,7 +60,7 @@ public class SendAllCommand extends Command implements TabExecutor {
                 });
             }
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", BungeeEssentials.SendAll_MAIN + " [from server] <to server>"));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " [fromServer] <toServer>"));
         }
     }
 

@@ -18,18 +18,17 @@
 
 package com.pantherman594.gssentials.command.admin;
 
-import com.pantherman594.gssentials.BungeeEssentials;
+import com.pantherman594.gssentials.command.BECommand;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.Messenger;
 import com.pantherman594.gssentials.utils.Permissions;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Command;
 
-public class MuteCommand extends Command {
+public class MuteCommand extends BECommand {
     public MuteCommand() {
-        super(BungeeEssentials.Mute_MAIN, Permissions.Admin.MUTE, BungeeEssentials.Mute_ALIAS);
+        super("mute", Permissions.Admin.MUTE);
     }
 
     @Override
@@ -58,7 +57,7 @@ public class MuteCommand extends Command {
                 }
             }
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", BungeeEssentials.Mute_MAIN + " <player>"));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <player>"));
         }
     }
 }

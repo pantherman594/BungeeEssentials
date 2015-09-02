@@ -19,7 +19,7 @@
 package com.pantherman594.gssentials.command.general;
 
 import com.google.common.collect.ImmutableSet;
-import com.pantherman594.gssentials.BungeeEssentials;
+import com.pantherman594.gssentials.command.BECommand;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.Messenger;
 import com.pantherman594.gssentials.utils.Permissions;
@@ -28,23 +28,22 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @SuppressWarnings("deprecation")
-public class JoinCommand extends Command implements TabExecutor {
+public class JoinCommand extends BECommand implements TabExecutor {
     public JoinCommand() {
-        super(BungeeEssentials.Join_MAIN, Permissions.General.JOIN, BungeeEssentials.Join_ALIAS);
+        super("join", Permissions.General.JOIN);
     }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (sender instanceof ProxiedPlayer) {
             if (args == null || args.length < 1) {
-                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", BungeeEssentials.Join_MAIN + " <player>"));
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <player>"));
                 return;
             }
 

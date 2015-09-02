@@ -22,7 +22,6 @@ import com.google.common.base.Preconditions;
 import com.pantherman594.gssentials.aliases.AliasManager;
 import com.pantherman594.gssentials.announcement.AnnouncementManager;
 import com.pantherman594.gssentials.command.admin.*;
-import com.pantherman594.gssentials.command.admin.ChatCommand;
 import com.pantherman594.gssentials.command.general.*;
 import com.pantherman594.gssentials.event.PlayerListener;
 import com.pantherman594.gssentials.integration.IntegrationProvider;
@@ -43,47 +42,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 public class BungeeEssentials extends Plugin {
-    public static String StaffChat_MAIN;
-    public static String Chat_MAIN;
-    public static String Alert_MAIN;
-    public static String Find_MAIN;
-    public static String Hide_MAIN;
-    public static String Join_MAIN;
-    public static String ServerList_MAIN;
-    public static String Message_MAIN;
-    public static String Reply_MAIN;
-    public static String Send_MAIN;
-    public static String SendAll_MAIN;
-    public static String Slap_MAIN;
-    public static String Spy_MAIN;
-    public static String CSpy_MAIN;
-    public static String Reload_MAIN;
-    public static String Lookup_MAIN;
-    public static String Ignore_MAIN;
-    public static String Mute_MAIN;
-    public static String[] StaffChat_ALIAS;
-    public static String[] Chat_ALIAS;
-    public static String[] Alert_ALIAS;
-    public static String[] Find_ALIAS;
-    public static String[] Hide_ALIAS;
-    public static String[] Join_ALIAS;
-    public static String[] ServerList_ALIAS;
-    public static String[] Message_ALIAS;
-    public static String[] Reply_ALIAS;
-    public static String[] Send_ALIAS;
-    public static String[] SendAll_ALIAS;
-    public static String[] Slap_ALIAS;
-    public static String[] Spy_ALIAS;
-    public static String[] CSpy_ALIAS;
-    public static String[] Reload_ALIAS;
-    public static String[] Lookup_ALIAS;
-    public static String[] Ignore_ALIAS;
-    public static String[] Mute_ALIAS;
+    public static HashMap<String, String> mainList = new HashMap<>();
+    public static HashMap<String, String[]> aliasList = new HashMap<>();
     private static BungeeEssentials instance;
     private Configuration config = null;
     private Configuration messages = null;
@@ -108,6 +74,14 @@ public class BungeeEssentials extends Plugin {
 
     public static BungeeEssentials getInstance() {
         return instance;
+    }
+
+    public static String getMain(String key) {
+        return mainList.get(key);
+    }
+
+    public static String[] getAlias(String key) {
+        return aliasList.get(key);
     }
 
     @Override
@@ -202,191 +176,257 @@ public class BungeeEssentials extends Plugin {
         List<String> BASE;
         String[] TEMP_ALIAS;
         List<String> enable = config.getStringList("enable");
-        BASE = config.getStringList("commands.reload");
-        if (BASE.toString().equals("[]")) {
-            getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
-            getLogger().log(Level.WARNING, "Falling back to default value for key commands.reload");
-            BASE = Arrays.asList("gssreload","");
-        }
-        Reload_MAIN = BASE.get(0);
-        TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
-        Reload_ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
-        if (enable.contains("staffchat")) {
-            BASE = config.getStringList("commands.staffchat");
-            if (BASE.toString().equals("[]")) {
-                getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
-                getLogger().log(Level.WARNING, "Falling back to default value for key commands.staffchat");
-                BASE = Arrays.asList("staffchat","admin","a","sc");
-            }
-            StaffChat_MAIN = BASE.get(0);
-            TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
-            StaffChat_ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
-            register(new ChatCommand());
-            commands++;
-        }
-        if (enable.contains("chat")) {
-            BASE = config.getStringList("commands.chat");
-            if (BASE.toString().equals("[]")) {
-                getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
-                getLogger().log(Level.WARNING, "Falling back to default value for key commands.chat");
-                BASE = Arrays.asList("g", "global");
-            }
-            Chat_MAIN = BASE.get(0);
-            TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
-            Chat_ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
-            register(new ChatCommand());
-            commands++;
-        }
         if (enable.contains("alert")) {
             BASE = config.getStringList("commands.alert");
-            if (BASE.toString().equals("[]")) {
+            if (BASE.isEmpty()) {
                 getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
                 getLogger().log(Level.WARNING, "Falling back to default value for key commands.alert");
-                BASE = Arrays.asList("alert","broadcast");
+                BASE = Arrays.asList("alert", "broadcast");
             }
-            Alert_MAIN = BASE.get(0);
+            mainList.put("alert", BASE.get(0));
             TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
-            Alert_ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
+            aliasList.put("alert", Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length));
             register(new AlertCommand());
             commands++;
         }
-        if (enable.contains("find")) {
-            BASE = config.getStringList("commands.find");
-            if (BASE.toString().equals("[]")) {
+        boolean announcement = enable.contains("announcement");
+        if (announcement) {
+            AnnouncementManager.load();
+            getLogger().log(Level.INFO, "Enabled announcements");
+        }
+        commandSpy = enable.contains("commandspy");
+        if (commandSpy) {
+            BASE = config.getStringList("commands.commandspy");
+            if (BASE.isEmpty()) {
                 getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
-                getLogger().log(Level.WARNING, "Falling back to default value for key commands.find");
-                BASE = Arrays.asList("find","whereis");
+                getLogger().log(Level.WARNING, "Falling back to default value for key commands.commandspy");
+                BASE = Arrays.asList("commandspy", "cspy");
             }
-            Find_MAIN = BASE.get(0);
+            mainList.put("commandspy", BASE.get(0));
             TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
-            Find_ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
-            register(new FindCommand());
+            aliasList.put("commandspy", Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length));
+            register(new CSpyCommand());
             commands++;
         }
         if (enable.contains("hide")) {
             BASE = config.getStringList("commands.hide");
-            if (BASE.toString().equals("[]")) {
+            if (BASE.isEmpty()) {
                 getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
                 getLogger().log(Level.WARNING, "Falling back to default value for key commands.hide");
-                BASE = Arrays.asList("hide","");
+                BASE = Arrays.asList("hide", "");
             }
-            Hide_MAIN = BASE.get(0);
+            mainList.put("hide", BASE.get(0));
             TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
-            Hide_ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
+            aliasList.put("hide", Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length));
             register(new HideCommand());
+            commands++;
+        }
+        joinAnnounce = enable.contains("joinannounce");
+        if (enable.contains("lookup")) {
+            BASE = config.getStringList("commands.lookup");
+            if (BASE.isEmpty()) {
+                getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
+                getLogger().log(Level.WARNING, "Falling back to default value for key commands.lookup");
+                BASE = Arrays.asList("lookup", "");
+            }
+            mainList.put("lookup", BASE.get(0));
+            TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
+            aliasList.put("lookup", Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length));
+            register(new LookupCommand());
+            commands++;
+        }
+        mute = enable.contains("mute");
+        if (mute) {
+            BASE = config.getStringList("commands.mute");
+            if (BASE.isEmpty()) {
+                getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
+                getLogger().log(Level.WARNING, "Falling back to default value for key commands.mute");
+                BASE = Arrays.asList("bmute", "");
+            }
+            mainList.put("mute", BASE.get(0));
+            TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
+            aliasList.put("mute", Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length));
+            register(new MuteCommand());
+            commands++;
+        }
+        if (enable.contains("send")) {
+            BASE = config.getStringList("commands.send");
+            if (BASE.isEmpty()) {
+                getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
+                getLogger().log(Level.WARNING, "Falling back to default value for key commands.send");
+                BASE = Arrays.asList("send", "");
+            }
+            mainList.put("send", BASE.get(0));
+            TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
+            aliasList.put("send", Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length));
+            BASE = config.getStringList("commands.sendall");
+            if (BASE.isEmpty()) {
+                getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
+                getLogger().log(Level.WARNING, "Falling back to default value for key commands.sendall");
+                BASE = Arrays.asList("sendall", "");
+            }
+            mainList.put("sendall", BASE.get(0));
+            TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
+            aliasList.put("sendall", Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length));
+            register(new SendCommand());
+            register(new SendAllCommand());
+            commands += 2;
+        }
+        if (enable.contains("spy")) {
+            BASE = config.getStringList("commands.spy");
+            if (BASE.isEmpty()) {
+                getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
+                getLogger().log(Level.WARNING, "Falling back to default value for key commands.spy");
+                BASE = Arrays.asList("spy", "socialspy");
+            }
+            mainList.put("spy", BASE.get(0));
+            TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
+            aliasList.put("spy", Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length));
+            register(new SpyCommand());
+            commands++;
+        }
+        if (enable.contains("staffchat")) {
+            BASE = config.getStringList("commands.staffchat");
+            if (BASE.isEmpty()) {
+                getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
+                getLogger().log(Level.WARNING, "Falling back to default value for key commands.staffchat");
+                BASE = Arrays.asList("staffchat","admin","a","sc");
+            }
+            mainList.put("staffchat", BASE.get(0));
+            TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
+            aliasList.put("staffchat", Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length));
+            register(new StaffChatCommand());
+            commands++;
+        }
+        if (enable.contains("chat")) {
+            BASE = config.getStringList("commands.chat");
+            if (BASE.isEmpty()) {
+                getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
+                getLogger().log(Level.WARNING, "Falling back to default value for key commands.chat");
+                BASE = Arrays.asList("g", "global");
+            }
+            mainList.put("chat", BASE.get(0));
+            TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
+            aliasList.put("chat", Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length));
+            register(new ChatCommand());
+            commands++;
+        }
+        if (enable.contains("find")) {
+            BASE = config.getStringList("commands.find");
+            if (BASE.isEmpty()) {
+                getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
+                getLogger().log(Level.WARNING, "Falling back to default value for key commands.find");
+                BASE = Arrays.asList("find","whereis");
+            }
+            mainList.put("find", BASE.get(0));
+            TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
+            aliasList.put("find", Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length));
+            register(new FindCommand());
+            commands++;
+        }
+        ignore = enable.contains("ignore");
+        if (ignore) {
+            BASE = config.getStringList("commands.ignore");
+            if (BASE.isEmpty()) {
+                getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
+                getLogger().log(Level.WARNING, "Falling back to default value for key commands.ignore");
+                BASE = Arrays.asList("bignore", "");
+            }
+            mainList.put("ignore", BASE.get(0));
+            TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
+            aliasList.put("ignore", Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length));
+            register(new IgnoreCommand());
             commands++;
         }
         if(enable.contains("join")) {
             BASE = config.getStringList("commands.join");
-            if (BASE.toString().equals("[]")) {
+            if (BASE.isEmpty()) {
                 getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
                 getLogger().log(Level.WARNING, "Falling back to default value for key commands.join");
                 BASE = Arrays.asList("join","");
             }
-            Join_MAIN = BASE.get(0);
+            mainList.put("join", BASE.get(0));
             TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
-            Join_ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
+            aliasList.put("join", Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length));
             register(new JoinCommand());
             commands++;
         }
         if (enable.contains("list")) {
             BASE = config.getStringList("commands.list");
-            if (BASE.toString().equals("[]")) {
+            if (BASE.isEmpty()) {
                 getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
                 getLogger().log(Level.WARNING, "Falling back to default value for key commands.list");
                 BASE = Arrays.asList("glist","servers","serverlist");
             }
-            ServerList_MAIN = BASE.get(0);
+            mainList.put("list", BASE.get(0));
             TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
-            ServerList_ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
+            aliasList.put("list", Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length));
             register(new ServerListCommand());
             commands++;
         }
         if (enable.contains("message")) {
             BASE = config.getStringList("commands.message");
-            if (BASE.toString().equals("[]")) {
+            if (BASE.isEmpty()) {
                 getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
                 getLogger().log(Level.WARNING, "Falling back to default value for key commands.message");
                 BASE = Arrays.asList("message","msg","m","pm","t","tell","w","whisper");
             }
-            Message_MAIN = BASE.get(0);
+            mainList.put("message", BASE.get(0));
             TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
-            Message_ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
+            aliasList.put("message", Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length));
             BASE = config.getStringList("commands.reply");
-            if (BASE.toString().equals("[]")) {
+            if (BASE.isEmpty()) {
                 getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
                 getLogger().log(Level.WARNING, "Falling back to default value for key commands.reply");
                 BASE = Arrays.asList("reply","r");
             }
-            Reply_MAIN = BASE.get(0);
+            mainList.put("reply", BASE.get(0));
             TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
-            Reply_ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
+            aliasList.put("reply", Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length));
             register(new MessageCommand());
             register(new ReplyCommand());
             commands += 2;
         }
-        if (enable.contains("send")) {
-            BASE = config.getStringList("commands.send");
-            if (BASE.toString().equals("[]")) {
-                getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
-                getLogger().log(Level.WARNING, "Falling back to default value for key commands.send");
-                BASE = Arrays.asList("send","");
-            }
-            Send_MAIN = BASE.get(0);
-            TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
-            Send_ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
-            BASE = config.getStringList("commands.sendall");
-            if (BASE.toString().equals("[]")) {
-                getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
-                getLogger().log(Level.WARNING, "Falling back to default value for key commands.sendall");
-                BASE = Arrays.asList("sendall","");
-            }
-            SendAll_MAIN = BASE.get(0);
-            TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
-            SendAll_ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
-            register(new SendCommand());
-            register(new SendAllCommand());
-            commands += 2;
-        }
         if (enable.contains("slap")) {
             BASE = config.getStringList("commands.slap");
-            if (BASE.toString().equals("[]")) {
+            if (BASE.isEmpty()) {
                 getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
                 getLogger().log(Level.WARNING, "Falling back to default value for key commands.slap");
                 BASE = Arrays.asList("slap","uslap","smack");
             }
-            Slap_MAIN = BASE.get(0);
+            mainList.put("slap", BASE.get(0));
             TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
-            Slap_ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
+            aliasList.put("slap", Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length));
             register(new SlapCommand());
             commands++;
         }
-        if (enable.contains("spy")) {
-            BASE = config.getStringList("commands.spy");
-            if (BASE.toString().equals("[]")) {
-                getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
-                getLogger().log(Level.WARNING, "Falling back to default value for key commands.spy");
-                BASE = Arrays.asList("spy","socialspy");
-            }
-            Spy_MAIN = BASE.get(0);
-            TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
-            Spy_ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
-            register(new SpyCommand());
-            commands++;
+        boolean aliases = enable.contains("aliases");
+        if (aliases) {
+            AliasManager.load();
+            getLogger().log(Level.INFO, "Enabled aliases");
         }
-        if (enable.contains("commandspy")) {
-            BASE = config.getStringList("commands.commandspy");
-            if (BASE.toString().equals("[]")) {
-                getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
-                getLogger().log(Level.WARNING, "Falling back to default value for key commands.commandspy");
-                BASE = Arrays.asList("commandspy","cspy");
-            }
-            CSpy_MAIN = BASE.get(0);
-            TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
-            CSpy_ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
-            register(new CSpyCommand());
-            commands++;
+        shouldClean = enable.contains("clean");
+        useLog = enable.contains("log");
+        logAll = enable.contains("fulllog");
+        if (logAll) {
+            useLog = true;
         }
+        if (useLog) {
+            if (!Log.setup()) {
+                getLogger().log(Level.WARNING, "Error enabling the chat logger!");
+            }
+        }
+        watchMultiLog = enable.contains("multilog");
+        BASE = config.getStringList("commands.reload");
+        if (BASE.isEmpty()) {
+            getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
+            getLogger().log(Level.WARNING, "Falling back to default value for key commands.reload");
+            BASE = Arrays.asList("gssreload", "");
+        }
+        mainList.put("reload", BASE.get(0));
+        TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
+        aliasList.put("reload", Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length));
+        register(new ReloadCommand());
         if (enable.contains("rules") || enable.contains("rules-chat")) {
             rules = enable.contains("rules");
             chatRules = enable.contains("rules-chat");
@@ -398,24 +438,6 @@ public class BungeeEssentials extends Plugin {
                 getLogger().log(Level.INFO, "Enabled rules for public chat");
             }
         }
-        register(new ReloadCommand());
-
-        if (enable.contains("spy") || enable.contains("hide")) {
-            ProxyServer.getInstance().getPluginManager().registerListener(this, new Messenger());
-        }
-
-        if (enable.contains("spam") || enable.contains("rules") || enable.contains("multilog") || enable.contains("commandspy")) {
-            ProxyServer.getInstance().getPluginManager().registerListener(this, new PlayerListener());
-        }
-
-        commandSpy = enable.contains("commandspy");
-        useLog = enable.contains("log");
-        logAll = enable.contains("fulllog");
-        if (useLog) {
-            if (!Log.setup()) {
-                getLogger().log(Level.WARNING, "Error enabling the chat logger!");
-            }
-        }
         spam = enable.contains("spam");
         if (spam) {
             getLogger().log(Level.INFO, "Enabled spam filter for public chat");
@@ -424,60 +446,13 @@ public class BungeeEssentials extends Plugin {
         if (chatSpam) {
             getLogger().log(Level.INFO, "Enabled spam filter for private chat");
         }
-        boolean announcement = enable.contains("announcement");
-        if (announcement) {
-            AnnouncementManager.load();
-            getLogger().log(Level.INFO, "Enabled announcements");
+        if (enable.contains("spy") || enable.contains("hide")) {
+            ProxyServer.getInstance().getPluginManager().registerListener(this, new Messenger());
         }
-        boolean aliases = enable.contains("aliases");
-        if (aliases) {
-            AliasManager.load();
-            getLogger().log(Level.INFO, "Enabled aliases");
+
+        if (enable.contains("spam") || enable.contains("rules") || enable.contains("multilog") || enable.contains("commandspy") || enable.contains("fulllog")) {
+            ProxyServer.getInstance().getPluginManager().registerListener(this, new PlayerListener());
         }
-        watchMultiLog = enable.contains("multilog");
-        shouldClean = enable.contains("clean");
-        if (enable.contains("lookup")) {
-            BASE = config.getStringList("commands.lookup");
-            if (BASE.toString().equals("[]")) {
-                getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
-                getLogger().log(Level.WARNING, "Falling back to default value for key commands.lookup");
-                BASE = Arrays.asList("lookup","");
-            }
-            Lookup_MAIN = BASE.get(0);
-            TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
-            Lookup_ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
-            register(new LookupCommand());
-            commands++;
-        }
-        ignore = enable.contains("ignore");
-        if (ignore) {
-            BASE = config.getStringList("commands.ignore");
-            if (BASE.toString().equals("[]")) {
-                getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
-                getLogger().log(Level.WARNING, "Falling back to default value for key commands.ignore");
-                BASE = Arrays.asList("ignore", "");
-            }
-            Ignore_MAIN = BASE.get(0);
-            TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
-            Ignore_ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
-            register(new IgnoreCommand());
-            commands++;
-        }
-        mute = enable.contains("mute");
-        if (mute) {
-            BASE = config.getStringList("commands.mute");
-            if (BASE.toString().equals("[]")) {
-                getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
-                getLogger().log(Level.WARNING, "Falling back to default value for key commands.mute");
-                BASE = Arrays.asList("mute", "");
-            }
-            Mute_MAIN = BASE.get(0);
-            TEMP_ALIAS = BASE.toArray(new String[BASE.size()]);
-            Mute_ALIAS = Arrays.copyOfRange(TEMP_ALIAS, 1, TEMP_ALIAS.length);
-            register(new MuteCommand());
-            commands++;
-        }
-        joinAnnounce = enable.contains("joinannounce");
         getLogger().log(Level.INFO, "Registered {0} commands successfully", commands);
         setupIntegration();
         return true;

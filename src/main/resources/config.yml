@@ -1,33 +1,53 @@
 enable:
-  - staffchat
   - alert
-  - find
+  - announcement
+  - commandspy
   - hide
-  - join
-  - list
-  - log
-  - message
-  # - multilog
-  - rules
-  - rules-chat
+  - joinannounce
+  - lookup
+  - mute
   - send
   - sendall
+  - spy
+  - staffchat
+  - chat
+  - find
+  - ignore
+  - join
+  - list
+  - message
+  - slap
+  - aliases
+  #- betaupdates
+  #- clean
+  - fulllog
+  - log
+  #- multilog
+  - rules
+  - rules-chat
   - spam
   - spam-chat
-  - slap
-  - spy
-  - commandspy
-  - joinannounce
-  - announcement
   - updater
-  - aliases
-  - chat
-  - lookup
-  - ignore
-  - mute
-  # - clean
-  # - betaupdates
 commands:
+  alert:
+    - 'alert'
+    - 'broadcast'
+  commandspy:
+    - 'commandspy'
+    - 'cspy'
+  hide:
+    - 'hide'
+  lookup:
+    - 'lookup'
+  mute:
+    - 'bmute'
+  send:
+    - 'send'
+  sendall:
+    - 'sendall'
+  spy:
+    - 'spy'
+    - 'socialspy'
   staffchat:
     - 'staffchat'
     - 'admin'
@@ -36,14 +56,11 @@ commands:
   chat:
     - 'g'
     - 'global'
-  alert:
-    - 'alert'
-    - 'broadcast'
   find:
     - 'find'
     - 'whereis'
-  hide:
-    - 'hide'
+  ignore:
+    - 'bignore'
   join:
     - 'join'
   list:
@@ -62,28 +79,12 @@ commands:
   reply:
     - 'reply'
     - 'r'
-  send:
-    - 'send'
-  sendall:
-    - 'sendall'
   slap:
     - 'slap'
     - 'uslap'
     - 'smack'
-  spy:
-    - 'spy'
-    - 'socialspy'
-  commandspy:
-    - 'commandspy'
-    - 'cspy'
   reload:
     - 'gssreload'
-  lookup:
-    - 'lookup'
-  ignore:
-    - 'bignore'
-  mute:
-    - 'bmute'
 aliases:
   - alias: 'greet'
     commands:
@@ -94,6 +95,4 @@ aliases:
       - 'spy'
       - 'cspy'
       - 'hide'
-
-#DO NOT CHANGE!
-configversion: '2.4.4'
+configversion: 2.4.5

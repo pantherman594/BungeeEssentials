@@ -18,19 +18,18 @@
 
 package com.pantherman594.gssentials.command.admin;
 
-import com.pantherman594.gssentials.BungeeEssentials;
+import com.pantherman594.gssentials.command.BECommand;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.Permissions;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Command;
 
 @SuppressWarnings("deprecation")
-public class AlertCommand extends Command {
+public class AlertCommand extends BECommand {
 
     public AlertCommand() {
-        super(BungeeEssentials.Alert_MAIN, Permissions.Admin.ALERT, BungeeEssentials.Alert_ALIAS);
+        super("alert", Permissions.Admin.ALERT);
     }
 
     @Override
@@ -42,7 +41,7 @@ public class AlertCommand extends Command {
             }
             ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_ALERT, "SENDER", sender.getName(), "SERVER", server, "MESSAGE", Dictionary.combine(args)));
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", BungeeEssentials.Alert_MAIN + " <message>"));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <msg>"));
         }
     }
 

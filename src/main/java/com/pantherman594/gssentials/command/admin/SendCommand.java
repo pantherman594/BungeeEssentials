@@ -37,7 +37,7 @@ import java.util.Set;
 @SuppressWarnings("deprecation")
 public class SendCommand extends ServerSpecificCommand implements TabExecutor {
     public SendCommand() {
-        super(BungeeEssentials.Send_MAIN, Permissions.Admin.SEND, BungeeEssentials.Send_ALIAS);
+        super(BungeeEssentials.getMain("send"), Permissions.Admin.SEND);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class SendCommand extends ServerSpecificCommand implements TabExecutor {
                 sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
             }
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", BungeeEssentials.Send_MAIN + " <player> <server>"));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <player> <server>"));
         }
     }
 

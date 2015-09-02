@@ -21,13 +21,12 @@ package com.pantherman594.gssentials.command;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Command;
 
-public abstract class ServerSpecificCommand extends Command {
+public abstract class ServerSpecificCommand extends BECommand {
     private final String permission;
 
-    public ServerSpecificCommand(String name, String permission, String... aliases) {
-        super(name, "", aliases);
+    public ServerSpecificCommand(String name, String permission) {
+        super(name, "");
         this.permission = permission;
     }
 

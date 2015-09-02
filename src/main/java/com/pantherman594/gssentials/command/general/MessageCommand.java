@@ -19,7 +19,7 @@
 package com.pantherman594.gssentials.command.general;
 
 import com.google.common.collect.ImmutableSet;
-import com.pantherman594.gssentials.BungeeEssentials;
+import com.pantherman594.gssentials.command.BECommand;
 import com.pantherman594.gssentials.event.MessageEvent;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.Messenger;
@@ -27,16 +27,15 @@ import com.pantherman594.gssentials.utils.Permissions;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @SuppressWarnings("deprecation")
-public class MessageCommand extends Command implements TabExecutor {
+public class MessageCommand extends BECommand implements TabExecutor {
     public MessageCommand() {
-        super(BungeeEssentials.Message_MAIN, Permissions.General.MESSAGE, BungeeEssentials.Message_ALIAS);
+        super("message", Permissions.General.MESSAGE);
     }
 
     @Override
@@ -46,7 +45,7 @@ public class MessageCommand extends Command implements TabExecutor {
                 ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(args[0]);
                 ProxyServer.getInstance().getPluginManager().callEvent(new MessageEvent(sender, recipient, Dictionary.combine(0, args)));
             } else {
-                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", BungeeEssentials.Message_MAIN + " <player> <message>"));
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <player> <message>"));
             }
         } else {
             sender.sendMessage(Dictionary.colour("&cSorry, only players can send messages."));
