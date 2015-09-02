@@ -94,7 +94,7 @@ public class Updater {
         if (oldVersion == newVersion) {
             return;
         }
-        if (oldVersion == 243) {
+        if (oldVersion <= 243) {
             String muteEnabled = messages.getString("mute.enabled");
             String muteDisabled = messages.getString("mute.disabled");
             String muteError = messages.getString("mute.error");
