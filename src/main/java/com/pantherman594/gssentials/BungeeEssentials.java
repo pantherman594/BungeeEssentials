@@ -553,6 +553,22 @@ public class BungeeEssentials extends Plugin {
         return this.players;
     }
 
+    public void saveMainConfig() {
+        try {
+            ConfigurationProvider.getProvider(YamlConfiguration.class).save(getConfig(), configFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void saveMessagesConfig() {
+        try {
+            ConfigurationProvider.getProvider(YamlConfiguration.class).save(getMessages(), messageFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void savePlayerConfig(String player) {
         try {
             this.players = ConfigurationProvider.getProvider(YamlConfiguration.class).load(playerFile);

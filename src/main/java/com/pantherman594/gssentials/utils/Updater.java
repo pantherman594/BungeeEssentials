@@ -110,7 +110,10 @@ public class Updater {
             String muterExemptError = messages.getString("mute.muted.error");
             messages.set("mute.muted.exempt", muterExemptError);
             messages.set("mute.muted.error", "&7{{ PLAYER }} tried to chat while muted!");
+            config.set("configversion", "2.4.5");
         }
+        BungeeEssentials.getInstance().saveMainConfig();
+        BungeeEssentials.getInstance().saveMessagesConfig();
         plugin.getLogger().log(Level.INFO, "Config updated. You may edit new values to your liking.");
     }
 }
