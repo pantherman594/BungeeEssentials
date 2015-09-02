@@ -94,7 +94,14 @@ public class Updater {
         if (oldVersion == newVersion) {
             return;
         }
-        if (oldVersion <= 243) {
+        if (oldVersion == 0) {
+            if (messages.getString("mute.muter.error") != null) {
+                oldVersion = 244;
+            } else {
+                oldVersion = 243;
+            }
+        }
+        if (oldVersion == 243) {
             String muteEnabled = messages.getString("mute.enabled");
             String muteDisabled = messages.getString("mute.disabled");
             String muteError = messages.getString("mute.error");
@@ -103,13 +110,13 @@ public class Updater {
             messages.set("mute.muted.error", muteError);
             messages.set("mute.muter.enabled", "&c{{ PLAYER }} is now muted!");
             messages.set("mute.muter.disabled", "&a{{ PLAYER }} is no longer muted!");
-            messages.set("mute.muter.error", "&cHey, you can''t mute that player!");
+            messages.set("mute.muter.error", "&cHey, you can't mute that player!");
             oldVersion = 244;
         }
         if (oldVersion == 244) {
-            String muterExemptError = messages.getString("mute.muted.error");
-            messages.set("mute.muted.exempt", muterExemptError);
-            messages.set("mute.muted.error", "&7{{ PLAYER }} tried to chat while muted!");
+            String muterExemptError = messages.getString("mute.muter.error");
+            messages.set("mute.muter.exempt", muterExemptError);
+            messages.set("mute.muter.error", "&7{{ PLAYER }} tried to chat while muted!");
             config.set("configversion", "2.4.5");
         }
         BungeeEssentials.getInstance().saveMainConfig();
