@@ -26,6 +26,7 @@ import net.md_5.bungee.config.Configuration;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.channels.FileChannel;
 import java.util.logging.Level;
 
 public class Updater {
@@ -80,12 +81,6 @@ public class Updater {
         return false;
     }
 
-    private static int getVersionFromString(String from) {
-        String result = from.replace(".", "");
-
-        return result.isEmpty() ? 0 : Integer.parseInt(result);
-    }
-
     public static void updateConfig() {
         Configuration config = BungeeEssentials.getInstance().getConfig();
         Configuration messages = BungeeEssentials.getInstance().getMessages();
@@ -95,16 +90,25 @@ public class Updater {
             return;
         }
         if (oldVersion == 0) {
-            if (messages.getString("mute.muter.error") != null) {
+            if (!messages.getString("mute.muter.error").equals("")) {
                 oldVersion = 244;
             } else {
                 oldVersion = 243;
             }
         }
+        try {
+            copyFile(new File(BungeeEssentials.getInstance().getDataFolder(), "config.yml"), new File(BungeeEssentials.getInstance().getDataFolder(), "config_v" + oldVersion + ".yml"));
+            copyFile(new File(BungeeEssentials.getInstance().getDataFolder(), "messages.yml"), new File(BungeeEssentials.getInstance().getDataFolder(), "messages_v" + oldVersion + ".yml"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (oldVersion == 243) {
             String muteEnabled = messages.getString("mute.enabled");
             String muteDisabled = messages.getString("mute.disabled");
             String muteError = messages.getString("mute.error");
+            messages.set("mute.enabled", null);
+            messages.set("mute.disabled", null);
+            messages.set("mute.error", null);
             messages.set("mute.muted.enabled", muteEnabled);
             messages.set("mute.muted.disabled", muteDisabled);
             messages.set("mute.muted.error", muteError);
@@ -122,5 +126,33 @@ public class Updater {
         BungeeEssentials.getInstance().saveMainConfig();
         BungeeEssentials.getInstance().saveMessagesConfig();
         plugin.getLogger().log(Level.INFO, "Config updated. You may edit new values to your liking.");
+    }
+
+    private static int getVersionFromString(String from) {
+        String result = from.replace(".", "");
+
+        return result.isEmpty() ? 0 : Integer.parseInt(result);
+    }
+
+    public static void copyFile(File sourceFile, File destFile) throws IOException {
+        if (!destFile.exists()) {
+            destFile.createNewFile();
+        }
+
+        FileChannel source = null;
+        FileChannel destination = null;
+
+        try {
+            source = new FileInputStream(sourceFile).getChannel();
+            destination = new FileOutputStream(destFile).getChannel();
+            destination.transferFrom(source, 0, source.size());
+        } finally {
+            if (source != null) {
+                source.close();
+            }
+            if (destination != null) {
+                destination.close();
+            }
+        }
     }
 }
