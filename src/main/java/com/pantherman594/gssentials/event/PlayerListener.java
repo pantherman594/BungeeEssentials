@@ -100,34 +100,27 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler(priority = -65)
-    public void login(PreLoginEvent event) {
+    public void login(LoginEvent event) {
         if (BungeeEssentials.getInstance().shouldWatchMultilog()) {
             InetAddress address = event.getConnection().getAddress().getAddress();
             if (connections.get(address) == null) {
                 connections.put(address, 1);
             } else {
-                int currPlayers = 0;
-                for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
-                    if (p.getAddress().getAddress().toString().equals(address.toString())) {
-                        currPlayers++;
-                    }
-                }
-                if (currPlayers != connections.get(address)) {
-                    connections.put(address, currPlayers);
-                }
-                int newCount = connections.get(address) + 1;
-                if (newCount > max) {
+                if (connections.get(address) + 1 > max) {
                     event.setCancelled(true);
                     event.setCancelReason(Dictionary.format(Dictionary.MULTILOG_KICK_MESSAGE));
-                    return;
                 }
-                connections.put(address, newCount);
             }
         }
     }
 
     @EventHandler(priority = Byte.MAX_VALUE)
     public void postLogin(PostLoginEvent event) {
+        if (BungeeEssentials.getInstance().shouldWatchMultilog()) {
+            InetAddress address = event.getPlayer().getAddress().getAddress();
+            int newCount = connections.get(address) + 1;
+            connections.put(address, newCount);
+        }
         List<String> players = BungeeEssentials.getInstance().getPlayerConfig().getStringList("players");
         if (!players.contains(event.getPlayer().getName())) {
             BungeeEssentials.getInstance().savePlayerConfig(event.getPlayer().getName());
@@ -145,7 +138,8 @@ public class PlayerListener implements Listener {
     public void logout(PlayerDisconnectEvent event) {
         if (BungeeEssentials.getInstance().shouldWatchMultilog()) {
             InetAddress address = event.getPlayer().getAddress().getAddress();
-            Integer amount = connections.remove(address);
+            Integer amount = connections.get(address);
+            connections.remove(address);
             if (amount != null && amount > 1) {
                 connections.put(address, amount - 1);
             }
