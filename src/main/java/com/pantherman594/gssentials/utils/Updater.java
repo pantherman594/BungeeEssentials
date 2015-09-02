@@ -53,7 +53,7 @@ public class Updater {
 
             if(newVersion > oldVersion) {
                 plugin.getLogger().log(Level.INFO, "Update found, downloading...");
-                String dlLink = "https://github.com/PantherMan594/BungeeEssentials/releases/download/" + newVer + "/BungeeEssentials.jar";
+                String dlLink = "https://github.com/PantherMan594/BungeeEssentials/releases/download/" + newVersion + "/BungeeEssentials.jar";
                 url = new URL(dlLink);
                 con = url.openConnection();
                 InputStream in = con.getInputStream();
