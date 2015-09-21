@@ -36,7 +36,62 @@ public class LookupCommand extends BECommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         Set<String> matches = new HashSet<>();
-        if (args.length > 0) {
+        if (args.length == 1) {
+            String partialPlayerName = args[0].toLowerCase();
+            for (String p : BungeeEssentials.getInstance().getPlayerConfig().getStringList("players")) {
+                if (p.toLowerCase().startsWith(partialPlayerName.toLowerCase())) {
+                    matches.add(p);
+                }
+            }
+            sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_HEADER, "SIZE", String.valueOf(matches.size())));
+            for (String match : matches) {
+                sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_BODY, "PLAYER", match));
+            }
+        } else if (args.length == 2) {
+            boolean error = false;
+            String partialPlayerName = args[0].toLowerCase();
+            int arg = 0;
+            if (args[0].equals("-m") || args[0].equals("-e") || args[0].equals("-b")) {
+                partialPlayerName = args[1].toLowerCase();
+            } else if (args[1].equals("-m") || args[1].equals("-e") || args[1].equals("-b")) {
+                arg = 1;
+            } else {
+                error = true;
+            }
+            if (error) {
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <beginning of name>"));
+            } else {
+                switch (args[arg]) {
+                    case "-m":
+                        for (String p : BungeeEssentials.getInstance().getPlayerConfig().getStringList("players")) {
+                            if (p.toLowerCase().contains(partialPlayerName.toLowerCase())) {
+                                matches.add(p);
+                            }
+                        }
+                        break;
+                    case "-e":
+                        for (String p : BungeeEssentials.getInstance().getPlayerConfig().getStringList("players")) {
+                            if (p.toLowerCase().endsWith(partialPlayerName.toLowerCase())) {
+                                matches.add(p);
+                            }
+                        }
+                        break;
+                    case "-b":
+                        for (String p : BungeeEssentials.getInstance().getPlayerConfig().getStringList("players")) {
+                            if (p.toLowerCase().startsWith(partialPlayerName.toLowerCase())) {
+                                matches.add(p);
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_HEADER, "SIZE", String.valueOf(matches.size())));
+                for (String match : matches) {
+                    sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_BODY, "PLAYER", match));
+                }
+            }
+        } else if (args.length == 1) {
             String partialPlayerName = args[0].toLowerCase();
             for (String p : BungeeEssentials.getInstance().getPlayerConfig().getStringList("players")) {
                 if (p.toLowerCase().startsWith(partialPlayerName.toLowerCase())) {
@@ -48,7 +103,7 @@ public class LookupCommand extends BECommand {
                 sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_BODY, "PLAYER", match));
             }
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <beginning of name>"));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <beginning of name> [-m|-e|-b]"));
         }
     }
 }
