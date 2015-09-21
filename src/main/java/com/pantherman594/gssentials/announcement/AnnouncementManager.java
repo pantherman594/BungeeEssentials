@@ -45,7 +45,7 @@ public class AnnouncementManager {
     @SuppressWarnings("unchecked")
     public static boolean load() {
         anncs.clear();
-        List<Map<String, String>> section = (List<Map<String, String>>) BungeeEssentials.getInstance().getConfig().getList("announcements");
+        List<Map<String, String>> section = (List<Map<String, String>>) BungeeEssentials.getInstance().getMessages().getList("announcements");
         int success = 0;
         for (Map<String, String> map : section) {
             Announcement annc = Announcement.deserialize(map);
