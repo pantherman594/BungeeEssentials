@@ -65,6 +65,8 @@ public abstract class IntegrationProvider {
     
     public abstract boolean isMuted(ProxiedPlayer player);
 
+    public abstract boolean isBanned(ProxiedPlayer player);
+
     public abstract boolean isEnabled();
     public abstract String getName();
 }

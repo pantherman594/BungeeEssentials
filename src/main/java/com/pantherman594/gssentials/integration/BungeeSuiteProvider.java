@@ -18,6 +18,7 @@
 
 package com.pantherman594.gssentials.integration;
 
+import managers.BansManager;
 import managers.PlayerManager;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -28,6 +29,11 @@ public class BungeeSuiteProvider extends IntegrationProvider {
     public boolean isMuted(ProxiedPlayer player) {
         BSPlayer suitePlayer = PlayerManager.getPlayer(player);
         return suitePlayer != null && suitePlayer.isMuted();
+    }
+
+    @Override
+    public boolean isBanned(ProxiedPlayer player) {
+        return BansManager.isPlayerBanned(player.getName());
     }
 
     @Override

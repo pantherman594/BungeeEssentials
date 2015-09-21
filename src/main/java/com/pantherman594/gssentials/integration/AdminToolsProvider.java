@@ -34,6 +34,15 @@ public class AdminToolsProvider extends IntegrationProvider {
     }
 
     @Override
+    public boolean isBanned(ProxiedPlayer player) {
+        try {
+            return BAT.getInstance().getModules().getBanModule().isBan(player, "(any)");
+        } catch (InvalidModuleException e) {
+            return false;
+        }
+    }
+
+    @Override
     public boolean isEnabled() {
         try {
             return BAT.getInstance() != null && BAT.getInstance().getModules() != null && BAT.getInstance().getModules().getMuteModule() != null;
