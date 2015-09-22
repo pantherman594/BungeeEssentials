@@ -122,8 +122,6 @@ public class Dictionary {
     public static String NOTIFY_COMMAND;
     @Load(key = "bannedwords.replace", def = "****")
     public static String BANNED_REPLACE;
-    @Load(key = "bannedwords.list", def = "")
-    public static String[] BANNED_LIST;
     @Load(key = "staffchat.message", def = "&c[{{ SERVER }} - {{ SENDER }}] » &7{{ MESSAGE }}")
     public static String FORMAT_STAFF_CHAT;
     @Load(key = "staffchat.enabled", def = "&aYou are now chatting in staff chat!")

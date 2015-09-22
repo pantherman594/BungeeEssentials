@@ -84,7 +84,7 @@ public class MessageEvent extends Event {
                         }
                     }
                     if (message != null) {
-                        for (String word : Dictionary.BANNED_LIST) {
+                        for (String word : BungeeEssentials.getInstance().getMessages().getStringList("bannedwords.list")) {
                             String finalReg = "\\b(";
                             for (char l : word.toCharArray()) {
                                 finalReg += l + "(\\W|\\d|_)*";
