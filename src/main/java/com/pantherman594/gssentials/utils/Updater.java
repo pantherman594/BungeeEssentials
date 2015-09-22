@@ -46,16 +46,19 @@ public class Updater {
             String newVer = reader.readLine();
             String newBVer = reader.readLine();
             int newVersion;
+            String newVerDec = "";
             if (beta) {
                 newVersion = getVersionFromString(newBVer);
+                newVerDec = newBVer;
             } else {
                 newVersion = getVersionFromString(newVer);
+                newVerDec = newVer;
             }
             reader.close();
 
             if(newVersion > oldVersion) {
                 plugin.getLogger().log(Level.INFO, "Update found, downloading...");
-                String dlLink = "https://github.com/PantherMan594/BungeeEssentials/releases/download/" + newVersion + "/BungeeEssentials.jar";
+                String dlLink = "https://github.com/PantherMan594/BungeeEssentials/releases/download/" + newVerDec + "/BungeeEssentials.jar";
                 url = new URL(dlLink);
                 con = url.openConnection();
                 InputStream in = con.getInputStream();
@@ -67,7 +70,7 @@ public class Updater {
                 }
                 out.close();
                 in.close();
-                plugin.getLogger().log(Level.INFO, "Succesfully updated plugin to v" + newVer);
+                plugin.getLogger().log(Level.INFO, "Succesfully updated plugin to v" + newVerDec);
                 plugin.getLogger().log(Level.INFO, "Plugin disabling, restart the server to enable changes!");
                 return true;
             } else {
