@@ -91,7 +91,11 @@ public class MessageEvent extends Event {
                             }
                             finalReg += ")";
                             if (!finalReg.equals("\\b()")) {
-                                message = message.replaceAll(finalReg, Dictionary.BANNED_REPLACE);
+                                String message2 = message.replaceAll(finalReg, Dictionary.BANNED_REPLACE);
+                                if (!message2.equals(message)) {
+                                    Messenger.ruleNotify(Dictionary.NOTIFY_REPLACE, player, msg);
+                                    message = message2;
+                                }
                             }
                         }
                     }
