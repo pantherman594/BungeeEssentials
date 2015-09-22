@@ -27,6 +27,7 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.logging.Level;
 
 public class Updater {
@@ -126,6 +127,13 @@ public class Updater {
             messages.set("mute.muter.exempt", muterExemptError);
             messages.set("mute.muter.error", "&7{{ PLAYER }} tried to chat while muted!");
             config.set("configversion", "2.4.5");
+            oldVersion = 245;
+        }
+        if (oldVersion == 245) {
+            messages.set("bannedwords.replace", "****");
+            messages.set("bannedwords.list", Arrays.asList("anal", "anus", "aroused", "asshole", "bastard", "bitch", "boob", "bugger", "cock", "cum", "cunt", "dafuq", "dick", "ffs", "fuck", "gay", "hentai", "homo", "homosexual", "horny", "intercourse", "jerk", "lesbian", "milf", "nigga", "nigger", "pedo", "penis", "piss", "prostitute", "pussy", "rape", "rapist", "retard", "sex", "shit", "slag", "slut", "sperm", "spunk", "testicle", "titt", "tosser", "twat", "vagina", "wanker", "whore", "wtf"));
+            config.set("configversion", "2.5.0");
+            oldVersion = 250;
         }
         BungeeEssentials.getInstance().saveMainConfig();
         BungeeEssentials.getInstance().saveMessagesConfig();
