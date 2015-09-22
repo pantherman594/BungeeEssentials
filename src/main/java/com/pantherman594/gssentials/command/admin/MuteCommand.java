@@ -18,6 +18,7 @@
 
 package com.pantherman594.gssentials.command.admin;
 
+import com.google.common.collect.ImmutableSet;
 import com.pantherman594.gssentials.command.BECommand;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.Messenger;
@@ -25,8 +26,12 @@ import com.pantherman594.gssentials.utils.Permissions;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.plugin.TabExecutor;
 
-public class MuteCommand extends BECommand {
+import java.util.HashSet;
+import java.util.Set;
+
+public class MuteCommand extends BECommand implements TabExecutor {
     public MuteCommand() {
         super("mute", Permissions.Admin.MUTE);
     }
@@ -41,23 +46,52 @@ public class MuteCommand extends BECommand {
                         player.sendMessage(Dictionary.format(Dictionary.MUTE_ENABLED));
                         for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
                             if (p.hasPermission(Permissions.Admin.NOTIFY)) {
-                                sender.sendMessage(Dictionary.format(Dictionary.MUTE_ENABLEDN));
+                                sender.sendMessage(Dictionary.format(Dictionary.MUTE_ENABLEDN, "PLAYER", player.getName()));
                             }
                         }
                     } else {
                         player.sendMessage(Dictionary.format(Dictionary.MUTE_DISABLED));
                         for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
                             if (p.hasPermission(Permissions.Admin.NOTIFY)) {
-                                sender.sendMessage(Dictionary.format(Dictionary.MUTE_DISABLEDN));
+                                sender.sendMessage(Dictionary.format(Dictionary.MUTE_DISABLEDN, "PLAYER", player.getName()));
                             }
                         }
                     }
                 } else {
                     sender.sendMessage(Dictionary.format(Dictionary.MUTE_EXEMPT));
                 }
+            } else {
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
             }
         } else {
             sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <player>"));
         }
+    }
+
+    @Override
+    public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
+        if (args.length > 1 || args.length == 0) {
+            return ImmutableSet.of();
+        }
+
+        ProxiedPlayer senderPlayer = null;
+        if (sender instanceof ProxiedPlayer) {
+            senderPlayer = (ProxiedPlayer) sender;
+        }
+        Set<String> matches = new HashSet<>();
+        String search = args[0].toLowerCase();
+        for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
+            if (senderPlayer != null) {
+                if (player.getServer().getInfo().getName().equals(senderPlayer.getServer().getInfo().getName())) {
+                    continue;
+                }
+            }
+            if (!player.getName().equals(sender.getName())) {
+                if (player.getName().toLowerCase().startsWith(search) && !Messenger.isHidden(player)) {
+                    matches.add(player.getName());
+                }
+            }
+        }
+        return matches;
     }
 }
