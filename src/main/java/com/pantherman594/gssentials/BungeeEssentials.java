@@ -41,6 +41,7 @@ import net.md_5.bungee.config.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -51,6 +52,7 @@ public class BungeeEssentials extends Plugin {
     public static HashMap<String, String> mainList = new HashMap<>();
     public static HashMap<String, String[]> aliasList = new HashMap<>();
     private static BungeeEssentials instance;
+    public List<String> playerList = new ArrayList<>();
     private Configuration config = null;
     private Configuration messages = null;
     private Configuration players = null;
@@ -113,6 +115,7 @@ public class BungeeEssentials extends Plugin {
     public void onDisable() {
         Log.reset();
         Messenger.savePlayers();
+        savePlayerConfig();
     }
 
     private void saveConfig() throws IOException {
@@ -148,6 +151,7 @@ public class BungeeEssentials extends Plugin {
         config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(configFile);
         messages = ConfigurationProvider.getProvider(YamlConfiguration.class).load(messageFile);
         players = ConfigurationProvider.getProvider(YamlConfiguration.class).load(playerFile);
+        playerList = getPlayerConfig().getStringList("players");
     }
 
     public boolean reload() {
@@ -545,11 +549,13 @@ public class BungeeEssentials extends Plugin {
     }
 
     public void savePlayerConfig(String player) {
+        playerList.add(player);
+    }
+
+    public void savePlayerConfig() {
         try {
             this.players = ConfigurationProvider.getProvider(YamlConfiguration.class).load(playerFile);
-            List<String> players = getPlayerConfig().getStringList("players");
-            players.add(player);
-            getPlayerConfig().set("players", players);
+            getPlayerConfig().set("players", playerList);
             ConfigurationProvider.getProvider(YamlConfiguration.class).save(getPlayerConfig(), playerFile);
         } catch (IOException e) {
             e.printStackTrace();
