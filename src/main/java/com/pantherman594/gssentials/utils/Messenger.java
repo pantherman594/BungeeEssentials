@@ -104,6 +104,18 @@ public class Messenger implements Listener {
                     }
                 }
             }
+            if (message != null) {
+                for (String word : Dictionary.BANNED_LIST) {
+                    String finalReg = "\\b(";
+                    for (char l : word.toCharArray()) {
+                        finalReg += l + "(\\W|\\d|_)*";
+                    }
+                    finalReg += ")";
+                    if (!finalReg.equals("\\b()")) {
+                        message = message.replaceAll(finalReg, Dictionary.BANNED_REPLACE);
+                    }
+                }
+            }
 
             if (BungeeEssentials.getInstance().useChatSpamProtection()) {
                 if (chatMessages.get(player.getUniqueId()) != null && compare(msg, chatMessages.get(player.getUniqueId())) > 0.85) {

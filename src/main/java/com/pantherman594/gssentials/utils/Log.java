@@ -108,10 +108,18 @@ public class Log {
                     }
                     break;
                 case REPLACE:
-                    logger.log(Level.WARNING, "{0}''s message was filtered \"{1}\"", new Object[]{sender.getName(), joiner.join(rule.getMatches())});
+                    if (type == Messenger.ChatType.PRIVATE) {
+                        logger.log(Level.INFO, "{0} cursed via PM: \"{1}\"", new Object[]{sender.getName(), joiner.join(rule.getMatches())});
+                    } else {
+                        logger.log(Level.INFO, "{0} cursed in public chat: \"{1}\"", new Object[]{sender.getName(), joiner.join(rule.getMatches())});
+                    }
                     break;
                 case COMMAND:
-                    logger.log(Level.WARNING, "{0}''s message was filtered \"{1}\"", new Object[]{sender.getName(), joiner.join(rule.getMatches())});
+                    if (type == Messenger.ChatType.PRIVATE) {
+                        logger.log(Level.INFO, "{0} cursed via PM: \"{1}\"", new Object[]{sender.getName(), joiner.join(rule.getMatches())});
+                    } else {
+                        logger.log(Level.INFO, "{0} cursed in public chat: \"{1}\"", new Object[]{sender.getName(), joiner.join(rule.getMatches())});
+                    }
                     break;
 			default:
 				break;
