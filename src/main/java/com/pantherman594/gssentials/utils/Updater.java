@@ -133,7 +133,7 @@ public class Updater {
             messages.set("bannedwords.replace", "****");
             messages.set("bannedwords.list", Arrays.asList("anal", "anus", "aroused", "asshole", "bastard", "bitch", "boob", "bugger", "cock", "cum", "cunt", "dafuq", "dick", "ffs", "fuck", "gay", "hentai", "homo", "homosexual", "horny", "intercourse", "jerk", "lesbian", "milf", "nigga", "nigger", "pedo", "penis", "piss", "prostitute", "pussy", "rape", "rapist", "retard", "sex", "shit", "slag", "slut", "sperm", "spunk", "testicle", "titt", "tosser", "twat", "vagina", "wanker", "whore", "wtf"));
             config.set("configversion", "2.5.0");
-            oldVersion = 250;
+            oldVersion = 246;
         }
         BungeeEssentials.getInstance().saveMainConfig();
         BungeeEssentials.getInstance().saveMessagesConfig();
