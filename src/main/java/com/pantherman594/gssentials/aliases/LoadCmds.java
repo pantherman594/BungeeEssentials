@@ -62,12 +62,12 @@ public class LoadCmds extends Command {
         }
         while (args.length > num && command.contains("{" + num + "}")) {
             if ((args[num] != null) && (!args[num].equals(""))) {
-                command = command.replace("{" + num + "}", args[num]).replace("{{ PLAYER }}", sender.getName()).replace("{{ SERVER }}", server);
+                command = command.replace("{" + num + "}", args[num]);
             } else {
                 return null;
             }
             num++;
         }
-        return command;
+        return command.replace("{{ PLAYER }}", sender.getName()).replace("{{ SERVER }}", server);
     }
 }
