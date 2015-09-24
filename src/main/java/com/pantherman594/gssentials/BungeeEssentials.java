@@ -151,7 +151,7 @@ public class BungeeEssentials extends Plugin {
         config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(configFile);
         messages = ConfigurationProvider.getProvider(YamlConfiguration.class).load(messageFile);
         players = ConfigurationProvider.getProvider(YamlConfiguration.class).load(playerFile);
-        playerList = getPlayerConfig().getStringList("players");
+        savePlayerConfig();
     }
 
     public boolean reload() {
@@ -555,8 +555,11 @@ public class BungeeEssentials extends Plugin {
     public void savePlayerConfig() {
         try {
             this.players = ConfigurationProvider.getProvider(YamlConfiguration.class).load(playerFile);
-            getPlayerConfig().set("players", playerList);
+            if (!playerList.isEmpty()) {
+                getPlayerConfig().set("players", playerList);
+            }
             ConfigurationProvider.getProvider(YamlConfiguration.class).save(getPlayerConfig(), playerFile);
+            playerList = getPlayerConfig().getStringList("players");
         } catch (IOException e) {
             e.printStackTrace();
         }
