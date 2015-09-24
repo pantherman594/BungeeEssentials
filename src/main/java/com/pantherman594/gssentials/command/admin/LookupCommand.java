@@ -48,23 +48,26 @@ public class LookupCommand extends BECommand {
                 sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_BODY, "PLAYER", match));
             }
         } else if (args.length == 2) {
-            boolean error = false;
+            boolean error = true;
             String partialPlayerName = args[0].toLowerCase();
             int arg = 0;
-            if (args[0].equals("-m") || args[0].equals("-e") || args[0].equals("-b")) {
-                partialPlayerName = args[1].toLowerCase();
-            } else if (args[1].equals("-m") || args[1].equals("-e") || args[1].equals("-b")) {
-                arg = 1;
-            } else {
-                error = true;
+            String[] possibleArgs = new String[]{"b", "m", "e", "a"};
+            for (String a : possibleArgs) {
+                if (args[0].equals("-" + a)) {
+                    partialPlayerName = args[1].toLowerCase();
+                    error = false;
+                } else if (args[1].equals("-" + a)) {
+                    arg = 1;
+                    error = false;
+                }
             }
             if (error) {
-                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <beginning of name>"));
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <part of name> [-b|-m|-e|-a]"));
             } else {
                 switch (args[arg]) {
                     case "-m":
                         for (String p : BungeeEssentials.getInstance().playerList) {
-                            if (p.toLowerCase().contains(partialPlayerName.toLowerCase()) && !p.toLowerCase().startsWith(partialPlayerName.toLowerCase()) && !p.toLowerCase().endsWith(partialPlayerName.toLowerCase())) {
+                            if (p.toLowerCase().substring(1, p.length() - 1).contains(partialPlayerName.toLowerCase())) {
                                 matches.add(p);
                             }
                         }
