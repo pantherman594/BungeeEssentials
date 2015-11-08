@@ -34,7 +34,8 @@ public class Updater {
     private static Plugin plugin = BungeeEssentials.getInstance();
 
     public static boolean update(boolean beta) {
-        final int oldVersion = getVersionFromString(plugin.getDescription().getVersion());
+        final String oldVerDec = plugin.getDescription().getVersion();
+        final int oldVersion = getVersionFromString(oldVerDec);
         File path = new File(ProxyServer.getInstance().getPluginsFolder(), "BungeeEssentials.jar");
 
         try {
@@ -46,7 +47,7 @@ public class Updater {
             String newVer = reader.readLine();
             String newBVer = reader.readLine();
             int newVersion;
-            String newVerDec = "";
+            String newVerDec;
             if (beta) {
                 newVersion = getVersionFromString(newBVer);
                 newVerDec = newBVer;
@@ -74,7 +75,7 @@ public class Updater {
                 plugin.getLogger().log(Level.INFO, "Plugin disabling, restart the server to enable changes!");
                 return true;
             } else {
-                plugin.getLogger().log(Level.INFO, "You are running the latest version of BungeeEssentials (v" + oldVersion + ")!");
+                plugin.getLogger().log(Level.INFO, "You are running the latest version of BungeeEssentials (v" + oldVerDec + ")!");
                 updateConfig();
             }
         } catch(IOException e) {
