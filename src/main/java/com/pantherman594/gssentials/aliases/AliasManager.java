@@ -20,19 +20,20 @@ package com.pantherman594.gssentials.aliases;
 
 import com.pantherman594.gssentials.BungeeEssentials;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.config.Configuration;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
 public class AliasManager {
-    public static List<Alias> aliases = new ArrayList<>();
+    public static Map<String, List<String>> aliases = new HashMap<>();
 
-    public static boolean register(Alias alias) {
-        if (!aliases.contains(alias)) {
-            aliases.add(alias);
-            ProxyServer.getInstance().getPluginManager().registerCommand(BungeeEssentials.getInstance(), new LoadCmds(alias.getAlias(), alias.getCommands()));
+    public static boolean register(String alias, List<String> commands) {
+        if (!aliases.containsKey(alias)) {
+            aliases.put(alias, commands);
+            ProxyServer.getInstance().getPluginManager().registerCommand(BungeeEssentials.getInstance(), new LoadCmds(alias, commands));
             return true;
         }
         return false;
@@ -41,18 +42,13 @@ public class AliasManager {
     @SuppressWarnings("unchecked")
     public static boolean load() {
         aliases.clear();
-        List<Map<String, String>> section = (List<Map<String, String>>) BungeeEssentials.getInstance().getConfig().getList("aliases");
-        int success = 0;
-        for (Map<String, String> map : section) {
-            Alias alias = Alias.deserialize(map);
-            if (alias != null) {
-                if (register(alias)) {
-                    success++;
-                }
-            }
+        Configuration aliasSection = BungeeEssentials.getInstance().getConfig().getSection("aliases");
+        for (String alias : aliasSection.getKeys()) {
+            List<String> commands = aliasSection.getStringList(alias);
+            register(alias, commands);
         }
-        if (success > 0) {
-            BungeeEssentials.getInstance().getLogger().log(Level.INFO, "Loaded {0} aliases from config", success);
+        if (aliases.size() > 0) {
+            BungeeEssentials.getInstance().getLogger().log(Level.INFO, "Loaded {0} aliases from config", aliases.size());
         }
         return true;
     }

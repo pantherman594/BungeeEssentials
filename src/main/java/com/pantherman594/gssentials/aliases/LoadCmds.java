@@ -25,11 +25,13 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
+import java.util.List;
+
 public class LoadCmds extends Command {
-    private final String[] commands;
+    private final List<String> commands;
     private final String main;
 
-    public LoadCmds(String main, String[] commands) {
+    public LoadCmds(String main, List<String> commands) {
         super(main);
         this.main = main;
         this.commands = commands;
@@ -69,9 +71,14 @@ public class LoadCmds extends Command {
                 ProxyServer.getInstance().getPluginManager().dispatchCommand(ProxyServer.getInstance().getConsole(), command.substring(9));
                 break;
             case "TELL":
-                String message = command.substring(5).replaceFirst("\\w+: ", "");
-                String recipient = command.substring(message.length() - command.length());
-                if (command != null && ProxyServer.getInstance().getPlayer(recipient) != null) {
+                String commToSplit = command.replaceFirst(": ", "Ƃ");
+                String message = commToSplit.split("Ƃ")[1];
+                String recipient = commToSplit.split("Ƃ")[0].substring(5);
+                if (recipient.equals("ALL")) {
+                    for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
+                        p.sendMessage(message);
+                    }
+                } else if (command != null && ProxyServer.getInstance().getPlayer(recipient) != null) {
                     ProxyServer.getInstance().getPlayer(recipient).sendMessage(message);
                 }
                 break;

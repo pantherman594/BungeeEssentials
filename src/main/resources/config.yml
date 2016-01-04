@@ -88,17 +88,15 @@ commands:
   reload:
     - 'gssreload'
 aliases:
-  - alias: 'greet'
-    commands:
-      - 'TELL {0}: {{ PLAYER }} was at {{ SERVER }} but is coming to join you!'
-      - 'join {0}'
-  - alias: 'disappear'
-    commands:
-      - 'spy'
-      - 'cspy'
-      - 'hide'
-  - alias: 'vote'
-    commands:
-      - 'CONSOLE: staffchat {{ PLAYER }} wants to vote!'
-      - 'TELL: Vote for the server at yourvote.site!'
+  greet:
+    - 'TELL {0}: {{ PLAYER }} was at {{ SERVER }} but is coming to join you!'
+    - 'join {0}'
+  disappear:
+    - 'spy'
+    - 'cspy'
+    - 'hide'
+    - 'TELL ALL: &8[&c-&8] &7{{ PLAYER }}'
+  vote:
+    - 'CONSOLE: staffchat {{ PLAYER }} wants to vote!'
+    - 'TELL: Vote for the server at yourvote.site!'
 configversion: 2.4.6
