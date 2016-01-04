@@ -184,7 +184,7 @@ public class BungeeEssentials extends Plugin {
         List<String> BASE;
         String[] TEMP_ALIAS;
         List<String> enable = config.getStringList("enable");
-        for (String comm : Arrays.asList("alert", "commandspy", "hide", "lookup", "mute", "send", "spy", "staffchat", "chat", "find", "ignore", "join", "list", "message", "slap", "reload")) {
+        for (String comm : Arrays.asList("alert", "commandspy", "hide", "lookup", "mute", "send", "spy", "staffchat", "chat", "find", "friend", "ignore", "join", "list", "message", "slap", "reload")) {
             if (enable.contains(comm)) {
                 BASE = config.getStringList("commands." + comm);
                 if (BASE.isEmpty()) {
@@ -272,33 +272,20 @@ public class BungeeEssentials extends Plugin {
             case "alert":
                 register(new AlertCommand());
                 break;
-            case "commandspy":
-                register(new CSpyCommand());
-                break;
-            case "hide":
-                register(new HideCommand());
-                break;
-            case "lookup":
-                register(new LookupCommand());
-                break;
-            case "mute":
-                register(new MuteCommand());
-                break;
-            case "send":
-                register(new SendCommand());
-                register(new SendAllCommand());
-                break;
-            case "spy":
-                register(new SpyCommand());
-                break;
-            case "staffchat":
-                register(new StaffChatCommand());
-                break;
             case "chat":
                 register(new ChatCommand());
                 break;
+            case "commandspy":
+                register(new CSpyCommand());
+                break;
             case "find":
                 register(new FindCommand());
+                break;
+            case "friend":
+                register(new FriendCommand());
+                break;
+            case "hide":
+                register(new HideCommand());
                 break;
             case "ignore":
                 register(new FindCommand());
@@ -309,12 +296,28 @@ public class BungeeEssentials extends Plugin {
             case "list":
                 register(new ServerListCommand());
                 break;
+            case "lookup":
+                register(new LookupCommand());
+                break;
             case "message":
                 register(new MessageCommand());
                 register(new ReplyCommand());
                 break;
+            case "mute":
+                register(new MuteCommand());
+                break;
+            case "send":
+                register(new SendCommand());
+                register(new SendAllCommand());
+                break;
             case "slap":
                 register(new SlapCommand());
+                break;
+            case "spy":
+                register(new SpyCommand());
+                break;
+            case "staffchat":
+                register(new StaffChatCommand());
                 break;
         }
     }
