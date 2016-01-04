@@ -18,42 +18,22 @@
 
 package com.pantherman594.gssentials.announcement;
 
-import com.google.common.base.Preconditions;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-import java.util.Map;
+import java.util.Collection;
 
 public class Announcement {
-    private Integer delay = null;
-    private Integer interval = null;
-    private String msg = null;
+    private Integer delay;
+    private Integer interval;
+    private String msg;
+    private String server;
 
-    public static Announcement deserialize(Map<String, String> serialized) {
-        Preconditions.checkNotNull(serialized);
-        Preconditions.checkArgument(!serialized.isEmpty());
-        Preconditions.checkNotNull(serialized.get("delay"), "invalid delay");
-        Preconditions.checkNotNull(serialized.get("interval"), "invalid interval");
-        Preconditions.checkNotNull(serialized.get("message"), "invalid message");
-
-        Announcement annc = new Announcement();
-        annc.delay(Integer.parseInt(String.valueOf(serialized.get("delay"))));
-        annc.interval(Integer.parseInt(String.valueOf(serialized.get("interval"))));
-        annc.msg(String.valueOf(serialized.get("message")));
-        return annc;
-    }
-
-    private Announcement delay(Integer delay) {
+    public Announcement(Integer delay, Integer interval, String msg, String server) {
         this.delay = delay;
-        return this;
-    }
-
-    private Announcement interval(Integer interval) {
         this.interval = interval;
-        return this;
-    }
-
-    private Announcement msg(String msg) {
         this.msg = msg;
-        return this;
+        this.server = server;
     }
 
     public Integer getDelay() {
@@ -64,7 +44,11 @@ public class Announcement {
         return interval;
     }
 
-    public String getMsg() {
-        return msg;
+    public String[] getMsg() {
+        return msg.split("\\n");
+    }
+
+    public Collection<ProxiedPlayer> getPlayers() {
+        return server.equals("ALL") ? ProxyServer.getInstance().getPlayers() : ProxyServer.getInstance().getServerInfo(server).getPlayers();
     }
 }

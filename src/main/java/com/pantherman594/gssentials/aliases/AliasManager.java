@@ -30,13 +30,11 @@ import java.util.logging.Level;
 public class AliasManager {
     public static Map<String, List<String>> aliases = new HashMap<>();
 
-    public static boolean register(String alias, List<String> commands) {
+    private static void register(String alias, List<String> commands) {
         if (!aliases.containsKey(alias)) {
             aliases.put(alias, commands);
             ProxyServer.getInstance().getPluginManager().registerCommand(BungeeEssentials.getInstance(), new LoadCmds(alias, commands));
-            return true;
         }
-        return false;
     }
 
     @SuppressWarnings("unchecked")

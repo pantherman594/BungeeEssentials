@@ -20,78 +20,73 @@ package com.pantherman594.gssentials.announcement;
 
 import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.utils.Dictionary;
+import com.pantherman594.gssentials.utils.Permissions;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.scheduler.ScheduledTask;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.config.Configuration;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 @SuppressWarnings("deprecation")
 public class AnnouncementManager {
-    private static List<ScheduledTask> tasks = new ArrayList<>();
-    private static List<Announcement> anncs = new ArrayList<>();
+    private static Map<String, Announcement> anncs = new HashMap<>();
 
-    public static boolean register(Announcement annc) {
-        if (!anncs.contains(annc)) {
-            anncs.add(annc);
-            return true;
-        }
-        return false;
+    private static void register(String anncName, Announcement annc) {
+        anncs.put(anncName, annc);
     }
 
     @SuppressWarnings("unchecked")
     public static boolean load() {
         anncs.clear();
-        List<Map<String, String>> section = (List<Map<String, String>>) BungeeEssentials.getInstance().getMessages().getList("announcements");
-        int success = 0;
-        for (Map<String, String> map : section) {
-            Announcement annc = Announcement.deserialize(map);
-            if (annc != null) {
-                if (register(annc)) {
-                    success++;
-                }
+        Configuration anncSection = BungeeEssentials.getInstance().getMessages().getSection("announcements");
+        for (String annc : anncSection.getKeys()) {
+            int delay = anncSection.getInt(annc + "delay");
+            int interval = anncSection.getInt(annc + "interval");
+            String msg = anncSection.getString(annc + "message");
+            String server = "ALL";
+            if (anncSection.getString(annc + "server") != null) {
+                server = anncSection.getString(annc + "server");
             }
+            register(annc, new Announcement(delay, interval, msg, server));
         }
-        if (success > 0) {
-            BungeeEssentials.getInstance().getLogger().log(Level.INFO, "Loaded {0} announcements from config", success);
-            for (ScheduledTask task : tasks) {
-                task.cancel();
-            }
+        if (anncs.size() > 0) {
+            BungeeEssentials.getInstance().getLogger().log(Level.INFO, "Loaded {0} announcements from config", anncs.size());
             scheduleAnnc();
         }
         return true;
     }
 
     private static void scheduleAnnc() {
-        for (Announcement annc : anncs) {
-            int delay = annc.getDelay();
-            final int interval = annc.getInterval();
-            final String msg = annc.getMsg();
+        for (final String anncName : anncs.keySet()) {
+            final Announcement annc = anncs.get(anncName);
             ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), new Runnable() {
                 @Override
                 public void run() {
-                    String[] newMsg = msg.split("/n");
-                    for (String singMsg : newMsg) {
+                    for (String singMsg : annc.getMsg()) {
                         ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_ALERT, "MESSAGE", singMsg));
                     }
-                    scheduleAnnc(interval, newMsg);
+                    scheduleAnnc(anncName, annc);
                 }
-            }, delay, TimeUnit.SECONDS);
+            }, annc.getDelay(), TimeUnit.SECONDS);
         }
     }
 
-    private static void scheduleAnnc(final Integer interval, final String[] msg) {
-        tasks.add(ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), new Runnable() {
+    private static void scheduleAnnc(final String anncName, final Announcement annc) {
+        ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), new Runnable() {
             @Override
             public void run() {
-                for (String singMsg : msg) {
-                    ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_ALERT, "MESSAGE", singMsg));
+                for (String singMsg : annc.getMsg()) {
+                    for (ProxiedPlayer p : annc.getPlayers()) {
+                        if (p.hasPermission(Permissions.General.ANNOUNCEMENT) || p.hasPermission(Permissions.General.ANNOUNCEMENT + "." + anncName)) {
+                            p.sendMessage(Dictionary.format(Dictionary.FORMAT_ALERT, "MESSAGE", singMsg));
+                        }
+                    }
                 }
-                scheduleAnnc(interval, msg);
+                scheduleAnnc(anncName, annc);
             }
-        }, interval, TimeUnit.SECONDS));
+        }, annc.getInterval(), TimeUnit.SECONDS);
     }
 }

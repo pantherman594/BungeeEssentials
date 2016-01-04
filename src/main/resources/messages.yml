@@ -1,5 +1,5 @@
 format:
-  alert: '&8[&b!&8] &7{{ MESSAGE }}'
+  alert: '&8[&4!&8] &4{{ MESSAGE }}'
   join: '&8[&a+&8] &7{{ PLAYER }}'
   quit: '&8[&c-&8] &7{{ PLAYER }}'
   kick: '{{ PLAYER }} was kicked for {{ REASON }}'
@@ -135,9 +135,12 @@ errors:
   fastrelog: '&cPlease wait before reconnecting!'
 announcements:
 # Time measured in seconds
-  - delay: 30
+  vote:
+    delay: 30
     interval: 60
     message: 'Vote for our server for great rewards!'
-  - delay: 0
+    server: 'Hub'
+  donate:
+    delay: 0
     interval: 60
-    message: 'Donate to support our server!/n&f&ndonate.myserver.com'
+    message: 'Donate to support our server!\n&f&ndonate.myserver.com'

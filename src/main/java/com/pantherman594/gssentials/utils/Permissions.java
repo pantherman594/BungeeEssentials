@@ -52,6 +52,7 @@ public class Permissions {
         public static final String JOINANNC = ANNOUNCE + ".join";
         public static final String QUITANNC = ANNOUNCE + ".quit";
         public static final String ALIAS = "gssentials.alias";
+        public static final String ANNOUNCEMENT = "gssentials.announcement";
         public static final String FRIEND = "gssentials.friend";
     }
 
