@@ -18,8 +18,15 @@
 
 package com.pantherman594.gssentials.utils;
 
+import com.pantherman594.gssentials.BungeeEssentials;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.config.Configuration;
+import net.md_5.bungee.config.ConfigurationProvider;
+import net.md_5.bungee.config.YamlConfiguration;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,8 +35,52 @@ import java.util.List;
  * @author David
  */
 public class Friends {
+    private Configuration config;
+    private ProxiedPlayer player;
+    private List<String> friends;
+    private List<String> requests;
 
-    public List<String> getFriends(ProxiedPlayer p) {
+    public Friends(ProxiedPlayer p) {
+        File playerFile = new File(BungeeEssentials.getInstance().getDataFolder() + File.separator + "playerdata" + File.separator + p.getUniqueId().toString() + ".yml");
+        if (playerFile.exists()) {
+            try {
+                config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(playerFile);
+            } catch (IOException e) {
+                BungeeEssentials.getInstance().getLogger().warning("Unable to load " + p.getName() + "'s friends.");
+                return;
+            }
+            player = p;
+            friends = new ArrayList<>();
+            requests = new ArrayList<>();
+            friends.addAll(config.getStringList("friends"));
+            requests.addAll(config.getStringList("requests"));
+        }
+    }
 
+    public boolean save() {
+        File playerFile = new File(BungeeEssentials.getInstance().getDataFolder() + File.separator + "playerdata" + File.separator + player.getUniqueId().toString() + ".yml");
+        try {
+            config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(playerFile);
+        } catch (IOException e) {
+            BungeeEssentials.getInstance().getLogger().warning("Unable to save " + player.getName() + "'s friends.");
+            return false;
+        }
+        config.set("friends", friends);
+        config.set("requests", requests);
+        try {
+            ConfigurationProvider.getProvider(YamlConfiguration.class).save(config, playerFile);
+        } catch (IOException e) {
+            BungeeEssentials.getInstance().getLogger().warning("Unable to save " + player.getName() + "'s friends.");
+            return false;
+        }
+        return true;
+    }
+
+    public List<String> getFriends() {
+        return friends;
+    }
+
+    public List<String> getRequests() {
+        return requests;
     }
 }

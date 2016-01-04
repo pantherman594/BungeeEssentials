@@ -21,6 +21,7 @@ package com.pantherman594.gssentials;
 import com.google.common.base.Preconditions;
 import com.pantherman594.gssentials.aliases.AliasManager;
 import com.pantherman594.gssentials.announcement.AnnouncementManager;
+import com.pantherman594.gssentials.command.BECommand;
 import com.pantherman594.gssentials.command.admin.*;
 import com.pantherman594.gssentials.command.general.*;
 import com.pantherman594.gssentials.event.PlayerListener;
@@ -28,11 +29,8 @@ import com.pantherman594.gssentials.integration.IntegrationProvider;
 import com.pantherman594.gssentials.integration.IntegrationTest;
 import com.pantherman594.gssentials.regex.RuleManager;
 import com.pantherman594.gssentials.utils.Dictionary;
-import com.pantherman594.gssentials.utils.Log;
-import com.pantherman594.gssentials.utils.Messenger;
-import com.pantherman594.gssentials.utils.Updater;
+import com.pantherman594.gssentials.utils.*;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
@@ -50,42 +48,20 @@ public class BungeeEssentials extends Plugin {
     public List<String> playerList = new ArrayList<>();
     private Map<String, String> mainList = new HashMap<>();
     private Map<String, String[]> aliasList = new HashMap<>();
-    private AliasManager aliasManager;
-    private AnnouncementManager anncManager;
+    private Map<UUID, Friends> friendsList = new HashMap<>();
     private RuleManager ruleManager;
     private Configuration config;
     private Configuration messages = null;
     private Configuration players = null;
     private IntegrationProvider helper;
-    private boolean shouldClean;
-    private boolean joinAnnounce;
-    private boolean commandSpy;
-    private boolean fastRelog;
-    private boolean redirect;
-    private boolean integrated;
-    private boolean chatRules;
-    private boolean chatSpam;
-    private boolean commandSpam;
-    private boolean ignore;
-    private boolean mute;
+    private List<String> enabled;
     private File configFile;
     private File messageFile;
     private File playerFile;
-    private boolean useLog;
-    private boolean logAll;
-    private boolean rules;
-    private boolean spam;
+    private boolean integrated;
 
     public static BungeeEssentials getInstance() {
         return instance;
-    }
-
-    public AliasManager getAliasManager() {
-        return aliasManager;
-    }
-
-    public AnnouncementManager getAnncManager() {
-        return anncManager;
     }
 
     public RuleManager getRuleManager() {
@@ -98,6 +74,20 @@ public class BungeeEssentials extends Plugin {
 
     public String[] getAlias(String key) {
         return aliasList.get(key);
+    }
+
+    public Friends getFriends(UUID uuid) {
+        return friendsList.get(uuid);
+    }
+
+    public void setFriends(UUID uuid, Friends friends) {
+        friendsList.put(uuid, friends);
+    }
+
+    public void clearFriends(UUID uuid) {
+        if (friendsList.get(uuid).save()) {
+            friendsList.remove(uuid);
+        }
     }
 
     @Override
@@ -187,13 +177,7 @@ public class BungeeEssentials extends Plugin {
         ProxyServer.getInstance().getPluginManager().registerListener(this, new PlayerListener());
 
         Log.reset();
-        chatRules = false;
-        chatSpam = false;
-        rules = false;
-        spam = false;
-        redirect = false;
-        fastRelog = false;
-        commandSpam = false;
+        enabled = new ArrayList<>();
 
         int commands = 0;
         List<String> BASE;
@@ -214,39 +198,39 @@ public class BungeeEssentials extends Plugin {
                 commands++;
             }
         }
-        redirect = enable.contains("autoredirect");
-        fastRelog = enable.contains("fastrelog");
-        commandSpy = enable.contains("commandspy");
-        joinAnnounce = enable.contains("joinannounce");
-        mute = enable.contains("mute");
-        ignore = enable.contains("ignore");
-        shouldClean = enable.contains("clean");
-        useLog = enable.contains("log");
-        logAll = enable.contains("fulllog");
-        rules = enable.contains("rules");
-        chatRules = enable.contains("rules-chat");
-        if (logAll) {
-            useLog = true;
-        }
-        if (useLog) {
+        addEnabled("chatRules", "rules-chat");
+        addEnabled("chatSpam", "spam-chat");
+        addEnabled("commandSpam", "spam-command");
+        addEnabled("commandSpy");
+        addEnabled("fastRelog");
+        addEnabled("friend");
+        addEnabled("ignore");
+        addEnabled("joinAnnounce");
+        addEnabled("logAll", "fulllog");
+        addEnabled("mute");
+        addEnabled("redirect", "autoredirect");
+        addEnabled("rules");
+        addEnabled("shouldClean", "clean");
+        addEnabled("spam");
+        addEnabled("useLog", "log", "fulllog");
+        if (contains("useLog")) {
             if (!Log.setup()) {
                 getLogger().log(Level.WARNING, "Error enabling the chat logger!");
+            } else {
+                getLogger().log(Level.INFO, "Enabled the chat logger");
             }
         }
-        if (enable.contains("aliases")) {
-            aliasManager = new AliasManager();
+        if (contains(enable, "aliases")) {
+            new AliasManager();
             getLogger().log(Level.INFO, "Enabled aliases");
         }
-        if (enable.contains("announcement")) {
-            anncManager = new AnnouncementManager();
+        if (contains(enable, "announcement")) {
+            new AnnouncementManager();
             getLogger().log(Level.INFO, "Enabled announcements");
         }
-        if (rules || chatRules) {
+        if (contains("rules", "chatRules")) {
             ruleManager = new RuleManager();
         }
-        spam = enable.contains("spam");
-        chatSpam = enable.contains("spam-chat");
-        commandSpam = enable.contains("spam-commmand");
         getLogger().log(Level.INFO, "Registered {0} commands successfully", commands);
         setupIntegration();
         return true;
@@ -283,90 +267,36 @@ public class BungeeEssentials extends Plugin {
     }
 
     private void register(String command) {
-        switch (command) {
-            case "alert":
-                register(new AlertCommand());
-                break;
-            case "chat":
-                register(new ChatCommand());
-                break;
-            case "commandspy":
-                register(new CSpyCommand());
-                break;
-            case "find":
-                register(new FindCommand());
-                break;
-            case "friend":
-                register(new FriendCommand());
-                break;
-            case "hide":
-                register(new HideCommand());
-                break;
-            case "ignore":
-                register(new FindCommand());
-                break;
-            case "join":
-                register(new JoinCommand());
-                break;
-            case "list":
-                register(new ServerListCommand());
-                break;
-            case "lookup":
-                register(new LookupCommand());
-                break;
-            case "message":
-                register(new MessageCommand());
-                register(new ReplyCommand());
-                break;
-            case "mute":
-                register(new MuteCommand());
-                break;
-            case "send":
-                register(new SendCommand());
-                register(new SendAllCommand());
-                break;
-            case "slap":
-                register(new SlapCommand());
-                break;
-            case "spy":
-                register(new SpyCommand());
-                break;
-            case "staffchat":
-                register(new StaffChatCommand());
-                break;
+        Map<String, BECommand> commands = new HashMap<>();
+        commands.put("alert", new AlertCommand());
+        commands.put("chat", new ChatCommand());
+        commands.put("commandspy", new CSpyCommand());
+        commands.put("find", new FindCommand());
+        commands.put("friend", new FriendCommand());
+        commands.put("hide", new HideCommand());
+        commands.put("ignore", new IgnoreCommand());
+        commands.put("join", new JoinCommand());
+        commands.put("list", new ServerListCommand());
+        commands.put("lookup", new LookupCommand());
+        commands.put("message", new MessageCommand());
+        commands.put("mute", new MuteCommand());
+        commands.put("reload", new ReloadCommand());
+        commands.put("send", new SendCommand());
+        commands.put("slap", new SlapCommand());
+        commands.put("spy", new SpyCommand());
+        commands.put("staffchat", new StaffChatCommand());
+        if (commands.containsKey(command)) {
+            register(commands.get(command));
+        }
+        if (command.equals("message")) {
+            register(new ReplyCommand());
+        } else if (command.equals("send")) {
+            register(new SendAllCommand());
         }
     }
 
-    private void register(Command command) {
+    private void register(BECommand command) {
         ProxyServer.getInstance().getPluginManager().registerCommand(this, command);
-    }
-
-    public boolean shouldLog() {
-        return this.useLog;
-    }
-
-    public boolean logAll() {
-        return this.logAll;
-    }
-
-    public boolean shouldClean() {
-        return this.shouldClean;
-    }
-
-    public boolean shouldAnnounce() {
-        return this.joinAnnounce;
-    }
-
-    public boolean shouldCommandSpy() {
-        return this.commandSpy;
-    }
-
-    public boolean shouldRedirectPlayers() {
-        return this.redirect;
-    }
-
-    public boolean watchFastRelog() {
-        return this.fastRelog;
     }
 
     public Configuration getConfig() {
@@ -418,35 +348,30 @@ public class BungeeEssentials extends Plugin {
         return helper;
     }
 
+    private void addEnabled(String name) {
+        addEnabled(name, name);
+    }
+
+    private void addEnabled(String name, String... keys) {
+        if (contains(config.getStringList("enabled"), keys)) enabled.add(name);
+    }
+
+    private boolean contains(List<String> list, String... checks) {
+        for (String string : list) {
+            for (String check : checks) {
+                if (string.equalsIgnoreCase(check)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean contains(String... checks) {
+        return contains(enabled, checks);
+    }
+
     public boolean isIntegrated() {
         return integrated && helper != null;
-    }
-
-    public boolean useRules() {
-        return rules;
-    }
-
-    public boolean useSpamProtection() {
-        return spam;
-    }
-
-    public boolean useChatSpamProtection() {
-        return chatSpam;
-    }
-
-    public boolean useCommandSpamProtection() {
-        return commandSpam;
-    }
-
-    public boolean useChatRules() {
-        return chatRules;
-    }
-
-    public boolean ignore() {
-        return ignore;
-    }
-
-    public boolean mute() {
-        return mute;
     }
 }
