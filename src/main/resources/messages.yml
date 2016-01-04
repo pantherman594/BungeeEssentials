@@ -97,9 +97,6 @@ list:
 lookup:
   header: '&6Found {{ SIZE }} player(s):'
   body: '&f - {{ PLAYER }}'
-multilog:
-  limit: 3
-  kicked: '&cMaximum number of connections reached!'
 spy:
   message: '&7[{{ SENDER }} » {{ RECIPIENT }}] &7{{ MESSAGE }}'
   enabled: '&aSpy has been enabled'
@@ -135,6 +132,7 @@ errors:
   ignoreself: '&cYou can''t ignore yourself!'
   ignoring: '&cYou can''t send a message to someone you''re ignoring!'
   sendfail: '&cUnable to send {{ PLAYER }} to {{ SERVER }}.'
+  fastrelog: '&cPlease wait before reconnecting!'
 announcements:
 # Time measured in seconds
   - delay: 30

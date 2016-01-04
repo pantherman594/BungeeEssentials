@@ -19,7 +19,7 @@
 package com.pantherman594.gssentials.command.admin;
 
 import com.google.common.collect.ImmutableSet;
-import com.pantherman594.gssentials.command.BECommand;
+import com.pantherman594.gssentials.command.ServerSpecificCommand;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.Messenger;
 import com.pantherman594.gssentials.utils.Permissions;
@@ -31,13 +31,13 @@ import net.md_5.bungee.api.plugin.TabExecutor;
 import java.util.HashSet;
 import java.util.Set;
 
-public class MuteCommand extends BECommand implements TabExecutor {
+public class MuteCommand extends ServerSpecificCommand implements TabExecutor {
     public MuteCommand() {
         super("mute", Permissions.Admin.MUTE);
     }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public void run(CommandSender sender, String[] args) {
         if (args != null && args.length > 0) {
             ProxiedPlayer player = ProxyServer.getInstance().getPlayer(args[0]);
             if (player != null) {

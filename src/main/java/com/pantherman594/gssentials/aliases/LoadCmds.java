@@ -39,20 +39,14 @@ public class LoadCmds extends Command {
     public void execute(CommandSender sender, String[] args) {
         if (sender.hasPermission(Permissions.General.ALIAS) || sender.hasPermission(Permissions.General.ALIAS + "." + main)) {
             for (String command : commands) {
-                command = parseCommands(command, sender, args);
-                if (command != null) {
-                    ProxyServer.getInstance().getPluginManager().dispatchCommand(sender, command);
-                } else {
-                    sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "VARIES"));
-                }
+                runCommand(command, sender, args);
             }
         } else {
             sender.sendMessage(ProxyServer.getInstance().getTranslation("no_permission"));
         }
     }
 
-    @SuppressWarnings("deprecation")
-    private String parseCommands(String command, CommandSender sender, String[] args) {
+    private void runCommand(String command, CommandSender sender, String[] args) {
         int num = 0;
         String server;
         if (sender instanceof ProxiedPlayer) {
@@ -64,10 +58,28 @@ public class LoadCmds extends Command {
             if ((args[num] != null) && (!args[num].equals(""))) {
                 command = command.replace("{" + num + "}", args[num]);
             } else {
-                return null;
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "VARIES"));
+                return;
             }
             num++;
         }
-        return command.replace("{{ PLAYER }}", sender.getName()).replace("{{ SERVER }}", server);
+        command = command.replace("{{ PLAYER }}", sender.getName()).replace("{{ SERVER }}", server);
+        switch (command.contains(" ") ? command.split(" ")[0] : command) {
+            case "CONSOLE:":
+                ProxyServer.getInstance().getPluginManager().dispatchCommand(ProxyServer.getInstance().getConsole(), command.substring(9));
+                break;
+            case "TELL":
+                String message = command.substring(5).replaceFirst("\\w+: ", "");
+                String recipient = command.substring(message.length() - command.length());
+                if (command != null && ProxyServer.getInstance().getPlayer(recipient) != null) {
+                    ProxyServer.getInstance().getPlayer(recipient).sendMessage(message);
+                }
+                break;
+            case "TELL:":
+                sender.sendMessage(command.substring(6));
+                break;
+            default:
+                ProxyServer.getInstance().getPluginManager().dispatchCommand(sender, command);
+        }
     }
 }

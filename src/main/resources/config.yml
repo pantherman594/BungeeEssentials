@@ -1,7 +1,9 @@
 enable:
   - alert
   - announcement
+  - autoredirect
   - commandspy
+  - fastrelog
   - hide
   - joinannounce
   - lookup
@@ -22,11 +24,11 @@ enable:
   #- clean
   - fulllog
   - log
-  #- multilog
   - rules
   - rules-chat
   - spam
   - spam-chat
+  - spam-command
   - updater
 commands:
   alert:
@@ -88,11 +90,15 @@ commands:
 aliases:
   - alias: 'greet'
     commands:
-      - 'msg {0} Hey! How are you doing today? I was at {{ SERVER }} but I''m coming to join you!'
+      - 'TELL {0}: {{ PLAYER }} was at {{ SERVER }} but is coming to join you!'
       - 'join {0}'
   - alias: 'disappear'
     commands:
       - 'spy'
       - 'cspy'
       - 'hide'
+  - alias: 'vote'
+    commands:
+      - 'CONSOLE: staffchat {{ PLAYER }} wants to vote!'
+      - 'TELL: Vote for the server at yourvote.site!'
 configversion: 2.4.6

@@ -19,6 +19,7 @@
 package com.pantherman594.gssentials.event;
 
 import com.pantherman594.gssentials.utils.Dictionary;
+import com.pantherman594.gssentials.utils.Messenger;
 import com.pantherman594.gssentials.utils.Permissions;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -35,6 +36,7 @@ public class StaffChatEvent extends Event {
         this.msg = msg;
 
         if (msg != null) {
+            msg = Messenger.filter(ProxyServer.getInstance().getPlayer(sender), msg, Messenger.ChatType.STAFF);
             msg = Dictionary.format(Dictionary.FORMAT_STAFF_CHAT, "SERVER", server, "SENDER", sender, "MESSAGE", msg);
             for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
                 if (player.hasPermission(Permissions.Admin.CHAT + "." + server) || player.hasPermission(Permissions.Admin.CHAT)) {

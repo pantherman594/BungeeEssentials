@@ -56,7 +56,7 @@ public class StaffChatCommand extends ServerSpecificCommand {
 
             String msg;
             if (sender instanceof ProxiedPlayer) {
-                msg = Messenger.filter((ProxiedPlayer) sender, Dictionary.combine(args));
+                msg = Messenger.filter((ProxiedPlayer) sender, Dictionary.combine(args), Messenger.ChatType.PUBLIC);
             } else {
                 msg = Dictionary.combine(args);
             }

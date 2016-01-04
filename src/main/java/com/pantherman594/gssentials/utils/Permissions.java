@@ -24,7 +24,7 @@ public class Permissions {
         public static final String ALERT = "gssentials.admin.alert";
         public static final String CHAT = "gssentials.admin.chat";
         public static final String SEND = "gssentials.admin.send";
-        public static final String SENDALL = "gssentials.admin.send.all";
+        public static final String SENDALL = "gssentials.admin.sendall";
         public static final String SPY = "gssentials.admin.spy";
         public static final String SPY_EXEMPT = SPY + ".exempt";
         public static final String SPY_COMMAND = SPY + ".command";
@@ -52,6 +52,7 @@ public class Permissions {
         public static final String JOINANNC = ANNOUNCE + ".join";
         public static final String QUITANNC = ANNOUNCE + ".quit";
         public static final String ALIAS = "gssentials.alias";
+        public static final String FRIEND = "gssentials.friend";
     }
 
 }

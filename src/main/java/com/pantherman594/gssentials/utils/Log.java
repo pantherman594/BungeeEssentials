@@ -92,37 +92,23 @@ public class Log {
 
     public static void log(ProxiedPlayer sender, Rule rule, Messenger.ChatType type) {
         if (BungeeEssentials.getInstance().shouldLog() && logger != null) {
-            switch (rule.getHandle()) {
-                case ADVERTISEMENT:
-                    if (type == Messenger.ChatType.PRIVATE) {
-                        logger.log(Level.FINE, "{0} advertised via PM: \"{1}\"", new Object[]{sender.getName(), joiner.join(rule.getMatches())});
-                    } else {
-                        logger.log(Level.FINE, "{0} advertised in public chat: \"{1}\"", new Object[]{sender.getName(), joiner.join(rule.getMatches())});
-                    }
+            String chatType = "";
+            switch (type) {
+                case PRIVATE:
+                    chatType = "a PM";
                     break;
-                case CURSING:
-                    if (type == Messenger.ChatType.PRIVATE) {
-                        logger.log(Level.INFO, "{0} cursed via PM: \"{1}\"", new Object[]{sender.getName(), joiner.join(rule.getMatches())});
-                    } else {
-                        logger.log(Level.INFO, "{0} cursed in public chat: \"{1}\"", new Object[]{sender.getName(), joiner.join(rule.getMatches())});
-                    }
+                case PUBLIC:
+                    chatType = "public chat";
                     break;
-                case REPLACE:
-                    if (type == Messenger.ChatType.PRIVATE) {
-                        logger.log(Level.INFO, "{0} cursed via PM: \"{1}\"", new Object[]{sender.getName(), joiner.join(rule.getMatches())});
-                    } else {
-                        logger.log(Level.INFO, "{0} cursed in public chat: \"{1}\"", new Object[]{sender.getName(), joiner.join(rule.getMatches())});
-                    }
+                case GLOBAL:
+                    chatType = "global chat";
                     break;
-                case COMMAND:
-                    if (type == Messenger.ChatType.PRIVATE) {
-                        logger.log(Level.INFO, "{0} cursed via PM: \"{1}\"", new Object[]{sender.getName(), joiner.join(rule.getMatches())});
-                    } else {
-                        logger.log(Level.INFO, "{0} cursed in public chat: \"{1}\"", new Object[]{sender.getName(), joiner.join(rule.getMatches())});
-                    }
+                case STAFF:
+                    chatType = "staff chat";
                     break;
-			default:
-				break;
+            }
+            if (!chatType.equals("")) {
+                logger.log(Level.FINE, "{0} broke a chat rule in " + chatType + ": \"{1}\"", new Object[]{sender.getName(), joiner.join(rule.getMatches())});
             }
         }
     }

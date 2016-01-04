@@ -37,9 +37,10 @@ import java.util.regex.Matcher;
 
 @SuppressWarnings("deprecation")
 public class Messenger implements Listener {
-    public static HashMap<UUID, String> sentMessages = new HashMap<>();
     public static HashMap<UUID, UUID> messages = new HashMap<>();
-    public static HashMap<UUID, Set<UUID>> ignoreList = new HashMap<>();
+    public static HashMap<UUID, String> commands = new HashMap<>();
+    private static HashMap<UUID, Set<UUID>> ignoreList = new HashMap<>();
+    private static HashMap<UUID, String> sentMessages = new HashMap<>();
     private static HashMap<UUID, String> chatMessages = new HashMap<>();
     private static Set<UUID> hidden = new HashSet<>();
     private static Set<UUID> spies = new HashSet<>();
@@ -51,7 +52,7 @@ public class Messenger implements Listener {
     public static void chat(ProxiedPlayer player, ChatEvent event) {
         Preconditions.checkNotNull(player, "player null");
         Preconditions.checkNotNull(event, "event null");
-        String message = filter(player, event.getMessage());
+        String message = filter(player, event.getMessage(), ChatType.PUBLIC);
 
         if (message == null) {
             event.setCancelled(true);
@@ -60,73 +61,91 @@ public class Messenger implements Listener {
         }
     }
 
-    public static String filter(ProxiedPlayer player, String msg) {
-        Preconditions.checkNotNull(player, "player null");
+    public static String filter(ProxiedPlayer player, String msg, ChatType ct) {
+        if (msg == null || player == null) {
+            return null;
+        }
         String message = msg;
 
         if (isMutedF(player, msg)) {
             return null;
         }
-        if (!player.hasPermission(Permissions.Admin.BYPASS_FILTER) && BungeeEssentials.getInstance().useChatRules()) {
-            List<RuleManager.MatchResult> results = RuleManager.matches(msg);
-            for (RuleManager.MatchResult result : results) {
-                if (result.matched()) {
-                    Log.log(player, result.getRule(), ChatType.PUBLIC);
-                    switch (result.getRule().getHandle()) {
-                        case ADVERTISEMENT:
-                            player.sendMessage(Dictionary.format(Dictionary.WARNINGS_ADVERTISING));
-                            message = null;
-                            ruleNotify(Dictionary.NOTIFY_ADVERTISEMENT, player, msg);
-                            break;
-                        case CURSING:
-                            player.sendMessage(Dictionary.format(Dictionary.WARNING_HANDLE_CURSING));
-                            message = null;
-                            ruleNotify(Dictionary.NOTIFY_CURSING, player, msg);
-                            break;
-                        case REPLACE:
-                            if (result.getRule().getReplacement() != null && message != null) {
-                                Matcher matcher = result.getRule().getPattern().matcher(message);
-                                message = matcher.replaceAll(result.getRule().getReplacement());
-                            }
-                            ruleNotify(Dictionary.NOTIFY_REPLACE, player, msg);
-                            break;
-                        case COMMAND:
-                            CommandSender console = ProxyServer.getInstance().getConsole();
-                            String command = result.getRule().getCommand();
-                            if (command != null) {
-                                ProxyServer.getInstance().getPluginManager().dispatchCommand(console, command.replace("{{ SENDER }}", player.getName()));
-                            }
-                            ruleNotify(Dictionary.NOTIFY_COMMAND, player, msg);
-                            message = null;
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-            if (message != null) {
-                for (String word : BungeeEssentials.getInstance().getMessages().getStringList("bannedwords.list")) {
-                    String finalReg = "\\b(";
-                    for (char l : word.toCharArray()) {
-                        finalReg += l + "(\\W|\\d|_)*";
-                    }
-                    finalReg += ")";
-                    if (!finalReg.equals("\\b()")) {
-                        String message2 = message.replaceAll(finalReg, Dictionary.BANNED_REPLACE);
-                        if (!message2.equals(message)) {
-                            ruleNotify(Dictionary.NOTIFY_REPLACE, player, msg);
-                            message = message2;
+        if (!player.hasPermission(Permissions.Admin.BYPASS_FILTER)) {
+            if (BungeeEssentials.getInstance().useChatRules()) {
+                List<RuleManager.MatchResult> results = RuleManager.matches(msg);
+                for (RuleManager.MatchResult result : results) {
+                    if (result.matched()) {
+                        Log.log(player, result.getRule(), ct);
+                        switch (result.getRule().getHandle()) {
+                            case ADVERTISEMENT:
+                                player.sendMessage(Dictionary.format(Dictionary.WARNINGS_ADVERTISING));
+                                message = null;
+                                ruleNotify(Dictionary.NOTIFY_ADVERTISEMENT, player, msg);
+                                break;
+                            case CURSING:
+                                player.sendMessage(Dictionary.format(Dictionary.WARNING_HANDLE_CURSING));
+                                message = null;
+                                ruleNotify(Dictionary.NOTIFY_CURSING, player, msg);
+                                break;
+                            case REPLACE:
+                                if (result.getRule().getReplacement() != null && message != null) {
+                                    Matcher matcher = result.getRule().getPattern().matcher(message);
+                                    message = matcher.replaceAll(result.getRule().getReplacement());
+                                }
+                                ruleNotify(Dictionary.NOTIFY_REPLACE, player, msg);
+                                break;
+                            case COMMAND:
+                                CommandSender console = ProxyServer.getInstance().getConsole();
+                                String command = result.getRule().getCommand();
+                                if (command != null) {
+                                    ProxyServer.getInstance().getPluginManager().dispatchCommand(console, command.replace("{{ SENDER }}", player.getName()));
+                                }
+                                ruleNotify(Dictionary.NOTIFY_COMMAND, player, msg);
+                                message = null;
+                                break;
+                            default:
+                                break;
                         }
                     }
                 }
+                message = filterBannedWords(player, message, msg);
             }
-
-            if (BungeeEssentials.getInstance().useChatSpamProtection()) {
-                if (chatMessages.get(player.getUniqueId()) != null && compare(msg, chatMessages.get(player.getUniqueId())) > 0.85) {
-                    player.sendMessage(Dictionary.format(Dictionary.WARNING_LEVENSHTEIN_DISTANCE));
-                    return null;
+            if (ct == ChatType.PRIVATE) {
+                if (BungeeEssentials.getInstance().useSpamProtection()) {
+                    if (sentMessages.get(player.getUniqueId()) != null && compare(msg, sentMessages.get(player.getUniqueId())) > 0.85) {
+                        player.sendMessage(Dictionary.format(Dictionary.WARNING_LEVENSHTEIN_DISTANCE));
+                        return null;
+                    }
+                    sentMessages.put(player.getUniqueId(), msg);
                 }
-                chatMessages.put(player.getUniqueId(), msg);
+            } else {
+                if (BungeeEssentials.getInstance().useChatSpamProtection()) {
+                    if (chatMessages.get(player.getUniqueId()) != null && compare(msg, chatMessages.get(player.getUniqueId())) > 0.85) {
+                        player.sendMessage(Dictionary.format(Dictionary.WARNING_LEVENSHTEIN_DISTANCE));
+                        return null;
+                    }
+                    chatMessages.put(player.getUniqueId(), msg);
+                }
+            }
+        }
+        return message;
+    }
+
+    public static String filterBannedWords(ProxiedPlayer player, String message, String msg) {
+        if (message != null) {
+            for (String word : BungeeEssentials.getInstance().getMessages().getStringList("bannedwords.list")) {
+                String finalReg = "\\b(";
+                for (char l : word.toCharArray()) {
+                    finalReg += l + "(\\W|\\d|_)*";
+                }
+                finalReg += ")";
+                if (!finalReg.equals("\\b()")) {
+                    String message2 = message.replaceAll(finalReg, Dictionary.BANNED_REPLACE);
+                    if (!message2.equals(message)) {
+                        ruleNotify(Dictionary.NOTIFY_REPLACE, player, msg);
+                        message = message2;
+                    }
+                }
             }
         }
         return message;
@@ -360,53 +379,31 @@ public class Messenger implements Listener {
                 BufferedReader br = new BufferedReader(new InputStreamReader(in));
                 String strLine;
                 String[] players;
-                if ((strLine = br.readLine()) != null) {
-                    strLine = strLine.replace("[", "").replace("]", "");
-                    if (!strLine.equals("")) {
-                        players = strLine.split(", ");
-                        for (String uuidStr : players) {
-                            UUID uuid = UUID.fromString(uuidStr);
-                            hidden.add(uuid);
-                        }
-                    }
-                }
-                if ((strLine = br.readLine()) != null) {
-                    strLine = strLine.replace("[", "").replace("]", "");
-                    if (!strLine.equals("")) {
-                        players = strLine.split(", ");
-                        for (String uuidStr : players) {
-                            UUID uuid = UUID.fromString(uuidStr);
-                            spies.add(uuid);
-                        }
-                    }
-                }
-                if ((strLine = br.readLine()) != null) {
-                    strLine = strLine.replace("[", "").replace("]", "");
-                    if (!strLine.equals("")) {
-                        players = strLine.split(", ");
-                        for (String uuidStr : players) {
-                            UUID uuid = UUID.fromString(uuidStr);
-                            cspies.add(uuid);
-                        }
-                    }
-                }
-                if ((strLine = br.readLine()) != null) {
-                    strLine = strLine.replace("[", "").replace("]", "");
-                    if (!strLine.equals("")) {
-                        players = strLine.split(", ");
-                        for (String uuidStr : players) {
-                            UUID uuid = UUID.fromString(uuidStr);
-                            staffChat.add(uuid);
-                        }
-                    }
-                }
-                if ((strLine = br.readLine()) != null) {
-                    strLine = strLine.replace("[", "").replace("]", "");
-                    if (!strLine.equals("")) {
-                        players = strLine.split(", ");
-                        for (String uuidStr : players) {
-                            UUID uuid = UUID.fromString(uuidStr);
-                            globalChat.add(uuid);
+                for (int i = 0; i < 5; i++) {
+                    if ((strLine = br.readLine()) != null) {
+                        strLine = strLine.replace("[", "").replace("]", "");
+                        if (!strLine.equals("")) {
+                            players = strLine.split(", ");
+                            for (String uuidStr : players) {
+                                UUID uuid = UUID.fromString(uuidStr);
+                                switch (i) {
+                                    case 0:
+                                        hidden.add(uuid);
+                                        break;
+                                    case 1:
+                                        spies.add(uuid);
+                                        break;
+                                    case 2:
+                                        cspies.add(uuid);
+                                        break;
+                                    case 3:
+                                        staffChat.add(uuid);
+                                        break;
+                                    case 4:
+                                        globalChat.add(uuid);
+                                        break;
+                                }
+                            }
                         }
                     }
                 }
@@ -515,6 +512,8 @@ public class Messenger implements Listener {
 
     public enum ChatType {
         PUBLIC,
-        PRIVATE
+        PRIVATE,
+        STAFF,
+        GLOBAL
     }
 }

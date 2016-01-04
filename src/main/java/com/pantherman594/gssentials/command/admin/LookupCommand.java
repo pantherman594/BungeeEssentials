@@ -19,7 +19,7 @@
 package com.pantherman594.gssentials.command.admin;
 
 import com.pantherman594.gssentials.BungeeEssentials;
-import com.pantherman594.gssentials.command.BECommand;
+import com.pantherman594.gssentials.command.ServerSpecificCommand;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.Permissions;
 import net.md_5.bungee.api.CommandSender;
@@ -28,13 +28,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 @SuppressWarnings("deprecation")
-public class LookupCommand extends BECommand {
+public class LookupCommand extends ServerSpecificCommand {
     public LookupCommand() {
         super("lookup", Permissions.Admin.LOOKUP);
     }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public void run(CommandSender sender, String[] args) {
         Set<String> matches = new HashSet<>();
         if (args.length == 1) {
             String partialPlayerName = args[0].toLowerCase();

@@ -140,8 +140,8 @@ public class Dictionary {
     public static String WARNING_HANDLE_CURSING;
     @Load(key = "warnings.advertising", def = "&cPlease do not advertise other servers!")
     public static String WARNINGS_ADVERTISING;
-    @Load(key = "multilog.kicked", def = "&cMaximum number of connections reached!")
-    public static String MULTILOG_KICK_MESSAGE;
+    @Load(key = "fastrelog", def = "&cPlease wait before reconnecting!")
+    public static String FAST_RELOG_KICK;
     private static SimpleDateFormat date;
 
     private static Calendar calendar;

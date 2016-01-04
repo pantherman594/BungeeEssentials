@@ -28,6 +28,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 
 public class Updater {
@@ -102,10 +103,14 @@ public class Updater {
             }
         }
         try {
+            File oldDir = new File(BungeeEssentials.getInstance().getDataFolder(), "old");
+            if (!oldDir.exists()) {
+                oldDir.mkdir();
+            }
             File newConf = new File(BungeeEssentials.getInstance().getDataFolder(), "config.yml");
-            File oldConf = new File(BungeeEssentials.getInstance().getDataFolder(), "config_v" + oldVersion + ".yml");
+            File oldConf = new File(oldDir, "config_v" + oldVersion + ".yml");
             File newMess = new File(BungeeEssentials.getInstance().getDataFolder(), "messages.yml");
-            File oldMess = new File(BungeeEssentials.getInstance().getDataFolder(), "messages_v" + oldVersion + ".yml");
+            File oldMess = new File(oldDir, "messages_v" + oldVersion + ".yml");
             Files.copy(newConf.toPath(), oldConf.toPath());
             Files.copy(newMess.toPath(), oldMess.toPath());
         } catch (Exception e) {
@@ -138,6 +143,18 @@ public class Updater {
             messages.set("bannedwords.list", Arrays.asList("anal", "anus", "aroused", "asshole", "bastard", "bitch", "boob", "bugger", "cock", "cum", "cunt", "dafuq", "dick", "ffs", "fuck", "gay", "hentai", "homo", "homosexual", "horny", "intercourse", "jerk", "lesbian", "milf", "nigga", "nigger", "pedo", "penis", "piss", "prostitute", "pussy", "rape", "rapist", "retard", "sex", "shit", "slag", "slut", "sperm", "spunk", "testicle", "titt", "tosser", "twat", "vagina", "wanker", "whore", "wtf"));
             config.set("configversion", "2.4.6");
             oldVersion = 246;
+        }
+        if (oldVersion == 246) {
+            List<String> enabledList = config.getStringList("enable");
+            enabledList.remove("multirelog");
+            enabledList.add("autoredirect");
+            enabledList.add("fastrelog");
+            enabledList.add("spam-command");
+            config.set("enable", enabledList);
+            messages.set("multilog", null);
+            messages.set("errors.fastrelog", "&cPlease wait before reconnecting!");
+            config.set("configversion", "2.5.0");
+            oldVersion = 250;
         }
         BungeeEssentials.getInstance().saveMainConfig();
         BungeeEssentials.getInstance().saveMessagesConfig();

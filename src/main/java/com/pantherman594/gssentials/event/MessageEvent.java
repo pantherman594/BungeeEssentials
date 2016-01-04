@@ -19,9 +19,7 @@
 package com.pantherman594.gssentials.event;
 
 import com.pantherman594.gssentials.BungeeEssentials;
-import com.pantherman594.gssentials.regex.RuleManager;
 import com.pantherman594.gssentials.utils.Dictionary;
-import com.pantherman594.gssentials.utils.Log;
 import com.pantherman594.gssentials.utils.Messenger;
 import com.pantherman594.gssentials.utils.Permissions;
 import net.md_5.bungee.api.CommandSender;
@@ -29,8 +27,7 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Event;
 
-import java.util.List;
-import java.util.regex.Matcher;
+import java.util.concurrent.TimeUnit;
 
 public class MessageEvent extends Event {
     private CommandSender sender;
@@ -46,74 +43,10 @@ public class MessageEvent extends Event {
             ProxiedPlayer player = null;
             if (sender instanceof ProxiedPlayer) {
                 player = (ProxiedPlayer) sender;
-                if (Messenger.isMutedF(player, msg)) {
-                    return;
-                }
-                if (!sender.hasPermission(Permissions.Admin.BYPASS_FILTER) && BungeeEssentials.getInstance().useRules()) {
-                    List<RuleManager.MatchResult> results = RuleManager.matches(msg);
-                    for (RuleManager.MatchResult result : results) {
-                        if (result.matched()) {
-                            Log.log(player, result.getRule(), Messenger.ChatType.PRIVATE);
-                            switch (result.getRule().getHandle()) {
-                                case ADVERTISEMENT:
-                                    sender.sendMessage(Dictionary.format(Dictionary.WARNINGS_ADVERTISING));
-                                    Messenger.ruleNotify(Dictionary.NOTIFY_ADVERTISEMENT, (ProxiedPlayer) sender, msg);
-                                    return;
-                                case CURSING:
-                                    sender.sendMessage(Dictionary.format(Dictionary.WARNING_HANDLE_CURSING));
-                                    Messenger.ruleNotify(Dictionary.NOTIFY_CURSING, (ProxiedPlayer) sender, msg);
-                                    return;
-                                case REPLACE:
-                                    if (result.getRule().getReplacement() != null && message != null) {
-                                        Matcher matcher = result.getRule().getPattern().matcher(message);
-                                        message = matcher.replaceAll(result.getRule().getReplacement());
-                                    }
-                                    Messenger.ruleNotify(Dictionary.NOTIFY_REPLACE, (ProxiedPlayer) sender, msg);
-                                    break;
-                                case COMMAND:
-                                    CommandSender console = ProxyServer.getInstance().getConsole();
-                                    String command = result.getRule().getCommand();
-                                    if (command != null) {
-                                        ProxyServer.getInstance().getPluginManager().dispatchCommand(console, command.replace("{{ SENDER }}", sender.getName()));
-                                    }
-                                    Messenger.ruleNotify(Dictionary.NOTIFY_COMMAND, (ProxiedPlayer) sender, msg);
-                                    return;
-                                default:
-                                    break;
-                            }
-                        }
-                    }
-                    if (message != null) {
-                        for (String word : BungeeEssentials.getInstance().getMessages().getStringList("bannedwords.list")) {
-                            String finalReg = "\\b(";
-                            for (char l : word.toCharArray()) {
-                                finalReg += l + "(\\W|\\d|_)*";
-                            }
-                            finalReg += ")";
-                            if (!finalReg.equals("\\b()")) {
-                                String message2 = message.replaceAll(finalReg, Dictionary.BANNED_REPLACE);
-                                if (!message2.equals(message)) {
-                                    Messenger.ruleNotify(Dictionary.NOTIFY_REPLACE, player, msg);
-                                    message = message2;
-                                }
-                            }
-                        }
-                    }
-                }
+                message = Messenger.filter(player, msg, Messenger.ChatType.PRIVATE);
             }
-
             String server = player != null ? player.getServer().getInfo().getName() : "CONSOLE";
             if (player != null) {
-                if (BungeeEssentials.getInstance().useSpamProtection() && !player.hasPermission(Permissions.Admin.BYPASS_FILTER)) {
-                    if (Messenger.sentMessages.get(player.getUniqueId()) != null) {
-                        String last = Messenger.sentMessages.get(player.getUniqueId());
-                        if (Messenger.compare(msg, last) > 0.85) {
-                            sender.sendMessage(Dictionary.format(Dictionary.WARNING_LEVENSHTEIN_DISTANCE));
-                            return;
-                        }
-                    }
-                    Messenger.sentMessages.put(player.getUniqueId(), msg);
-                }
 
                 if (!sender.hasPermission(Permissions.Admin.SPY_EXEMPT)) {
                     String spyMessage = Dictionary.format(Dictionary.SPY_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message);
@@ -125,7 +58,15 @@ public class MessageEvent extends Event {
                         }
                     }
                 }
-                Messenger.messages.put(recipient.getUniqueId(), player.getUniqueId());
+                final ProxiedPlayer recp = recipient;
+                final ProxiedPlayer play = player;
+                ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), new Runnable() {
+                    @Override
+                    public void run() {
+                        Messenger.messages.put(recp.getUniqueId(), play.getUniqueId());
+                        Messenger.messages.put(play.getUniqueId(), recp.getUniqueId());
+                    }
+                }, 3, TimeUnit.SECONDS);
             }
             if (BungeeEssentials.getInstance().ignore()) {
                 if (!Messenger.isIgnoring((ProxiedPlayer) sender, recipient)) {
