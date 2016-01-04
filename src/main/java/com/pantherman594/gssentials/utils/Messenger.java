@@ -37,11 +37,11 @@ import java.util.regex.Matcher;
 
 @SuppressWarnings("deprecation")
 public class Messenger implements Listener {
-    public static HashMap<UUID, UUID> messages = new HashMap<>();
-    public static HashMap<UUID, String> commands = new HashMap<>();
-    private static HashMap<UUID, Set<UUID>> ignoreList = new HashMap<>();
-    private static HashMap<UUID, String> sentMessages = new HashMap<>();
-    private static HashMap<UUID, String> chatMessages = new HashMap<>();
+    public static Map<UUID, UUID> messages = new HashMap<>();
+    public static Map<UUID, String> commands = new HashMap<>();
+    private static Map<UUID, Set<UUID>> ignoreList = new HashMap<>();
+    private static Map<UUID, String> sentMessages = new HashMap<>();
+    private static Map<UUID, String> chatMessages = new HashMap<>();
     private static Set<UUID> hidden = new HashSet<>();
     private static Set<UUID> spies = new HashSet<>();
     private static Set<UUID> cspies = new HashSet<>();
@@ -72,7 +72,7 @@ public class Messenger implements Listener {
         }
         if (!player.hasPermission(Permissions.Admin.BYPASS_FILTER)) {
             if (BungeeEssentials.getInstance().useChatRules()) {
-                List<RuleManager.MatchResult> results = RuleManager.matches(msg);
+                List<RuleManager.MatchResult> results = BungeeEssentials.getInstance().getRuleManager().matches(msg);
                 for (RuleManager.MatchResult result : results) {
                     if (result.matched()) {
                         Log.log(player, result.getRule(), ct);

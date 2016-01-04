@@ -30,16 +30,10 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
-@SuppressWarnings("deprecation")
 public class AnnouncementManager {
-    private static Map<String, Announcement> anncs = new HashMap<>();
+    private Map<String, Announcement> anncs = new HashMap<>();
 
-    private static void register(String anncName, Announcement annc) {
-        anncs.put(anncName, annc);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static boolean load() {
+    public AnnouncementManager() {
         anncs.clear();
         Configuration anncSection = BungeeEssentials.getInstance().getMessages().getSection("announcements");
         for (String annc : anncSection.getKeys()) {
@@ -56,10 +50,13 @@ public class AnnouncementManager {
             BungeeEssentials.getInstance().getLogger().log(Level.INFO, "Loaded {0} announcements from config", anncs.size());
             scheduleAnnc();
         }
-        return true;
     }
 
-    private static void scheduleAnnc() {
+    private void register(String anncName, Announcement annc) {
+        anncs.put(anncName, annc);
+    }
+
+    private void scheduleAnnc() {
         for (final String anncName : anncs.keySet()) {
             final Announcement annc = anncs.get(anncName);
             ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), new Runnable() {
@@ -74,7 +71,7 @@ public class AnnouncementManager {
         }
     }
 
-    private static void scheduleAnnc(final String anncName, final Announcement annc) {
+    private void scheduleAnnc(final String anncName, final Announcement annc) {
         ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), new Runnable() {
             @Override
             public void run() {
@@ -88,5 +85,9 @@ public class AnnouncementManager {
                 scheduleAnnc(anncName, annc);
             }
         }, annc.getInterval(), TimeUnit.SECONDS);
+    }
+
+    public Map<String, Announcement> getAnncs() {
+        return anncs;
     }
 }

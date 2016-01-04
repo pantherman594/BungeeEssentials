@@ -26,17 +26,24 @@ import java.util.Map;
 import java.util.logging.Level;
 
 public class RuleManager {
-    private static List<Rule> rules = new ArrayList<>();
+    private List<Rule> rules = new ArrayList<>();
 
-    public static boolean register(Rule rule) {
-        if (!rules.contains(rule)) {
-            rules.add(rule);
-            return true;
+    @SuppressWarnings("unchecked")
+    public RuleManager() {
+        rules.clear();
+        List<Map<String, String>> section = (List<Map<String, String>>) BungeeEssentials.getInstance().getMessages().getList("rules");
+        for (Map<String, String> map : section) {
+            Rule rule = Rule.deserialize(map);
+            if (rule != null) {
+                rules.add(rule);
+            }
         }
-        return false;
+        if (rules.size() > 0) {
+            BungeeEssentials.getInstance().getLogger().log(Level.INFO, "Loaded {0} rules from config", rules.size());
+        }
     }
 
-    public static List<MatchResult> matches(String input) {
+    public List<MatchResult> matches(String input) {
         List<MatchResult> results = new ArrayList<>();
         Boolean contains = false;
         for (Rule rule : rules) {
@@ -60,26 +67,11 @@ public class RuleManager {
         return results;
     }
 
-    @SuppressWarnings("unchecked")
-    public static boolean load() {
-        rules.clear();
-        List<Map<String, String>> section = (List<Map<String, String>>) BungeeEssentials.getInstance().getMessages().getList("rules");
-        int success = 0;
-        for (Map<String, String> map : section) {
-            Rule rule = Rule.deserialize(map);
-            if (rule != null) {
-                if (register(rule)) {
-                    success++;
-                }
-            }
-        }
-        if (success > 0) {
-            BungeeEssentials.getInstance().getLogger().log(Level.INFO, "Loaded {0} rules from config", success);
-        }
-        return true;
+    public List<Rule> getRules() {
+        return rules;
     }
 
-    public static class MatchResult {
+    public class MatchResult {
         private final boolean success;
         private final Rule rule;
 

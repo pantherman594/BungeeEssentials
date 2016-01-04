@@ -28,17 +28,9 @@ import java.util.Map;
 import java.util.logging.Level;
 
 public class AliasManager {
-    public static Map<String, List<String>> aliases = new HashMap<>();
+    private Map<String, List<String>> aliases = new HashMap<>();
 
-    private static void register(String alias, List<String> commands) {
-        if (!aliases.containsKey(alias)) {
-            aliases.put(alias, commands);
-            ProxyServer.getInstance().getPluginManager().registerCommand(BungeeEssentials.getInstance(), new LoadCmds(alias, commands));
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public static boolean load() {
+    public AliasManager() {
         aliases.clear();
         Configuration aliasSection = BungeeEssentials.getInstance().getConfig().getSection("aliases");
         for (String alias : aliasSection.getKeys()) {
@@ -48,6 +40,16 @@ public class AliasManager {
         if (aliases.size() > 0) {
             BungeeEssentials.getInstance().getLogger().log(Level.INFO, "Loaded {0} aliases from config", aliases.size());
         }
-        return true;
+    }
+
+    private void register(String alias, List<String> commands) {
+        if (!aliases.containsKey(alias)) {
+            aliases.put(alias, commands);
+            ProxyServer.getInstance().getPluginManager().registerCommand(BungeeEssentials.getInstance(), new LoadCmds(alias, commands));
+        }
+    }
+
+    public Map<String, List<String>> getAliases() {
+        return aliases;
     }
 }

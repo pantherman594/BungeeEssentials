@@ -46,11 +46,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 public class BungeeEssentials extends Plugin {
-    public static HashMap<String, String> mainList = new HashMap<>();
-    public static HashMap<String, String[]> aliasList = new HashMap<>();
     private static BungeeEssentials instance;
     public List<String> playerList = new ArrayList<>();
-    private Configuration config = null;
+    private Map<String, String> mainList = new HashMap<>();
+    private Map<String, String[]> aliasList = new HashMap<>();
+    private AliasManager aliasManager;
+    private AnnouncementManager anncManager;
+    private RuleManager ruleManager;
+    private Configuration config;
     private Configuration messages = null;
     private Configuration players = null;
     private IntegrationProvider helper;
@@ -77,11 +80,23 @@ public class BungeeEssentials extends Plugin {
         return instance;
     }
 
-    public static String getMain(String key) {
+    public AliasManager getAliasManager() {
+        return aliasManager;
+    }
+
+    public AnnouncementManager getAnncManager() {
+        return anncManager;
+    }
+
+    public RuleManager getRuleManager() {
+        return ruleManager;
+    }
+
+    public String getMain(String key) {
         return mainList.get(key);
     }
 
-    public static String[] getAlias(String key) {
+    public String[] getAlias(String key) {
         return aliasList.get(key);
     }
 
@@ -218,16 +233,16 @@ public class BungeeEssentials extends Plugin {
                 getLogger().log(Level.WARNING, "Error enabling the chat logger!");
             }
         }
-        if (enable.contains("announcement")) {
-            AnnouncementManager.load();
-            getLogger().log(Level.INFO, "Enabled announcements");
-        }
         if (enable.contains("aliases")) {
-            AliasManager.load();
+            aliasManager = new AliasManager();
             getLogger().log(Level.INFO, "Enabled aliases");
         }
+        if (enable.contains("announcement")) {
+            anncManager = new AnnouncementManager();
+            getLogger().log(Level.INFO, "Enabled announcements");
+        }
         if (rules || chatRules) {
-            RuleManager.load();
+            ruleManager = new RuleManager();
         }
         spam = enable.contains("spam");
         chatSpam = enable.contains("spam-chat");

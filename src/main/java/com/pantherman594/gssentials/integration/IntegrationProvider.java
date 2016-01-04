@@ -23,11 +23,12 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public abstract class IntegrationProvider {
-    private static HashMap<String, Class<? extends IntegrationProvider>> providers = new HashMap<>();
-    private static HashMap<Class<? extends IntegrationProvider>, IntegrationProvider> instances = new HashMap<>();
+    private static Map<String, Class<? extends IntegrationProvider>> providers = new HashMap<>();
+    private static Map<Class<? extends IntegrationProvider>, IntegrationProvider> instances = new HashMap<>();
 
     static {
         /*

@@ -28,6 +28,6 @@ import net.md_5.bungee.api.plugin.Command;
  */
 public abstract class BECommand extends Command {
     public BECommand(String name, String permission) {
-        super(BungeeEssentials.getMain(name), permission, BungeeEssentials.getAlias(name));
+        super(BungeeEssentials.getInstance().getMain(name), permission, BungeeEssentials.getInstance().getAlias(name));
     }
 }

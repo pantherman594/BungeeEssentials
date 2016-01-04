@@ -18,7 +18,6 @@
 
 package com.pantherman594.gssentials.event;
 
-import com.google.common.collect.Maps;
 import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.Messenger;
@@ -33,27 +32,17 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
-@SuppressWarnings("deprecation")
 public class PlayerListener implements Listener {
     private final HashSet<InetAddress> connections;
-    private final HashMap<InetAddress, ServerInfo> redirServer;
-    private final int max;
+    private final Map<InetAddress, ServerInfo> redirServer;
 
     public PlayerListener() {
         connections = new HashSet<>();
-        redirServer = Maps.newHashMap();
-        int max = BungeeEssentials.getInstance().getConfig().getInt("multilog.limit", 3);
-        if (max < 1) {
-            max = 1;
-        }
-        this.max = max;
+        redirServer = new HashMap<>();
     }
 
     @EventHandler(priority = Byte.MAX_VALUE)
