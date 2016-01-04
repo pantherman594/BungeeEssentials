@@ -89,6 +89,7 @@ commands:
     - 'gssreload'
 aliases:
   greet:
+    - 'TELL: Joining {0}...'
     - 'TELL {0}: {{ PLAYER }} was at {{ SERVER }} but is coming to join you!'
     - 'join {0}'
   disappear:
