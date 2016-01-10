@@ -66,6 +66,34 @@ public class Dictionary {
     public static String FORMAT_CHAT;
     @Load(key = "format.alert", def = "&8[&c!&8] &7{{ MESSAGE }}")
     public static String FORMAT_ALERT;
+    @Load(key = "friend.header", def = "&2Current Friends:")
+    public static String FRIEND_HEADER;
+    @Load(key = "friend.body", def = "- {{ NAME }} ({{ SERVER }})")
+    public static String FRIEND_BODY;
+    @Load(key = "friend.new", def = "&aYou are now friends with {{ NAME }}!")
+    public static String FRIEND_NEW;
+    @Load(key = "friend.old", def = "&aYou are already friends with {{ NAME }}!")
+    public static String FRIEND_OLD;
+    @Load(key = "friend.remove", def = "&cYou are no longer friends with {{ NAME }}.")
+    public static String FRIEND_REMOVE;
+    @Load(key = "friend.outrequests.header", def = "&2Outgoing Friend Requests:")
+    public static String OUTREQUESTS_HEADER;
+    @Load(key = "friend.outrequests.body", def = "- {{ NAME }}")
+    public static String OUTREQUESTS_BODY;
+    @Load(key = "friend.outrequests.new", def = "&a{{ NAME }} has received your friend request.")
+    public static String OUTREQUESTS_NEW;
+    @Load(key = "friend.outrequests.old", def = "&cYou already requested to be friends with {{ NAME }}. Please wait for a response!")
+    public static String OUTREQUESTS_OLD;
+    @Load(key = "friend.outrequests.remove", def = "&cThe friend request to {{ NAME }} was removed.")
+    public static String OUTREQUESTS_REMOVE;
+    @Load(key = "friend.inrequests.header", def = "&2Incoming Friend Requests:")
+    public static String INREQUESTS_HEADER;
+    @Load(key = "friend.inrequests.body", def = "- {{ NAME }}")
+    public static String INREQUESTS_BODY;
+    @Load(key = "friend.inrequests.new", def = "&a{{ NAME }} would like to be your friend. /friend <add|remove> {{ NAME }} to accept or decline the request.")
+    public static String INREQUESTS_NEW;
+    @Load(key = "friend.inrequests.remove", def = "&cThe friend request from {{ NAME }} was removed.")
+    public static String INREQUESTS_REMOVE;
     @Load(key = "list.header", def = "&aServers")
     public static String LIST_HEADER;
     @Load(key = "list.body", def = "&a- {{ SERVER }} {{ DENSITY }}")

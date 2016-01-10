@@ -37,7 +37,7 @@ Please try to follow the formats below to make it easier for both of us. You may
 **Description:** <description>
 ```
 
-### Support
+### Support Us
 
 If you like the project and it's helped you out, please consider donating [here for PantherMan594][donate] (current developer) or [here for Fireflies][donate2] (original author) to show your appreciation, or leave a rating on the resource page [here][resource]. I hope you enjoy using BungeeEssentials!
 

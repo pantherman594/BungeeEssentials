@@ -19,7 +19,6 @@
 package com.pantherman594.gssentials.utils;
 
 import com.pantherman594.gssentials.BungeeEssentials;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
@@ -36,41 +35,45 @@ import java.util.List;
  */
 public class Friends {
     private Configuration config;
-    private ProxiedPlayer player;
+    private String uuid;
     private List<String> friends;
-    private List<String> requests;
+    private List<String> outRequests;
+    private List<String> inRequests;
 
-    public Friends(ProxiedPlayer p) {
-        File playerFile = new File(BungeeEssentials.getInstance().getDataFolder() + File.separator + "playerdata" + File.separator + p.getUniqueId().toString() + ".yml");
+    public Friends(String uuid) {
+        File playerFile = new File(BungeeEssentials.getInstance().getDataFolder() + File.separator + "playerdata" + File.separator + uuid + ".yml");
         if (playerFile.exists()) {
             try {
                 config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(playerFile);
             } catch (IOException e) {
-                BungeeEssentials.getInstance().getLogger().warning("Unable to load " + p.getName() + "'s friends.");
+                BungeeEssentials.getInstance().getLogger().warning("Unable to load " + uuid + "'s friends.");
                 return;
             }
-            player = p;
+            this.uuid = uuid;
             friends = new ArrayList<>();
-            requests = new ArrayList<>();
+            outRequests = new ArrayList<>();
+            inRequests = new ArrayList<>();
             friends.addAll(config.getStringList("friends"));
-            requests.addAll(config.getStringList("requests"));
+            outRequests.addAll(config.getStringList("requests.out"));
+            inRequests.addAll(config.getStringList("requests.in"));
         }
     }
 
     public boolean save() {
-        File playerFile = new File(BungeeEssentials.getInstance().getDataFolder() + File.separator + "playerdata" + File.separator + player.getUniqueId().toString() + ".yml");
+        File playerFile = new File(BungeeEssentials.getInstance().getDataFolder() + File.separator + "playerdata" + File.separator + uuid + ".yml");
         try {
             config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(playerFile);
         } catch (IOException e) {
-            BungeeEssentials.getInstance().getLogger().warning("Unable to save " + player.getName() + "'s friends.");
+            BungeeEssentials.getInstance().getLogger().warning("Unable to save " + uuid + "'s friends.");
             return false;
         }
         config.set("friends", friends);
-        config.set("requests", requests);
+        config.set("requests.out", outRequests);
+        config.set("requests.in", inRequests);
         try {
             ConfigurationProvider.getProvider(YamlConfiguration.class).save(config, playerFile);
         } catch (IOException e) {
-            BungeeEssentials.getInstance().getLogger().warning("Unable to save " + player.getName() + "'s friends.");
+            BungeeEssentials.getInstance().getLogger().warning("Unable to save " + uuid + "'s friends.");
             return false;
         }
         return true;
@@ -80,7 +83,11 @@ public class Friends {
         return friends;
     }
 
-    public List<String> getRequests() {
-        return requests;
+    public List<String> getOutRequests() {
+        return outRequests;
+    }
+
+    public List<String> getInRequests() {
+        return inRequests;
     }
 }

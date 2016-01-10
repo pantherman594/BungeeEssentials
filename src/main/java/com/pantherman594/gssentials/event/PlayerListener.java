@@ -142,7 +142,7 @@ public class PlayerListener implements Listener {
             BungeeEssentials.getInstance().getLogger().log(Level.INFO, Dictionary.format(Dictionary.FORMAT_JOIN, "PLAYER", event.getPlayer().getName()));
         }
         if (BungeeEssentials.getInstance().contains("friend")) {
-            BungeeEssentials.getInstance().setFriends(event.getPlayer().getUniqueId(), new Friends(event.getPlayer()));
+            BungeeEssentials.getInstance().setFriends(event.getPlayer().getUniqueId(), new Friends(event.getPlayer().getUniqueId().toString()));
         }
     }
 
@@ -177,7 +177,9 @@ public class PlayerListener implements Listener {
             BungeeEssentials.getInstance().getLogger().log(Level.INFO, Dictionary.format(Dictionary.FORMAT_QUIT, "PLAYER", event.getPlayer().getName()));
         }
         if (BungeeEssentials.getInstance().contains("friend")) {
-            BungeeEssentials.getInstance().setFriends(event.getPlayer().getUniqueId(), new Friends(event.getPlayer()));
+            if (BungeeEssentials.getInstance().getFriends(event.getPlayer().getUniqueId()).save()) {
+                BungeeEssentials.getInstance().clearFriends(event.getPlayer().getUniqueId());
+            }
         }
     }
 

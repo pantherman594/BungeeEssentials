@@ -105,6 +105,23 @@ commandspy:
   command: '&7[{{ SENDER }}] &b{{ COMMAND }}'
   enabled: '&aCommand Spy has been enabled'
   disabled: '&cCommand Spy has been disabled'
+friend:
+  header: '&2Current Friends:'
+  body: '- {{ NAME }} ({{ SERVER }})'
+  new: '&aYou are now friends with {{ NAME }}!'
+  old: '&aYou are already friends with {{ NAME }}!'
+  remove: '&cYou are no longer friends with {{ NAME }}.'
+  outrequests:
+    header: '&2Outgoing Friend Requests:'
+    body: '- {{ NAME }}'
+    new: '&a{{ NAME }} has received your friend request.'
+    old: '&cYou already requested to be friends with {{ NAME }}. Please wait for a response!'
+    remove: '&cThe friend request to {{ NAME }} was removed.'
+  inrequests:
+    header: '&2Incoming Friend Requests:'
+    body: '- {{ NAME }}'
+    new: '&a{{ NAME }} would like to be your friend. /friend <add|remove> {{ NAME }} to accept or decline the request.'
+    remove: '&cThe friend request from {{ NAME }} was removed.'
 hide:
   enabled: '&aYou are now hidden from all players!'
   disabled: '&cYou are now visible to all players!'
