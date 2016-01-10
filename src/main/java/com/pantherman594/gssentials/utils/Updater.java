@@ -172,6 +172,9 @@ public class Updater {
                 Preconditions.checkNotNull(map.get("commands"), "invalid commands");
                 config.set("aliases." + map.get("alias"), map.get("commands"));
             }
+            if (messages.get("bannedwords.replace").equals("****")) {
+                messages.set("bannedwords.replace", "*");
+            }
             messages.set("multilog", null);
             messages.set("friends.header", "&2Current Friends:");
             messages.set("friends.body", "- {{ NAME }} ({{ SERVER }})");
