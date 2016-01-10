@@ -71,7 +71,7 @@ public class Messenger implements Listener {
             return null;
         }
         if (!player.hasPermission(Permissions.Admin.BYPASS_FILTER)) {
-            if (BungeeEssentials.getInstance().useChatRules()) {
+            if (BungeeEssentials.getInstance().contains("rules-chat")) {
                 List<RuleManager.MatchResult> results = BungeeEssentials.getInstance().getRuleManager().matches(msg);
                 for (RuleManager.MatchResult result : results) {
                     if (result.matched()) {
@@ -111,7 +111,7 @@ public class Messenger implements Listener {
                 message = filterBannedWords(player, message, msg);
             }
             if (ct == ChatType.PRIVATE) {
-                if (BungeeEssentials.getInstance().useSpamProtection()) {
+                if (BungeeEssentials.getInstance().contains("spam")) {
                     if (sentMessages.get(player.getUniqueId()) != null && compare(msg, sentMessages.get(player.getUniqueId())) > 0.85) {
                         player.sendMessage(Dictionary.format(Dictionary.WARNING_LEVENSHTEIN_DISTANCE));
                         return null;
@@ -119,7 +119,7 @@ public class Messenger implements Listener {
                     sentMessages.put(player.getUniqueId(), msg);
                 }
             } else {
-                if (BungeeEssentials.getInstance().useChatSpamProtection()) {
+                if (BungeeEssentials.getInstance().contains("spam-chat")) {
                     if (chatMessages.get(player.getUniqueId()) != null && compare(msg, chatMessages.get(player.getUniqueId())) > 0.85) {
                         player.sendMessage(Dictionary.format(Dictionary.WARNING_LEVENSHTEIN_DISTANCE));
                         return null;
@@ -486,7 +486,7 @@ public class Messenger implements Listener {
 
     @EventHandler
     public void logout(PlayerDisconnectEvent event) {
-        if (BungeeEssentials.getInstance().shouldClean()) {
+        if (BungeeEssentials.getInstance().contains("clean")) {
             UUID uuid = event.getPlayer().getUniqueId();
             if (sentMessages.containsKey(uuid)) {
                 sentMessages.remove(uuid);

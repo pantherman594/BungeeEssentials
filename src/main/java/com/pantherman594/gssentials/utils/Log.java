@@ -91,7 +91,7 @@ public class Log {
     }
 
     public static void log(ProxiedPlayer sender, Rule rule, Messenger.ChatType type) {
-        if (BungeeEssentials.getInstance().shouldLog() && logger != null) {
+        if (BungeeEssentials.getInstance().contains("log") && logger != null) {
             String chatType = "";
             switch (type) {
                 case PRIVATE:

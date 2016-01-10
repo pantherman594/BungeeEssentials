@@ -68,7 +68,7 @@ public class MessageEvent extends Event {
                     }
                 }, 3, TimeUnit.SECONDS);
             }
-            if (BungeeEssentials.getInstance().ignore()) {
+            if (BungeeEssentials.getInstance().contains("ignore")) {
                 if (!Messenger.isIgnoring((ProxiedPlayer) sender, recipient)) {
                     if (!Messenger.isIgnoring(recipient, (ProxiedPlayer) sender)) {
                         recipient.sendMessage(Dictionary.formatMsg(Dictionary.FORMAT_PRIVATE_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));

@@ -198,19 +198,19 @@ public class BungeeEssentials extends Plugin {
                 commands++;
             }
         }
-        addEnabled("chatRules", "rules-chat");
-        addEnabled("chatSpam", "spam-chat");
-        addEnabled("commandSpam", "spam-command");
+        addEnabled("rules-chat");
+        addEnabled("spam-chat");
+        addEnabled("spam-command");
         addEnabled("commandSpy");
         addEnabled("fastRelog");
         addEnabled("friend");
         addEnabled("ignore");
         addEnabled("joinAnnounce");
-        addEnabled("logAll", "fulllog");
+        addEnabled("fulllog");
         addEnabled("mute");
-        addEnabled("redirect", "autoredirect");
+        addEnabled("autoredirect");
         addEnabled("rules");
-        addEnabled("shouldClean", "clean");
+        addEnabled("clean");
         addEnabled("spam");
         addEnabled("useLog", "log", "fulllog");
         if (contains("useLog")) {
@@ -228,7 +228,7 @@ public class BungeeEssentials extends Plugin {
             new AnnouncementManager();
             getLogger().log(Level.INFO, "Enabled announcements");
         }
-        if (contains("rules", "chatRules")) {
+        if (contains("rules", "rules-chat")) {
             ruleManager = new RuleManager();
         }
         getLogger().log(Level.INFO, "Registered {0} commands successfully", commands);
