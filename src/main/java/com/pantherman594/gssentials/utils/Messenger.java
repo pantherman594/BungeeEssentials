@@ -132,7 +132,13 @@ public class Messenger implements Listener {
                 }
                 finalReg += ")";
                 if (!finalReg.equals("\\b()")) {
-                    String message2 = message.replaceAll(finalReg, Dictionary.BANNED_REPLACE);
+                    String replacement = Dictionary.BANNED_REPLACE;
+                    if (replacement.length() == 1) {
+                        for (int i = 1; i < word.length(); i++) {
+                            replacement += replacement;
+                        }
+                    }
+                    String message2 = message.replaceAll(finalReg, replacement);
                     if (!message2.equals(message)) {
                         ruleNotify(Dictionary.NOTIFY_REPLACE, player, msg);
                         message = message2;

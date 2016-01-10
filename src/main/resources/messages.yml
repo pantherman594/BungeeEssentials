@@ -28,7 +28,7 @@ rules:
     handle: COMMAND
     command: 'send {{ SENDER }} lobby'
 bannedwords:
-  replace: '****'
+  replace: '*'
   list:
     - 'anal'
     - 'anus'
