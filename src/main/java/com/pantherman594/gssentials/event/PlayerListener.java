@@ -20,9 +20,9 @@ package com.pantherman594.gssentials.event;
 
 import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.utils.Dictionary;
-import com.pantherman594.gssentials.utils.Friends;
 import com.pantherman594.gssentials.utils.Messenger;
 import com.pantherman594.gssentials.utils.Permissions;
+import com.pantherman594.gssentials.utils.PlayerData;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -49,6 +49,7 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = Byte.MAX_VALUE)
     public void chat(ChatEvent event) {
         ProxiedPlayer player = (ProxiedPlayer) event.getSender();
+        PlayerData pD = BungeeEssentials.getInstance().getData(player.getUniqueId());
         String sender = player.getName();
         String command = event.getMessage().substring(1).split(" ")[0];
         if (event.isCommand()) {
@@ -61,7 +62,7 @@ public class PlayerListener implements Listener {
             }
             if (!event.isCancelled() && !player.hasPermission(Permissions.Admin.SPY_EXEMPT) && BungeeEssentials.getInstance().contains("commandSpy")) {
                 for (ProxiedPlayer onlinePlayer : ProxyServer.getInstance().getPlayers()) {
-                    if ((onlinePlayer.getUniqueId() != player.getUniqueId()) && (onlinePlayer.hasPermission(Permissions.Admin.SPY_COMMAND)) && Messenger.isCSpy(onlinePlayer)) {
+                    if ((onlinePlayer.getUniqueId() != player.getUniqueId()) && (onlinePlayer.hasPermission(Permissions.Admin.SPY_COMMAND)) && BungeeEssentials.getInstance().getData(onlinePlayer.getUniqueId()).isCSpy()) {
                         onlinePlayer.sendMessage(Dictionary.format(Dictionary.CSPY_COMMAND, "SENDER", sender, "COMMAND", event.getMessage()));
                     }
                 }
@@ -72,13 +73,13 @@ public class PlayerListener implements Listener {
                 event.setCancelled(true);
                 return;
             }
-            if (Messenger.isStaffChat(player) && !event.isCancelled() && !event.isCommand()) {
+            if (pD.isStaffChat() && !event.isCancelled() && !event.isCommand()) {
                 String server = player.getServer().getInfo().getName();
                 String msg = Messenger.filter(player, event.getMessage(), Messenger.ChatType.PUBLIC);
                 ProxyServer.getInstance().getPluginManager().callEvent(new StaffChatEvent(server, sender, msg));
                 event.setCancelled(true);
             }
-            if (Messenger.isGlobalChat(player) && !event.isCancelled() && !event.isCommand()) {
+            if (pD.isGlobalChat() && !event.isCancelled() && !event.isCommand()) {
                 String server = player.getServer().getInfo().getName();
                 String msg = Messenger.filter(player, event.getMessage(), Messenger.ChatType.PUBLIC);
                 ProxyServer.getInstance().getPluginManager().callEvent(new GlobalChatEvent(server, sender, msg));
@@ -135,14 +136,14 @@ public class PlayerListener implements Listener {
         if (!players.contains(event.getPlayer().getName())) {
             BungeeEssentials.getInstance().savePlayerConfig(event.getPlayer().getName());
         }
-        if (BungeeEssentials.getInstance().contains("joinAnnounce") && !(Messenger.isHidden(event.getPlayer())) && !(Dictionary.FORMAT_JOIN.equals("")) && event.getPlayer().hasPermission(Permissions.General.JOINANNC) && !(BungeeEssentials.getInstance().isIntegrated() && BungeeEssentials.getInstance().getIntegrationProvider().isBanned(event.getPlayer()))) {
+        if (BungeeEssentials.getInstance().contains("joinAnnounce") && !BungeeEssentials.getInstance().getData(event.getPlayer().getUniqueId()).isHidden() && !(Dictionary.FORMAT_JOIN.equals("")) && event.getPlayer().hasPermission(Permissions.General.JOINANNC) && !(BungeeEssentials.getInstance().isIntegrated() && BungeeEssentials.getInstance().getIntegrationProvider().isBanned(event.getPlayer()))) {
             ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_JOIN, "PLAYER", event.getPlayer().getName()));
         }
         if (BungeeEssentials.getInstance().contains("fulllog")) {
             BungeeEssentials.getInstance().getLogger().log(Level.INFO, Dictionary.format(Dictionary.FORMAT_JOIN, "PLAYER", event.getPlayer().getName()));
         }
         if (BungeeEssentials.getInstance().contains("friend")) {
-            BungeeEssentials.getInstance().setFriends(event.getPlayer().getUniqueId(), new Friends(event.getPlayer().getUniqueId().toString()));
+            BungeeEssentials.getInstance().setFriends(event.getPlayer().getUniqueId(), new PlayerData(event.getPlayer().getUniqueId().toString()));
         }
     }
 
@@ -170,14 +171,14 @@ public class PlayerListener implements Listener {
                 }, 3, TimeUnit.SECONDS);
             }
         }
-        if (BungeeEssentials.getInstance().contains("joinAnnounce") && !(Messenger.isHidden(event.getPlayer())) && !(Dictionary.FORMAT_QUIT.equals("")) && event.getPlayer().hasPermission(Permissions.General.QUITANNC) && !(BungeeEssentials.getInstance().isIntegrated() && BungeeEssentials.getInstance().getIntegrationProvider().isBanned(event.getPlayer()))) {
+        if (BungeeEssentials.getInstance().contains("joinAnnounce") && !BungeeEssentials.getInstance().getData(event.getPlayer().getUniqueId()).isHidden() && !(Dictionary.FORMAT_QUIT.equals("")) && event.getPlayer().hasPermission(Permissions.General.QUITANNC) && !(BungeeEssentials.getInstance().isIntegrated() && BungeeEssentials.getInstance().getIntegrationProvider().isBanned(event.getPlayer()))) {
             ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_QUIT, "PLAYER", event.getPlayer().getName()));
         }
         if (BungeeEssentials.getInstance().contains("fulllog")) {
             BungeeEssentials.getInstance().getLogger().log(Level.INFO, Dictionary.format(Dictionary.FORMAT_QUIT, "PLAYER", event.getPlayer().getName()));
         }
         if (BungeeEssentials.getInstance().contains("friend")) {
-            if (BungeeEssentials.getInstance().getFriends(event.getPlayer().getUniqueId()).save()) {
+            if (BungeeEssentials.getInstance().getData(event.getPlayer().getUniqueId()).save()) {
                 BungeeEssentials.getInstance().clearFriends(event.getPlayer().getUniqueId());
             }
         }
@@ -204,7 +205,7 @@ public class PlayerListener implements Listener {
         List<String> suggestions = event.getSuggestions();
         List<String> remove = new ArrayList<>();
         for (String suggestion : suggestions) {
-            if (ProxyServer.getInstance().getPlayer(suggestion) instanceof ProxiedPlayer && Messenger.isHidden(ProxyServer.getInstance().getPlayer(suggestion))) {
+            if (ProxyServer.getInstance().getPlayer(suggestion) instanceof ProxiedPlayer && BungeeEssentials.getInstance().getData(ProxyServer.getInstance().getPlayer(suggestion).getUniqueId()).isHidden()) {
                 remove.add(suggestion);
             }
         }

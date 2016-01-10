@@ -19,10 +19,11 @@
 package com.pantherman594.gssentials.command.general;
 
 import com.google.common.collect.ImmutableSet;
+import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.command.BECommand;
 import com.pantherman594.gssentials.utils.Dictionary;
-import com.pantherman594.gssentials.utils.Messenger;
 import com.pantherman594.gssentials.utils.Permissions;
+import com.pantherman594.gssentials.utils.PlayerData;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -40,9 +41,15 @@ public class IgnoreCommand extends BECommand implements TabExecutor {
     public void execute(CommandSender sender, String[] args) {
         if (sender instanceof ProxiedPlayer) {
             if (args.length > 0) {
-                if (ProxyServer.getInstance().getPlayer(args[0]) != null && !Messenger.isHidden(ProxyServer.getInstance().getPlayer(args[0]))) {
-                    if (ProxyServer.getInstance().getPlayer(args[0]) != sender)
-                        Messenger.ignore((ProxiedPlayer) sender, ProxyServer.getInstance().getPlayer(args[0]));
+                ProxiedPlayer p = ProxyServer.getInstance().getPlayer(args[0]);
+                PlayerData pD = BungeeEssentials.getInstance().getData(((ProxiedPlayer) sender).getUniqueId());
+                if (p != null && !pD.isHidden()) {
+                    if (p != sender)
+                        if (pD.toggleIgnore(p.getUniqueId())) {
+                            sender.sendMessage(Dictionary.format(Dictionary.IGNORE_ENABLED, "PLAYER", p.getName()));
+                        } else {
+                            sender.sendMessage(Dictionary.format(Dictionary.IGNORE_DISABLED, "PLAYER", p.getName()));
+                        }
                     else sender.sendMessage(Dictionary.format(Dictionary.ERROR_IGNORE_SELF));
                 } else sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
             } else {
@@ -63,7 +70,7 @@ public class IgnoreCommand extends BECommand implements TabExecutor {
         String search = args[0].toLowerCase();
         for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
             if (!player.getName().equals(sender.getName())) {
-                if (player.getName().toLowerCase().startsWith(search) && !Messenger.isHidden(player)) {
+                if (player.getName().toLowerCase().startsWith(search) && !BungeeEssentials.getInstance().getData(((ProxiedPlayer) sender).getUniqueId()).isHidden()) {
                     matches.add(player.getName());
                 }
             }

@@ -19,10 +19,11 @@
 package com.pantherman594.gssentials.command.general;
 
 import com.google.common.collect.ImmutableSet;
+import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.command.BECommand;
 import com.pantherman594.gssentials.utils.Dictionary;
-import com.pantherman594.gssentials.utils.Messenger;
 import com.pantherman594.gssentials.utils.Permissions;
+import com.pantherman594.gssentials.utils.PlayerData;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -49,7 +50,8 @@ public class JoinCommand extends BECommand implements TabExecutor {
 
             ProxiedPlayer player = (ProxiedPlayer) sender;
             ProxiedPlayer join = ProxyServer.getInstance().getPlayer(args[0]);
-            if (join == null || Messenger.isHidden(join)) {
+            PlayerData pDJ = BungeeEssentials.getInstance().getData(join.getUniqueId());
+            if (join == null || pDJ.isHidden()) {
                 sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
                 return;
             }
@@ -81,7 +83,7 @@ public class JoinCommand extends BECommand implements TabExecutor {
         String search = args[0].toLowerCase();
         for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
             if (!player.getName().equals(sender.getName())) {
-                if (player.getName().toLowerCase().startsWith(search) && !Messenger.isHidden(player)) {
+                if (player.getName().toLowerCase().startsWith(search) && !BungeeEssentials.getInstance().getData(player.getUniqueId()).isHidden()) {
                     matches.add(player.getName());
                 }
             }

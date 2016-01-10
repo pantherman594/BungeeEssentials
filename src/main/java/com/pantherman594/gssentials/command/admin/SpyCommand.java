@@ -18,10 +18,11 @@
 
 package com.pantherman594.gssentials.command.admin;
 
+import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.command.ServerSpecificCommand;
 import com.pantherman594.gssentials.utils.Dictionary;
-import com.pantherman594.gssentials.utils.Messenger;
 import com.pantherman594.gssentials.utils.Permissions;
+import com.pantherman594.gssentials.utils.PlayerData;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -35,18 +36,19 @@ public class SpyCommand extends ServerSpecificCommand {
     public void run(CommandSender sender, String[] args) {
         if (sender instanceof ProxiedPlayer) {
             ProxiedPlayer player = (ProxiedPlayer) sender;
+            PlayerData pD = BungeeEssentials.getInstance().getData(player.getUniqueId());
             if (args != null && args.length == 1) {
                 if (args[0].equals("on")) {
-                    Messenger.enableSpy(player);
+                    pD.setSpy(true);
                     player.sendMessage(Dictionary.format(Dictionary.SPY_ENABLED));
                 } else if (args[0].equals("off")) {
-                    Messenger.disableSpy(player);
+                    pD.setSpy(false);
                     player.sendMessage(Dictionary.format(Dictionary.SPY_DISABLED));
                 } else {
                     sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " [on|off]"));
                 }
             } else {
-                if (Messenger.toggleSpy(player)) {
+                if (pD.toggleSpy()) {
                     player.sendMessage(Dictionary.format(Dictionary.SPY_ENABLED));
                 } else {
                     player.sendMessage(Dictionary.format(Dictionary.SPY_DISABLED));

@@ -40,7 +40,7 @@ public class GlobalChatEvent extends Event {
             msg = Messenger.filter(ProxyServer.getInstance().getPlayer(sender), msg, Messenger.ChatType.GLOBAL);
             msg = Dictionary.format(Dictionary.FORMAT_GCHAT, "SERVER", server, "SENDER", sender, "MESSAGE", msg);
             for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-                if ((player.hasPermission(Permissions.General.CHAT + "." + server) || player.hasPermission(Permissions.General.CHAT)) && (!BungeeEssentials.getInstance().contains("ignore") || !Messenger.isIgnoring(player, ProxyServer.getInstance().getPlayer(sender))))
+                if ((player.hasPermission(Permissions.General.CHAT + "." + server) || player.hasPermission(Permissions.General.CHAT)) && (!BungeeEssentials.getInstance().contains("ignore") || !BungeeEssentials.getInstance().getData(player.getUniqueId()).isIgnored(ProxyServer.getInstance().getPlayer(sender).getUniqueId())))
                     player.sendMessage(msg);
             }
             ProxyServer.getInstance().getConsole().sendMessage(msg);

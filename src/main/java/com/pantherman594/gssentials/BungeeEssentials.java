@@ -48,7 +48,7 @@ public class BungeeEssentials extends Plugin {
     public List<String> playerList = new ArrayList<>();
     private Map<String, String> mainList = new HashMap<>();
     private Map<String, String[]> aliasList = new HashMap<>();
-    private Map<UUID, Friends> friendsList = new HashMap<>();
+    private Map<UUID, PlayerData> playerDataList = new HashMap<>();
     private RuleManager ruleManager;
     private Configuration config;
     private Configuration messages = null;
@@ -76,17 +76,21 @@ public class BungeeEssentials extends Plugin {
         return aliasList.get(key);
     }
 
-    public Friends getFriends(UUID uuid) {
-        return friendsList.get(uuid);
+    public Map<UUID, PlayerData> getDatas() {
+        return playerDataList;
     }
 
-    public void setFriends(UUID uuid, Friends friends) {
-        friendsList.put(uuid, friends);
+    public PlayerData getData(UUID uuid) {
+        return getDatas().get(uuid);
+    }
+
+    public void setFriends(UUID uuid, PlayerData playerData) {
+        playerDataList.put(uuid, playerData);
     }
 
     public void clearFriends(UUID uuid) {
-        if (friendsList.get(uuid).save()) {
-            friendsList.remove(uuid);
+        if (playerDataList.get(uuid).save()) {
+            playerDataList.remove(uuid);
         }
     }
 
@@ -112,13 +116,11 @@ public class BungeeEssentials extends Plugin {
             }
         }
         reload();
-        Messenger.getPlayers();
     }
 
     @Override
     public void onDisable() {
         Log.reset();
-        Messenger.savePlayers();
         savePlayerConfig();
     }
 

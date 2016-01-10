@@ -22,6 +22,7 @@ import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.Messenger;
 import com.pantherman594.gssentials.utils.Permissions;
+import com.pantherman594.gssentials.utils.PlayerData;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -39,7 +40,7 @@ public class MessageEvent extends Event {
         this.recipient = recipient;
         this.msg = msg;
         String message = msg;
-        if (recipient != null && !Messenger.isHidden(recipient)) {
+        if (recipient != null && !BungeeEssentials.getInstance().getData(recipient.getUniqueId()).isHidden()) {
             ProxiedPlayer player = null;
             if (sender instanceof ProxiedPlayer) {
                 player = (ProxiedPlayer) sender;
@@ -52,7 +53,7 @@ public class MessageEvent extends Event {
                     String spyMessage = Dictionary.format(Dictionary.SPY_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message);
                     for (ProxiedPlayer onlinePlayer : ProxyServer.getInstance().getPlayers()) {
                         if (player.getUniqueId() != onlinePlayer.getUniqueId() && recipient.getUniqueId() != onlinePlayer.getUniqueId()) {
-                            if (onlinePlayer.hasPermission(Permissions.Admin.SPY) && Messenger.isSpy(onlinePlayer)) {
+                            if (onlinePlayer.hasPermission(Permissions.Admin.SPY) && BungeeEssentials.getInstance().getData(onlinePlayer.getUniqueId()).isSpy()) {
                                 onlinePlayer.sendMessage(spyMessage);
                             }
                         }
@@ -69,8 +70,10 @@ public class MessageEvent extends Event {
                 }, 3, TimeUnit.SECONDS);
             }
             if (BungeeEssentials.getInstance().contains("ignore")) {
-                if (!Messenger.isIgnoring((ProxiedPlayer) sender, recipient)) {
-                    if (!Messenger.isIgnoring(recipient, (ProxiedPlayer) sender)) {
+                PlayerData pDS = BungeeEssentials.getInstance().getData(((ProxiedPlayer) sender).getUniqueId());
+                PlayerData pDR = BungeeEssentials.getInstance().getData(recipient.getUniqueId());
+                if (!pDS.isIgnored(recipient.getUniqueId())) {
+                    if (!pDR.isIgnored(((ProxiedPlayer) sender).getUniqueId())) {
                         recipient.sendMessage(Dictionary.formatMsg(Dictionary.FORMAT_PRIVATE_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
                     }
                     sender.sendMessage(Dictionary.formatMsg(Dictionary.FORMAT_PRIVATE_MESSAGE, "SERVER", recipient.getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
