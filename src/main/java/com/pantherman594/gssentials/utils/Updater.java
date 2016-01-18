@@ -176,38 +176,35 @@ public class Updater {
                 messages.set("bannedwords.replace", "*");
             }
             messages.set("multilog", null);
-            messages.set("friends.header", "&2Current Friends:");
-            messages.set("friends.body", "- {{ NAME }} ({{ SERVER }})");
-            messages.set("friends.new", "&aYou are now friends with {{ NAME }}!");
-            messages.set("friends.old", "&aYou are already friends with {{ NAME }}!");
-            messages.set("friends.remove", "&cYou are no longer friends with {{ NAME }}.");
-            messages.set("friends.outrequests.header", "&2Outgoing Friend Requests:");
-            messages.set("friends.outrequests.body", "- {{ NAME }}");
-            messages.set("friends.outrequests.new", "&a{{ NAME }} has received your friend request.");
-            messages.set("friends.outrequests.old", "&cYou already requested to be friends with {{ NAME }}. Please wait for a response!");
-            messages.set("friends.outrequests.remove", "&cThe friend request to {{ NAME }} was removed.");
-            messages.set("friends.inrequests.header", "&2Incoming Friend Requests:");
-            messages.set("friends.inrequests.body", "- {{ NAME }}");
-            messages.set("friends.inrequests.new", "&a{{ NAME }} would like to be your friend. /friend <add|remove> {{ NAME }} to accept or decline the request.");
-            messages.set("friends.inrequests.remove", "&cThe friend request from {{ NAME }} was removed.");
+            messages.set("friend.header", "&2Current Friends:");
+            messages.set("friend.body", "- {{ NAME }} ({{ SERVER }})");
+            messages.set("friend.new", "&aYou are now friends with {{ NAME }}!");
+            messages.set("friend.old", "&aYou are already friends with {{ NAME }}!");
+            messages.set("friend.remove", "&cYou are no longer friends with {{ NAME }}.");
+            messages.set("friend.outrequests.header", "&2Outgoing Friend Requests:");
+            messages.set("friend.outrequests.body", "- {{ NAME }}");
+            messages.set("friend.outrequests.new", "&a{{ NAME }} has received your friend request.");
+            messages.set("friend.outrequests.old", "&cYou already requested to be friends with {{ NAME }}. Please wait for a response!");
+            messages.set("friend.outrequests.remove", "&cThe friend request to {{ NAME }} was removed.");
+            messages.set("friend.inrequests.header", "&2Incoming Friend Requests:");
+            messages.set("friend.inrequests.body", "- {{ NAME }}");
+            messages.set("friend.inrequests.new", "&a{{ NAME }} would like to be your friend. /friend <add|remove> {{ NAME }} to accept or decline the request.");
+            messages.set("friend.inrequests.remove", "&cThe friend request from {{ NAME }} was removed.");
             messages.set("errors.fastrelog", "&cPlease wait before reconnecting!");
             List<Map<String, String>> section2 = (List<Map<String, String>>) messages.getList("announcements");
             config.set("aliases", null);
+            String name = "annc";
+            int num = 0;
             for (Map<String, String> map : section2) {
                 Preconditions.checkNotNull(map);
                 Preconditions.checkArgument(!map.isEmpty());
                 Preconditions.checkNotNull(map.get("delay"), "invalid delay");
                 Preconditions.checkNotNull(map.get("interval"), "invalid interval");
                 Preconditions.checkNotNull(map.get("message"), "invalid message");
-                String name;
-                if (config.getString("announcements." + map.get("message").split(" ")[0] + ".message") != null) {
-                    name = map.get("message").split(" ")[0];
-                } else {
-                    name = map.get("message").split(" ")[0] + Math.floor(Math.random() * 10);
-                }
-                config.set("aliases." + name + ".delay", map.get("delay"));
-                config.set("aliases." + name + ".interval", map.get("interval"));
-                config.set("aliases." + name + ".message", map.get("message"));
+                config.set("aliases." + name + num + ".delay", map.get("delay"));
+                config.set("aliases." + name + num + ".interval", map.get("interval"));
+                config.set("aliases." + name + num + ".message", map.get("message"));
+                num++;
             }
             config.set("configversion", "2.5.0");
             //oldVersion = 250;
