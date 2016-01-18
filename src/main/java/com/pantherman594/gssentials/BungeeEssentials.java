@@ -84,13 +84,13 @@ public class BungeeEssentials extends Plugin {
         return getDatas().get(uuid);
     }
 
-    public void setFriends(UUID uuid, PlayerData playerData) {
-        playerDataList.put(uuid, playerData);
+    public void setData(UUID uuid, PlayerData playerData) {
+        getDatas().put(uuid, playerData);
     }
 
-    public void clearFriends(UUID uuid) {
-        if (playerDataList.get(uuid).save()) {
-            playerDataList.remove(uuid);
+    public void clearData(UUID uuid) {
+        if (getData(uuid).save()) {
+            getDatas().remove(uuid);
         }
     }
 

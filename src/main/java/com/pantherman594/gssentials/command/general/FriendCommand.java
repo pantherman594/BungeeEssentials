@@ -123,7 +123,7 @@ public class FriendCommand extends BECommand {
                         }
                     }
                     if (p != null) {
-                        BungeeEssentials.getInstance().setFriends(p.getUniqueId(), playerData2);
+                        BungeeEssentials.getInstance().setData(p.getUniqueId(), playerData2);
                     } else {
                         playerData2.save();
                     }

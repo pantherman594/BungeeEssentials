@@ -5,8 +5,11 @@ format:
   kick: '{{ PLAYER }} was kicked for {{ REASON }}'
   chat: '{{ PLAYER }}: {{ MESSAGE }}'
   find: '&e{{ PLAYER }} &ais playing on &e{{ SERVER }}'
-  message: '&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{ MESSAGE }}'
   send: '&aSending &e{{ PLAYER }} &ato server &e{{ SERVER }}'
+message:
+  format: '&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{ MESSAGE }}'
+  enabled: '&aMessaging is now enabled!'
+  disabled: '&cMessaging is now disabled!'
 warnings:
   similarity: '&cPlease do not spam other players!'
   swearing: '&cPlease do not swear at other players!'

@@ -50,8 +50,6 @@ public class Dictionary {
     public static String ERROR_IGNORING;
     @Load(key = "errors.sendfail", def = "&cUnable to send {{ PLAYER }} to {{ SERVER }}.")
     public static String ERROR_SENDFAIL;
-    @Load(key = "format.message", def = "&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{{ MESSAGE }}}")
-    public static String FORMAT_PRIVATE_MESSAGE;
     @Load(key = "format.send", def = "&aSending &e{{ PLAYER }} &ato server &e{{ SERVER }}")
     public static String FORMAT_SEND_PLAYER;
     @Load(key = "format.find", def = "&e{{ PLAYER }} &ais playing on &e{{ SERVER }}")
@@ -66,6 +64,12 @@ public class Dictionary {
     public static String FORMAT_CHAT;
     @Load(key = "format.alert", def = "&8[&c!&8] &7{{ MESSAGE }}")
     public static String FORMAT_ALERT;
+    @Load(key = "message.format", def = "&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{{ MESSAGE }}}")
+    public static String MESSAGE_FORMAT;
+    @Load(key = "message.enabled", def = "&aMessaging is now enabled!")
+    public static String MESSAGE_ENABLED;
+    @Load(key = "message.disabled", def = "&cMessaging is now disabled!")
+    public static String MESSAGE_DISABLED;
     @Load(key = "friend.header", def = "&2Current Friends:")
     public static String FRIEND_HEADER;
     @Load(key = "friend.body", def = "- {{ NAME }} ({{ SERVER }})")
@@ -209,7 +213,7 @@ public class Dictionary {
 
     public static String format(String input, boolean colour, String... args) {
         //noinspection StringEquality
-        if (input == Dictionary.FORMAT_PRIVATE_MESSAGE) {
+        if (input == Dictionary.MESSAGE_FORMAT) {
             input = colour(input);
     	}
         input = input.replace("{{ TIME }}", getTime());

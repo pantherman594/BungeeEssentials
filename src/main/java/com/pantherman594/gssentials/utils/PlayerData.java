@@ -47,6 +47,7 @@ public class PlayerData {
     private boolean globalChat;
     private boolean staffChat;
     private boolean muted;
+    private boolean msging;
 
     public PlayerData(String uuid) {
         File playerFile = new File(BungeeEssentials.getInstance().getDataFolder() + File.separator + "playerdata" + File.separator + uuid + ".yml");
@@ -64,6 +65,7 @@ public class PlayerData {
             friends.addAll(config.getStringList("friends"));
             outRequests.addAll(config.getStringList("requests.out"));
             inRequests.addAll(config.getStringList("requests.in"));
+            ignoreList = new ArrayList<>();
             for (String id : config.getStringList("ignorelist")) {
                 ignoreList.add(UUID.fromString(id));
             }
@@ -73,6 +75,7 @@ public class PlayerData {
             globalChat = config.getBoolean("globalchat");
             staffChat = config.getBoolean("staffchat");
             muted = config.getBoolean("muted");
+            msging = config.getBoolean("msging");
         }
     }
 
@@ -94,6 +97,7 @@ public class PlayerData {
         config.set("globalchat", globalChat);
         config.set("staffchat", staffChat);
         config.set("muted", muted);
+        config.set("msging", msging);
         try {
             ConfigurationProvider.getProvider(YamlConfiguration.class).save(config, playerFile);
         } catch (IOException e) {
@@ -208,5 +212,13 @@ public class PlayerData {
     public boolean toggleStaffChat() {
         setStaffChat(!isStaffChat());
         return isStaffChat();
+    }
+
+    public boolean isMsging() {
+        return msging;
+    }
+
+    public void setMsging(boolean msging) {
+        this.msging = msging;
     }
 }

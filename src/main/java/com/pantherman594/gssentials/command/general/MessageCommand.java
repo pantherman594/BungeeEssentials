@@ -24,6 +24,7 @@ import com.pantherman594.gssentials.command.BECommand;
 import com.pantherman594.gssentials.event.MessageEvent;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.Permissions;
+import com.pantherman594.gssentials.utils.PlayerData;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -41,11 +42,34 @@ public class MessageCommand extends BECommand implements TabExecutor {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (sender instanceof ProxiedPlayer) {
-            if (args.length > 1) {
+            if (args.length == 1) {
+                PlayerData pD = BungeeEssentials.getInstance().getData(((ProxiedPlayer) sender).getUniqueId());
+                boolean change = true;
+                if (args[0].equalsIgnoreCase("toggle")) {
+                    pD.setMsging(!pD.isMsging());
+                } else if (args[0].equalsIgnoreCase("on")) {
+                    pD.setMsging(true);
+                } else if (args[0].equalsIgnoreCase("off")) {
+                    pD.setMsging(false);
+                } else {
+                    change = false;
+                    sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <player> <message>"));
+                    sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <on|off|toggle>"));
+                }
+                if (change) {
+                    BungeeEssentials.getInstance().setData(((ProxiedPlayer) sender).getUniqueId(), pD);
+                    if (pD.isMsging()) {
+                        sender.sendMessage(Dictionary.format(Dictionary.MESSAGE_ENABLED));
+                    } else {
+                        sender.sendMessage(Dictionary.format(Dictionary.MESSAGE_DISABLED));
+                    }
+                }
+            } else if (args.length > 1) {
                 ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(args[0]);
                 ProxyServer.getInstance().getPluginManager().callEvent(new MessageEvent(sender, recipient, Dictionary.combine(0, args)));
             } else {
                 sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <player> <message>"));
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <on|off|toggle>"));
             }
         } else {
             sender.sendMessage(Dictionary.colour("&cSorry, only players can send messages."));

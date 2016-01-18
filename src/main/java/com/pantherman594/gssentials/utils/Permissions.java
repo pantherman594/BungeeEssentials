@@ -31,6 +31,7 @@ public class Permissions {
         public static final String HIDE = "gssentials.admin.hide";
         public static final String RELOAD = "gssentials.admin.reload";
         public static final String BYPASS_FILTER = "gssentials.admin.bypass-filter";
+        public static final String BYPASS_MSG = General.MESSAGE + "bypass";
         public static final String LOOKUP = "gssentials.admin.lookup";
         public static final String NOTIFY = "gssentials.admin.notify";
         public static final String MUTE = "gssentials.admin.mute";

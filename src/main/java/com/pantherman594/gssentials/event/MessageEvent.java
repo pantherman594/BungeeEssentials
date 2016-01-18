@@ -69,20 +69,22 @@ public class MessageEvent extends Event {
                     }
                 }, 3, TimeUnit.SECONDS);
             }
+            PlayerData pDR = BungeeEssentials.getInstance().getData(recipient.getUniqueId());
             if (BungeeEssentials.getInstance().contains("ignore")) {
                 PlayerData pDS = BungeeEssentials.getInstance().getData(((ProxiedPlayer) sender).getUniqueId());
-                PlayerData pDR = BungeeEssentials.getInstance().getData(recipient.getUniqueId());
                 if (!pDS.isIgnored(recipient.getUniqueId())) {
-                    if (!pDR.isIgnored(((ProxiedPlayer) sender).getUniqueId())) {
-                        recipient.sendMessage(Dictionary.formatMsg(Dictionary.FORMAT_PRIVATE_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
+                    if (!pDR.isIgnored(((ProxiedPlayer) sender).getUniqueId()) && pDR.isMsging() && !sender.hasPermission(Permissions.Admin.BYPASS_MSG)) {
+                        recipient.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
                     }
-                    sender.sendMessage(Dictionary.formatMsg(Dictionary.FORMAT_PRIVATE_MESSAGE, "SERVER", recipient.getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
+                    sender.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT, "SERVER", recipient.getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
                 } else {
                     sender.sendMessage(Dictionary.format(Dictionary.ERROR_IGNORING));
                 }
             } else {
-                sender.sendMessage(Dictionary.formatMsg(Dictionary.FORMAT_PRIVATE_MESSAGE, "SERVER", recipient.getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
-                recipient.sendMessage(Dictionary.formatMsg(Dictionary.FORMAT_PRIVATE_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
+                sender.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT, "SERVER", recipient.getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
+                if (pDR.isMsging() && !sender.hasPermission(Permissions.Admin.BYPASS_MSG)) {
+                    recipient.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
+                }
             }
         } else {
             sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
