@@ -127,17 +127,21 @@ public class Messenger implements Listener {
         if (message != null) {
             for (String word : BungeeEssentials.getInstance().getMessages().getStringList("bannedwords.list")) {
                 String finalReg = "\\b(";
-                for (char l : word.toCharArray()) {
-                    finalReg += l + "(\\W|\\d|_)*";
+                char[] chars = word.toLowerCase().toCharArray();
+                char[] chars2 = word.toUpperCase().toCharArray();
+                for (int i = 0; i < chars.length; i++) {
+                    finalReg += "[" + chars[i] + chars2[i] + "]+" + "[\\W\\d_]*";
                 }
                 finalReg += ")";
                 if (!finalReg.equals("\\b()")) {
                     String replacement = Dictionary.BANNED_REPLACE;
                     if (replacement.length() == 1) {
-                        for (int i = 1; i < word.length(); i++) {
-                            replacement += replacement;
+                        String origRepl = replacement;
+                        while (replacement.length() < word.length()) {
+                            replacement += origRepl;
                         }
                     }
+                    replacement += " ";
                     String message2 = message.replaceAll(finalReg, replacement);
                     if (!message2.equals(message)) {
                         ruleNotify(Dictionary.NOTIFY_REPLACE, player, msg);

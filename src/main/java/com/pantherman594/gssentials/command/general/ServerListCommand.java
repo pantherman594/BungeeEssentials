@@ -45,9 +45,7 @@ public class ServerListCommand extends BECommand {
                 info.ping(new Callback<ServerPing>() {
                     @Override
                     public void done(ServerPing serverPing, Throwable throwable) {
-                        if (throwable == null) {
-                            print(sender, info);
-                        }
+                        print(sender, info);
                     }
                 });
             }
@@ -88,6 +86,8 @@ public class ServerListCommand extends BECommand {
         if (info.canAccess(sender) || sender.hasPermission(Permissions.General.LIST_RESTRICTED)) {
             int online = getNonHiddenPlayers(info);
             sender.sendMessage(Dictionary.format(Dictionary.LIST_BODY, "SERVER", info.getName(), "MOTD", info.getMotd(), "DENSITY", getDensity(online), "COUNT", String.valueOf(online)));
+        } else {
+            ProxyServer.getInstance().getLogger().info(sender.getName() + " can't: " + info.getName());
         }
     }
 }

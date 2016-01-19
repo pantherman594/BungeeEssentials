@@ -132,6 +132,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = Byte.MAX_VALUE)
     public void postLogin(PostLoginEvent event) {
+        BungeeEssentials.getInstance().setData(event.getPlayer().getUniqueId(), new PlayerData(event.getPlayer().getUniqueId().toString(), event.getPlayer().getName()));
         List<String> players = BungeeEssentials.getInstance().getPlayerConfig().getStringList("players");
         if (!players.contains(event.getPlayer().getName())) {
             BungeeEssentials.getInstance().savePlayerConfig(event.getPlayer().getName());
@@ -141,9 +142,6 @@ public class PlayerListener implements Listener {
         }
         if (BungeeEssentials.getInstance().contains("fulllog")) {
             BungeeEssentials.getInstance().getLogger().log(Level.INFO, Dictionary.format(Dictionary.FORMAT_JOIN, "PLAYER", event.getPlayer().getName()));
-        }
-        if (BungeeEssentials.getInstance().contains("friend")) {
-            BungeeEssentials.getInstance().setData(event.getPlayer().getUniqueId(), new PlayerData(event.getPlayer().getUniqueId().toString()));
         }
     }
 

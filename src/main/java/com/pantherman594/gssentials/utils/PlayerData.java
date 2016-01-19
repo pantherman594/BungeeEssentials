@@ -36,6 +36,7 @@ import java.util.UUID;
  */
 public class PlayerData {
     private Configuration config;
+    private String name;
     private String uuid;
     private List<String> friends;
     private List<String> outRequests;
@@ -49,23 +50,33 @@ public class PlayerData {
     private boolean muted;
     private boolean msging;
 
-    public PlayerData(String uuid) {
+    public PlayerData(String uuid, String name) {
+        friends = new ArrayList<>();
+        outRequests = new ArrayList<>();
+        inRequests = new ArrayList<>();
+        ignoreList = new ArrayList<>();
+        if (name != null) {
+            this.name = name;
+        }
+        this.uuid = uuid;
         File playerFile = new File(BungeeEssentials.getInstance().getDataFolder() + File.separator + "playerdata" + File.separator + uuid + ".yml");
         if (playerFile.exists()) {
             try {
                 config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(playerFile);
             } catch (IOException e) {
-                BungeeEssentials.getInstance().getLogger().warning("Unable to load " + uuid + "'s data.");
+                if (name == null) {
+                    BungeeEssentials.getInstance().getLogger().warning("Unable to load " + uuid + "'s data.");
+                } else {
+                    BungeeEssentials.getInstance().getLogger().warning("Unable to load " + name + "'s data.");
+                }
                 return;
             }
-            this.uuid = uuid;
-            friends = new ArrayList<>();
-            outRequests = new ArrayList<>();
-            inRequests = new ArrayList<>();
+            if (name == null) {
+                this.name = config.getString("lastname");
+            }
             friends.addAll(config.getStringList("friends"));
             outRequests.addAll(config.getStringList("requests.out"));
             inRequests.addAll(config.getStringList("requests.in"));
-            ignoreList = new ArrayList<>();
             for (String id : config.getStringList("ignorelist")) {
                 ignoreList.add(UUID.fromString(id));
             }
@@ -76,17 +87,33 @@ public class PlayerData {
             staffChat = config.getBoolean("staffchat");
             muted = config.getBoolean("muted");
             msging = config.getBoolean("msging");
+        } else {
+            hidden = false;
+            spy = false;
+            cSpy = false;
+            globalChat = false;
+            staffChat = false;
+            muted = false;
+            msging = true;
         }
     }
 
     public boolean save() {
-        File playerFile = new File(BungeeEssentials.getInstance().getDataFolder() + File.separator + "playerdata" + File.separator + uuid + ".yml");
+        File playerDir = new File(BungeeEssentials.getInstance().getDataFolder(), "playerdata");
+        File playerFile = new File(playerDir, uuid + ".yml");
         try {
+            if (!playerDir.exists()) {
+                playerDir.mkdir();
+            }
+            if (!playerFile.exists()) {
+                playerFile.createNewFile();
+            }
             config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(playerFile);
         } catch (IOException e) {
-            BungeeEssentials.getInstance().getLogger().warning("Unable to save " + uuid + "'s data.");
+            BungeeEssentials.getInstance().getLogger().warning("Unable to save " + name + "'s data.");
             return false;
         }
+        config.set("lastname", name);
         config.set("friends", friends);
         config.set("requests.out", outRequests);
         config.set("requests.in", inRequests);
@@ -101,7 +128,7 @@ public class PlayerData {
         try {
             ConfigurationProvider.getProvider(YamlConfiguration.class).save(config, playerFile);
         } catch (IOException e) {
-            BungeeEssentials.getInstance().getLogger().warning("Unable to save " + uuid + "'s data.");
+            BungeeEssentials.getInstance().getLogger().warning("Unable to save " + name + "'s data.");
             return false;
         }
         return true;
@@ -220,5 +247,9 @@ public class PlayerData {
 
     public void setMsging(boolean msging) {
         this.msging = msging;
+    }
+
+    public String getName() {
+        return name;
     }
 }

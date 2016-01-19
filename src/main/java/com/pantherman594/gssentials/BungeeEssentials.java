@@ -21,7 +21,6 @@ package com.pantherman594.gssentials;
 import com.google.common.base.Preconditions;
 import com.pantherman594.gssentials.aliases.AliasManager;
 import com.pantherman594.gssentials.announcement.AnnouncementManager;
-import com.pantherman594.gssentials.command.BECommand;
 import com.pantherman594.gssentials.command.admin.*;
 import com.pantherman594.gssentials.command.general.*;
 import com.pantherman594.gssentials.event.PlayerListener;
@@ -32,6 +31,7 @@ import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.*;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.api.plugin.PluginManager;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
@@ -185,8 +185,8 @@ public class BungeeEssentials extends Plugin {
         List<String> BASE;
         String[] TEMP_ALIAS;
         List<String> enable = config.getStringList("enable");
-        for (String comm : Arrays.asList("alert", "commandspy", "hide", "lookup", "mute", "send", "spy", "staffchat", "chat", "find", "friend", "ignore", "join", "list", "message", "slap", "reload")) {
-            if (enable.contains(comm)) {
+        for (String comm : Arrays.asList("alert", "commandspy", "hide", "lookup", "mute", "sendall", "send", "spy", "staffchat", "chat", "find", "friend", "ignore", "join", "list", "reply", "message", "slap", "reload")) {
+            if (enable.contains(comm) || comm.equals("reply") || comm.equals("reload")) {
                 BASE = config.getStringList("commands." + comm);
                 if (BASE.isEmpty()) {
                     getLogger().log(Level.WARNING, "Your configuration is either outdated or invalid!");
@@ -268,37 +268,63 @@ public class BungeeEssentials extends Plugin {
         ProxyServer.getInstance().getScheduler().schedule(this, new IntegrationTest(), 7, TimeUnit.SECONDS);
     }
 
-    private void register(String command) {
-        Map<String, BECommand> commands = new HashMap<>();
-        commands.put("alert", new AlertCommand());
-        commands.put("chat", new ChatCommand());
-        commands.put("commandspy", new CSpyCommand());
-        commands.put("find", new FindCommand());
-        commands.put("friend", new FriendCommand());
-        commands.put("hide", new HideCommand());
-        commands.put("ignore", new IgnoreCommand());
-        commands.put("join", new JoinCommand());
-        commands.put("list", new ServerListCommand());
-        commands.put("lookup", new LookupCommand());
-        commands.put("message", new MessageCommand());
-        commands.put("mute", new MuteCommand());
-        commands.put("reload", new ReloadCommand());
-        commands.put("send", new SendCommand());
-        commands.put("slap", new SlapCommand());
-        commands.put("spy", new SpyCommand());
-        commands.put("staffchat", new StaffChatCommand());
-        if (commands.containsKey(command)) {
-            register(commands.get(command));
+    private void register(String comm) {
+        PluginManager pluginMan = ProxyServer.getInstance().getPluginManager();
+        switch (comm) {
+            case "alert":
+                pluginMan.registerCommand(this, new AlertCommand());
+                break;
+            case "chat":
+                pluginMan.registerCommand(this, new ChatCommand());
+                break;
+            case "commandspy":
+                pluginMan.registerCommand(this, new CSpyCommand());
+                break;
+            case "find":
+                pluginMan.registerCommand(this, new FindCommand());
+                break;
+            case "friend":
+                pluginMan.registerCommand(this, new FriendCommand());
+                break;
+            case "hide":
+                pluginMan.registerCommand(this, new HideCommand());
+                break;
+            case "ignore":
+                pluginMan.registerCommand(this, new IgnoreCommand());
+                break;
+            case "join":
+                pluginMan.registerCommand(this, new JoinCommand());
+                break;
+            case "list":
+                pluginMan.registerCommand(this, new ServerListCommand());
+                break;
+            case "lookup":
+                pluginMan.registerCommand(this, new LookupCommand());
+                break;
+            case "message":
+                pluginMan.registerCommand(this, new MessageCommand());
+                pluginMan.registerCommand(this, new ReplyCommand());
+                break;
+            case "mute":
+                pluginMan.registerCommand(this, new MuteCommand());
+                break;
+            case "reload":
+                pluginMan.registerCommand(this, new ReloadCommand());
+                break;
+            case "send":
+                pluginMan.registerCommand(this, new SendCommand());
+                pluginMan.registerCommand(this, new SendAllCommand());
+                break;
+            case "slap":
+                pluginMan.registerCommand(this, new SlapCommand());
+                break;
+            case "spy":
+                pluginMan.registerCommand(this, new SpyCommand());
+                break;
+            case "staffchat":
+                pluginMan.registerCommand(this, new StaffChatCommand());
+                break;
         }
-        if (command.equals("message")) {
-            register(new ReplyCommand());
-        } else if (command.equals("send")) {
-            register(new SendAllCommand());
-        }
-    }
-
-    private void register(BECommand command) {
-        ProxyServer.getInstance().getPluginManager().registerCommand(this, command);
     }
 
     public Configuration getConfig() {
@@ -355,7 +381,7 @@ public class BungeeEssentials extends Plugin {
     }
 
     private void addEnabled(String name, String... keys) {
-        if (contains(config.getStringList("enabled"), keys)) enabled.add(name);
+        if (contains(config.getStringList("enable"), keys)) enabled.add(name);
     }
 
     private boolean contains(List<String> list, String... checks) {

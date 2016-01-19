@@ -83,9 +83,9 @@ bannedwords:
     - 'wtf'
 rulenotify:
   advertisement: '&7{{ PLAYER }} just advertised!'
-  cursing: '&7{{ PLAYER }} just sweared!'
-  replace: '&7{{ PLAYER }} sweared but was replaced!'
-  command: '&7{{ PLAYER }} sweared, triggering a command!'
+  cursing: '&7{{ PLAYER }} just swore!'
+  replace: '&7{{ PLAYER }} swore but was replaced!'
+  command: '&7{{ PLAYER }} swore, triggering a command!'
 staffchat:
   message: '&c{{ SERVER }} - {{ SENDER }} » &7{{ MESSAGE }}'
   enabled: '&aYou are now chatting in staff chat!'

@@ -21,6 +21,7 @@ package com.pantherman594.gssentials.announcement;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class Announcement {
@@ -44,11 +45,16 @@ public class Announcement {
         return interval;
     }
 
-    public String[] getMsg() {
-        return msg.split("\\n");
+    public String getMsg() {
+        return msg;
     }
 
     public Collection<ProxiedPlayer> getPlayers() {
-        return server.equals("ALL") ? ProxyServer.getInstance().getPlayers() : ProxyServer.getInstance().getServerInfo(server).getPlayers();
+        if (server.equals("ALL")) {
+            return ProxyServer.getInstance().getPlayers();
+        } else if (ProxyServer.getInstance().getServerInfo(server) != null) {
+            return ProxyServer.getInstance().getServerInfo(server).getPlayers();
+        }
+        return new ArrayList<>();
     }
 }

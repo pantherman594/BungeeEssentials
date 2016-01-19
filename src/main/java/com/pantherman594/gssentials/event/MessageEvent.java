@@ -61,11 +61,11 @@ public class MessageEvent extends Event {
                 }
                 final ProxiedPlayer recp = recipient;
                 final ProxiedPlayer play = player;
+                Messenger.messages.put(play.getUniqueId(), recp.getUniqueId());
                 ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), new Runnable() {
                     @Override
                     public void run() {
                         Messenger.messages.put(recp.getUniqueId(), play.getUniqueId());
-                        Messenger.messages.put(play.getUniqueId(), recp.getUniqueId());
                     }
                 }, 3, TimeUnit.SECONDS);
             }
@@ -73,7 +73,7 @@ public class MessageEvent extends Event {
             if (BungeeEssentials.getInstance().contains("ignore")) {
                 PlayerData pDS = BungeeEssentials.getInstance().getData(((ProxiedPlayer) sender).getUniqueId());
                 if (!pDS.isIgnored(recipient.getUniqueId())) {
-                    if (!pDR.isIgnored(((ProxiedPlayer) sender).getUniqueId()) && pDR.isMsging() && !sender.hasPermission(Permissions.Admin.BYPASS_MSG)) {
+                    if (!pDR.isIgnored(((ProxiedPlayer) sender).getUniqueId()) && (pDR.isMsging() || sender.hasPermission(Permissions.Admin.BYPASS_MSG))) {
                         recipient.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
                     }
                     sender.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT, "SERVER", recipient.getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
@@ -82,7 +82,7 @@ public class MessageEvent extends Event {
                 }
             } else {
                 sender.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT, "SERVER", recipient.getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
-                if (pDR.isMsging() && !sender.hasPermission(Permissions.Admin.BYPASS_MSG)) {
+                if (pDR.isMsging() || sender.hasPermission(Permissions.Admin.BYPASS_MSG)) {
                     recipient.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
                 }
             }

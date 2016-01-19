@@ -25,6 +25,7 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.config.Configuration;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -37,12 +38,12 @@ public class AnnouncementManager {
         anncs.clear();
         Configuration anncSection = BungeeEssentials.getInstance().getMessages().getSection("announcements");
         for (String annc : anncSection.getKeys()) {
-            int delay = anncSection.getInt(annc + "delay");
-            int interval = anncSection.getInt(annc + "interval");
-            String msg = anncSection.getString(annc + "message");
+            int delay = anncSection.getInt(annc + ".delay");
+            int interval = anncSection.getInt(annc + ".interval");
+            String msg = anncSection.getString(annc + ".message");
             String server = "ALL";
-            if (anncSection.getString(annc + "server") != null) {
-                server = anncSection.getString(annc + "server");
+            if (!anncSection.getString(annc + ".server").equals("")) {
+                server = anncSection.getString(annc + ".server");
             }
             register(annc, new Announcement(delay, interval, msg, server));
         }
@@ -62,8 +63,10 @@ public class AnnouncementManager {
             ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), new Runnable() {
                 @Override
                 public void run() {
-                    for (String singMsg : annc.getMsg()) {
-                        ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_ALERT, "MESSAGE", singMsg));
+                    if (annc.getMsg().contains("\\n")) {
+                        annc(annc.getPlayers(), anncName, annc.getMsg().split("\\n"));
+                    } else {
+                        annc(annc.getPlayers(), anncName, annc.getMsg());
                     }
                     scheduleAnnc(anncName, annc);
                 }
@@ -75,16 +78,27 @@ public class AnnouncementManager {
         ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), new Runnable() {
             @Override
             public void run() {
-                for (String singMsg : annc.getMsg()) {
-                    for (ProxiedPlayer p : annc.getPlayers()) {
-                        if (p.hasPermission(Permissions.General.ANNOUNCEMENT) || p.hasPermission(Permissions.General.ANNOUNCEMENT + "." + anncName)) {
-                            p.sendMessage(Dictionary.format(Dictionary.FORMAT_ALERT, "MESSAGE", singMsg));
-                        }
-                    }
+                if (annc.getMsg().contains("\\n")) {
+                    annc(annc.getPlayers(), anncName, annc.getMsg().split("\\n"));
+                } else {
+                    annc(annc.getPlayers(), anncName, annc.getMsg());
                 }
                 scheduleAnnc(anncName, annc);
             }
         }, annc.getInterval(), TimeUnit.SECONDS);
+    }
+
+    private void annc(Collection<ProxiedPlayer> players, String anncName, String... msg) {
+        for (String singMsg : msg) {
+            if (!players.isEmpty()) {
+                for (ProxiedPlayer p : players) {
+                    if (p.hasPermission(Permissions.General.ANNOUNCEMENT) || p.hasPermission(Permissions.General.ANNOUNCEMENT + "." + anncName)) {
+                        p.sendMessage(Dictionary.format(Dictionary.FORMAT_ALERT, "MESSAGE", singMsg));
+                    }
+                }
+            }
+            ProxyServer.getInstance().getConsole().sendMessage(Dictionary.format(Dictionary.FORMAT_ALERT, "MESSAGE", singMsg));
+        }
     }
 
     public Map<String, Announcement> getAnncs() {

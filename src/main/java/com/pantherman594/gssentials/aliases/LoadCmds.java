@@ -66,8 +66,10 @@ public class LoadCmds extends Command {
             num++;
         }
         command = command.replace("{{ PLAYER }}", sender.getName()).replace("{{ SERVER }}", server);
+        ProxyServer.getInstance().getLogger().info(command);
         switch (command.contains(" ") ? command.split(" ")[0] : command) {
             case "CONSOLE:":
+                ProxyServer.getInstance().getLogger().info(command.substring(9));
                 ProxyServer.getInstance().getPluginManager().dispatchCommand(ProxyServer.getInstance().getConsole(), command.substring(9));
                 break;
             case "TELL":
@@ -76,14 +78,14 @@ public class LoadCmds extends Command {
                 String recipient = commToSplit.split("Ƃ")[0].substring(5);
                 if (recipient.equals("ALL")) {
                     for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
-                        p.sendMessage(message);
+                        p.sendMessage(Dictionary.colour(message));
                     }
                 } else if (command != null && ProxyServer.getInstance().getPlayer(recipient) != null) {
-                    ProxyServer.getInstance().getPlayer(recipient).sendMessage(message);
+                    ProxyServer.getInstance().getPlayer(recipient).sendMessage(Dictionary.colour(message));
                 }
                 break;
             case "TELL:":
-                sender.sendMessage(command.substring(6));
+                sender.sendMessage(Dictionary.colour(command.substring(6)));
                 break;
             default:
                 ProxyServer.getInstance().getPluginManager().dispatchCommand(sender, command);

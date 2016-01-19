@@ -146,13 +146,13 @@ public class Dictionary {
     public static String SLAPPED_MSG;
     @Load(key = "rulenotify.advertisement", def = "&7{{ PLAYER }} just advertised!")
     public static String NOTIFY_ADVERTISEMENT;
-    @Load(key = "rulenotify.cursing", def = "&7{{ PLAYER }} just sweared!")
+    @Load(key = "rulenotify.cursing", def = "&7{{ PLAYER }} just swore!")
     public static String NOTIFY_CURSING;
-    @Load(key = "rulenotify.replace", def = "&7{{ PLAYER }} sweared but was replaced!")
+    @Load(key = "rulenotify.replace", def = "&7{{ PLAYER }} swore but was replaced!")
     public static String NOTIFY_REPLACE;
-    @Load(key = "rulenotify.command", def = "&7{{ PLAYER }} sweared, triggering a command!")
+    @Load(key = "rulenotify.command", def = "&7{{ PLAYER }} swore, triggering a command!")
     public static String NOTIFY_COMMAND;
-    @Load(key = "bannedwords.replace", def = "****")
+    @Load(key = "bannedwords.replace", def = "*")
     public static String BANNED_REPLACE;
     @Load(key = "staffchat.message", def = "&c[{{ SERVER }} - {{ SENDER }}] » &7{{ MESSAGE }}")
     public static String FORMAT_STAFF_CHAT;
@@ -172,7 +172,7 @@ public class Dictionary {
     public static String WARNING_HANDLE_CURSING;
     @Load(key = "warnings.advertising", def = "&cPlease do not advertise other servers!")
     public static String WARNINGS_ADVERTISING;
-    @Load(key = "fastrelog", def = "&cPlease wait before reconnecting!")
+    @Load(key = "errors.fastrelog", def = "&cPlease wait before reconnecting!")
     public static String FAST_RELOG_KICK;
     private static SimpleDateFormat date;
 

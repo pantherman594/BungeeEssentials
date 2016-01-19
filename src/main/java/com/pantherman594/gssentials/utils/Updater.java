@@ -172,6 +172,10 @@ public class Updater {
                 Preconditions.checkNotNull(map.get("commands"), "invalid commands");
                 config.set("aliases." + map.get("alias"), map.get("commands"));
             }
+            messages.set("message.format", messages.get("format.message"));
+            messages.set("message.enabled", "&aMessaging is now enabled!");
+            messages.set("message.disabled", "&cMessaging is now disabled!");
+            messages.set("format.message", null);
             if (messages.get("bannedwords.replace").equals("****")) {
                 messages.set("bannedwords.replace", "*");
             }
@@ -192,7 +196,7 @@ public class Updater {
             messages.set("friend.inrequests.remove", "&cThe friend request from {{ NAME }} was removed.");
             messages.set("errors.fastrelog", "&cPlease wait before reconnecting!");
             List<Map<String, String>> section2 = (List<Map<String, String>>) messages.getList("announcements");
-            config.set("aliases", null);
+            messages.set("announcements", null);
             String name = "annc";
             int num = 0;
             for (Map<String, String> map : section2) {
@@ -201,11 +205,12 @@ public class Updater {
                 Preconditions.checkNotNull(map.get("delay"), "invalid delay");
                 Preconditions.checkNotNull(map.get("interval"), "invalid interval");
                 Preconditions.checkNotNull(map.get("message"), "invalid message");
-                config.set("aliases." + name + num + ".delay", map.get("delay"));
-                config.set("aliases." + name + num + ".interval", map.get("interval"));
-                config.set("aliases." + name + num + ".message", map.get("message"));
+                messages.set("announcements." + name + num + ".delay", map.get("delay"));
+                messages.set("announcements." + name + num + ".interval", map.get("interval"));
+                messages.set("announcements." + name + num + ".message", map.get("message"));
                 num++;
             }
+            config.set("configversion", null);
             config.set("configversion", "2.5.0");
             //oldVersion = 250;
         }
