@@ -162,7 +162,7 @@ public class Updater {
             enabledList.add("friend");
             enabledList.add("spam-command");
             config.set("enable", enabledList);
-            config.set("friend", Arrays.asList("friend", "f"));
+            config.set("commands.friend", Arrays.asList("friend", "f"));
             List<Map<String, String>> section = (List<Map<String, String>>) config.getList("aliases");
             config.set("aliases", null);
             for (Map<String, String> map : section) {
