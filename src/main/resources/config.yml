@@ -104,4 +104,4 @@ aliases:
   vote:
     - 'CONSOLE: staffchat {{ PLAYER }} wants to vote!'
     - 'TELL: Vote for the server at yourvote.site!'
-configversion: 2.4.6
+configversion: 2.5.0
