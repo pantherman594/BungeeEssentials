@@ -23,6 +23,7 @@ import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.command.ServerSpecificCommand;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.Permissions;
+import com.pantherman594.gssentials.utils.PlayerData;
 import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -37,6 +38,7 @@ import java.util.Set;
 public class SendCommand extends ServerSpecificCommand implements TabExecutor {
     public SendCommand() {
         super(BungeeEssentials.getInstance().getMain("send"), Permissions.Admin.SEND);
+        ProxyServer.getInstance().getPluginManager().registerCommand(BungeeEssentials.getInstance(), new SendAllCommand());
     }
 
     @Override
@@ -75,7 +77,7 @@ public class SendCommand extends ServerSpecificCommand implements TabExecutor {
             search = args[0].toLowerCase();
             for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
                 if (!player.getName().equals(sender.getName())) {
-                    if (player.getName().toLowerCase().startsWith(search) && !BungeeEssentials.getInstance().getData(((ProxiedPlayer) sender).getUniqueId()).isHidden()) {
+                    if (player.getName().toLowerCase().startsWith(search) && !PlayerData.getData(((ProxiedPlayer) sender).getUniqueId()).isHidden()) {
                         matches.add(player.getName());
                     }
                 }

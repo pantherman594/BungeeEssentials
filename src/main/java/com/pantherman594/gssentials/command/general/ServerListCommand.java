@@ -18,14 +18,21 @@
 
 package com.pantherman594.gssentials.command.general;
 
-import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.command.BECommand;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.Messenger;
 import com.pantherman594.gssentials.utils.Permissions;
-import net.md_5.bungee.api.*;
+import com.pantherman594.gssentials.utils.PlayerData;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+
+import java.io.IOException;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @SuppressWarnings("deprecation")
 public class ServerListCommand extends BECommand {
@@ -36,42 +43,53 @@ public class ServerListCommand extends BECommand {
 
     @Override
     public void execute(final CommandSender sender, String[] args) {
-        int online = ProxyServer.getInstance().getOnlineCount() - Messenger.hiddenNum();
+        boolean canSeeHidden = sender.hasPermission(Permissions.Admin.SEE_HIDDEN);
+        int online = ProxyServer.getInstance().getOnlineCount();
+        if (!canSeeHidden) {
+            online = online - Messenger.hiddenNum();
+        }
         sender.sendMessage(Dictionary.format(Dictionary.LIST_HEADER, "COUNT", String.valueOf(online)));
         for (final ServerInfo info : ProxyServer.getInstance().getServers().values()) {
             if (sender.hasPermission(Permissions.General.LIST_OFFLINE)) {
-                print(sender, info);
+                print(sender, canSeeHidden, info);
             } else {
-                info.ping(new Callback<ServerPing>() {
-                    @Override
-                    public void done(ServerPing serverPing, Throwable throwable) {
-                        print(sender, info);
-                    }
-                });
+                try {
+                    Socket s = new Socket();
+                    s.connect(info.getAddress());
+                    s.close();
+                    print(sender, canSeeHidden, info);
+                } catch (IOException ignored) {
+                }
             }
         }
     }
 
-    private int getNonHiddenPlayers(ServerInfo info) {
-        int result = 0;
+    private Collection<ProxiedPlayer> getPlayers(boolean canSeeHidden, ServerInfo info) {
+        if (canSeeHidden && !info.getPlayers().isEmpty()) {
+            return info.getPlayers();
+        }
+        Collection<ProxiedPlayer> players = new ArrayList<>();
         for (ProxiedPlayer player : info.getPlayers()) {
-            if (!BungeeEssentials.getInstance().getData((player).getUniqueId()).isHidden()) {
-                result++;
+            if (!PlayerData.getData((player).getUniqueId()).isHidden()) {
+                players.add(player);
             }
         }
-        return result;
+        return players;
     }
 
-    private String getDensity(int players) {
-        return String.valueOf(getColour(players)) + "(" + players + ")";
+    private String getDensity(boolean canSeeHidden, int players) {
+        return String.valueOf(getColour(canSeeHidden, players)) + "(" + players + ")";
     }
 
-    private ChatColor getColour(int players) {
+    private ChatColor getColour(boolean canSeeHidden, int players) {
         if (players == 0 || players < 0) {
             return ChatColor.RED;
         }
 
-        int total = ProxyServer.getInstance().getOnlineCount() - Messenger.hiddenNum();
+        int total = ProxyServer.getInstance().getOnlineCount();
+        if (!canSeeHidden) {
+            total = total - Messenger.hiddenNum();
+        }
         double percent = (players * 100.0f) / total;
         if (percent <= 33) {
             return ChatColor.RED;
@@ -82,12 +100,22 @@ public class ServerListCommand extends BECommand {
         }
     }
 
-    private void print(CommandSender sender, ServerInfo info) {
+    private String getPlayerList(Collection<ProxiedPlayer> players) {
+        StringBuilder pList = new StringBuilder();
+        for (ProxiedPlayer p : players) {
+            if (pList.length() > 0) {
+                pList.append(", ");
+            }
+            pList.append(p.getName());
+        }
+        return pList.toString();
+    }
+
+    private void print(CommandSender sender, boolean canSeeHidden, ServerInfo info) {
         if (info.canAccess(sender) || sender.hasPermission(Permissions.General.LIST_RESTRICTED)) {
-            int online = getNonHiddenPlayers(info);
-            sender.sendMessage(Dictionary.format(Dictionary.LIST_BODY, "SERVER", info.getName(), "MOTD", info.getMotd(), "DENSITY", getDensity(online), "COUNT", String.valueOf(online)));
-        } else {
-            ProxyServer.getInstance().getLogger().info(sender.getName() + " can't: " + info.getName());
+            Collection<ProxiedPlayer> online;
+            online = getPlayers(canSeeHidden, info);
+            sender.sendMessage(Dictionary.format(Dictionary.LIST_BODY, "SERVER", info.getName(), "MOTD", info.getMotd(), "DENSITY", getDensity(canSeeHidden, online.size()), "COUNT", String.valueOf(online.size()), "PLAYERS", getPlayerList(online)));
         }
     }
 }

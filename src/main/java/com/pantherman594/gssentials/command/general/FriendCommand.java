@@ -18,7 +18,7 @@
 
 package com.pantherman594.gssentials.command.general;
 
-import com.pantherman594.gssentials.BungeeEssentials;
+import com.google.common.collect.ImmutableSet;
 import com.pantherman594.gssentials.command.BECommand;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.Permissions;
@@ -30,8 +30,11 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.plugin.TabExecutor;
 
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -39,7 +42,7 @@ import java.util.UUID;
  *
  * @author David
  */
-public class FriendCommand extends BECommand {
+public class FriendCommand extends BECommand implements TabExecutor {
 
     public FriendCommand() {
         super("friend", Permissions.General.FRIEND);
@@ -48,7 +51,7 @@ public class FriendCommand extends BECommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (sender instanceof ProxiedPlayer) {
-            PlayerData playerData = BungeeEssentials.getInstance().getData(((ProxiedPlayer) sender).getUniqueId());
+            PlayerData playerData = PlayerData.getData(((ProxiedPlayer) sender).getUniqueId());
             if (args.length == 0 || (args.length == 1 && args[0].equalsIgnoreCase("list"))) {
                 sender.sendMessage(Dictionary.format(Dictionary.FRIEND_HEADER, "COUNT", String.valueOf(playerData.getFriends().size())));
                 for (String uuid : playerData.getFriends()) {
@@ -60,8 +63,7 @@ public class FriendCommand extends BECommand {
                     } else {
                         name = (new PlayerData(uuid, null)).getName();
                     }
-                    String msg = Dictionary.format(Dictionary.FRIEND_BODY, "NAME", name, "SERVER", server);
-                    TextComponent finalMsg = new TextComponent(msg);
+                    TextComponent finalMsg = new TextComponent(TextComponent.fromLegacyText(Dictionary.format(Dictionary.FRIEND_BODY, "NAME", name, "SERVER", server)));
                     if (!server.equals("Offline")) {
                         finalMsg.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/server " + server));
                         finalMsg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to join your friend!").create()));
@@ -86,7 +88,10 @@ public class FriendCommand extends BECommand {
                     } else {
                         name = (new PlayerData(uuid, null)).getName();
                     }
-                    sender.sendMessage(Dictionary.format(Dictionary.INREQUESTS_BODY, "NAME", name));
+                    TextComponent finalMsg = new TextComponent(TextComponent.fromLegacyText(Dictionary.format(Dictionary.INREQUESTS_BODY, "NAME", name)));
+                    finalMsg.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/friend add " + name));
+                    finalMsg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to accept friend request!").create()));
+                    sender.sendMessage(finalMsg);
                 }
             } else if (args.length == 2 && (args[0].equalsIgnoreCase("add") || args[0].equalsIgnoreCase("remove"))) {
                 ProxiedPlayer p = ProxyServer.getInstance().getPlayer(args[1]);
@@ -94,7 +99,7 @@ public class FriendCommand extends BECommand {
                 PlayerData playerData2;
                 if (p != null) {
                     uuid = p.getUniqueId().toString();
-                    playerData2 = BungeeEssentials.getInstance().getData(p.getUniqueId());
+                    playerData2 = PlayerData.getData(p.getUniqueId());
                 } else {
                     uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + args[1]).getBytes(StandardCharsets.UTF_8)).toString();
                     playerData2 = new PlayerData(uuid, null);
@@ -104,7 +109,7 @@ public class FriendCommand extends BECommand {
                         sender.sendMessage(Dictionary.format(Dictionary.FRIEND_OLD, "NAME", args[1]));
                     } else {
                         if (p != null) {
-                            playerData2 = BungeeEssentials.getInstance().getData(p.getUniqueId());
+                            playerData2 = PlayerData.getData(p.getUniqueId());
                             uuid = p.getUniqueId().toString();
                             if (playerData.getInRequests().contains(uuid)) {
                                 playerData.getInRequests().remove(uuid);
@@ -116,7 +121,10 @@ public class FriendCommand extends BECommand {
                             } else if (!playerData.getOutRequests().contains(uuid)) {
                                 playerData.getOutRequests().add(uuid);
                                 playerData2.getInRequests().add(((ProxiedPlayer) sender).getUniqueId().toString());
-                                p.sendMessage(Dictionary.format(Dictionary.INREQUESTS_NEW, "NAME", sender.getName()));
+                                TextComponent finalMsg = new TextComponent(TextComponent.fromLegacyText(Dictionary.format(Dictionary.INREQUESTS_NEW, "NAME", sender.getName())));
+                                finalMsg.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/friend add " + sender.getName()));
+                                finalMsg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to accept friend request!").create()));
+                                p.sendMessage(finalMsg);
                                 sender.sendMessage(Dictionary.format(Dictionary.OUTREQUESTS_NEW, "NAME", p.getName()));
                             } else {
                                 sender.sendMessage(Dictionary.format(Dictionary.OUTREQUESTS_OLD, "NAME", p.getName()));
@@ -149,7 +157,7 @@ public class FriendCommand extends BECommand {
                         }
                     }
                     if (p != null) {
-                        BungeeEssentials.getInstance().setData(p.getUniqueId(), playerData2);
+                        PlayerData.setData(p.getUniqueId(), playerData2);
                     } else {
                         playerData2.save();
                     }
@@ -160,5 +168,22 @@ public class FriendCommand extends BECommand {
         } else {
             sender.sendMessage(Dictionary.colour("&cConsole does not have any friends."));
         }
+    }
+
+    @Override
+    public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
+        if (args.length == 2) {
+            Set<String> matches = new HashSet<>();
+            String search = args[0].toLowerCase();
+            for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
+                if (!player.getName().equals(sender.getName())) {
+                    if (player.getName().toLowerCase().startsWith(search) && !PlayerData.getData(((ProxiedPlayer) sender).getUniqueId()).isHidden()) {
+                        matches.add(player.getName());
+                    }
+                }
+            }
+            return matches;
+        }
+        return ImmutableSet.of();
     }
 }

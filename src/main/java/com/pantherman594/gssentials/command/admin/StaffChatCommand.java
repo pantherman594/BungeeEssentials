@@ -18,7 +18,6 @@
 
 package com.pantherman594.gssentials.command.admin;
 
-import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.command.ServerSpecificCommand;
 import com.pantherman594.gssentials.event.StaffChatEvent;
 import com.pantherman594.gssentials.utils.Dictionary;
@@ -41,7 +40,7 @@ public class StaffChatCommand extends ServerSpecificCommand {
             String server = "CONSOLE";
             if (sender instanceof ProxiedPlayer) {
                 ProxiedPlayer player = (ProxiedPlayer) sender;
-                PlayerData pD = BungeeEssentials.getInstance().getData(player.getUniqueId());
+                PlayerData pD = PlayerData.getData(player.getUniqueId());
                 server = player.getServer().getInfo().getName();
                 if (args.length == 1) {
                     if (args[0].equals("on")) {
@@ -69,7 +68,7 @@ public class StaffChatCommand extends ServerSpecificCommand {
             ProxiedPlayer player;
             if (sender instanceof ProxiedPlayer) {
                 player = (ProxiedPlayer) sender;
-                if (BungeeEssentials.getInstance().getData(player.getUniqueId()).toggleStaffChat()) {
+                if (PlayerData.getData(player.getUniqueId()).toggleStaffChat()) {
                     player.sendMessage(Dictionary.format(Dictionary.SCHAT_ENABLED));
                 } else {
                     player.sendMessage(Dictionary.format(Dictionary.SCHAT_DISABLED));

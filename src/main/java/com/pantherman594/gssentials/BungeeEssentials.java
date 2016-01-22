@@ -21,8 +21,6 @@ package com.pantherman594.gssentials;
 import com.google.common.base.Preconditions;
 import com.pantherman594.gssentials.aliases.AliasManager;
 import com.pantherman594.gssentials.announcement.AnnouncementManager;
-import com.pantherman594.gssentials.command.admin.*;
-import com.pantherman594.gssentials.command.general.*;
 import com.pantherman594.gssentials.event.PlayerListener;
 import com.pantherman594.gssentials.integration.IntegrationProvider;
 import com.pantherman594.gssentials.integration.IntegrationTest;
@@ -30,8 +28,8 @@ import com.pantherman594.gssentials.regex.RuleManager;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.*;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Plugin;
-import net.md_5.bungee.api.plugin.PluginManager;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
@@ -48,7 +46,6 @@ public class BungeeEssentials extends Plugin {
     public List<String> playerList = new ArrayList<>();
     private Map<String, String> mainList = new HashMap<>();
     private Map<String, String[]> aliasList = new HashMap<>();
-    private Map<UUID, PlayerData> playerDataList = new HashMap<>();
     private RuleManager ruleManager;
     private Configuration config;
     private Configuration messages = null;
@@ -74,24 +71,6 @@ public class BungeeEssentials extends Plugin {
 
     public String[] getAlias(String key) {
         return aliasList.get(key);
-    }
-
-    public Map<UUID, PlayerData> getDatas() {
-        return playerDataList;
-    }
-
-    public PlayerData getData(UUID uuid) {
-        return getDatas().get(uuid);
-    }
-
-    public void setData(UUID uuid, PlayerData playerData) {
-        getDatas().put(uuid, playerData);
-    }
-
-    public void clearData(UUID uuid) {
-        if (getData(uuid).save()) {
-            getDatas().remove(uuid);
-        }
     }
 
     @Override
@@ -178,6 +157,7 @@ public class BungeeEssentials extends Plugin {
         ProxyServer.getInstance().getPluginManager().registerListener(this, new Messenger());
         ProxyServer.getInstance().getPluginManager().registerListener(this, new PlayerListener());
 
+        PlayerData.clearData();
         Log.reset();
         enabled = new ArrayList<>();
 
@@ -269,61 +249,31 @@ public class BungeeEssentials extends Plugin {
     }
 
     private void register(String comm) {
-        PluginManager pluginMan = ProxyServer.getInstance().getPluginManager();
-        switch (comm) {
-            case "alert":
-                pluginMan.registerCommand(this, new AlertCommand());
-                break;
-            case "chat":
-                pluginMan.registerCommand(this, new ChatCommand());
-                break;
-            case "commandspy":
-                pluginMan.registerCommand(this, new CSpyCommand());
-                break;
-            case "find":
-                pluginMan.registerCommand(this, new FindCommand());
-                break;
-            case "friend":
-                pluginMan.registerCommand(this, new FriendCommand());
-                break;
-            case "hide":
-                pluginMan.registerCommand(this, new HideCommand());
-                break;
-            case "ignore":
-                pluginMan.registerCommand(this, new IgnoreCommand());
-                break;
-            case "join":
-                pluginMan.registerCommand(this, new JoinCommand());
-                break;
-            case "list":
-                pluginMan.registerCommand(this, new ServerListCommand());
-                break;
-            case "lookup":
-                pluginMan.registerCommand(this, new LookupCommand());
-                break;
-            case "message":
-                pluginMan.registerCommand(this, new MessageCommand());
-                pluginMan.registerCommand(this, new ReplyCommand());
-                break;
-            case "mute":
-                pluginMan.registerCommand(this, new MuteCommand());
-                break;
-            case "reload":
-                pluginMan.registerCommand(this, new ReloadCommand());
-                break;
-            case "send":
-                pluginMan.registerCommand(this, new SendCommand());
-                pluginMan.registerCommand(this, new SendAllCommand());
-                break;
-            case "slap":
-                pluginMan.registerCommand(this, new SlapCommand());
-                break;
-            case "spy":
-                pluginMan.registerCommand(this, new SpyCommand());
-                break;
-            case "staffchat":
-                pluginMan.registerCommand(this, new StaffChatCommand());
-                break;
+        Map<String, String> commands = new HashMap<>();
+        commands.put("alert", "com.pantherman594.gssentials.command.admin.AlertCommand");
+        commands.put("chat", "com.pantherman594.gssentials.command.general.ChatCommand");
+        commands.put("commandspy", "com.pantherman594.gssentials.command.admin.CSpyCommand");
+        commands.put("find", "com.pantherman594.gssentials.command.general.FindCommand");
+        commands.put("friend", "com.pantherman594.gssentials.command.general.FriendCommand");
+        commands.put("hide", "com.pantherman594.gssentials.command.admin.HideCommand");
+        commands.put("ignore", "com.pantherman594.gssentials.command.general.IgnoreCommand");
+        commands.put("join", "com.pantherman594.gssentials.command.general.JoinCommand");
+        commands.put("list", "com.pantherman594.gssentials.command.general.ServerListCommand");
+        commands.put("lookup", "com.pantherman594.gssentials.command.admin.LookupCommand");
+        commands.put("message", "com.pantherman594.gssentials.command.general.MessageCommand");
+        commands.put("mute", "com.pantherman594.gssentials.command.admin.MuteCommand");
+        commands.put("reload", "com.pantherman594.gssentials.command.admin.ReloadCommand");
+        commands.put("send", "com.pantherman594.gssentials.command.admin.SendCommand");
+        commands.put("slap", "com.pantherman594.gssentials.command.general.SlapCommand");
+        commands.put("spy", "com.pantherman594.gssentials.command.admin.SpyCommand");
+        commands.put("staffchat", "com.pantherman594.gssentials.command.admin.StaffChatCommand");
+        if (commands.containsKey(comm)) {
+            try {
+                Class cClass = Class.forName(commands.get(comm));
+                ProxyServer.getInstance().getPluginManager().registerCommand(this, (Command) cClass.newInstance());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -108,9 +108,13 @@ public class Log {
                     break;
             }
             if (!chatType.equals("")) {
-                logger.log(Level.FINE, "{0} broke a chat rule in " + chatType + ": \"{1}\"", new Object[]{sender.getName(), joiner.join(rule.getMatches())});
+                log("{0} broke a chat rule in " + chatType + ": \"{1}\"", sender.getName(), joiner.join(rule.getMatches()));
             }
         }
+    }
+
+    public static void log(String message, Object... args) {
+        logger.log(Level.FINE, message, args);
     }
 
     private static class LogFormatter extends Formatter {

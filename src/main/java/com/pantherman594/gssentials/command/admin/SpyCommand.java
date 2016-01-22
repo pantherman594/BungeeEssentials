@@ -18,7 +18,6 @@
 
 package com.pantherman594.gssentials.command.admin;
 
-import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.command.ServerSpecificCommand;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.Permissions;
@@ -36,7 +35,7 @@ public class SpyCommand extends ServerSpecificCommand {
     public void run(CommandSender sender, String[] args) {
         if (sender instanceof ProxiedPlayer) {
             ProxiedPlayer player = (ProxiedPlayer) sender;
-            PlayerData pD = BungeeEssentials.getInstance().getData(player.getUniqueId());
+            PlayerData pD = PlayerData.getData(player.getUniqueId());
             if (args != null && args.length == 1) {
                 if (args[0].equals("on")) {
                     pD.setSpy(true);

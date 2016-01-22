@@ -19,7 +19,6 @@
 package com.pantherman594.gssentials.command.admin;
 
 import com.google.common.collect.ImmutableSet;
-import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.command.ServerSpecificCommand;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.Permissions;
@@ -41,7 +40,7 @@ public class MuteCommand extends ServerSpecificCommand implements TabExecutor {
     public void run(CommandSender sender, String[] args) {
         if (args != null && args.length > 0) {
             ProxiedPlayer player = ProxyServer.getInstance().getPlayer(args[0]);
-            PlayerData pD = BungeeEssentials.getInstance().getData(player.getUniqueId());
+            PlayerData pD = PlayerData.getData(player.getUniqueId());
             if (player != null) {
                 if (!player.hasPermission(Permissions.Admin.MUTE_EXEMPT)) {
                     if (pD.toggleMuted()) {
@@ -89,7 +88,7 @@ public class MuteCommand extends ServerSpecificCommand implements TabExecutor {
                 }
             }
             if (!player.getName().equals(sender.getName())) {
-                if (player.getName().toLowerCase().startsWith(search) && !BungeeEssentials.getInstance().getData(((ProxiedPlayer) sender).getUniqueId()).isHidden()) {
+                if (player.getName().toLowerCase().startsWith(search) && !PlayerData.getData(((ProxiedPlayer) sender).getUniqueId()).isHidden()) {
                     matches.add(player.getName());
                 }
             }

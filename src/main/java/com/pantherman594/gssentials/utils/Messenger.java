@@ -55,7 +55,7 @@ public class Messenger implements Listener {
 
     public static String filter(ProxiedPlayer player, String msg, ChatType ct) {
         if (msg == null || player == null) {
-            return null;
+            return msg;
         }
         String message = msg;
 
@@ -168,7 +168,7 @@ public class Messenger implements Listener {
 
     public static Integer hiddenNum() {
         int hiddenNum = 0;
-        for (PlayerData pD : BungeeEssentials.getInstance().getDatas().values()) {
+        for (PlayerData pD : PlayerData.getDatas().values()) {
             if (pD.isHidden()) {
                 hiddenNum++;
             }
@@ -179,7 +179,7 @@ public class Messenger implements Listener {
     public static boolean isMutedF(ProxiedPlayer player, String msg) {
         Preconditions.checkNotNull(player, "Invalid player specified");
         BungeeEssentials bInst = BungeeEssentials.getInstance();
-        if (!player.hasPermission(Permissions.Admin.MUTE_EXEMPT) && (BungeeEssentials.getInstance().getData(player.getUniqueId()).isMuted() || (bInst.isIntegrated() && bInst.getIntegrationProvider().isMuted(player)))) {
+        if (!player.hasPermission(Permissions.Admin.MUTE_EXEMPT) && (PlayerData.getData(player.getUniqueId()).isMuted() || (bInst.isIntegrated() && bInst.getIntegrationProvider().isMuted(player)))) {
             player.sendMessage(Dictionary.format(Dictionary.MUTE_ERROR));
             ruleNotify(Dictionary.format(Dictionary.MUTE_ERRORN), player, msg);
             return true;

@@ -19,7 +19,6 @@
 package com.pantherman594.gssentials.command.general;
 
 import com.google.common.collect.ImmutableSet;
-import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.command.BECommand;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.Permissions;
@@ -50,7 +49,7 @@ public class JoinCommand extends BECommand implements TabExecutor {
 
             ProxiedPlayer player = (ProxiedPlayer) sender;
             ProxiedPlayer join = ProxyServer.getInstance().getPlayer(args[0]);
-            PlayerData pDJ = BungeeEssentials.getInstance().getData(join.getUniqueId());
+            PlayerData pDJ = PlayerData.getData(join.getUniqueId());
             if (join == null || pDJ.isHidden()) {
                 sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
                 return;
@@ -83,7 +82,7 @@ public class JoinCommand extends BECommand implements TabExecutor {
         String search = args[0].toLowerCase();
         for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
             if (!player.getName().equals(sender.getName())) {
-                if (player.getName().toLowerCase().startsWith(search) && !BungeeEssentials.getInstance().getData(player.getUniqueId()).isHidden()) {
+                if (player.getName().toLowerCase().startsWith(search) && !PlayerData.getData(player.getUniqueId()).isHidden()) {
                     matches.add(player.getName());
                 }
             }

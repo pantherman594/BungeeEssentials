@@ -37,13 +37,14 @@ import java.util.Set;
 public class MessageCommand extends BECommand implements TabExecutor {
     public MessageCommand() {
         super("message", Permissions.General.MESSAGE);
+        ProxyServer.getInstance().getPluginManager().registerCommand(BungeeEssentials.getInstance(), new ReplyCommand());
     }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (sender instanceof ProxiedPlayer) {
             if (args.length == 1) {
-                PlayerData pD = BungeeEssentials.getInstance().getData(((ProxiedPlayer) sender).getUniqueId());
+                PlayerData pD = PlayerData.getData(((ProxiedPlayer) sender).getUniqueId());
                 boolean change = true;
                 if (args[0].equalsIgnoreCase("toggle")) {
                     pD.setMsging(!pD.isMsging());
@@ -57,7 +58,7 @@ public class MessageCommand extends BECommand implements TabExecutor {
                     sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <on|off|toggle>"));
                 }
                 if (change) {
-                    BungeeEssentials.getInstance().setData(((ProxiedPlayer) sender).getUniqueId(), pD);
+                    PlayerData.setData(((ProxiedPlayer) sender).getUniqueId(), pD);
                     if (pD.isMsging()) {
                         sender.sendMessage(Dictionary.format(Dictionary.MESSAGE_ENABLED));
                     } else {
@@ -86,7 +87,7 @@ public class MessageCommand extends BECommand implements TabExecutor {
         String search = args[0].toLowerCase();
         for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
             if (!player.getName().equals(sender.getName())) {
-                if (player.getName().toLowerCase().startsWith(search) && !BungeeEssentials.getInstance().getData(player.getUniqueId()).isHidden()) {
+                if (player.getName().toLowerCase().startsWith(search) && !PlayerData.getData(player.getUniqueId()).isHidden()) {
                     matches.add(player.getName());
                 }
             }

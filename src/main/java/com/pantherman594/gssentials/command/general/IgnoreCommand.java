@@ -19,7 +19,6 @@
 package com.pantherman594.gssentials.command.general;
 
 import com.google.common.collect.ImmutableSet;
-import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.command.BECommand;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.Permissions;
@@ -42,7 +41,7 @@ public class IgnoreCommand extends BECommand implements TabExecutor {
         if (sender instanceof ProxiedPlayer) {
             if (args.length > 0) {
                 ProxiedPlayer p = ProxyServer.getInstance().getPlayer(args[0]);
-                PlayerData pD = BungeeEssentials.getInstance().getData(((ProxiedPlayer) sender).getUniqueId());
+                PlayerData pD = PlayerData.getData(((ProxiedPlayer) sender).getUniqueId());
                 if (p != null && !pD.isHidden()) {
                     if (p != sender)
                         if (pD.toggleIgnore(p.getUniqueId())) {
@@ -70,7 +69,7 @@ public class IgnoreCommand extends BECommand implements TabExecutor {
         String search = args[0].toLowerCase();
         for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
             if (!player.getName().equals(sender.getName())) {
-                if (player.getName().toLowerCase().startsWith(search) && !BungeeEssentials.getInstance().getData(((ProxiedPlayer) sender).getUniqueId()).isHidden()) {
+                if (player.getName().toLowerCase().startsWith(search) && !PlayerData.getData(((ProxiedPlayer) sender).getUniqueId()).isHidden()) {
                     matches.add(player.getName());
                 }
             }

@@ -25,9 +25,7 @@ import net.md_5.bungee.config.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by David on 12/05.
@@ -35,6 +33,7 @@ import java.util.UUID;
  * @author David
  */
 public class PlayerData {
+    private static Map<UUID, PlayerData> playerDataList;
     private Configuration config;
     private String name;
     private String uuid;
@@ -96,6 +95,23 @@ public class PlayerData {
             muted = false;
             msging = true;
         }
+        playerDataList.put(UUID.fromString(uuid), this);
+    }
+
+    public static Map<UUID, PlayerData> getDatas() {
+        return playerDataList;
+    }
+
+    public static PlayerData getData(UUID uuid) {
+        return getDatas().get(uuid);
+    }
+
+    public static void setData(UUID uuid, PlayerData playerData) {
+        getDatas().put(uuid, playerData);
+    }
+
+    public static void clearData() {
+        playerDataList = new HashMap<>();
     }
 
     public boolean save() {
@@ -131,6 +147,7 @@ public class PlayerData {
             BungeeEssentials.getInstance().getLogger().warning("Unable to save " + name + "'s data.");
             return false;
         }
+        playerDataList.remove(UUID.fromString(uuid));
         return true;
     }
 

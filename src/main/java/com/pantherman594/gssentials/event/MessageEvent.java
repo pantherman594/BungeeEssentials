@@ -40,7 +40,7 @@ public class MessageEvent extends Event {
         this.recipient = recipient;
         this.msg = msg;
         String message = msg;
-        if (recipient != null && !BungeeEssentials.getInstance().getData(recipient.getUniqueId()).isHidden()) {
+        if (recipient != null && !PlayerData.getData(recipient.getUniqueId()).isHidden()) {
             ProxiedPlayer player = null;
             if (sender instanceof ProxiedPlayer) {
                 player = (ProxiedPlayer) sender;
@@ -53,7 +53,7 @@ public class MessageEvent extends Event {
                     String spyMessage = Dictionary.format(Dictionary.SPY_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message);
                     for (ProxiedPlayer onlinePlayer : ProxyServer.getInstance().getPlayers()) {
                         if (player.getUniqueId() != onlinePlayer.getUniqueId() && recipient.getUniqueId() != onlinePlayer.getUniqueId()) {
-                            if (onlinePlayer.hasPermission(Permissions.Admin.SPY) && BungeeEssentials.getInstance().getData(onlinePlayer.getUniqueId()).isSpy()) {
+                            if (onlinePlayer.hasPermission(Permissions.Admin.SPY) && PlayerData.getData(onlinePlayer.getUniqueId()).isSpy()) {
                                 onlinePlayer.sendMessage(spyMessage);
                             }
                         }
@@ -69,9 +69,9 @@ public class MessageEvent extends Event {
                     }
                 }, 3, TimeUnit.SECONDS);
             }
-            PlayerData pDR = BungeeEssentials.getInstance().getData(recipient.getUniqueId());
+            PlayerData pDR = PlayerData.getData(recipient.getUniqueId());
             if (BungeeEssentials.getInstance().contains("ignore")) {
-                PlayerData pDS = BungeeEssentials.getInstance().getData(((ProxiedPlayer) sender).getUniqueId());
+                PlayerData pDS = PlayerData.getData(((ProxiedPlayer) sender).getUniqueId());
                 if (!pDS.isIgnored(recipient.getUniqueId())) {
                     if (!pDR.isIgnored(((ProxiedPlayer) sender).getUniqueId()) && (pDR.isMsging() || sender.hasPermission(Permissions.Admin.BYPASS_MSG))) {
                         recipient.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));

@@ -19,10 +19,10 @@
 package com.pantherman594.gssentials.command.general;
 
 import com.google.common.collect.ImmutableSet;
-import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.command.BECommand;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.Permissions;
+import com.pantherman594.gssentials.utils.PlayerData;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -46,7 +46,7 @@ public class SlapCommand extends BECommand implements TabExecutor {
             }
             if (args.length > 0) {
                 ProxiedPlayer enemy = ProxyServer.getInstance().getPlayer(args[0]);
-                if (enemy != null && !BungeeEssentials.getInstance().getData(enemy.getUniqueId()).isHidden()) {
+                if (enemy != null && !PlayerData.getData(enemy.getUniqueId()).isHidden()) {
                     sender.sendMessage(Dictionary.format(Dictionary.SLAPPER_MSG, "SLAPPED", enemy.getName()));
                     enemy.sendMessage(Dictionary.format(Dictionary.SLAPPED_MSG, "SLAPPER", player == null ? "GOD" : player.getName()));
                 } else {
@@ -71,7 +71,7 @@ public class SlapCommand extends BECommand implements TabExecutor {
         String search = args[0].toLowerCase();
         for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
             if (!player.getName().equals(sender.getName())) {
-                if (player.getName().toLowerCase().startsWith(search) && !BungeeEssentials.getInstance().getData(player.getUniqueId()).isHidden()) {
+                if (player.getName().toLowerCase().startsWith(search) && !PlayerData.getData(player.getUniqueId()).isHidden()) {
                     matches.add(player.getName());
                 }
             }
