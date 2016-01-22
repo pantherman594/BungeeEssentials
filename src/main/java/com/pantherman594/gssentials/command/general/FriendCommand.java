@@ -108,7 +108,7 @@ public class FriendCommand extends BECommand implements TabExecutor {
                     if (playerData.getFriends().contains(uuid)) {
                         sender.sendMessage(Dictionary.format(Dictionary.FRIEND_OLD, "NAME", args[1]));
                     } else {
-                        if (p != null) {
+                        if (p != null && !PlayerData.getData(p.getUniqueId()).isHidden()) {
                             playerData2 = PlayerData.getData(p.getUniqueId());
                             uuid = p.getUniqueId().toString();
                             if (playerData.getInRequests().contains(uuid)) {
