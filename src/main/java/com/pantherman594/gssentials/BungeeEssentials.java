@@ -28,6 +28,7 @@ import com.pantherman594.gssentials.regex.RuleManager;
 import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.*;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
@@ -215,6 +216,9 @@ public class BungeeEssentials extends Plugin {
         }
         getLogger().log(Level.INFO, "Registered {0} commands successfully", commands);
         setupIntegration();
+        for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
+            new PlayerData(p.getUniqueId().toString(), p.getName());
+        }
         return true;
     }
 
