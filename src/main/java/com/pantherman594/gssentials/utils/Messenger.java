@@ -37,7 +37,6 @@ import java.util.regex.Matcher;
 @SuppressWarnings("deprecation")
 public class Messenger implements Listener {
     public static Map<UUID, UUID> messages = new HashMap<>();
-    public static Map<UUID, String> commands = new HashMap<>();
     private static Map<UUID, String> sentMessages = new HashMap<>();
     private static Map<UUID, String> chatMessages = new HashMap<>();
 
@@ -63,7 +62,7 @@ public class Messenger implements Listener {
             return null;
         }
         if (!player.hasPermission(Permissions.Admin.BYPASS_FILTER)) {
-            if (BungeeEssentials.getInstance().contains("rules-chat")) {
+            if (BungeeEssentials.getInstance().contains(ct.getRule())) {
                 List<RuleManager.MatchResult> results = BungeeEssentials.getInstance().getRuleManager().matches(msg);
                 for (RuleManager.MatchResult result : results) {
                     if (result.matched()) {
@@ -102,22 +101,18 @@ public class Messenger implements Listener {
                 }
                 message = filterBannedWords(player, message, msg);
             }
-            if (ct == ChatType.PRIVATE) {
-                if (BungeeEssentials.getInstance().contains("spam")) {
-                    if (sentMessages.get(player.getUniqueId()) != null && compare(msg, sentMessages.get(player.getUniqueId())) > 0.85) {
-                        player.sendMessage(Dictionary.format(Dictionary.WARNING_LEVENSHTEIN_DISTANCE));
-                        return null;
-                    }
-                    sentMessages.put(player.getUniqueId(), msg);
+            if (BungeeEssentials.getInstance().contains(ct.getSpam())) {
+                Map<UUID, String> msgs;
+                if (ct.getSpam().equals("spam")) {
+                    msgs = sentMessages;
+                } else {
+                    msgs = chatMessages;
                 }
-            } else {
-                if (BungeeEssentials.getInstance().contains("spam-chat")) {
-                    if (chatMessages.get(player.getUniqueId()) != null && compare(msg, chatMessages.get(player.getUniqueId())) > 0.85) {
-                        player.sendMessage(Dictionary.format(Dictionary.WARNING_LEVENSHTEIN_DISTANCE));
-                        return null;
-                    }
-                    chatMessages.put(player.getUniqueId(), msg);
+                if (msgs.get(player.getUniqueId()) != null && compare(msg, msgs.get(player.getUniqueId())) > 0.85) {
+                    player.sendMessage(Dictionary.format(Dictionary.WARNING_LEVENSHTEIN_DISTANCE));
+                    return null;
                 }
+                msgs.put(player.getUniqueId(), msg);
             }
         }
         return message;
@@ -228,9 +223,25 @@ public class Messenger implements Listener {
     }
 
     public enum ChatType {
-        PUBLIC,
-        PRIVATE,
-        STAFF,
-        GLOBAL
+        PUBLIC("rules-chat", "spam-chat"),
+        PRIVATE("rules", "spam"),
+        STAFF("rules", "spam"),
+        GLOBAL("rules-chat", "spam-chat");
+
+        private String rule;
+        private String spam;
+
+        ChatType(String rule, String spam) {
+            this.rule = rule;
+            this.spam = spam;
+        }
+
+        public String getRule() {
+            return rule;
+        }
+
+        public String getSpam() {
+            return spam;
+        }
     }
 }

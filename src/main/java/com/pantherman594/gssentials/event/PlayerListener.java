@@ -37,6 +37,7 @@ import java.util.concurrent.TimeUnit;
 public class PlayerListener implements Listener {
     private final HashSet<InetAddress> connections;
     private final Map<InetAddress, ServerInfo> redirServer;
+    public Map<UUID, String> cmds = new HashMap<>();
 
     public PlayerListener() {
         connections = new HashSet<>();
@@ -48,14 +49,14 @@ public class PlayerListener implements Listener {
         ProxiedPlayer player = (ProxiedPlayer) event.getSender();
         PlayerData pD = PlayerData.getData(player.getUniqueId());
         String sender = player.getName();
-        String command = event.getMessage().substring(1).split(" ")[0];
+        String cmd = event.getMessage().substring(1);
         if (event.isCommand()) {
             if (BungeeEssentials.getInstance().contains("spam-command") && !player.hasPermission(Permissions.Admin.BYPASS_FILTER)) {
-                if (Messenger.commands.get(player.getUniqueId()) != null && Messenger.commands.get(player.getUniqueId()).contains(command)) {
+                if (cmds.get(player.getUniqueId()) != null && Messenger.compare(cmd, cmds.get(player.getUniqueId())) > 0.85) {
                     player.sendMessage(Dictionary.format(Dictionary.WARNING_LEVENSHTEIN_DISTANCE));
                     event.setCancelled(true);
                 }
-                Messenger.commands.put(player.getUniqueId(), command);
+                cmds.put(player.getUniqueId(), cmd);
             }
             if (!event.isCancelled() && !player.hasPermission(Permissions.Admin.SPY_EXEMPT) && BungeeEssentials.getInstance().contains("commandSpy")) {
                 for (ProxiedPlayer onlinePlayer : ProxyServer.getInstance().getPlayers()) {
