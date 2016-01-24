@@ -27,14 +27,16 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.plugin.Cancellable;
 import net.md_5.bungee.api.plugin.Event;
 
 import java.util.concurrent.TimeUnit;
 
-public class MessageEvent extends Event {
+public class MessageEvent extends Event implements Cancellable {
     private CommandSender sender;
     private ProxiedPlayer recipient;
     private String msg;
+    private boolean cancelled;
 
     public MessageEvent(CommandSender sender, ProxiedPlayer recipient, String msg) {
         this.sender = sender;
@@ -96,11 +98,31 @@ public class MessageEvent extends Event {
         return sender;
     }
 
+    public void setSender(CommandSender sender) {
+        this.sender = sender;
+    }
+
     public ProxiedPlayer getRecipient() {
         return recipient;
     }
 
+    public void setRecipient(ProxiedPlayer recipient) {
+        this.recipient = recipient;
+    }
+
     public String getMessage() {
         return msg;
+    }
+
+    public void setMessage(String msg) {
+        this.msg = msg;
+    }
+
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
     }
 }

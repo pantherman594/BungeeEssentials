@@ -217,10 +217,6 @@ public class Dictionary {
     }
 
     public static TextComponent format(String input, boolean colour, boolean hover, boolean click, String... args) {
-        //noinspection StringEquality
-        if (input == Dictionary.MESSAGE_FORMAT) {
-            input = colour(input);
-    	}
         input = input.replace("{{ TIME }}", getTime());
         // Minor fix for people who suffer from encoding issues
         input = input.replace("{{ RAQUO }}", "»");

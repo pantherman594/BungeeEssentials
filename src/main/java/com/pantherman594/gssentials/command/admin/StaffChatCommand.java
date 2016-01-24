@@ -21,7 +21,6 @@ package com.pantherman594.gssentials.command.admin;
 import com.pantherman594.gssentials.command.ServerSpecificCommand;
 import com.pantherman594.gssentials.event.StaffChatEvent;
 import com.pantherman594.gssentials.utils.Dictionary;
-import com.pantherman594.gssentials.utils.Messenger;
 import com.pantherman594.gssentials.utils.Permissions;
 import com.pantherman594.gssentials.utils.PlayerData;
 import net.md_5.bungee.api.CommandSender;
@@ -55,14 +54,7 @@ public class StaffChatCommand extends ServerSpecificCommand {
                 }
             }
 
-            String msg;
-            if (sender instanceof ProxiedPlayer) {
-                msg = Messenger.filter((ProxiedPlayer) sender, Dictionary.combine(args), Messenger.ChatType.PUBLIC);
-            } else {
-                msg = Dictionary.combine(args);
-            }
-
-            ProxyServer.getInstance().getPluginManager().callEvent(new StaffChatEvent(server, sender.getName(), msg));
+            ProxyServer.getInstance().getPluginManager().callEvent(new StaffChatEvent(server, sender.getName(), Dictionary.combine(args)));
 
         } else {
             ProxiedPlayer player;

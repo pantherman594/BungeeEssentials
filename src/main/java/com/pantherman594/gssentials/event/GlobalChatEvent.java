@@ -26,12 +26,14 @@ import com.pantherman594.gssentials.utils.PlayerData;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.plugin.Cancellable;
 import net.md_5.bungee.api.plugin.Event;
 
-public class GlobalChatEvent extends Event {
+public class GlobalChatEvent extends Event implements Cancellable {
     private String server;
     private String sender;
     private String msg;
+    private boolean cancelled;
 
     public GlobalChatEvent(String server, String sender, String msgPre) {
         this.server = server;
@@ -53,11 +55,35 @@ public class GlobalChatEvent extends Event {
         return server;
     }
 
+    public void setServer(String server) {
+        this.server = server;
+    }
+
     public String getSender() {
         return sender;
     }
 
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
     public String getMessage() {
         return msg;
+    }
+
+    public void setMessage(String msg) {
+        this.msg = msg;
+    }
+
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
+    }
+
+    public String toString() {
+        return "ChatEvent(super=" + super.toString() + ", cancelled=" + this.isCancelled() + ", server=" + this.getServer() + ", sender=" + this.getSender() + ", message=" + this.getMessage() + ")";
     }
 }
