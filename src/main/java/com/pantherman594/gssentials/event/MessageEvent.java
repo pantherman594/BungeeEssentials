@@ -25,6 +25,7 @@ import com.pantherman594.gssentials.utils.Permissions;
 import com.pantherman594.gssentials.utils.PlayerData;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Event;
 
@@ -50,7 +51,7 @@ public class MessageEvent extends Event {
             if (player != null) {
 
                 if (!sender.hasPermission(Permissions.Admin.SPY_EXEMPT)) {
-                    String spyMessage = Dictionary.format(Dictionary.SPY_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message);
+                    TextComponent spyMessage = Dictionary.format(Dictionary.SPY_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message);
                     for (ProxiedPlayer onlinePlayer : ProxyServer.getInstance().getPlayers()) {
                         if (player.getUniqueId() != onlinePlayer.getUniqueId() && recipient.getUniqueId() != onlinePlayer.getUniqueId()) {
                             if (onlinePlayer.hasPermission(Permissions.Admin.SPY) && PlayerData.getData(onlinePlayer.getUniqueId()).isSpy()) {

@@ -64,7 +64,6 @@ commands:
     - 'whereis'
   friend:
     - 'friend'
-    - 'f'
   ignore:
     - 'bignore'
   join:

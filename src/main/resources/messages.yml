@@ -96,7 +96,7 @@ chat:
   disabled: '&cYou are no longer chatting in global chat!'
 list:
   header: '&aServers:'
-  body: '&a- {{ SERVER }} {{ DENSITY }}'
+  body: '&a- {{ SERVER }} ({{ DENSITY }}&a)'
 lookup:
   header: '&6Found {{ SIZE }} player(s):'
   body: '&f - {{ PLAYER }}'
@@ -110,7 +110,7 @@ commandspy:
   disabled: '&cCommand Spy has been disabled'
 friend:
   header: '&2Current Friends:'
-  body: '- {{ NAME }} ({{ SERVER }})'
+  body: '- {{ NAME }} ({{ SERVER }}){{ HOVER: Click to join your friend! }}{{ CLICK: /server {{ SERVER }} }}'
   new: '&aYou are now friends with {{ NAME }}!'
   old: '&aYou are already friends with {{ NAME }}!'
   remove: '&cYou are no longer friends with {{ NAME }}.'
@@ -122,8 +122,8 @@ friend:
     remove: '&cThe friend request to {{ NAME }} was removed.'
   inrequests:
     header: '&2Incoming Friend Requests:'
-    body: '- {{ NAME }}'
-    new: '&a{{ NAME }} would like to be your friend. /friend <add|remove> {{ NAME }} to accept or decline the request.'
+    body: '- {{ NAME }}{{ HOVER: Click to accept friend request! }}{{ CLICK: /friend add {{ NAME }} }}'
+    new: '&a{{ NAME }} would like to be your friend. /friend <add|remove> {{ NAME }} to accept or decline the request.{{ HOVER: Click to accept friend request! }}{{ CLICK: /friend add {{ NAME }} }}'
     remove: '&cThe friend request from {{ NAME }} was removed.'
 hide:
   enabled: '&aYou are now hidden from all players!'

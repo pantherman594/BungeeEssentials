@@ -25,10 +25,6 @@ import com.pantherman594.gssentials.utils.Permissions;
 import com.pantherman594.gssentials.utils.PlayerData;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
@@ -63,12 +59,7 @@ public class FriendCommand extends BECommand implements TabExecutor {
                     } else {
                         name = (new PlayerData(uuid, null)).getName();
                     }
-                    TextComponent finalMsg = new TextComponent(TextComponent.fromLegacyText(Dictionary.format(Dictionary.FRIEND_BODY, "NAME", name, "SERVER", server)));
-                    if (!server.equals("Offline")) {
-                        finalMsg.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/server " + server));
-                        finalMsg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to join your friend!").create()));
-                    }
-                    sender.sendMessage(finalMsg);
+                    sender.sendMessage(Dictionary.format(Dictionary.FRIEND_BODY, "NAME", name, "SERVER", server));
                 }
                 sender.sendMessage(Dictionary.format(Dictionary.OUTREQUESTS_HEADER, "COUNT", String.valueOf(playerData.getOutRequests().size())));
                 for (String uuid : playerData.getOutRequests()) {
@@ -88,10 +79,7 @@ public class FriendCommand extends BECommand implements TabExecutor {
                     } else {
                         name = (new PlayerData(uuid, null)).getName();
                     }
-                    TextComponent finalMsg = new TextComponent(TextComponent.fromLegacyText(Dictionary.format(Dictionary.INREQUESTS_BODY, "NAME", name)));
-                    finalMsg.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/friend add " + name));
-                    finalMsg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to accept friend request!").create()));
-                    sender.sendMessage(finalMsg);
+                    sender.sendMessage(Dictionary.format(Dictionary.INREQUESTS_BODY, "NAME", name));
                 }
             } else if (args.length == 2 && (args[0].equalsIgnoreCase("add") || args[0].equalsIgnoreCase("remove"))) {
                 ProxiedPlayer p = ProxyServer.getInstance().getPlayer(args[1]);
@@ -121,10 +109,7 @@ public class FriendCommand extends BECommand implements TabExecutor {
                             } else if (!playerData.getOutRequests().contains(uuid)) {
                                 playerData.getOutRequests().add(uuid);
                                 playerData2.getInRequests().add(((ProxiedPlayer) sender).getUniqueId().toString());
-                                TextComponent finalMsg = new TextComponent(TextComponent.fromLegacyText(Dictionary.format(Dictionary.INREQUESTS_NEW, "NAME", sender.getName())));
-                                finalMsg.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/friend add " + sender.getName()));
-                                finalMsg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to accept friend request!").create()));
-                                p.sendMessage(finalMsg);
+                                p.sendMessage(Dictionary.format(Dictionary.INREQUESTS_NEW, "NAME", sender.getName()));
                                 sender.sendMessage(Dictionary.format(Dictionary.OUTREQUESTS_NEW, "NAME", p.getName()));
                             } else {
                                 sender.sendMessage(Dictionary.format(Dictionary.OUTREQUESTS_OLD, "NAME", p.getName()));

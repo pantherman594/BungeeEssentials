@@ -176,7 +176,7 @@ public class Messenger implements Listener {
         BungeeEssentials bInst = BungeeEssentials.getInstance();
         if (!player.hasPermission(Permissions.Admin.MUTE_EXEMPT) && (PlayerData.getData(player.getUniqueId()).isMuted() || (bInst.isIntegrated() && bInst.getIntegrationProvider().isMuted(player)))) {
             player.sendMessage(Dictionary.format(Dictionary.MUTE_ERROR));
-            ruleNotify(Dictionary.format(Dictionary.MUTE_ERRORN), player, msg);
+            ruleNotify(Dictionary.MUTE_ERRORN, player, msg);
             return true;
         }
         return false;

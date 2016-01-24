@@ -49,8 +49,8 @@ public class PlayerListener implements Listener {
         ProxiedPlayer player = (ProxiedPlayer) event.getSender();
         PlayerData pD = PlayerData.getData(player.getUniqueId());
         String sender = player.getName();
-        String cmd = event.getMessage().substring(1);
         if (event.isCommand()) {
+            String cmd = event.getMessage().substring(1);
             if (BungeeEssentials.getInstance().contains("spam-command") && !player.hasPermission(Permissions.Admin.BYPASS_FILTER)) {
                 if (cmds.get(player.getUniqueId()) != null && Messenger.compare(cmd, cmds.get(player.getUniqueId())) > 0.85) {
                     player.sendMessage(Dictionary.format(Dictionary.WARNING_LEVENSHTEIN_DISTANCE));
@@ -97,7 +97,7 @@ public class PlayerListener implements Listener {
             }
         }
         if (BungeeEssentials.getInstance().contains("fulllog")) {
-            Log.log(Dictionary.format(Dictionary.FORMAT_CHAT, "PLAYER", sender, "MESSAGE", event.getMessage()));
+            Log.log(Dictionary.format(Dictionary.FORMAT_CHAT, "PLAYER", sender, "MESSAGE", event.getMessage()).toLegacyText());
         }
     }
 
@@ -106,7 +106,7 @@ public class PlayerListener implements Listener {
         if (BungeeEssentials.getInstance().contains("fastRelog")) {
             if (connections.contains(event.getConnection().getAddress().getAddress())) {
                 event.setCancelled(true);
-                event.setCancelReason(Dictionary.format(Dictionary.FAST_RELOG_KICK));
+                event.setCancelReason(Dictionary.format(Dictionary.FAST_RELOG_KICK).toLegacyText());
                 return;
             }
             connections.add(event.getConnection().getAddress().getAddress());
@@ -139,7 +139,7 @@ public class PlayerListener implements Listener {
             ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_JOIN, "PLAYER", event.getPlayer().getName()));
         }
         if (BungeeEssentials.getInstance().contains("fulllog")) {
-            Log.log(Dictionary.format(Dictionary.FORMAT_JOIN, "PLAYER", event.getPlayer().getName()));
+            Log.log(Dictionary.format(Dictionary.FORMAT_JOIN, "PLAYER", event.getPlayer().getName()).toLegacyText());
         }
     }
 
@@ -171,7 +171,7 @@ public class PlayerListener implements Listener {
             ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_QUIT, "PLAYER", event.getPlayer().getName()));
         }
         if (BungeeEssentials.getInstance().contains("fulllog")) {
-            Log.log(Dictionary.format(Dictionary.FORMAT_QUIT, "PLAYER", event.getPlayer().getName()));
+            Log.log(Dictionary.format(Dictionary.FORMAT_QUIT, "PLAYER", event.getPlayer().getName()).toLegacyText());
         }
         PlayerData.getData(event.getPlayer().getUniqueId()).save();
     }
@@ -179,7 +179,7 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = Byte.MAX_VALUE)
     public void kick(ServerKickEvent event) {
         if (BungeeEssentials.getInstance().contains("fulllog")) {
-            Log.log(Dictionary.format(Dictionary.FORMAT_KICK, "PLAYER", event.getPlayer().getName(), "REASON", event.getKickReason()));
+            Log.log(Dictionary.format(Dictionary.FORMAT_KICK, "PLAYER", event.getPlayer().getName(), "REASON", event.getKickReason()).toLegacyText());
         }
     }
 

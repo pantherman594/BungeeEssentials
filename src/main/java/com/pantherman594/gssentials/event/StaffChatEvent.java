@@ -22,6 +22,7 @@ import com.pantherman594.gssentials.utils.Dictionary;
 import com.pantherman594.gssentials.utils.Messenger;
 import com.pantherman594.gssentials.utils.Permissions;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Event;
 
@@ -30,14 +31,14 @@ public class StaffChatEvent extends Event {
     private String sender;
     private String msg;
 
-    public StaffChatEvent(String server, String sender, String msg) {
+    public StaffChatEvent(String server, String sender, String msgPre) {
         this.server = server;
         this.sender = sender;
-        this.msg = msg;
+        this.msg = msgPre;
 
-        if (msg != null) {
-            msg = Messenger.filter(ProxyServer.getInstance().getPlayer(sender), msg, Messenger.ChatType.STAFF);
-            msg = Dictionary.format(Dictionary.FORMAT_STAFF_CHAT, "SERVER", server, "SENDER", sender, "MESSAGE", msg);
+        if (msgPre != null) {
+            msgPre = Messenger.filter(ProxyServer.getInstance().getPlayer(sender), msgPre, Messenger.ChatType.STAFF);
+            TextComponent msg = Dictionary.formatMsg(Dictionary.FORMAT_STAFF_CHAT, "SERVER", server, "SENDER", sender, "MESSAGE", msgPre);
             for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
                 if (player.hasPermission(Permissions.Admin.CHAT + "." + server) || player.hasPermission(Permissions.Admin.CHAT)) {
                     player.sendMessage(msg);

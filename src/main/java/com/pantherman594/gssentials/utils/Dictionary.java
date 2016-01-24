@@ -18,9 +18,14 @@
 
 package com.pantherman594.gssentials.utils;
 
+import com.google.common.base.Joiner;
 import com.pantherman594.gssentials.BungeeEssentials;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.config.Configuration;
 
@@ -211,7 +216,7 @@ public class Dictionary {
         return builder.toString();
     }
 
-    public static String format(String input, boolean colour, String... args) {
+    public static TextComponent format(String input, boolean colour, boolean hover, boolean click, String... args) {
         //noinspection StringEquality
         if (input == Dictionary.MESSAGE_FORMAT) {
             input = colour(input);
@@ -225,20 +230,57 @@ public class Dictionary {
                 input = input.replace("{{ " + args[i].toUpperCase() + " }}", args[i + 1]);
             }
         }
-        return colour ? colour(input) : input;
-    }
 
-    public static String format(String input, String... args) {
-        return Dictionary.format(input, true, args);
-    }
+        TextComponent inputText = new TextComponent(TextComponent.fromLegacyText(input));
 
-    public static String formatMsg(String input, String... args) {
-        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(args[3]);
-        if (player.hasPermission(Permissions.General.MESSAGE_COLOR)) {
-            return Dictionary.format(input, true, args);
-        } else {
-            return Dictionary.format(input, false, args);
+        if (hover) {
+            if (input.contains("{{ HOVER: ")) {
+                String[] hoverTextStripped = input.split("(\\{\\{ HOVER: )([^\\}]+)( \\}\\})");
+                String hoverText = input;
+                for (String aHoverTextStripped : hoverTextStripped) {
+                    hoverText = hoverText.replace(aHoverTextStripped, "");
+                }
+                hoverText = hoverText.replace("{{ HOVER: ", "").replace(" }}", "");
+                if (hoverText != null) {
+                    inputText.setText(Joiner.on("").join(hoverTextStripped));
+                    inputText.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
+                    input = Joiner.on("").join(hoverTextStripped);
+                }
+            }
         }
+
+        if (click) {
+            if (input.contains("{{ CLICK: ")) {
+                String[] clickTextStripped = input.split("(\\{\\{ CLICK: )([^\\}]+)( \\}\\})");
+                String clickText = input;
+                for (String aClickTextStripped : clickTextStripped) {
+                    clickText = clickText.replace(aClickTextStripped, "");
+                }
+                clickText = clickText.replace("{{ CLICK: ", "").replace(" }}", "");
+                if (clickText != null) {
+                    inputText.setText(Joiner.on("").join(clickTextStripped));
+                    inputText.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, clickText));
+                    input = Joiner.on("").join(clickTextStripped);
+                }
+            }
+        }
+
+        if (colour) {
+            TextComponent newInputText = new TextComponent(TextComponent.fromLegacyText(colour(input)));
+            newInputText.setHoverEvent(inputText.getHoverEvent());
+            newInputText.setClickEvent(inputText.getClickEvent());
+            return newInputText;
+        }
+        return inputText;
+    }
+
+    public static TextComponent format(String input, String... args) {
+        return Dictionary.format(input, true, true, true, args);
+    }
+
+    public static TextComponent formatMsg(String input, String... args) {
+        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(args[3]);
+        return Dictionary.format(input, player.hasPermission(Permissions.General.MESSAGE_COLOR), player.hasPermission(Permissions.General.MESSAGE_HOVER), player.hasPermission(Permissions.General.MESSAGE_CLICK), args);
     }
 
     /**

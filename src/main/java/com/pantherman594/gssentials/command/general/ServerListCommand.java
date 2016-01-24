@@ -50,15 +50,14 @@ public class ServerListCommand extends BECommand {
         }
         sender.sendMessage(Dictionary.format(Dictionary.LIST_HEADER, "COUNT", String.valueOf(online)));
         for (final ServerInfo info : ProxyServer.getInstance().getServers().values()) {
-            if (sender.hasPermission(Permissions.General.LIST_OFFLINE)) {
-                print(sender, canSeeHidden, info);
-            } else {
-                try {
-                    Socket s = new Socket();
-                    s.connect(info.getAddress());
-                    s.close();
-                    print(sender, canSeeHidden, info);
-                } catch (IOException ignored) {
+            try {
+                Socket s = new Socket();
+                s.connect(info.getAddress());
+                s.close();
+                print(sender, canSeeHidden, info, false);
+            } catch (IOException ignored) {
+                if (sender.hasPermission(Permissions.General.LIST_OFFLINE)) {
+                    print(sender, canSeeHidden, info, true);
                 }
             }
         }
@@ -78,7 +77,7 @@ public class ServerListCommand extends BECommand {
     }
 
     private String getDensity(boolean canSeeHidden, int players) {
-        return String.valueOf(getColour(canSeeHidden, players)) + "(" + players + ")";
+        return String.valueOf(getColour(canSeeHidden, players)) + players;
     }
 
     private ChatColor getColour(boolean canSeeHidden, int players) {
@@ -111,11 +110,15 @@ public class ServerListCommand extends BECommand {
         return pList.toString();
     }
 
-    private void print(CommandSender sender, boolean canSeeHidden, ServerInfo info) {
+    private void print(CommandSender sender, boolean canSeeHidden, ServerInfo info, boolean offline) {
         if (info.canAccess(sender) || sender.hasPermission(Permissions.General.LIST_RESTRICTED)) {
-            Collection<ProxiedPlayer> online;
-            online = getPlayers(canSeeHidden, info);
-            sender.sendMessage(Dictionary.format(Dictionary.LIST_BODY, "SERVER", info.getName(), "MOTD", info.getMotd(), "DENSITY", getDensity(canSeeHidden, online.size()), "COUNT", String.valueOf(online.size()), "PLAYERS", getPlayerList(online)));
+            if (offline) {
+                sender.sendMessage(Dictionary.format(Dictionary.LIST_BODY, "SERVER", info.getName(), "MOTD", info.getMotd(), "DENSITY", "Offline", "COUNT", "Offline", "PLAYERS", ""));
+            } else {
+                Collection<ProxiedPlayer> online;
+                online = getPlayers(canSeeHidden, info);
+                sender.sendMessage(Dictionary.format(Dictionary.LIST_BODY, "SERVER", info.getName(), "MOTD", info.getMotd(), "DENSITY", getDensity(canSeeHidden, online.size()), "COUNT", String.valueOf(online.size()), "PLAYERS", getPlayerList(online)));
+            }
         }
     }
 }

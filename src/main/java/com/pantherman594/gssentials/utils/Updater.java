@@ -210,9 +210,14 @@ public class Updater {
                 messages.set("announcements." + name + num + ".message", map.get("message"));
                 num++;
             }
-            config.set("configversion", null);
             config.set("configversion", "2.5.0");
-            //oldVersion = 250;
+            oldVersion = 250;
+        }
+        if (oldVersion == 250) {
+            config.set("configversion", null);
+            config.set("configversion", "2.5.1");
+            messages.set("list.body", messages.getString("list.body").replace("{{ DENSITY }}", "({{ DENSITY }})"));
+            //oldVersion = 251;
         }
         BungeeEssentials.getInstance().saveMainConfig();
         BungeeEssentials.getInstance().saveMessagesConfig();

@@ -24,6 +24,7 @@ import com.pantherman594.gssentials.utils.Messenger;
 import com.pantherman594.gssentials.utils.Permissions;
 import com.pantherman594.gssentials.utils.PlayerData;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Event;
 
@@ -32,14 +33,14 @@ public class GlobalChatEvent extends Event {
     private String sender;
     private String msg;
 
-    public GlobalChatEvent(String server, String sender, String msg) {
+    public GlobalChatEvent(String server, String sender, String msgPre) {
         this.server = server;
         this.sender = sender;
-        this.msg = msg;
+        this.msg = msgPre;
 
-        if (msg != null) {
-            msg = Messenger.filter(ProxyServer.getInstance().getPlayer(sender), msg, Messenger.ChatType.GLOBAL);
-            msg = Dictionary.format(Dictionary.FORMAT_GCHAT, "SERVER", server, "SENDER", sender, "MESSAGE", msg);
+        if (msgPre != null) {
+            msgPre = Messenger.filter(ProxyServer.getInstance().getPlayer(sender), msgPre, Messenger.ChatType.GLOBAL);
+            TextComponent msg = Dictionary.formatMsg(Dictionary.FORMAT_GCHAT, "SERVER", server, "SENDER", sender, "MESSAGE", msgPre);
             for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
                 if ((player.hasPermission(Permissions.General.CHAT + "." + server) || player.hasPermission(Permissions.General.CHAT)) && (!BungeeEssentials.getInstance().contains("ignore") || !PlayerData.getData(player.getUniqueId()).isIgnored(ProxyServer.getInstance().getPlayer(sender).getUniqueId())))
                     player.sendMessage(msg);
