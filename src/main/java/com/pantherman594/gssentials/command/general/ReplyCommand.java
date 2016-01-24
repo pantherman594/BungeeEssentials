@@ -18,11 +18,11 @@
 
 package com.pantherman594.gssentials.command.general;
 
+import com.pantherman594.gssentials.Dictionary;
+import com.pantherman594.gssentials.Messenger;
+import com.pantherman594.gssentials.Permissions;
 import com.pantherman594.gssentials.command.BECommand;
 import com.pantherman594.gssentials.event.MessageEvent;
-import com.pantherman594.gssentials.utils.Dictionary;
-import com.pantherman594.gssentials.utils.Messenger;
-import com.pantherman594.gssentials.utils.Permissions;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

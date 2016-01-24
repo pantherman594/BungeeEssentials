@@ -20,10 +20,10 @@ package com.pantherman594.gssentials.command.admin;
 
 import com.google.common.collect.ImmutableSet;
 import com.pantherman594.gssentials.BungeeEssentials;
+import com.pantherman594.gssentials.Dictionary;
+import com.pantherman594.gssentials.Permissions;
+import com.pantherman594.gssentials.PlayerData;
 import com.pantherman594.gssentials.command.ServerSpecificCommand;
-import com.pantherman594.gssentials.utils.Dictionary;
-import com.pantherman594.gssentials.utils.Permissions;
-import com.pantherman594.gssentials.utils.PlayerData;
 import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;

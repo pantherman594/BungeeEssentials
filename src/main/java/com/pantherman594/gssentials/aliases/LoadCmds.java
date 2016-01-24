@@ -18,8 +18,8 @@
 
 package com.pantherman594.gssentials.aliases;
 
-import com.pantherman594.gssentials.utils.Dictionary;
-import com.pantherman594.gssentials.utils.Permissions;
+import com.pantherman594.gssentials.Dictionary;
+import com.pantherman594.gssentials.Permissions;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

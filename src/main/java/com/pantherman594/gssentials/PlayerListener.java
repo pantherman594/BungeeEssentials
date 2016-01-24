@@ -16,11 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.pantherman594.gssentials.event;
+package com.pantherman594.gssentials;
 
-import com.pantherman594.gssentials.BungeeEssentials;
-import com.pantherman594.gssentials.utils.Dictionary;
-import com.pantherman594.gssentials.utils.*;
+import com.pantherman594.gssentials.event.GlobalChatEvent;
+import com.pantherman594.gssentials.event.StaffChatEvent;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.config.ServerInfo;

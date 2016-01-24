@@ -19,8 +19,8 @@
 package com.pantherman594.gssentials.announcement;
 
 import com.pantherman594.gssentials.BungeeEssentials;
-import com.pantherman594.gssentials.utils.Dictionary;
-import com.pantherman594.gssentials.utils.Permissions;
+import com.pantherman594.gssentials.Dictionary;
+import com.pantherman594.gssentials.Permissions;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.config.Configuration;

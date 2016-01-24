@@ -18,11 +18,7 @@
 
 package com.pantherman594.gssentials.event;
 
-import com.pantherman594.gssentials.BungeeEssentials;
-import com.pantherman594.gssentials.utils.Dictionary;
-import com.pantherman594.gssentials.utils.Messenger;
-import com.pantherman594.gssentials.utils.Permissions;
-import com.pantherman594.gssentials.utils.PlayerData;
+import com.pantherman594.gssentials.*;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;

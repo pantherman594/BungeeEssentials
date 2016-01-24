@@ -16,10 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.pantherman594.gssentials.utils;
+package com.pantherman594.gssentials;
 
 import com.google.common.base.Joiner;
-import com.pantherman594.gssentials.BungeeEssentials;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.ClickEvent;

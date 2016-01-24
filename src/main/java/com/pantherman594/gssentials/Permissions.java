@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.pantherman594.gssentials.utils;
+package com.pantherman594.gssentials;
 
 public class Permissions {
 
