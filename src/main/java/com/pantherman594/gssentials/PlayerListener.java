@@ -37,7 +37,7 @@ public class PlayerListener implements Listener {
     private final HashSet<InetAddress> connections;
     private final Map<InetAddress, ServerInfo> redirServer;
     public Map<UUID, String> cmds;
-    public Map<UUID, Runnable> cmdLog;
+    public Map<UUID, String> cmdLog;
 
     public PlayerListener() {
         connections = new HashSet<>();
@@ -59,16 +59,16 @@ public class PlayerListener implements Listener {
                     event.setCancelled(true);
                 }
                 cmds.put(player.getUniqueId(), cmd);
-                Runnable r = new Runnable() {
+                final String time = Dictionary.getTime();
+                cmdLog.put(player.getUniqueId(), time);
+                ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), new Runnable() {
                     @Override
                     public void run() {
-                        if (cmdLog.get(player.getUniqueId()) == this) {
+                        if (cmdLog.get(player.getUniqueId()).equals(time)) {
                             cmdLog.remove(player.getUniqueId());
                         }
                     }
-                };
-                cmdLog.put(player.getUniqueId(), r);
-                ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), r, 5, TimeUnit.SECONDS);
+                }, 5, TimeUnit.SECONDS);
             }
             if (!event.isCancelled() && !player.hasPermission(Permissions.Admin.SPY_EXEMPT) && BungeeEssentials.getInstance().contains("commandSpy")) {
                 for (ProxiedPlayer onlinePlayer : ProxyServer.getInstance().getPlayers()) {

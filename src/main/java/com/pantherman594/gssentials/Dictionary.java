@@ -312,7 +312,7 @@ public class Dictionary {
         }
     }
 
-    private static String getTime() {
+    public static String getTime() {
         return date.format(calendar.getTime());
     }
 
