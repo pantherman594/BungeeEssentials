@@ -222,11 +222,15 @@ public class Dictionary {
 
         if (args.length % 2 == 0) {
             for (int i = 0; i < args.length; i += 2) {
+                if (args[i] == null || args[i + 1] == null) {
+                    return null;
+                }
                 input = input.replace("{{ " + args[i].toUpperCase() + " }}", args[i + 1]);
             }
         }
 
-        TextComponent inputText = new TextComponent(TextComponent.fromLegacyText(input));
+        HoverEvent hoverEvent = null;
+        ClickEvent clickEvent = null;
 
         if (hover) {
             if (input.contains("{{ HOVER: ")) {
@@ -237,8 +241,7 @@ public class Dictionary {
                 }
                 hoverText = hoverText.replace("{{ HOVER: ", "").replace(" }}", "");
                 if (hoverText != null) {
-                    inputText.setText(Joiner.on("").join(hoverTextStripped));
-                    inputText.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
+                    hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(colour ? colour(hoverText) : hoverText).retain(ComponentBuilder.FormatRetention.ALL).create());
                     input = Joiner.on("").join(hoverTextStripped);
                 }
             }
@@ -253,29 +256,28 @@ public class Dictionary {
                 }
                 clickText = clickText.replace("{{ CLICK: ", "").replace(" }}", "");
                 if (clickText != null) {
-                    inputText.setText(Joiner.on("").join(clickTextStripped));
-                    inputText.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, clickText));
+                    clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, clickText);
                     input = Joiner.on("").join(clickTextStripped);
                 }
             }
         }
 
-        if (colour) {
-            TextComponent newInputText = new TextComponent(TextComponent.fromLegacyText(colour(input)));
-            newInputText.setHoverEvent(inputText.getHoverEvent());
-            newInputText.setClickEvent(inputText.getClickEvent());
-            return newInputText;
-        }
-        return inputText;
+        TextComponent finalText = new TextComponent(TextComponent.fromLegacyText(colour ? colour(input) : input));
+        finalText.setHoverEvent(hoverEvent);
+        finalText.setClickEvent(clickEvent);
+        return finalText;
     }
 
     public static TextComponent format(String input, String... args) {
-        return Dictionary.format(input, true, true, true, args);
+        return format(input, true, true, true, args);
     }
 
     public static TextComponent formatMsg(String input, String... args) {
         ProxiedPlayer player = ProxyServer.getInstance().getPlayer(args[3]);
-        return Dictionary.format(input, player.hasPermission(Permissions.General.MESSAGE_COLOR), player.hasPermission(Permissions.General.MESSAGE_HOVER), player.hasPermission(Permissions.General.MESSAGE_CLICK), args);
+        if (player != null) {
+            return format(colour(input), player.hasPermission(Permissions.General.MESSAGE_COLOR), player.hasPermission(Permissions.General.MESSAGE_HOVER), player.hasPermission(Permissions.General.MESSAGE_CLICK), args);
+        }
+        return format(colour(input), args);
     }
 
     /**

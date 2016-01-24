@@ -46,7 +46,9 @@ public class StaffChatEvent extends Event implements Cancellable {
                     player.sendMessage(msg);
                 }
             }
-            ProxyServer.getInstance().getConsole().sendMessage(msg);
+            if (msg != null) {
+                ProxyServer.getInstance().getConsole().sendMessage(msg);
+            }
         }
     }
 

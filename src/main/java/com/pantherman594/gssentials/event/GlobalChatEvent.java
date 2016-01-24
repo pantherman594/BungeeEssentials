@@ -39,11 +39,14 @@ public class GlobalChatEvent extends Event implements Cancellable {
         if (msgPre != null) {
             msgPre = Messenger.filter(ProxyServer.getInstance().getPlayer(sender), msgPre, Messenger.ChatType.GLOBAL);
             TextComponent msg = Dictionary.formatMsg(Dictionary.FORMAT_GCHAT, "SERVER", server, "SENDER", sender, "MESSAGE", msgPre);
+            ProxiedPlayer senderP = ProxyServer.getInstance().getPlayer(sender);
             for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-                if ((player.hasPermission(Permissions.General.CHAT + "." + server) || player.hasPermission(Permissions.General.CHAT)) && (!BungeeEssentials.getInstance().contains("ignore") || !PlayerData.getData(player.getUniqueId()).isIgnored(ProxyServer.getInstance().getPlayer(sender).getUniqueId())))
+                if ((player.hasPermission(Permissions.General.CHAT + "." + server) || player.hasPermission(Permissions.General.CHAT)) && (senderP == null || !BungeeEssentials.getInstance().contains("ignore") || !PlayerData.getData(player.getUniqueId()).isIgnored(senderP.getUniqueId())))
                     player.sendMessage(msg);
             }
-            ProxyServer.getInstance().getConsole().sendMessage(msg);
+            if (msg != null) {
+                ProxyServer.getInstance().getConsole().sendMessage(msg);
+            }
         }
     }
 

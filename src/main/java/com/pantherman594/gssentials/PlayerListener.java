@@ -36,26 +36,39 @@ import java.util.concurrent.TimeUnit;
 public class PlayerListener implements Listener {
     private final HashSet<InetAddress> connections;
     private final Map<InetAddress, ServerInfo> redirServer;
-    public Map<UUID, String> cmds = new HashMap<>();
+    public Map<UUID, String> cmds;
+    public Map<UUID, Runnable> cmdLog;
 
     public PlayerListener() {
         connections = new HashSet<>();
         redirServer = new HashMap<>();
+        cmds = new HashMap<>();
+        cmdLog = new HashMap<>();
     }
 
     @EventHandler(priority = Byte.MAX_VALUE)
     public void chat(ChatEvent event) {
-        ProxiedPlayer player = (ProxiedPlayer) event.getSender();
+        final ProxiedPlayer player = (ProxiedPlayer) event.getSender();
         PlayerData pD = PlayerData.getData(player.getUniqueId());
         String sender = player.getName();
         if (event.isCommand()) {
             String cmd = event.getMessage().substring(1);
             if (BungeeEssentials.getInstance().contains("spam-command") && !player.hasPermission(Permissions.Admin.BYPASS_FILTER)) {
-                if (cmds.get(player.getUniqueId()) != null && Messenger.compare(cmd, cmds.get(player.getUniqueId())) > 0.85) {
+                if (cmds.get(player.getUniqueId()) != null && cmd.equals(cmds.get(player.getUniqueId())) & cmdLog.containsKey(player.getUniqueId())) {
                     player.sendMessage(Dictionary.format(Dictionary.WARNING_LEVENSHTEIN_DISTANCE));
                     event.setCancelled(true);
                 }
                 cmds.put(player.getUniqueId(), cmd);
+                Runnable r = new Runnable() {
+                    @Override
+                    public void run() {
+                        if (cmdLog.get(player.getUniqueId()) == this) {
+                            cmdLog.remove(player.getUniqueId());
+                        }
+                    }
+                };
+                cmdLog.put(player.getUniqueId(), r);
+                ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), r, 5, TimeUnit.SECONDS);
             }
             if (!event.isCancelled() && !player.hasPermission(Permissions.Admin.SPY_EXEMPT) && BungeeEssentials.getInstance().contains("commandSpy")) {
                 for (ProxiedPlayer onlinePlayer : ProxyServer.getInstance().getPlayers()) {
@@ -72,14 +85,12 @@ public class PlayerListener implements Listener {
             }
             if (pD.isStaffChat() && !event.isCancelled() && !event.isCommand()) {
                 String server = player.getServer().getInfo().getName();
-                String msg = Messenger.filter(player, event.getMessage(), Messenger.ChatType.PUBLIC);
-                ProxyServer.getInstance().getPluginManager().callEvent(new StaffChatEvent(server, sender, msg));
+                ProxyServer.getInstance().getPluginManager().callEvent(new StaffChatEvent(server, sender, event.getMessage()));
                 event.setCancelled(true);
             }
             if (pD.isGlobalChat() && !event.isCancelled() && !event.isCommand()) {
                 String server = player.getServer().getInfo().getName();
-                String msg = Messenger.filter(player, event.getMessage(), Messenger.ChatType.PUBLIC);
-                ProxyServer.getInstance().getPluginManager().callEvent(new GlobalChatEvent(server, sender, msg));
+                ProxyServer.getInstance().getPluginManager().callEvent(new GlobalChatEvent(server, sender, event.getMessage()));
                 event.setCancelled(true);
             }
             if (BungeeEssentials.getInstance().contains("spam-chat", "rules-chat")) {
