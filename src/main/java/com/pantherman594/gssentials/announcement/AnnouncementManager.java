@@ -63,11 +63,7 @@ public class AnnouncementManager {
             ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), new Runnable() {
                 @Override
                 public void run() {
-                    if (annc.getMsg().contains("\\n")) {
-                        annc(annc.getPlayers(), anncName, annc.getMsg().split("\\n"));
-                    } else {
-                        annc(annc.getPlayers(), anncName, annc.getMsg());
-                    }
+                    annc(annc.getPlayers(), anncName, annc.getMsg());
                     scheduleAnnc(anncName, annc);
                 }
             }, annc.getDelay(), TimeUnit.SECONDS);
@@ -78,11 +74,7 @@ public class AnnouncementManager {
         ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), new Runnable() {
             @Override
             public void run() {
-                if (annc.getMsg().contains("\\n")) {
-                    annc(annc.getPlayers(), anncName, annc.getMsg().split("\\n"));
-                } else {
-                    annc(annc.getPlayers(), anncName, annc.getMsg());
-                }
+                annc(annc.getPlayers(), anncName, annc.getMsg());
                 scheduleAnnc(anncName, annc);
             }
         }, annc.getInterval(), TimeUnit.SECONDS);
