@@ -1,106 +1,106 @@
 enable:
-  - alert
-  - announcement
-  - autoredirect
-  #- commandspy
-  - fastrelog
-  - friend
-  - hide
-  - joinannounce
-  - lookup
-  - mute
-  - send
-  - sendall
-  - spy
-  - staffchat
-  - chat
-  - find
-  - ignore
-  - join
-  - list
-  - message
-  - slap
-  - aliases
-  #- betaupdates
-  #- clean
-  - fulllog
-  - log
-  - rules
-  - rules-chat
-  - spam
-  - spam-chat
-  - spam-command
-  - updater
+- alert
+- announcement
+- autoredirect
+#- commandspy
+- fastrelog
+- friend
+- hide
+- joinannounce
+- lookup
+- mute
+- send
+- sendall
+- spy
+- staffchat
+- chat
+- find
+- ignore
+- join
+- list
+- message
+- slap
+- aliases
+#- betaupdates
+#- clean
+- fulllog
+- log
+- rules
+- rules-chat
+- spam
+- spam-chat
+- spam-command
+- updater
 commands:
   alert:
-    - 'alert'
-    - 'broadcast'
+  - alert
+  - broadcast
   commandspy:
-    - 'commandspy'
-    - 'cspy'
+  - commandspy
+  - cspy
   hide:
-    - 'hide'
+  - hide
   lookup:
-    - 'lookup'
+  - lookup
   mute:
-    - 'bmute'
+  - bmute
   send:
-    - 'send'
+  - send
   sendall:
-    - 'sendall'
+  - sendall
   spy:
-    - 'spy'
-    - 'socialspy'
+  - spy
+  - socialspy
   staffchat:
-    - 'staffchat'
-    - 'admin'
-    - 'a'
-    - 'sc'
+  - staffchat
+  - admin
+  - a
+  - sc
   chat:
-    - 'g'
-    - 'global'
+  - g
+  - global
   find:
-    - 'find'
-    - 'whereis'
+  - find
+  - whereis
   friend:
-    - 'friend'
+  - friend
   ignore:
-    - 'bignore'
+  - bignore
   join:
-    - 'join'
+  - join
   list:
-    - 'glist'
-    - 'servers'
-    - 'serverlist'
+  - glist
+  - servers
+  - serverlist
   message:
-    - 'message'
-    - 'msg'
-    - 'm'
-    - 'pm'
-    - 't'
-    - 'tell'
-    - 'w'
-    - 'whisper'
+  - message
+  - msg
+  - m
+  - pm
+  - t
+  - tell
+  - w
+  - whisper
   reply:
-    - 'reply'
-    - 'r'
+  - reply
+  - r
   slap:
-    - 'slap'
-    - 'uslap'
-    - 'smack'
+  - slap
+  - uslap
+  - smack
   reload:
-    - 'gssreload'
+  - gssreload
 aliases:
   greet:
-    - 'TELL: Joining {0}...'
-    - 'TELL {0}: {{ PLAYER }} was at {{ SERVER }} but is coming to join you!'
-    - 'join {0}'
+  - 'TELL: Joining {0}...'
+  - 'TELL {0}: {{ PLAYER }} was at {{ SERVER }} but is coming to join you!'
+  - join {0}
   disappear:
-    - 'spy'
-    - 'cspy'
-    - 'hide'
-    - 'TELL ALL: &8[&c-&8] &7{{ PLAYER }}'
+  - spy
+  - cspy
+  - hide
+  - 'TELL ALL: &8[&c-&8] &7{{ PLAYER }}'
   vote:
-    - 'CONSOLE: staffchat {{ PLAYER }} wants to vote!'
-    - 'TELL: Vote for the server at yourvote.site!'
+  - 'CONSOLE: staffchat {{ PLAYER }} wants to vote!'
+  - 'TELL: Vote for the server at yourvote.site!'
 configversion: 2.5.1

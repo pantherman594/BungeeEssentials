@@ -7,7 +7,7 @@ format:
   find: '&e{{ PLAYER }} &ais playing on &e{{ SERVER }}'
   send: '&aSending &e{{ PLAYER }} &ato server &e{{ SERVER }}'
 message:
-  format: '&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{ MESSAGE }}'
+  format: '&a({{ SERVER }}) &7[{{ SENDER }} ?? {{ RECIPIENT }}] &f{{ MESSAGE }}'
   enabled: '&aMessaging is now enabled!'
   disabled: '&cMessaging is now disabled!'
 warnings:
@@ -15,93 +15,93 @@ warnings:
   swearing: '&cPlease do not swear at other players!'
   advertising: '&cPlease do not advertise other servers!'
 rules:
-  - pattern: '\bfuck\b'
-    handle: CURSING
-  - pattern: '^.+((\.|dot).+)*(\.|dot)\s*[a-zA-Z]{2,5}'
-    handle: ADVERTISEMENT
-  - pattern: '(\d{1,4}\.){3}\d{1,4}'
-    handle: ADVERTISEMENT
-  - pattern: 'asshole'
-    handle: REPLACE
-    replacement: '******'
-  - pattern: 'I hate (this|your) server'
-    handle: REPLACE
-    replacement: 'I love this server'
-  - pattern: 'I hate (this|your) server'
-    handle: COMMAND
-    command: 'send {{ SENDER }} lobby'
+- pattern: \bfuck\b
+  handle: CURSING
+- pattern: ^.+((\.|dot).+)*(\.|dot)\s*[a-zA-Z]{2,5}
+  handle: ADVERTISEMENT
+- pattern: (\d{1,4}\.){3}\d{1,4}
+  handle: ADVERTISEMENT
+- pattern: asshole
+  handle: REPLACE
+  replacement: '******'
+- pattern: I hate (this|your) server
+  handle: REPLACE
+  replacement: I love this server
+- pattern: I hate (this|your) server
+  handle: COMMAND
+  command: send {{ SENDER }} lobby
 bannedwords:
   replace: '*'
   list:
-    - 'anal'
-    - 'anus'
-    - 'aroused'
-    - 'asshole'
-    - 'bastard'
-    - 'bitch'
-    - 'boob'
-    - 'bugger'
-    - 'cock'
-    - 'cum'
-    - 'cunt'
-    - 'dafuq'
-    - 'dick'
-    - 'ffs'
-    - 'fuck'
-    - 'gay'
-    - 'hentai'
-    - 'homo'
-    - 'homosexual'
-    - 'horny'
-    - 'intercourse'
-    - 'jerk'
-    - 'lesbian'
-    - 'milf'
-    - 'nigga'
-    - 'nigger'
-    - 'pedo'
-    - 'penis'
-    - 'piss'
-    - 'prostitute'
-    - 'pussy'
-    - 'rape'
-    - 'rapist'
-    - 'retard'
-    - 'sex'
-    - 'shit'
-    - 'slag'
-    - 'slut'
-    - 'sperm'
-    - 'spunk'
-    - 'testicle'
-    - 'titt'
-    - 'tosser'
-    - 'twat'
-    - 'vagina'
-    - 'wanker'
-    - 'whore'
-    - 'wtf'
+  - anal
+  - anus
+  - aroused
+  - asshole
+  - bastard
+  - bitch
+  - boob
+  - bugger
+  - cock
+  - cum
+  - cunt
+  - dafuq
+  - dick
+  - ffs
+  - fuck
+  - gay
+  - hentai
+  - homo
+  - homosexual
+  - horny
+  - intercourse
+  - jerk
+  - lesbian
+  - milf
+  - nigga
+  - nigger
+  - pedo
+  - penis
+  - piss
+  - prostitute
+  - pussy
+  - rape
+  - rapist
+  - retard
+  - sex
+  - shit
+  - slag
+  - slut
+  - sperm
+  - spunk
+  - testicle
+  - titt
+  - tosser
+  - twat
+  - vagina
+  - wanker
+  - whore
+  - wtf
 rulenotify:
   advertisement: '&7{{ PLAYER }} just advertised!'
   cursing: '&7{{ PLAYER }} just swore!'
   replace: '&7{{ PLAYER }} swore but was replaced!'
   command: '&7{{ PLAYER }} swore, triggering a command!'
 staffchat:
-  message: '&c{{ SERVER }} - {{ SENDER }} » &7{{ MESSAGE }}'
+  message: '&c{{ SERVER }} - {{ SENDER }} ?? &7{{ MESSAGE }}'
   enabled: '&aYou are now chatting in staff chat!'
   disabled: '&cYou are no longer chatting in staff chat!'
 chat:
-  message: '&e{{ SERVER }} - {{ SENDER }} » &7{{ MESSAGE }}'
+  message: '&e{{ SERVER }} - {{ SENDER }} ?? &7{{ MESSAGE }}'
   enabled: '&aYou are now chatting in global chat!'
   disabled: '&cYou are no longer chatting in global chat!'
 list:
   header: '&aServers:'
-  body: '&a- {{ SERVER }} ({{ DENSITY }}&a)'
+  body: '&a- {{ SERVER }} (({{ DENSITY }})&a)'
 lookup:
   header: '&6Found {{ SIZE }} player(s):'
   body: '&f - {{ PLAYER }}'
 spy:
-  message: '&7[{{ SENDER }} » {{ RECIPIENT }}] &7{{ MESSAGE }}'
+  message: '&7[{{ SENDER }} ?? {{ RECIPIENT }}] &7{{ MESSAGE }}'
   enabled: '&aSpy has been enabled'
   disabled: '&cSpy has been disabled'
 commandspy:
@@ -110,7 +110,8 @@ commandspy:
   disabled: '&cCommand Spy has been disabled'
 friend:
   header: '&2Current Friends:'
-  body: '- {{ NAME }} ({{ SERVER }}){{ HOVER: Click to join your friend! }}{{ CLICK: /server {{ SERVER }} }}'
+  body: '- {{ NAME }} ({{ SERVER }}){{ HOVER: Click to join your friend! }}{{ CLICK:
+    /server {{ SERVER }} }}'
   new: '&aYou are now friends with {{ NAME }}!'
   old: '&aYou are already friends with {{ NAME }}!'
   remove: '&cYou are no longer friends with {{ NAME }}.'
@@ -118,12 +119,16 @@ friend:
     header: '&2Outgoing Friend Requests:'
     body: '- {{ NAME }}'
     new: '&a{{ NAME }} has received your friend request.'
-    old: '&cYou already requested to be friends with {{ NAME }}. Please wait for a response!'
+    old: '&cYou already requested to be friends with {{ NAME }}. Please wait for a
+      response!'
     remove: '&cThe friend request to {{ NAME }} was removed.'
   inrequests:
     header: '&2Incoming Friend Requests:'
-    body: '- {{ NAME }}{{ HOVER: Click to accept friend request! }}{{ CLICK: /friend add {{ NAME }} }}'
-    new: '&a{{ NAME }} would like to be your friend. /friend <add|remove> {{ NAME }} to accept or decline the request.{{ HOVER: Click to accept friend request! }}{{ CLICK: /friend add {{ NAME }} }}'
+    body: '- {{ NAME }}{{ HOVER: Click to accept friend request! }}{{ CLICK: /friend
+      add {{ NAME }} }}'
+    new: '&a{{ NAME }} would like to be your friend. /friend <add|remove> {{ NAME
+      }} to accept or decline the request.{{ HOVER: Click to accept friend request!
+      }}{{ CLICK: /friend add {{ NAME }} }}'
     remove: '&cThe friend request from {{ NAME }} was removed.'
 hide:
   enabled: '&aYou are now hidden from all players!'
@@ -154,13 +159,14 @@ errors:
   sendfail: '&cUnable to send {{ PLAYER }} to {{ SERVER }}.'
   fastrelog: '&cPlease wait before reconnecting!'
 announcements:
-# Time measured in seconds
   vote:
-    delay: 30
+    delay: 30 #Time measured in seconds
     interval: 60
-    message: 'Vote for our server for great rewards!'
-    server: 'Hub'
+    message: Vote for our server for great rewards!
+    server: Hub
   donate:
     delay: 0
     interval: 60
-    message: 'Donate to support our server!\n&f&ndonate.myserver.com'
+    message: |-
+      Donate to support our server!
+      &f&ndonate.myserver.com
