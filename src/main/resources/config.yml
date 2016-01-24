@@ -2,7 +2,7 @@ enable:
   - alert
   - announcement
   - autoredirect
-  - commandspy
+  #- commandspy
   - fastrelog
   - friend
   - hide
