@@ -10,7 +10,23 @@ This project was originally created by Fireflies as a port of [The-Zip/LilyEssen
 
 ### Developers
 
-If you know how to code, great! Feel free to add features or fix bugs via pull requests or use the API to develop your own plugins that hook onto BungeeEssentials!
+If you know how to code, great! Feel free to add features or fix bugs via pull requests or use the API to develop your own plugins that hook onto BungeeEssentials! You can use our maven repository for the api:
+```xml
+...
+<repository>
+    <id>pantherman594</id>
+    <url>http://pantherman594.com/repo</url>
+</repository>
+...
+<dependency>
+    <groupId>com.pantherman594.gssentials</groupId>
+    <artifactId>BungeeEssentials</artifactId>
+    <version>2.5.1</version>
+    <type>jar</type>
+    <scope>provided</scope>
+</dependency>
+...
+```
 ##### License
 You can use and view the source code for BungeeEssentials, as it has a GNU General Public License (GPL). However, if you distribute anything with the contained code, you must pass down this freedom, i.e. it must also have a GPL license and its recipients must be able to get the source code. The full license and its terms may be viewed [here][license].
 
