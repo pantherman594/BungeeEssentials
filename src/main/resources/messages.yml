@@ -130,6 +130,7 @@ friend:
       }} to accept or decline the request.{{ HOVER: Click to accept friend request!
       }}{{ CLICK: /friend add {{ NAME }} }}'
     remove: '&cThe friend request from {{ NAME }} was removed.'
+    removeerror: '&cYou can''t remove a friend you don''t have!'
 hide:
   enabled: '&aYou are now hidden from all players!'
   disabled: '&cYou are now visible to all players!'

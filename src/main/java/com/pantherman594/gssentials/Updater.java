@@ -20,7 +20,6 @@ package com.pantherman594.gssentials;
 
 import com.google.common.base.Preconditions;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 
 import java.io.*;
@@ -33,7 +32,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 public class Updater {
-    private static Plugin plugin = BungeeEssentials.getInstance();
+    private static BungeeEssentials plugin = BungeeEssentials.getInstance();
 
     public static boolean update(boolean beta) {
         final String oldVerDec = plugin.getDescription().getVersion();
@@ -89,8 +88,8 @@ public class Updater {
     }
 
     public static void updateConfig() {
-        Configuration config = BungeeEssentials.getInstance().getConfig();
-        Configuration messages = BungeeEssentials.getInstance().getMessages();
+        Configuration config = plugin.getConfig();
+        Configuration messages = plugin.getMessages();
         int oldVersion = getVersionFromString(config.getString("configversion"));
         int newVersion = getVersionFromString(plugin.getDescription().getVersion());
         if (oldVersion == newVersion) {
@@ -104,13 +103,13 @@ public class Updater {
             }
         }
         try {
-            File oldDir = new File(BungeeEssentials.getInstance().getDataFolder(), "old");
+            File oldDir = new File(plugin.getDataFolder(), "old");
             if (!oldDir.exists()) {
                 oldDir.mkdir();
             }
-            File newConf = new File(BungeeEssentials.getInstance().getDataFolder(), "config.yml");
+            File newConf = new File(plugin.getDataFolder(), "config.yml");
             File oldConf = new File(oldDir, "config_v" + oldVersion + ".yml");
-            File newMess = new File(BungeeEssentials.getInstance().getDataFolder(), "messages.yml");
+            File newMess = new File(plugin.getDataFolder(), "messages.yml");
             File oldMess = new File(oldDir, "messages_v" + oldVersion + ".yml");
             if (!oldConf.exists()) {
                 Files.copy(newConf.toPath(), oldConf.toPath());
@@ -216,10 +215,14 @@ public class Updater {
             config.set("configversion", null);
             config.set("configversion", "2.5.1");
             messages.set("list.body", messages.getString("list.body").replace("{{ DENSITY }}", "({{ DENSITY }})"));
+            messages.set("friend.body", messages.getString("friend.body") + "{{ HOVER: Click to join your friend! }}{{ CLICK: /server {{ SERVER }} }}");
+            messages.set("friend.removeerror", "&cYou can't remove a friend you don't have!");
+            messages.set("friend.inrequests.body", messages.getString("friend.inrequests.body") + "{{ HOVER: Click to accept friend request! }}{{ CLICK: /friend add {{ NAME }} }}");
+            messages.set("friend.inrequests.new", messages.getString("friend.inrequests.new") + "{{ HOVER: Click to accept friend request! }}{{ CLICK: /friend add {{ NAME }} }}");
             //oldVersion = 251;
         }
-        BungeeEssentials.getInstance().saveMainConfig();
-        BungeeEssentials.getInstance().saveMessagesConfig();
+        plugin.saveMainConfig();
+        plugin.saveMessagesConfig();
         plugin.getLogger().log(Level.INFO, "Config updated. You may edit new values to your liking.");
     }
 

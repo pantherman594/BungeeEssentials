@@ -19,6 +19,8 @@
 package com.pantherman594.gssentials.command.general;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.pantherman594.gssentials.Dictionary;
 import com.pantherman594.gssentials.Permissions;
 import com.pantherman594.gssentials.PlayerData;
@@ -28,6 +30,9 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
@@ -89,7 +94,18 @@ public class FriendCommand extends BECommand implements TabExecutor {
                     uuid = p.getUniqueId().toString();
                     playerData2 = PlayerData.getData(p.getUniqueId());
                 } else {
-                    uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + args[1]).getBytes(StandardCharsets.UTF_8)).toString();
+                    if (ProxyServer.getInstance().getConfig().isOnlineMode()) {
+                        try {
+                            BufferedReader in = new BufferedReader(new InputStreamReader(new URL("https://api.mojang.com/users/profiles/minecraft/" + args[1]).openStream()));
+                            uuid = (((JsonObject) new JsonParser().parse(in)).get("id")).toString().replaceAll("\"", "").replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5");
+                            in.close();
+                        } catch (Exception e) {
+                            sender.sendMessage(Dictionary.format("&cError: Could not find player."));
+                            return;
+                        }
+                    } else {
+                        uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + args[1]).getBytes(StandardCharsets.UTF_8)).toString();
+                    }
                     playerData2 = new PlayerData(uuid, null);
                 }
                 if (args[0].equalsIgnoreCase("add")) {
@@ -122,24 +138,26 @@ public class FriendCommand extends BECommand implements TabExecutor {
                     if (playerData.getFriends().contains(uuid)) {
                         playerData.getFriends().remove(uuid);
                         playerData2.getFriends().remove(((ProxiedPlayer) sender).getUniqueId().toString());
-                        sender.sendMessage(Dictionary.format(Dictionary.FRIEND_REMOVE, "NAME", p.getName()));
+                        sender.sendMessage(Dictionary.format(Dictionary.FRIEND_REMOVE, "NAME", playerData2.getName()));
                         if (p != null) {
                             p.sendMessage(Dictionary.format(Dictionary.FRIEND_REMOVE, "NAME", sender.getName()));
                         }
                     } else if (playerData.getOutRequests().contains(uuid)) {
                         playerData.getOutRequests().remove(uuid);
                         playerData2.getInRequests().remove(((ProxiedPlayer) sender).getUniqueId().toString());
-                        sender.sendMessage(Dictionary.format(Dictionary.OUTREQUESTS_REMOVE, "NAME", p.getName()));
+                        sender.sendMessage(Dictionary.format(Dictionary.OUTREQUESTS_REMOVE, "NAME", playerData2.getName()));
                         if (p != null) {
                             p.sendMessage(Dictionary.format(Dictionary.INREQUESTS_REMOVE, "NAME", sender.getName()));
                         }
                     } else if (playerData.getInRequests().contains(uuid)) {
                         playerData.getInRequests().remove(uuid);
                         playerData2.getOutRequests().remove(((ProxiedPlayer) sender).getUniqueId().toString());
-                        sender.sendMessage(Dictionary.format(Dictionary.INREQUESTS_REMOVE, "NAME", p.getName()));
+                        sender.sendMessage(Dictionary.format(Dictionary.INREQUESTS_REMOVE, "NAME", playerData2.getName()));
                         if (p != null) {
                             p.sendMessage(Dictionary.format(Dictionary.OUTREQUESTS_REMOVE, "NAME", sender.getName()));
                         }
+                    } else {
+                        sender.sendMessage(Dictionary.format(Dictionary.CANNOT_REMOVE_FRIEND, "NAME", playerData2.getName()));
                     }
                     if (p != null) {
                         PlayerData.setData(p.getUniqueId(), playerData2);

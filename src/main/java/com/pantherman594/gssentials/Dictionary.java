@@ -84,6 +84,8 @@ public class Dictionary {
     public static String FRIEND_OLD;
     @Load(key = "friend.remove", def = "&cYou are no longer friends with {{ NAME }}.")
     public static String FRIEND_REMOVE;
+    @Load(key = "friend.removeerror", def = "&cYou can't remove a friend you don't have!")
+    public static String CANNOT_REMOVE_FRIEND;
     @Load(key = "friend.outrequests.header", def = "&2Outgoing Friend Requests:")
     public static String OUTREQUESTS_HEADER;
     @Load(key = "friend.outrequests.body", def = "- {{ NAME }}")
