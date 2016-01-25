@@ -201,8 +201,8 @@ public class PlayerData {
     }
 
     public boolean toggleHidden() {
-        setHidden(!isSpy());
-        return isSpy();
+        setHidden(!isHidden());
+        return isHidden();
     }
 
     public boolean isSpy() {

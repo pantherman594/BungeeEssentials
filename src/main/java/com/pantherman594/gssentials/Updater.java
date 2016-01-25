@@ -219,7 +219,10 @@ public class Updater {
             messages.set("friend.removeerror", "&cYou can't remove a friend you don't have!");
             messages.set("friend.inrequests.body", messages.getString("friend.inrequests.body") + "{{ HOVER: Click to accept friend request! }}{{ CLICK: /friend add {{ NAME }} }}");
             messages.set("friend.inrequests.new", messages.getString("friend.inrequests.new") + "{{ HOVER: Click to accept friend request! }}{{ CLICK: /friend add {{ NAME }} }}");
-            //oldVersion = 251;
+            oldVersion = 251;
+        }
+        if (oldVersion == 251) {
+            config.set("configversion", "2.5.2");
         }
         plugin.saveMainConfig();
         plugin.saveMessagesConfig();
