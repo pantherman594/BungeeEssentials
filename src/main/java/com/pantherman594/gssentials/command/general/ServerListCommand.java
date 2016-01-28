@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("deprecation")
 public class ServerListCommand extends BECommand {
@@ -67,13 +68,7 @@ public class ServerListCommand extends BECommand {
         if (canSeeHidden && !info.getPlayers().isEmpty()) {
             return info.getPlayers();
         }
-        Collection<ProxiedPlayer> players = new ArrayList<>();
-        for (ProxiedPlayer player : info.getPlayers()) {
-            if (!PlayerData.getData((player).getUniqueId()).isHidden()) {
-                players.add(player);
-            }
-        }
-        return players;
+        return info.getPlayers().stream().filter(player -> !PlayerData.getData((player).getUniqueId()).isHidden()).collect(Collectors.toCollection(ArrayList::new));
     }
 
     private String getDensity(boolean canSeeHidden, int players) {

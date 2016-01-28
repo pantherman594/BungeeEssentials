@@ -25,6 +25,7 @@ import net.md_5.bungee.config.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by David on 12/05.
@@ -75,9 +76,7 @@ public class PlayerData {
             friends.addAll(config.getStringList("friends"));
             outRequests.addAll(config.getStringList("requests.out"));
             inRequests.addAll(config.getStringList("requests.in"));
-            for (String id : config.getStringList("ignorelist")) {
-                ignoreList.add(UUID.fromString(id));
-            }
+            ignoreList.addAll(config.getStringList("ignorelist").stream().map(UUID::fromString).collect(Collectors.toList()));
             hidden = config.getBoolean("hidden");
             spy = config.getBoolean("spy");
             cSpy = config.getBoolean("cspy");
@@ -113,6 +112,7 @@ public class PlayerData {
         playerDataList = new HashMap<>();
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public boolean save() {
         File playerDir = new File(BungeeEssentials.getInstance().getDataFolder(), "playerdata");
         File playerFile = new File(playerDir, uuid + ".yml");

@@ -45,18 +45,10 @@ public class MuteCommand extends ServerSpecificCommand implements TabExecutor {
                 if (!player.hasPermission(Permissions.Admin.MUTE_EXEMPT)) {
                     if (pD.toggleMuted()) {
                         player.sendMessage(Dictionary.format(Dictionary.MUTE_ENABLED));
-                        for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
-                            if (p.hasPermission(Permissions.Admin.NOTIFY)) {
-                                sender.sendMessage(Dictionary.format(Dictionary.MUTE_ENABLEDN, "PLAYER", player.getName()));
-                            }
-                        }
+                        ProxyServer.getInstance().getPlayers().stream().filter(p -> p.hasPermission(Permissions.Admin.NOTIFY)).forEach(p -> sender.sendMessage(Dictionary.format(Dictionary.MUTE_ENABLEDN, "PLAYER", player.getName())));
                     } else {
                         player.sendMessage(Dictionary.format(Dictionary.MUTE_DISABLED));
-                        for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
-                            if (p.hasPermission(Permissions.Admin.NOTIFY)) {
-                                sender.sendMessage(Dictionary.format(Dictionary.MUTE_DISABLEDN, "PLAYER", player.getName()));
-                            }
-                        }
+                        ProxyServer.getInstance().getPlayers().stream().filter(p -> p.hasPermission(Permissions.Admin.NOTIFY)).forEach(p -> sender.sendMessage(Dictionary.format(Dictionary.MUTE_DISABLEDN, "PLAYER", player.getName())));
                     }
                 } else {
                     sender.sendMessage(Dictionary.format(Dictionary.MUTE_EXEMPT));
