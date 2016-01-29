@@ -32,9 +32,9 @@ import java.util.Map;
 import java.util.logging.Level;
 
 public class Updater {
-    private static BungeeEssentials plugin = BungeeEssentials.getInstance();
+    private BungeeEssentials plugin = BungeeEssentials.getInstance();
 
-    public static boolean update(boolean beta) {
+    public boolean update(boolean beta) {
         final String oldVerDec = plugin.getDescription().getVersion();
         final int oldVersion = getVersionFromString(oldVerDec);
         File path = new File(ProxyServer.getInstance().getPluginsFolder(), "BungeeEssentials.jar");
@@ -47,15 +47,8 @@ public class Updater {
             BufferedReader reader = new BufferedReader(isr);
             String newVer = reader.readLine();
             String newBVer = reader.readLine();
-            int newVersion;
-            String newVerDec;
-            if (beta) {
-                newVersion = getVersionFromString(newBVer);
-                newVerDec = newBVer;
-            } else {
-                newVersion = getVersionFromString(newVer);
-                newVerDec = newVer;
-            }
+            String newVerDec = beta ? newBVer : newVer;
+            int newVersion = getVersionFromString(newVerDec);
             reader.close();
 
             if(newVersion > oldVersion) {
@@ -87,7 +80,8 @@ public class Updater {
         return false;
     }
 
-    public static void updateConfig() {
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "unchecked"})
+    private void updateConfig() {
         Configuration config = plugin.getConfig();
         Configuration messages = plugin.getMessages();
         int oldVersion = getVersionFromString(config.getString("configversion"));
@@ -229,7 +223,7 @@ public class Updater {
         plugin.getLogger().log(Level.INFO, "Config updated. You may edit new values to your liking.");
     }
 
-    private static int getVersionFromString(String from) {
+    private int getVersionFromString(String from) {
         String result = from.replace(".", "");
 
         return result.isEmpty() ? 0 : Integer.parseInt(result);

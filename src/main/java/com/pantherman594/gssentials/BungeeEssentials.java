@@ -82,13 +82,7 @@ public class BungeeEssentials extends Plugin {
         } catch (Exception ignored) {
         }
         if (getConfig().getStringList("enable").contains("updater")) {
-            boolean updated;
-            if (getConfig().getStringList("enable").contains("betaupdates")) {
-                updated = Updater.update(true);
-            } else {
-                updated = Updater.update(false);
-            }
-            if (updated) {
+            if (new Updater().update(getConfig().getStringList("enable").contains("betaupdates"))) {
                 return;
             }
         }
