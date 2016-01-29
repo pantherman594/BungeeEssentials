@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableSet;
 import com.pantherman594.gssentials.Dictionary;
 import com.pantherman594.gssentials.Permissions;
 import com.pantherman594.gssentials.command.BECommand;
+import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -31,7 +32,6 @@ import net.md_5.bungee.api.plugin.TabExecutor;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("deprecation")
 public class SendAllCommand extends BECommand implements TabExecutor {
@@ -49,11 +49,16 @@ public class SendAllCommand extends BECommand implements TabExecutor {
                 players = ProxyServer.getInstance().getServerInfo(args[0]).getPlayers();
             }
             final ServerInfo info = sInfo;
-            players.forEach(player -> player.connect(info, (success, throwable) -> {
-                if (!success) {
-                    sender.sendMessage(Dictionary.format(Dictionary.ERROR_SENDFAIL, "PLAYER", player.getName(), "SERVER", info.getName()));
-                }
-            }));
+            for (final ProxiedPlayer player : players) {
+                player.connect(info, new Callback<Boolean>() {
+                    @Override
+                    public void done(Boolean success, Throwable throwable) {
+                        if (!success) {
+                            sender.sendMessage(Dictionary.format(Dictionary.ERROR_SENDFAIL, "PLAYER", player.getName(), "SERVER", info.getName()));
+                        }
+                    }
+                });
+            }
         } else {
             sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " [fromServer] <toServer>"));
         }
@@ -64,7 +69,11 @@ public class SendAllCommand extends BECommand implements TabExecutor {
         if (args.length == 1 || args.length == 2) {
             Set<String> matches = new HashSet<>();
             String search = args[args.length - 1].toLowerCase();
-            matches.addAll(ProxyServer.getInstance().getServers().keySet().stream().filter(server -> server.toLowerCase().startsWith(search)).collect(Collectors.toList()));
+            for (String server : ProxyServer.getInstance().getServers().keySet()) {
+                if (server.toLowerCase().startsWith(search)) {
+                    matches.add(server);
+                }
+            }
             return matches;
         }
         return ImmutableSet.of();

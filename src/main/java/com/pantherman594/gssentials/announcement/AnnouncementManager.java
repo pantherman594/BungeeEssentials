@@ -60,24 +60,34 @@ public class AnnouncementManager {
     private void scheduleAnnc() {
         for (final String anncName : anncs.keySet()) {
             final Announcement annc = anncs.get(anncName);
-            ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), () -> {
-                annc(annc.getPlayers(), anncName, annc.getMsg());
-                scheduleAnnc(anncName, annc);
+            ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), new Runnable() {
+                @Override
+                public void run() {
+                    annc(annc.getPlayers(), anncName, annc.getMsg());
+                    scheduleAnnc(anncName, annc);
+                }
             }, annc.getDelay(), TimeUnit.SECONDS);
         }
     }
 
     private void scheduleAnnc(final String anncName, final Announcement annc) {
-        ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), () -> {
-            annc(annc.getPlayers(), anncName, annc.getMsg());
-            scheduleAnnc(anncName, annc);
+        ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), new Runnable() {
+            @Override
+            public void run() {
+                annc(annc.getPlayers(), anncName, annc.getMsg());
+                scheduleAnnc(anncName, annc);
+            }
         }, annc.getInterval(), TimeUnit.SECONDS);
     }
 
     private void annc(Collection<ProxiedPlayer> players, String anncName, String... msg) {
         for (String singMsg : msg) {
             if (!players.isEmpty()) {
-                players.stream().filter(p -> p.hasPermission(Permissions.General.ANNOUNCEMENT) || p.hasPermission(Permissions.General.ANNOUNCEMENT + "." + anncName)).forEach(p -> p.sendMessage(Dictionary.format(Dictionary.FORMAT_ALERT, "MESSAGE", singMsg)));
+                for (ProxiedPlayer p : players) {
+                    if (p.hasPermission(Permissions.General.ANNOUNCEMENT) || p.hasPermission(Permissions.General.ANNOUNCEMENT + "." + anncName)) {
+                        p.sendMessage(Dictionary.format(Dictionary.FORMAT_ALERT, "MESSAGE", singMsg));
+                    }
+                }
             }
             ProxyServer.getInstance().getConsole().sendMessage(Dictionary.format(Dictionary.FORMAT_ALERT, "MESSAGE", singMsg));
         }

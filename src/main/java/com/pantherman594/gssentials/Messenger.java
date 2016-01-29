@@ -148,10 +148,12 @@ public class Messenger implements Listener {
     }
 
     public static void ruleNotify(String notification, ProxiedPlayer player, String sentMessage) {
-        ProxyServer.getInstance().getPlayers().stream().filter(p -> p.hasPermission(Permissions.Admin.NOTIFY)).forEach(p -> {
-            p.sendMessage(Dictionary.format(notification, "PLAYER", player.getName()));
-            p.sendMessage(ChatColor.GRAY + "Original Message: " + sentMessage);
-        });
+        for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
+            if (p.hasPermission(Permissions.Admin.NOTIFY)) {
+                p.sendMessage(Dictionary.format(notification, "PLAYER", player.getName()));
+                p.sendMessage(ChatColor.GRAY + "Original Message: " + sentMessage);
+            }
+        }
     }
 
     public static UUID reply(ProxiedPlayer player) {

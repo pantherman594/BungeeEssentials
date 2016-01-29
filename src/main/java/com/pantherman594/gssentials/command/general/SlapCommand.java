@@ -30,7 +30,6 @@ import net.md_5.bungee.api.plugin.TabExecutor;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("deprecation")
 public class SlapCommand extends BECommand implements TabExecutor {
@@ -70,7 +69,13 @@ public class SlapCommand extends BECommand implements TabExecutor {
 
         Set<String> matches = new HashSet<>();
         String search = args[0].toLowerCase();
-        matches.addAll(ProxyServer.getInstance().getPlayers().stream().filter(player -> !player.getName().equals(sender.getName())).filter(player -> player.getName().toLowerCase().startsWith(search) && !PlayerData.getData(player.getUniqueId()).isHidden()).map(ProxiedPlayer::getName).collect(Collectors.toList()));
+        for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
+            if (!player.getName().equals(sender.getName())) {
+                if (player.getName().toLowerCase().startsWith(search) && !PlayerData.getData(player.getUniqueId()).isHidden()) {
+                    matches.add(player.getName());
+                }
+            }
+        }
         return matches;
     }
 }

@@ -24,6 +24,7 @@ import com.pantherman594.gssentials.Dictionary;
 import com.pantherman594.gssentials.Permissions;
 import com.pantherman594.gssentials.PlayerData;
 import com.pantherman594.gssentials.command.ServerSpecificCommand;
+import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -47,11 +48,15 @@ public class SendCommand extends ServerSpecificCommand implements TabExecutor {
             if (player != null) {
                 sender.sendMessage(Dictionary.format(Dictionary.FORMAT_SEND_PLAYER, "PLAYER", args[0], "SERVER", args[1]));
                 final ServerInfo info = ProxyServer.getInstance().getServerInfo(args[1]);
-                player.connect(info, (success, throwable) -> {
-                    if (!success) {
-                        sender.sendMessage(Dictionary.format(Dictionary.ERROR_SENDFAIL, "PLAYER", player.getName(), "SERVER", info.getName()));
-                    }
-                });
+                player.connect(info,
+                        new Callback<Boolean>() {
+                            @Override
+                            public void done(Boolean success, Throwable throwable) {
+                                if (!success) {
+                                    sender.sendMessage(Dictionary.format(Dictionary.ERROR_SENDFAIL, "PLAYER", player.getName(), "SERVER", info.getName()));
+                                }
+                            }
+                        });
             } else {
                 sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
             }
