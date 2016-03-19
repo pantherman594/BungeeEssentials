@@ -19,7 +19,13 @@
 package com.pantherman594.gssentials.command;
 
 import com.pantherman594.gssentials.BungeeEssentials;
+import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by David on 9/2/2015.
@@ -29,5 +35,27 @@ import net.md_5.bungee.api.plugin.Command;
 public abstract class BECommand extends Command {
     public BECommand(String name, String permission) {
         super(BungeeEssentials.getInstance().getMain(name), permission, BungeeEssentials.getInstance().getAlias(name));
+    }
+
+    public Iterable<String> tabPlayers(CommandSender sender, String search) {
+        Set<String> matches = new HashSet<>();
+        for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
+            if (!player.getName().equals(sender.getName())) {
+                if (player.getName().toLowerCase().startsWith(search.toLowerCase())) {
+                    matches.add(player.getName());
+                }
+            }
+        }
+        return matches;
+    }
+
+    public Iterable<String> tabStrings(CommandSender sender, String search, String[] strings) {
+        Set<String> matches = new HashSet<>();
+        for (String string : strings) {
+            if (string.toLowerCase().startsWith(search.toLowerCase())) {
+                matches.add(string);
+            }
+        }
+        return matches;
     }
 }

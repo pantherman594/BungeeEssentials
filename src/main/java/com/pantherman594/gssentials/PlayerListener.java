@@ -29,7 +29,9 @@ import net.md_5.bungee.api.event.*;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
+import java.io.IOException;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -64,7 +66,7 @@ public class PlayerListener implements Listener {
                 ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), new Runnable() {
                     @Override
                     public void run() {
-                        if (cmdLog.get(player.getUniqueId()).equals(time)) {
+                        if (cmdLog.containsKey(player.getUniqueId()) && cmdLog.get(player.getUniqueId()).equals(time)) {
                             cmdLog.remove(player.getUniqueId());
                         }
                     }
@@ -191,6 +193,17 @@ public class PlayerListener implements Listener {
         if (BungeeEssentials.getInstance().contains("fulllog")) {
             Log.log(Dictionary.format(Dictionary.FORMAT_KICK, "PLAYER", event.getPlayer().getName(), "REASON", event.getKickReason()).toLegacyText());
         }
+        if (event.getKickReasonComponent()[0].toPlainText().equals("Server closed")) {
+            sendFallback(event);
+        } else {
+            try {
+                Socket s = new Socket();
+                s.connect(event.getKickedFrom().getAddress());
+                s.close();
+            } catch (IOException e) {
+                sendFallback(event);
+            }
+        }
     }
 
     @EventHandler(priority = Byte.MAX_VALUE)
@@ -213,6 +226,21 @@ public class PlayerListener implements Listener {
         }
         for (String player : remove) {
             suggestions.remove(player);
+        }
+    }
+
+    private void sendFallback(ServerKickEvent e) {
+        e.setCancelled(true);
+        for (String server : e.getPlayer().getPendingConnection().getListener().getServerPriority()) {
+            ServerInfo info = ProxyServer.getInstance().getServerInfo(server);
+            try {
+                Socket s = new Socket();
+                s.connect(info.getAddress());
+                s.close();
+                e.getPlayer().connect(info);
+                break;
+            } catch (IOException ignored) {
+            }
         }
     }
 }

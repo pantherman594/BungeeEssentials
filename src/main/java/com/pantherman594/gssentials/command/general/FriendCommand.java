@@ -34,8 +34,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -175,18 +173,13 @@ public class FriendCommand extends BECommand implements TabExecutor {
 
     @Override
     public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
-        if (args.length == 2) {
-            Set<String> matches = new HashSet<>();
-            String search = args[0].toLowerCase();
-            for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-                if (!player.getName().equals(sender.getName())) {
-                    if (player.getName().toLowerCase().startsWith(search) && !PlayerData.getData(((ProxiedPlayer) sender).getUniqueId()).isHidden()) {
-                        matches.add(player.getName());
-                    }
-                }
-            }
-            return matches;
+        switch (args.length) {
+            case 2:
+                return tabPlayers(sender, args[1]);
+            case 1:
+                return tabStrings(sender, args[0], new String[]{"list", "add", "remove"});
+            default:
+                return ImmutableSet.of();
         }
-        return ImmutableSet.of();
     }
 }

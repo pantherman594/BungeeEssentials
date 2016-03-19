@@ -28,9 +28,6 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class MuteCommand extends ServerSpecificCommand implements TabExecutor {
     public MuteCommand() {
         super("mute", Permissions.Admin.MUTE);
@@ -71,28 +68,6 @@ public class MuteCommand extends ServerSpecificCommand implements TabExecutor {
 
     @Override
     public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
-        if (args.length > 1 || args.length == 0) {
-            return ImmutableSet.of();
-        }
-
-        ProxiedPlayer senderPlayer = null;
-        if (sender instanceof ProxiedPlayer) {
-            senderPlayer = (ProxiedPlayer) sender;
-        }
-        Set<String> matches = new HashSet<>();
-        String search = args[0].toLowerCase();
-        for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-            if (senderPlayer != null) {
-                if (player.getServer().getInfo().getName().equals(senderPlayer.getServer().getInfo().getName())) {
-                    continue;
-                }
-            }
-            if (!player.getName().equals(sender.getName())) {
-                if (player.getName().toLowerCase().startsWith(search) && !PlayerData.getData(((ProxiedPlayer) sender).getUniqueId()).isHidden()) {
-                    matches.add(player.getName());
-                }
-            }
-        }
-        return matches;
+        return args.length == 1 ? tabPlayers(sender, args[0]) : ImmutableSet.<String>of();
     }
 }

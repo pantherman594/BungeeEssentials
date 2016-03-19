@@ -30,8 +30,6 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 @SuppressWarnings("deprecation")
 public class SendAllCommand extends BECommand implements TabExecutor {
@@ -65,17 +63,14 @@ public class SendAllCommand extends BECommand implements TabExecutor {
     }
 
     @Override
-    public Iterable<String> onTabComplete(CommandSender commandSender, String[] args) {
-        if (args.length == 1 || args.length == 2) {
-            Set<String> matches = new HashSet<>();
-            String search = args[args.length - 1].toLowerCase();
-            for (String server : ProxyServer.getInstance().getServers().keySet()) {
-                if (server.toLowerCase().startsWith(search)) {
-                    matches.add(server);
-                }
-            }
-            return matches;
+    public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
+        switch (args.length) {
+            case 1:
+                return tabPlayers(sender, args[0]);
+            case 2:
+                return tabStrings(sender, args[1], ProxyServer.getInstance().getServers().keySet().toArray(new String[ProxyServer.getInstance().getServers().keySet().size()]));
+            default:
+                return ImmutableSet.of();
         }
-        return ImmutableSet.of();
     }
 }

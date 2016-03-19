@@ -102,7 +102,7 @@ public class PlayerData {
     }
 
     public static PlayerData getData(UUID uuid) {
-        return getDatas().get(uuid);
+        return getDatas().containsKey(uuid) ? getDatas().get(uuid) : new PlayerData(uuid.toString(), null);
     }
 
     public static void setData(UUID uuid, PlayerData playerData) {

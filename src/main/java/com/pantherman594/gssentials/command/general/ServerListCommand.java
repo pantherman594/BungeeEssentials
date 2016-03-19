@@ -55,7 +55,7 @@ public class ServerListCommand extends BECommand {
                 s.connect(info.getAddress());
                 s.close();
                 print(sender, canSeeHidden, info, false);
-            } catch (IOException ignored) {
+            } catch (IOException e) {
                 if (sender.hasPermission(Permissions.General.LIST_OFFLINE)) {
                     print(sender, canSeeHidden, info, true);
                 }

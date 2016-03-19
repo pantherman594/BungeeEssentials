@@ -22,7 +22,6 @@ import com.google.common.collect.ImmutableSet;
 import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.Dictionary;
 import com.pantherman594.gssentials.Permissions;
-import com.pantherman594.gssentials.PlayerData;
 import com.pantherman594.gssentials.command.ServerSpecificCommand;
 import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.CommandSender;
@@ -30,9 +29,6 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.TabExecutor;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @SuppressWarnings("deprecation")
 public class SendCommand extends ServerSpecificCommand implements TabExecutor {
@@ -48,15 +44,14 @@ public class SendCommand extends ServerSpecificCommand implements TabExecutor {
             if (player != null) {
                 sender.sendMessage(Dictionary.format(Dictionary.FORMAT_SEND_PLAYER, "PLAYER", args[0], "SERVER", args[1]));
                 final ServerInfo info = ProxyServer.getInstance().getServerInfo(args[1]);
-                player.connect(info,
-                        new Callback<Boolean>() {
-                            @Override
-                            public void done(Boolean success, Throwable throwable) {
-                                if (!success) {
-                                    sender.sendMessage(Dictionary.format(Dictionary.ERROR_SENDFAIL, "PLAYER", player.getName(), "SERVER", info.getName()));
-                                }
-                            }
-                        });
+                player.connect(info, new Callback<Boolean>() {
+                    @Override
+                    public void done(Boolean success, Throwable throwable) {
+                        if (!success) {
+                            sender.sendMessage(Dictionary.format(Dictionary.ERROR_SENDFAIL, "PLAYER", player.getName(), "SERVER", info.getName()));
+                        }
+                    }
+                });
             } else {
                 sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
             }
@@ -67,29 +62,13 @@ public class SendCommand extends ServerSpecificCommand implements TabExecutor {
 
     @Override
     public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
-        if (args.length > 2 || args.length == 0) {
-            return ImmutableSet.of();
+        switch (args.length) {
+            case 1:
+                return tabPlayers(sender, args[0]);
+            case 2:
+                return tabStrings(sender, args[1], ProxyServer.getInstance().getServers().keySet().toArray(new String[ProxyServer.getInstance().getServers().keySet().size()]));
+            default:
+                return ImmutableSet.of();
         }
-
-        Set<String> matches = new HashSet<>();
-        String search;
-        if (args.length == 1) {
-            search = args[0].toLowerCase();
-            for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-                if (!player.getName().equals(sender.getName())) {
-                    if (player.getName().toLowerCase().startsWith(search) && !PlayerData.getData(((ProxiedPlayer) sender).getUniqueId()).isHidden()) {
-                        matches.add(player.getName());
-                    }
-                }
-            }
-        } else {
-            search = args[1].toLowerCase();
-            for (String server : ProxyServer.getInstance().getServers().keySet()) {
-                if (server.toLowerCase().startsWith(search)) {
-                    matches.add(server);
-                }
-            }
-        }
-        return matches;
     }
 }
