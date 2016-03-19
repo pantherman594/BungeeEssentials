@@ -55,18 +55,29 @@ public class BungeeEssentials extends Plugin {
     private File playerFile;
     private boolean integrated;
 
+    /**
+     * @return The BungeeEssentials instance.
+     */
     public static BungeeEssentials getInstance() {
         return instance;
     }
 
-    public RuleManager getRuleManager() {
+    RuleManager getRuleManager() {
         return ruleManager;
     }
 
+    /**
+     * @param key The internal command name.
+     * @return The main command.
+     */
     public String getMain(String key) {
         return mainList.get(key);
     }
 
+    /**
+     * @param key The internal command name.
+     * @return A list of the aliases from the main command.
+     */
     public String[] getAlias(String key) {
         return aliasList.get(key);
     }
@@ -86,7 +97,7 @@ public class BungeeEssentials extends Plugin {
                 return;
             }
         }
-        reload();
+        ProxyServer.getInstance().getScheduler().schedule(this, this::reload, 3, TimeUnit.SECONDS);
     }
 
     @Override
@@ -95,6 +106,11 @@ public class BungeeEssentials extends Plugin {
         savePlayerConfig();
     }
 
+    /**
+     * Tries to save all the config files.
+     *
+     * @throws IOException
+     */
     private void saveConfig() throws IOException {
         if (!getDataFolder().exists()) {
             if (! getDataFolder().mkdir()) {
@@ -115,6 +131,11 @@ public class BungeeEssentials extends Plugin {
         }
     }
 
+    /**
+     * Tries to load all the config files.
+     *
+     * @throws IOException
+     */
     private void loadConfig() throws IOException {
         if (!configFile.exists()) {
             saveConfig();
@@ -131,6 +152,11 @@ public class BungeeEssentials extends Plugin {
         savePlayerConfig();
     }
 
+    /**
+     * Reload all the config files and re-register all activated commands and listeners.
+     *
+     * @return Whether reload was successful.
+     */
     public boolean reload() {
         try {
             loadConfig();
@@ -213,6 +239,11 @@ public class BungeeEssentials extends Plugin {
         return true;
     }
 
+    /**
+     * Sets up integration with another plugin.
+     *
+     * @param ignore Plugins to ignore when setting up integration.
+     */
     public void setupIntegration(String... ignore) {
         Preconditions.checkNotNull(ignore);
         integrated = false;
@@ -243,6 +274,11 @@ public class BungeeEssentials extends Plugin {
         ProxyServer.getInstance().getScheduler().schedule(this, new IntegrationTest(), 7, TimeUnit.SECONDS);
     }
 
+    /**
+     * Registers the give command.
+     *
+     * @param comm The internal name of the command to register.
+     */
     private void register(String comm) {
         Map<String, String> commands = new HashMap<>();
         commands.put("alert", "com.pantherman594.gssentials.command.admin.AlertCommand");
@@ -272,19 +308,31 @@ public class BungeeEssentials extends Plugin {
         }
     }
 
+    /**
+     * @return The main config file.
+     */
     public Configuration getConfig() {
         return this.config;
     }
 
+    /**
+     * @return The messages config file.
+     */
     public Configuration getMessages() {
         return this.messages;
     }
 
-    public Configuration getPlayerConfig() {
+    /**
+     * @return The player list file.
+     */
+    Configuration getPlayerConfig() {
         return this.players;
     }
 
-    public void saveMainConfig() {
+    /**
+     * Saves the main config.
+     */
+    void saveMainConfig() {
         try {
             ConfigurationProvider.getProvider(YamlConfiguration.class).save(getConfig(), configFile);
         } catch (IOException e) {
@@ -292,7 +340,10 @@ public class BungeeEssentials extends Plugin {
         }
     }
 
-    public void saveMessagesConfig() {
+    /**
+     * Saves the messages config.
+     */
+    void saveMessagesConfig() {
         try {
             ConfigurationProvider.getProvider(YamlConfiguration.class).save(getMessages(), messageFile);
         } catch (IOException e) {
@@ -300,11 +351,19 @@ public class BungeeEssentials extends Plugin {
         }
     }
 
-    public void savePlayerConfig(String player) {
+    /**
+     * Adds a player to the list of players.
+     *
+     * @param player The name of the player to add.
+     */
+    void savePlayerConfig(String player) {
         playerList.add(player);
     }
 
-    public void savePlayerConfig() {
+    /**
+     * Saves the player list to a file.
+     */
+    private void savePlayerConfig() {
         try {
             this.players = ConfigurationProvider.getProvider(YamlConfiguration.class).load(playerFile);
             if (!playerList.isEmpty()) {
@@ -317,18 +376,39 @@ public class BungeeEssentials extends Plugin {
         }
     }
 
+    /**
+     * @return The integration provider.
+     */
     public IntegrationProvider getIntegrationProvider() {
         return helper;
     }
 
+    /**
+     * Adds modules to the enabled list.
+     *
+     * @param name Internal name of the module to enable.
+     */
     private void addEnabled(String name) {
         addEnabled(name, name);
     }
 
+    /**
+     * Enables a module if any of the keys are enabled.
+     *
+     * @param name Internal name of the module to enable.
+     * @param keys All the keys to check in the enabled list.
+     */
     private void addEnabled(String name, String... keys) {
         if (contains(config.getStringList("enable"), keys)) enabled.add(name);
     }
 
+    /**
+     * Checks whether any of the given strings are found anywhere in the list.
+     *
+     * @param list   The list to check for matches from.
+     * @param checks The strings to check for matches.
+     * @return Whether any of the strings are found in the list.
+     */
     private boolean contains(List<String> list, String... checks) {
         for (String string : list) {
             for (String check : checks) {
@@ -340,10 +420,20 @@ public class BungeeEssentials extends Plugin {
         return false;
     }
 
+    /**
+     * Checks whether any of the given strings are
+     * found anywhere in the enabled list.
+     *
+     * @param checks The strings to check for matches.
+     * @return Whether any of the strings are found in the enabled list.
+     */
     public boolean contains(String... checks) {
         return contains(enabled, checks);
     }
 
+    /**
+     * @return Whether BungeeEssentials is integrated with another plugin.
+     */
     public boolean isIntegrated() {
         return integrated && helper != null;
     }

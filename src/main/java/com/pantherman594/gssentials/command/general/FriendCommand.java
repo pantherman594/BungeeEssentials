@@ -41,8 +41,8 @@ import java.util.UUID;
  *
  * @author David
  */
+@SuppressWarnings("unused")
 public class FriendCommand extends BECommand implements TabExecutor {
-
     public FriendCommand() {
         super("friend", Permissions.General.FRIEND);
     }
@@ -167,7 +167,7 @@ public class FriendCommand extends BECommand implements TabExecutor {
                 sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " [list|add <player>|remove <player>]"));
             }
         } else {
-            sender.sendMessage(Dictionary.colour("&cConsole does not have any friends."));
+            sender.sendMessage(Dictionary.color("&cConsole does not have any friends."));
         }
     }
 
@@ -177,7 +177,7 @@ public class FriendCommand extends BECommand implements TabExecutor {
             case 2:
                 return tabPlayers(sender, args[1]);
             case 1:
-                return tabStrings(sender, args[0], new String[]{"list", "add", "remove"});
+                return tabStrings(args[0], new String[]{"list", "add", "remove"});
             default:
                 return ImmutableSet.of();
         }

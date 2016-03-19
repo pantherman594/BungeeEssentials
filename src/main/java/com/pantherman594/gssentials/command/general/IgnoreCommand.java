@@ -28,6 +28,7 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
+@SuppressWarnings("unused")
 public class IgnoreCommand extends BECommand implements TabExecutor {
     public IgnoreCommand() {
         super("ignore", Permissions.General.IGNORE);
@@ -52,12 +53,12 @@ public class IgnoreCommand extends BECommand implements TabExecutor {
                 sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <player>"));
             }
         } else {
-            sender.sendMessage(Dictionary.colour("&cConsole cannot ignore players (how are you seeing messages in the first place?)"));
+            sender.sendMessage(Dictionary.color("&cConsole cannot ignore players (how are you seeing messages in the first place?)"));
         }
     }
 
     @Override
     public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
-        return args.length == 1 ? tabPlayers(sender, args[0]) : ImmutableSet.<String>of();
+        return args.length == 1 ? tabPlayers(sender, args[0]) : ImmutableSet.of();
     }
 }

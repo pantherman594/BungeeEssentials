@@ -25,9 +25,8 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings("unused")
 public class AlertCommand extends BECommand {
-
     public AlertCommand() {
         super("alert", Permissions.Admin.ALERT);
     }

@@ -28,6 +28,7 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
+@SuppressWarnings("unused")
 public class MuteCommand extends ServerSpecificCommand implements TabExecutor {
     public MuteCommand() {
         super("mute", Permissions.Admin.MUTE);
@@ -42,18 +43,10 @@ public class MuteCommand extends ServerSpecificCommand implements TabExecutor {
                 if (!player.hasPermission(Permissions.Admin.MUTE_EXEMPT)) {
                     if (pD.toggleMuted()) {
                         player.sendMessage(Dictionary.format(Dictionary.MUTE_ENABLED));
-                        for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
-                            if (p.hasPermission(Permissions.Admin.NOTIFY)) {
-                                sender.sendMessage(Dictionary.format(Dictionary.MUTE_ENABLEDN, "PLAYER", player.getName()));
-                            }
-                        }
+                        ProxyServer.getInstance().getPlayers().stream().filter(p -> p.hasPermission(Permissions.Admin.NOTIFY)).forEach(p -> sender.sendMessage(Dictionary.format(Dictionary.MUTE_ENABLEDN, "PLAYER", player.getName())));
                     } else {
                         player.sendMessage(Dictionary.format(Dictionary.MUTE_DISABLED));
-                        for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
-                            if (p.hasPermission(Permissions.Admin.NOTIFY)) {
-                                sender.sendMessage(Dictionary.format(Dictionary.MUTE_DISABLEDN, "PLAYER", player.getName()));
-                            }
-                        }
+                        ProxyServer.getInstance().getPlayers().stream().filter(p -> p.hasPermission(Permissions.Admin.NOTIFY)).forEach(p -> sender.sendMessage(Dictionary.format(Dictionary.MUTE_DISABLEDN, "PLAYER", player.getName())));
                     }
                 } else {
                     sender.sendMessage(Dictionary.format(Dictionary.MUTE_EXEMPT));
@@ -68,6 +61,6 @@ public class MuteCommand extends ServerSpecificCommand implements TabExecutor {
 
     @Override
     public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
-        return args.length == 1 ? tabPlayers(sender, args[0]) : ImmutableSet.<String>of();
+        return args.length == 1 ? tabPlayers(sender, args[0]) : ImmutableSet.of();
     }
 }

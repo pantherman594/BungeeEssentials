@@ -33,11 +33,20 @@ public class Rule {
     private String command;
     private List<String> matches;
 
+    /**
+     * Create a new filter rule.
+     */
     private Rule() {
         matches = Lists.newArrayList();
     }
 
-    public static Rule deserialize(Map<String, String> serialized) {
+    /**
+     * Deserializes rules from the config for use.
+     *
+     * @param serialized Unformatted rule.
+     * @return A deserialized Rule.
+     */
+    static Rule deserialize(Map<String, String> serialized) {
         Preconditions.checkNotNull(serialized);
         Preconditions.checkArgument(!serialized.isEmpty());
         Preconditions.checkNotNull(serialized.get("pattern"), "invalid pattern");
@@ -55,7 +64,7 @@ public class Rule {
         return rule;
     }
 
-    public Rule pattern(String pattern) {
+    private Rule pattern(String pattern) {
         return pattern(pattern, false);
     }
 
@@ -77,6 +86,9 @@ public class Rule {
         return this.handle;
     }
 
+    /**
+     * @return Return the replacement if correct handler.
+     */
     public String getReplacement() {
         if (handle != Handle.REPLACE) {
             return null;
@@ -84,6 +96,9 @@ public class Rule {
         return replacement;
     }
 
+    /**
+     * @return Return the command to run if correct handler.
+     */
     public String getCommand() {
         if (handle != Handle.COMMAND) {
             return null;
@@ -91,7 +106,14 @@ public class Rule {
         return command;
     }
 
-    public boolean matches(String input) {
+    /**
+     * Check whether strings match the pattern, returns whether
+     * the match is found and records it in the matches list.
+     *
+     * @param input The string to check for matches.
+     * @return Whether a match for the string is found.
+     */
+    boolean matches(String input) {
         Preconditions.checkNotNull(input);
         matches.clear();
         Matcher matcher = pattern.matcher(input);

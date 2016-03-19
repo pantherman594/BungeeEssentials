@@ -29,7 +29,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.UUID;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings("WeakerAccess")
 public class ReplyCommand extends BECommand {
     public ReplyCommand() {
         super("reply", Permissions.General.MESSAGE);
@@ -51,7 +51,7 @@ public class ReplyCommand extends BECommand {
                 sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <message>"));
             }
         } else {
-            sender.sendMessage(Dictionary.colour("&cSorry, only players can reply to messages."));
+            sender.sendMessage(Dictionary.color("&cSorry, only players can reply to messages."));
         }
     }
 }

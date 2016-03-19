@@ -30,8 +30,7 @@ public abstract class ServerSpecificCommand extends BECommand {
         this.permission = permission;
     }
 
-    @SuppressWarnings("deprecation")
-	@Override
+    @Override
     public final void execute(CommandSender sender, String[] args) {
         if (sender.hasPermission(permission)) {
             run(sender, args);

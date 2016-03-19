@@ -33,10 +33,10 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings("unused")
 public class ServerListCommand extends BECommand {
-
     public ServerListCommand() {
         super("list", Permissions.General.LIST);
     }
@@ -63,24 +63,42 @@ public class ServerListCommand extends BECommand {
         }
     }
 
+    /**
+     * Get a list of players based on the server and visibility.
+     *
+     * @param canSeeHidden Whether the command sender can see hidden players.
+     * @param info         The server to list players from.
+     * @return A list of the players on that server.
+     */
     private Collection<ProxiedPlayer> getPlayers(boolean canSeeHidden, ServerInfo info) {
         if (canSeeHidden && !info.getPlayers().isEmpty()) {
             return info.getPlayers();
         }
-        Collection<ProxiedPlayer> players = new ArrayList<>();
-        for (ProxiedPlayer player : info.getPlayers()) {
-            if (!PlayerData.getData((player).getUniqueId()).isHidden()) {
-                players.add(player);
-            }
-        }
-        return players;
+        return info.getPlayers().stream().filter(player -> !PlayerData.getData((player).getUniqueId()).isHidden()).collect(Collectors.toCollection(ArrayList::new));
     }
 
+    /**
+     * Get the color-coded player count of a server's players relative to the others.
+     *
+     * @param canSeeHidden Whether the command sender can see hidden players.
+     * @param players      The number of players.
+     * @return Color-coded number of players based on the density.
+     */
     private String getDensity(boolean canSeeHidden, int players) {
-        return String.valueOf(getColour(canSeeHidden, players)) + players;
+        return String.valueOf(getColor(canSeeHidden, players)) + players;
     }
 
-    private ChatColor getColour(boolean canSeeHidden, int players) {
+    /**
+     * Get the color of a server's density, based on the percentage of all players.
+     * Green: More than 66%
+     * Gold: Between 33% and 66%
+     * Red: Less than 33%
+     *
+     * @param canSeeHidden Whether the command sender can see hidden players.
+     * @param players      The number of players.
+     * @return The color for the server's density.
+     */
+    private ChatColor getColor(boolean canSeeHidden, int players) {
         if (players == 0 || players < 0) {
             return ChatColor.RED;
         }
@@ -99,6 +117,12 @@ public class ServerListCommand extends BECommand {
         }
     }
 
+    /**
+     * Get a formatted list of players.
+     *
+     * @param players A list of the players
+     * @return A comma-delimited list of the players
+     */
     private String getPlayerList(Collection<ProxiedPlayer> players) {
         StringBuilder pList = new StringBuilder();
         for (ProxiedPlayer p : players) {
@@ -110,6 +134,14 @@ public class ServerListCommand extends BECommand {
         return pList.toString();
     }
 
+    /**
+     * Send the completed and formatted list of players to the command sender, per server.
+     *
+     * @param sender The command sender (receiver of the list).
+     * @param canSeeHidden Whether the command sender can see hidden players.
+     * @param info The server to list players from.
+     * @param offline Whether the server is offline.
+     */
     private void print(CommandSender sender, boolean canSeeHidden, ServerInfo info, boolean offline) {
         if (info.canAccess(sender) || sender.hasPermission(Permissions.General.LIST_RESTRICTED)) {
             if (offline) {

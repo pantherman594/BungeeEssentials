@@ -18,10 +18,11 @@
 
 package com.pantherman594.gssentials.regex;
 
+@SuppressWarnings("WeakerAccess")
 public enum Handle {
     ADVERTISEMENT,
     REPLACE,
     CURSING,
     COMMAND,
-    ALERT
+    //ALERT
 }

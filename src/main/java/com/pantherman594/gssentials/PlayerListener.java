@@ -34,20 +34,27 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
-public class PlayerListener implements Listener {
+class PlayerListener implements Listener {
     private final HashSet<InetAddress> connections;
     private final Map<InetAddress, ServerInfo> redirServer;
-    public Map<UUID, String> cmds;
-    public Map<UUID, String> cmdLog;
+    private Map<UUID, String> cmds;
+    private Map<UUID, String> cmdLog;
 
-    public PlayerListener() {
+    PlayerListener() {
         connections = new HashSet<>();
         redirServer = new HashMap<>();
         cmds = new HashMap<>();
         cmdLog = new HashMap<>();
     }
 
+    /**
+     * Event fired when a player chats. The message is filtered, formatted,
+     * and sent to the correct channel. May be logged if fulllog is enabled.
+     *
+     * @param event The Chat Event.
+     */
     @EventHandler(priority = Byte.MAX_VALUE)
     public void chat(ChatEvent event) {
         final ProxiedPlayer player = (ProxiedPlayer) event.getSender();
@@ -63,21 +70,14 @@ public class PlayerListener implements Listener {
                 cmds.put(player.getUniqueId(), cmd);
                 final String time = Dictionary.getTime();
                 cmdLog.put(player.getUniqueId(), time);
-                ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), new Runnable() {
-                    @Override
-                    public void run() {
-                        if (cmdLog.containsKey(player.getUniqueId()) && cmdLog.get(player.getUniqueId()).equals(time)) {
-                            cmdLog.remove(player.getUniqueId());
-                        }
+                ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), () -> {
+                    if (cmdLog.containsKey(player.getUniqueId()) && cmdLog.get(player.getUniqueId()).equals(time)) {
+                        cmdLog.remove(player.getUniqueId());
                     }
                 }, 5, TimeUnit.SECONDS);
             }
             if (!event.isCancelled() && !player.hasPermission(Permissions.Admin.SPY_EXEMPT) && BungeeEssentials.getInstance().contains("commandSpy")) {
-                for (ProxiedPlayer onlinePlayer : ProxyServer.getInstance().getPlayers()) {
-                    if ((onlinePlayer.getUniqueId() != player.getUniqueId()) && (onlinePlayer.hasPermission(Permissions.Admin.SPY_COMMAND)) && PlayerData.getData(onlinePlayer.getUniqueId()).isCSpy()) {
-                        onlinePlayer.sendMessage(Dictionary.format(Dictionary.CSPY_COMMAND, "SENDER", sender, "COMMAND", event.getMessage()));
-                    }
-                }
+                ProxyServer.getInstance().getPlayers().stream().filter(onlinePlayer -> (onlinePlayer.getUniqueId() != player.getUniqueId()) && (onlinePlayer.hasPermission(Permissions.Admin.SPY_COMMAND)) && PlayerData.getData(onlinePlayer.getUniqueId()).isCSpy()).forEach(onlinePlayer -> onlinePlayer.sendMessage(Dictionary.format(Dictionary.CSPY_COMMAND, "SENDER", sender, "COMMAND", event.getMessage())));
             }
             return;
         } else {
@@ -113,6 +113,12 @@ public class PlayerListener implements Listener {
         }
     }
 
+    /**
+     * Event fired when a player first connects. Checked for fast relog and may be
+     * redirected to correct server, depending on ip.
+     *
+     * @param event The Login Event.
+     */
     @EventHandler(priority = -65)
     public void login(final LoginEvent event) {
         if (BungeeEssentials.getInstance().contains("fastRelog")) {
@@ -122,12 +128,7 @@ public class PlayerListener implements Listener {
                 return;
             }
             connections.add(event.getConnection().getAddress().getAddress());
-            ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    connections.remove(event.getConnection().getAddress().getAddress());
-                }
-            }, 5, TimeUnit.SECONDS);
+            ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), () -> connections.remove(event.getConnection().getAddress().getAddress()), 5, TimeUnit.SECONDS);
         }
         if (BungeeEssentials.getInstance().contains("autoredirect")) {
             String[] ip = event.getConnection().getVirtualHost().getHostName().split("\\.");
@@ -140,6 +141,13 @@ public class PlayerListener implements Listener {
         }
     }
 
+    /**
+     * Event fired when a player completely logs in. A new PlayerData is created and
+     * saved, and the player is added to the playerlist and saved. Login is announced
+     * and logged.
+     *
+     * @param event The Post Login Event.
+     */
     @EventHandler(priority = Byte.MAX_VALUE)
     public void postLogin(PostLoginEvent event) {
         new PlayerData(event.getPlayer().getUniqueId().toString(), event.getPlayer().getName());
@@ -155,6 +163,12 @@ public class PlayerListener implements Listener {
         }
     }
 
+    /**
+     * Event fired when a player connects to a server. If player is set to be redirected,
+     * player is sent to that server and redirection is removed.
+     *
+     * @param event The Server Connected Event.
+     */
     @EventHandler(priority = Byte.MAX_VALUE)
     public void connect(ServerConnectedEvent event) {
         if (redirServer.containsKey(event.getPlayer().getAddress().getAddress())) {
@@ -166,17 +180,19 @@ public class PlayerListener implements Listener {
         }
     }
 
+    /**
+     * Event fired when a player disconnects from the server. Player is saved for
+     * fast relog, logout is announced and logged, and the PlayerData is saved and
+     * removed from the registered list.
+     *
+     * @param event The Disconnect Event.
+     */
     @EventHandler(priority = Byte.MAX_VALUE)
     public void logout(final PlayerDisconnectEvent event) {
         if (BungeeEssentials.getInstance().contains("fastRelog")) {
             if (!connections.contains(event.getPlayer().getAddress().getAddress())) {
                 connections.add(event.getPlayer().getAddress().getAddress());
-                ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), new Runnable() {
-                    @Override
-                    public void run() {
-                        connections.remove(event.getPlayer().getAddress().getAddress());
-                    }
-                }, 3, TimeUnit.SECONDS);
+                ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), () -> connections.remove(event.getPlayer().getAddress().getAddress()), 3, TimeUnit.SECONDS);
             }
         }
         if (BungeeEssentials.getInstance().contains("joinAnnounce") && !PlayerData.getData(event.getPlayer().getUniqueId()).isHidden() && !(Dictionary.FORMAT_QUIT.equals("")) && event.getPlayer().hasPermission(Permissions.General.QUITANNC) && !(BungeeEssentials.getInstance().isIntegrated() && BungeeEssentials.getInstance().getIntegrationProvider().isBanned(event.getPlayer()))) {
@@ -188,6 +204,13 @@ public class PlayerListener implements Listener {
         PlayerData.getData(event.getPlayer().getUniqueId()).save();
     }
 
+    /**
+     * Event fired when a player is kicked from the proxy. Event is logged. If the player
+     * is kicked because of a server shutdown, the player is redirected to the default
+     * servers.
+     *
+     * @param event The Server Kick Event.
+     */
     @EventHandler(priority = Byte.MAX_VALUE)
     public void kick(ServerKickEvent event) {
         if (BungeeEssentials.getInstance().contains("fulllog")) {
@@ -206,6 +229,12 @@ public class PlayerListener implements Listener {
         }
     }
 
+    /**
+     * Event fired when a player pings the proxy. If there are hidden players, they are
+     * removed from the player count.
+     *
+     * @param event The Proxy Ping Event.
+     */
     @EventHandler(priority = Byte.MAX_VALUE)
     public void ping(ProxyPingEvent event) {
         ServerPing response = event.getResponse();
@@ -215,20 +244,25 @@ public class PlayerListener implements Listener {
         event.setResponse(ping);
     }
 
+    /**
+     * Event fired when a player tries tab-completion. Hidden players
+     * are removed from the suggestions.
+     *
+     * @param event The Tab Complete Response Event.
+     */
     @EventHandler(priority = Byte.MAX_VALUE)
     public void tab(TabCompleteResponseEvent event) {
         List<String> suggestions = event.getSuggestions();
-        List<String> remove = new ArrayList<>();
-        for (String suggestion : suggestions) {
-            if (ProxyServer.getInstance().getPlayer(suggestion) instanceof ProxiedPlayer && PlayerData.getData(ProxyServer.getInstance().getPlayer(suggestion).getUniqueId()).isHidden()) {
-                remove.add(suggestion);
-            }
-        }
-        for (String player : remove) {
-            suggestions.remove(player);
-        }
+        List<String> remove = suggestions.stream().filter(suggestion -> ProxyServer.getInstance().getPlayer(suggestion) instanceof ProxiedPlayer && PlayerData.getData(ProxyServer.getInstance().getPlayer(suggestion).getUniqueId()).isHidden()).collect(Collectors.toList());
+        remove.forEach(suggestions::remove);
     }
 
+    /**
+     * If a player is kicked due to a server shutdown, the player is sent to
+     * the default servers if they are online.
+     *
+     * @param e The Server Kick Event.
+     */
     private void sendFallback(ServerKickEvent e) {
         e.setCancelled(true);
         for (String server : e.getPlayer().getPendingConnection().getListener().getServerPriority()) {

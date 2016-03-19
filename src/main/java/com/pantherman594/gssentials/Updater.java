@@ -31,10 +31,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class Updater {
+class Updater {
     private BungeeEssentials plugin = BungeeEssentials.getInstance();
 
-    public boolean update(boolean beta) {
+    /**
+     * Updater for the BungeeEssentials plugin.
+     *
+     * @param beta Whether to update to beta versions.
+     * @return Whether update was successful.
+     */
+    boolean update(boolean beta) {
         final String oldVerDec = plugin.getDescription().getVersion();
         final int oldVersion = getVersionFromString(oldVerDec);
         File path = new File(ProxyServer.getInstance().getPluginsFolder(), "BungeeEssentials.jar");
@@ -80,6 +86,10 @@ public class Updater {
         return false;
     }
 
+    /**
+     * Updates the config to the latest version. Automatically moves config items
+     * if needed. If new ones do not exist, uses the default values.
+     */
     @SuppressWarnings({"ResultOfMethodCallIgnored", "unchecked"})
     private void updateConfig() {
         Configuration config = plugin.getConfig();
@@ -223,6 +233,12 @@ public class Updater {
         plugin.getLogger().log(Level.INFO, "Config updated. You may edit new values to your liking.");
     }
 
+    /**
+     * Converts a version string into a number (for version comparisons).
+     *
+     * @param from The string to convert into a version int.
+     * @return The version in the form of an int.
+     */
     private int getVersionFromString(String from) {
         String result = from.replace(".", "");
 

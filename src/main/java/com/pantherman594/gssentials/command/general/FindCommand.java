@@ -28,7 +28,7 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings("unused")
 public class FindCommand extends BECommand implements TabExecutor {
     public FindCommand() {
         super("find", Permissions.General.FIND);
@@ -52,6 +52,6 @@ public class FindCommand extends BECommand implements TabExecutor {
 
     @Override
     public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
-        return args.length == 1 ? tabPlayers(sender, args[0]) : ImmutableSet.<String>of();
+        return args.length == 1 ? tabPlayers(sender, args[0]) : ImmutableSet.of();
     }
 }

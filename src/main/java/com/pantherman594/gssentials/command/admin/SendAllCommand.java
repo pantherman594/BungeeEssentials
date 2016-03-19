@@ -22,7 +22,6 @@ import com.google.common.collect.ImmutableSet;
 import com.pantherman594.gssentials.Dictionary;
 import com.pantherman594.gssentials.Permissions;
 import com.pantherman594.gssentials.command.BECommand;
-import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -31,7 +30,7 @@ import net.md_5.bungee.api.plugin.TabExecutor;
 
 import java.util.Collection;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"Duplicates", "WeakerAccess"})
 public class SendAllCommand extends BECommand implements TabExecutor {
     public SendAllCommand() {
         super("sendall", Permissions.Admin.SENDALL);
@@ -48,12 +47,9 @@ public class SendAllCommand extends BECommand implements TabExecutor {
             }
             final ServerInfo info = sInfo;
             for (final ProxiedPlayer player : players) {
-                player.connect(info, new Callback<Boolean>() {
-                    @Override
-                    public void done(Boolean success, Throwable throwable) {
-                        if (!success) {
-                            sender.sendMessage(Dictionary.format(Dictionary.ERROR_SENDFAIL, "PLAYER", player.getName(), "SERVER", info.getName()));
-                        }
+                player.connect(info, (success, throwable) -> {
+                    if (!success) {
+                        sender.sendMessage(Dictionary.format(Dictionary.ERROR_SENDFAIL, "PLAYER", player.getName(), "SERVER", info.getName()));
                     }
                 });
             }
@@ -68,7 +64,7 @@ public class SendAllCommand extends BECommand implements TabExecutor {
             case 1:
                 return tabPlayers(sender, args[0]);
             case 2:
-                return tabStrings(sender, args[1], ProxyServer.getInstance().getServers().keySet().toArray(new String[ProxyServer.getInstance().getServers().keySet().size()]));
+                return tabStrings(args[1], ProxyServer.getInstance().getServers().keySet().toArray(new String[ProxyServer.getInstance().getServers().keySet().size()]));
             default:
                 return ImmutableSet.of();
         }

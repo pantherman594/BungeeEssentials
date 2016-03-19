@@ -27,7 +27,7 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings("unused")
 public class ChatCommand extends ServerSpecificCommand {
     public ChatCommand() {
         super("chat", Permissions.General.CHAT);

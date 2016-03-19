@@ -24,23 +24,44 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import objects.BSPlayer;
 
-public class BungeeSuiteProvider extends IntegrationProvider {
+class BungeeSuiteProvider extends IntegrationProvider {
+
+    /**
+     * Uses BungeeSuite to check whether a player is muted.
+     *
+     * @param player The player to check.
+     * @return Whether the player is muted.
+     */
     @Override
     public boolean isMuted(ProxiedPlayer player) {
         BSPlayer suitePlayer = PlayerManager.getPlayer(player);
         return suitePlayer != null && suitePlayer.isMuted();
     }
 
+    /**
+     * Uses BungeeSuite to check whether a player is banned.
+     *
+     * @param player The player to check.
+     * @return Whether the player is banned.
+     */
     @Override
     public boolean isBanned(ProxiedPlayer player) {
         return BansManager.isPlayerBanned(player.getName());
     }
 
+    /**
+     * Check if the BungeeSuite integration can be enabled.
+     *
+     * @return Whether BungeeSuite is enabled.
+     */
     @Override
     public boolean isEnabled() {
         return ProxyServer.getInstance().getChannels().contains("BSChat");
     }
 
+    /**
+     * @return Name of the provider.
+     */
     @Override
     public String getName() {
         return "BungeeSuite";

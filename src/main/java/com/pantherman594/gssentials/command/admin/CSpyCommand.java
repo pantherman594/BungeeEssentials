@@ -25,7 +25,7 @@ import com.pantherman594.gssentials.command.ServerSpecificCommand;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings("unused")
 public class CSpyCommand extends ServerSpecificCommand {
     public CSpyCommand() {
         super("commandspy", Permissions.Admin.SPY_COMMAND);
@@ -37,14 +37,18 @@ public class CSpyCommand extends ServerSpecificCommand {
             ProxiedPlayer player = (ProxiedPlayer) sender;
             PlayerData pD = PlayerData.getData(player.getUniqueId());
             if (args != null && args.length == 1) {
-                if (args[0].equals("on")) {
-                    pD.setCSpy(true);
-                    player.sendMessage(Dictionary.format(Dictionary.CSPY_ENABLED));
-                } else if (args[0].equals("off")) {
-                    pD.setCSpy(false);
-                    player.sendMessage(Dictionary.format(Dictionary.CSPY_DISABLED));
-                } else {
-                    sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " [on|off]"));
+                switch (args[0]) {
+                    case "on":
+                        pD.setCSpy(true);
+                        player.sendMessage(Dictionary.format(Dictionary.CSPY_ENABLED));
+                        break;
+                    case "off":
+                        pD.setCSpy(false);
+                        player.sendMessage(Dictionary.format(Dictionary.CSPY_DISABLED));
+                        break;
+                    default:
+                        sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " [on|off]"));
+                        break;
                 }
             } else {
                 if (pD.toggleCSpy()) {
@@ -54,7 +58,7 @@ public class CSpyCommand extends ServerSpecificCommand {
                 }
             }
         } else {
-            sender.sendMessage(Dictionary.colour("&cConsole may not toggle command spy"));
+            sender.sendMessage(Dictionary.color("&cConsole may not toggle command spy"));
         }
     }
 }

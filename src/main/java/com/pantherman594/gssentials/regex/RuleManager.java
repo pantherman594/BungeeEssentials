@@ -28,6 +28,9 @@ import java.util.logging.Level;
 public class RuleManager {
     private List<Rule> rules = new ArrayList<>();
 
+    /**
+     * Manages rules, sets them up from the config.
+     */
     @SuppressWarnings("unchecked")
     public RuleManager() {
         rules.clear();
@@ -43,6 +46,12 @@ public class RuleManager {
         }
     }
 
+    /**
+     * Check if a string matches any rules.
+     *
+     * @param input The string to find matches for.
+     * @return A list of all the rules that match the string.
+     */
     public List<MatchResult> matches(String input) {
         List<MatchResult> results = new ArrayList<>();
         Boolean contains = false;
@@ -75,7 +84,7 @@ public class RuleManager {
         private final boolean success;
         private final Rule rule;
 
-        public MatchResult(boolean success, Rule rule) {
+        MatchResult(boolean success, Rule rule) {
             this.success = success;
             this.rule = rule;
         }

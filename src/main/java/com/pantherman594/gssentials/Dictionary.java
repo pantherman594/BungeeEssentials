@@ -38,6 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.logging.Level;
 
+@SuppressWarnings("WeakerAccess")
 public class Dictionary {
     private static final String DEFAULT_CONFIG_VALUE = "INVALID CONFIGURATION VALUE";
     @Load(key = "errors.messages", def = "&cNobody has messaged you recently.")
@@ -189,10 +190,22 @@ public class Dictionary {
         date = new SimpleDateFormat("H:mm:ss");
     }
 
-    public static String colour(String str) {
+    /**
+     * Converts '&' to color codes.
+     *
+     * @param str The string to convert.
+     * @return The converted string.
+     */
+    public static String color(String str) {
         return ChatColor.translateAlternateColorCodes('&', str);
     }
 
+    /**
+     * Combines all strings in an array to a space-delimited string.
+     *
+     * @param array The array to combine.
+     * @return The combined array.
+     */
     public static String combine(String[] array) {
         StringBuilder builder = new StringBuilder();
         for (String string : array) {
@@ -204,6 +217,13 @@ public class Dictionary {
         return builder.toString();
     }
 
+    /**
+     * Combines all strings except 1 in an array to a space-delimited string.
+     *
+     * @param omit  The position of a string to omit
+     * @param array The array to combine.
+     * @return The combined array.
+     */
     public static String combine(int omit, String[] array) {
         StringBuilder builder = new StringBuilder();
         for (String string : array) {
@@ -217,7 +237,18 @@ public class Dictionary {
         return builder.toString();
     }
 
-    public static TextComponent format(String input, boolean colour, boolean hover, boolean click, String... args) {
+    /**
+     * Formats a string with global variables as well as
+     * provided ones, including hover and click events.
+     *
+     * @param input The string to format.
+     * @param color Whether to format colors.
+     * @param hover Whether to format hovers.
+     * @param click Whether to format clicks.
+     * @param args  Arguments to format.
+     * @return The formatted string.
+     */
+    public static TextComponent format(String input, boolean color, boolean hover, boolean click, String... args) {
         input = input.replace("{{ TIME }}", getTime());
         // Minor fix for people who suffer from encoding issues
         input = input.replace("{{ RAQUO }}", "»");
@@ -243,7 +274,7 @@ public class Dictionary {
                 }
                 hoverText = hoverText.replace("{{ HOVER: ", "").replace(" }}", "");
                 if (hoverText != null) {
-                    hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(colour ? colour(hoverText) : hoverText).retain(ComponentBuilder.FormatRetention.ALL).create());
+                    hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(color ? color(hoverText) : hoverText).retain(ComponentBuilder.FormatRetention.ALL).create());
                     input = Joiner.on("").join(hoverTextStripped);
                 }
             }
@@ -264,22 +295,36 @@ public class Dictionary {
             }
         }
 
-        TextComponent finalText = new TextComponent(TextComponent.fromLegacyText(colour ? colour(input) : input));
+        TextComponent finalText = new TextComponent(TextComponent.fromLegacyText(color ? color(input) : input));
         finalText.setHoverEvent(hoverEvent);
         finalText.setClickEvent(clickEvent);
         return finalText;
     }
 
+    /**
+     * Default format for plugin messages (enables all formatting).
+     *
+     * @param input String to format.
+     * @param args  Arguments to format.
+     * @return The formatted string.
+     */
     public static TextComponent format(String input, String... args) {
         return format(input, true, true, true, args);
     }
 
+    /**
+     * Formats a message based on the player's permissions for color, hover, and click.
+     *
+     * @param input String to format
+     * @param args  Arguments to format.
+     * @return The formatted string.
+     */
     public static TextComponent formatMsg(String input, String... args) {
         ProxiedPlayer player = ProxyServer.getInstance().getPlayer(args[3]);
         if (player != null) {
-            return format(colour(input), player.hasPermission(Permissions.General.MESSAGE_COLOR), player.hasPermission(Permissions.General.MESSAGE_HOVER), player.hasPermission(Permissions.General.MESSAGE_CLICK), args);
+            return format(color(input), player.hasPermission(Permissions.General.MESSAGE_COLOR), player.hasPermission(Permissions.General.MESSAGE_HOVER), player.hasPermission(Permissions.General.MESSAGE_CLICK), args);
         }
-        return format(colour(input), args);
+        return format(color(input), args);
     }
 
     /**
@@ -288,7 +333,7 @@ public class Dictionary {
      *
      * @throws IllegalAccessException
      */
-    public static void load() throws IllegalAccessException {
+    static void load() throws IllegalAccessException {
         Configuration messages = BungeeEssentials.getInstance().getMessages();
         for (Field field : Dictionary.class.getDeclaredFields()) {
             int mod = field.getModifiers();
@@ -314,13 +359,13 @@ public class Dictionary {
         }
     }
 
-    public static String getTime() {
+    static String getTime() {
         return date.format(calendar.getTime());
     }
 
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)
-    public @interface Load {
+    private @interface Load {
         String key();
 
         String def();

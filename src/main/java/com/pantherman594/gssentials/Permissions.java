@@ -18,6 +18,7 @@
 
 package com.pantherman594.gssentials;
 
+@SuppressWarnings("WeakerAccess")
 public class Permissions {
 
     public static class Admin {

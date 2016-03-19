@@ -26,8 +26,9 @@ import net.md_5.bungee.api.CommandSender;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings("unused")
 public class LookupCommand extends ServerSpecificCommand {
     public LookupCommand() {
         super("lookup", Permissions.Admin.LOOKUP);
@@ -38,11 +39,7 @@ public class LookupCommand extends ServerSpecificCommand {
         Set<String> matches = new HashSet<>();
         if (args.length == 1) {
             String partialPlayerName = args[0].toLowerCase();
-            for (String p : BungeeEssentials.getInstance().playerList) {
-                if (p.toLowerCase().contains(partialPlayerName.toLowerCase())) {
-                    matches.add(p);
-                }
-            }
+            matches.addAll(BungeeEssentials.getInstance().playerList.stream().filter(p -> p.toLowerCase().contains(partialPlayerName.toLowerCase())).collect(Collectors.toList()));
             sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_HEADER, "SIZE", String.valueOf(matches.size())));
             for (String match : matches) {
                 sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_BODY, "PLAYER", match));
@@ -103,11 +100,7 @@ public class LookupCommand extends ServerSpecificCommand {
             }
         } else if (args.length == 1) {
             String partialPlayerName = args[0].toLowerCase();
-            for (String p : BungeeEssentials.getInstance().playerList) {
-                if (p.toLowerCase().startsWith(partialPlayerName.toLowerCase())) {
-                    matches.add(p);
-                }
-            }
+            matches.addAll(BungeeEssentials.getInstance().playerList.stream().filter(p -> p.toLowerCase().startsWith(partialPlayerName.toLowerCase())).collect(Collectors.toList()));
             sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_HEADER, "SIZE", String.valueOf(matches.size())));
             for (String match : matches) {
                 sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_BODY, "PLAYER", match));

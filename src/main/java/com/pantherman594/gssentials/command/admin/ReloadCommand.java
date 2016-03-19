@@ -24,18 +24,18 @@ import com.pantherman594.gssentials.Permissions;
 import com.pantherman594.gssentials.command.BECommand;
 import net.md_5.bungee.api.CommandSender;
 
+@SuppressWarnings("unused")
 public class ReloadCommand extends BECommand {
     public ReloadCommand() {
         super("reload", Permissions.Admin.RELOAD);
     }
 
-    @SuppressWarnings("deprecation")
-	@Override
+    @Override
     public void execute(CommandSender sender, String[] args) {
         if (BungeeEssentials.getInstance().reload()) {
-            sender.sendMessage(Dictionary.colour("&aBungeeEssentials has been reloaded!"));
+            sender.sendMessage(Dictionary.color("&aBungeeEssentials has been reloaded!"));
         } else {
-            sender.sendMessage(Dictionary.colour("&cUnable to reload BungeeEssentials! :("));
+            sender.sendMessage(Dictionary.color("&cUnable to reload BungeeEssentials! :("));
         }
     }
 }

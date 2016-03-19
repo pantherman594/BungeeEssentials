@@ -23,14 +23,13 @@ import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.Dictionary;
 import com.pantherman594.gssentials.Permissions;
 import com.pantherman594.gssentials.command.ServerSpecificCommand;
-import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"unused", "Duplicates"})
 public class SendCommand extends ServerSpecificCommand implements TabExecutor {
     public SendCommand() {
         super(BungeeEssentials.getInstance().getMain("send"), Permissions.Admin.SEND);
@@ -44,12 +43,9 @@ public class SendCommand extends ServerSpecificCommand implements TabExecutor {
             if (player != null) {
                 sender.sendMessage(Dictionary.format(Dictionary.FORMAT_SEND_PLAYER, "PLAYER", args[0], "SERVER", args[1]));
                 final ServerInfo info = ProxyServer.getInstance().getServerInfo(args[1]);
-                player.connect(info, new Callback<Boolean>() {
-                    @Override
-                    public void done(Boolean success, Throwable throwable) {
-                        if (!success) {
-                            sender.sendMessage(Dictionary.format(Dictionary.ERROR_SENDFAIL, "PLAYER", player.getName(), "SERVER", info.getName()));
-                        }
+                player.connect(info, (success, throwable) -> {
+                    if (!success) {
+                        sender.sendMessage(Dictionary.format(Dictionary.ERROR_SENDFAIL, "PLAYER", player.getName(), "SERVER", info.getName()));
                     }
                 });
             } else {
@@ -66,7 +62,7 @@ public class SendCommand extends ServerSpecificCommand implements TabExecutor {
             case 1:
                 return tabPlayers(sender, args[0]);
             case 2:
-                return tabStrings(sender, args[1], ProxyServer.getInstance().getServers().keySet().toArray(new String[ProxyServer.getInstance().getServers().keySet().size()]));
+                return tabStrings(args[1], ProxyServer.getInstance().getServers().keySet().toArray(new String[ProxyServer.getInstance().getServers().keySet().size()]));
             default:
                 return ImmutableSet.of();
         }

@@ -22,8 +22,14 @@ import fr.Alphart.BAT.BAT;
 import fr.Alphart.BAT.Modules.InvalidModuleException;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-public class AdminToolsProvider extends IntegrationProvider {
+class AdminToolsProvider extends IntegrationProvider {
 
+    /**
+     * Uses BungeeAdminTools to check whether a player is muted.
+     *
+     * @param player The player to check.
+     * @return Whether the player is muted.
+     */
     @Override
     public boolean isMuted(ProxiedPlayer player) {
         try {
@@ -33,6 +39,12 @@ public class AdminToolsProvider extends IntegrationProvider {
         }
     }
 
+    /**
+     * Uses BungeeAdminTools to check whether a player is banned.
+     *
+     * @param player The player to check.
+     * @return Whether the player is banned.
+     */
     @Override
     public boolean isBanned(ProxiedPlayer player) {
         try {
@@ -42,6 +54,11 @@ public class AdminToolsProvider extends IntegrationProvider {
         }
     }
 
+    /**
+     * Check if the BungeeAdminTools integration can be enabled.
+     *
+     * @return Whether BungeeAdminTools is enabled.
+     */
     @Override
     public boolean isEnabled() {
         try {
@@ -51,6 +68,9 @@ public class AdminToolsProvider extends IntegrationProvider {
         }
     }
 
+    /**
+     * @return Name of the provider.
+     */
     @Override
     public String getName() {
         return "BungeeAdminTools";

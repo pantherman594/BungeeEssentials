@@ -23,7 +23,6 @@ import com.pantherman594.gssentials.Messenger;
 import com.pantherman594.gssentials.Permissions;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Cancellable;
 import net.md_5.bungee.api.plugin.Event;
 
@@ -33,6 +32,13 @@ public class StaffChatEvent extends Event implements Cancellable {
     private String msg;
     private boolean cancelled;
 
+    /**
+     * The Staff Chat event.
+     *
+     * @param server The server that the chat sender is on.
+     * @param sender The chat sender's name.
+     * @param msgPre The message before formatting/filtering.
+     */
     public StaffChatEvent(String server, String sender, String msgPre) {
         this.server = server;
         this.sender = sender;
@@ -41,11 +47,7 @@ public class StaffChatEvent extends Event implements Cancellable {
         if (msgPre != null) {
             msgPre = Messenger.filter(ProxyServer.getInstance().getPlayer(sender), msgPre, Messenger.ChatType.STAFF);
             TextComponent msg = Dictionary.formatMsg(Dictionary.FORMAT_STAFF_CHAT, "SERVER", server, "SENDER", sender, "MESSAGE", msgPre);
-            for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-                if (player.hasPermission(Permissions.Admin.CHAT + "." + server) || player.hasPermission(Permissions.Admin.CHAT)) {
-                    player.sendMessage(msg);
-                }
-            }
+            ProxyServer.getInstance().getPlayers().stream().filter(player -> player.hasPermission(Permissions.Admin.CHAT + "." + server) || player.hasPermission(Permissions.Admin.CHAT)).forEach(player -> player.sendMessage(msg));
             if (msg != null) {
                 ProxyServer.getInstance().getConsole().sendMessage(msg);
             }

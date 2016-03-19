@@ -19,6 +19,8 @@
 package com.pantherman594.gssentials.command;
 
 import com.pantherman594.gssentials.BungeeEssentials;
+import com.pantherman594.gssentials.Permissions;
+import com.pantherman594.gssentials.PlayerData;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -26,6 +28,7 @@ import net.md_5.bungee.api.plugin.Command;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by David on 9/2/2015.
@@ -37,19 +40,25 @@ public abstract class BECommand extends Command {
         super(BungeeEssentials.getInstance().getMain(name), permission, BungeeEssentials.getInstance().getAlias(name));
     }
 
+    /**
+     * Tab-completion for player lists.
+     *
+     * @param sender The command sender (to check whether can see hidden players).
+     * @param search The search string.
+     * @return A list of visible players on the proxy that match the search string.
+     */
     public Iterable<String> tabPlayers(CommandSender sender, String search) {
-        Set<String> matches = new HashSet<>();
-        for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-            if (!player.getName().equals(sender.getName())) {
-                if (player.getName().toLowerCase().startsWith(search.toLowerCase())) {
-                    matches.add(player.getName());
-                }
-            }
-        }
-        return matches;
+        return ProxyServer.getInstance().getPlayers().stream().filter(player -> !player.getName().equals(sender.getName()) && player.getName().toLowerCase().startsWith(search.toLowerCase()) && (sender.hasPermission(Permissions.Admin.SEE_HIDDEN) || !PlayerData.getData(player.getUniqueId()).isHidden())).map(ProxiedPlayer::getName).collect(Collectors.toSet());
     }
 
-    public Iterable<String> tabStrings(CommandSender sender, String search, String[] strings) {
+    /**
+     * Tab-completion for given strings.
+     *
+     * @param search  The search string.
+     * @param strings The given strings to search from (usually commands to tab-complete).
+     * @return A list of strings from the list that match the search string.
+     */
+    protected Iterable<String> tabStrings(String search, String[] strings) {
         Set<String> matches = new HashSet<>();
         for (String string : strings) {
             if (string.toLowerCase().startsWith(search.toLowerCase())) {

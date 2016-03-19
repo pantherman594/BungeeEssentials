@@ -30,6 +30,9 @@ import java.util.logging.Level;
 public class AliasManager {
     private Map<String, List<String>> aliases = new HashMap<>();
 
+    /**
+     * Manages and sets up aliases.
+     */
     public AliasManager() {
         aliases.clear();
         Configuration aliasSection = BungeeEssentials.getInstance().getConfig().getSection("aliases");
@@ -42,6 +45,12 @@ public class AliasManager {
         }
     }
 
+    /**
+     * Registers aliases as commands.
+     *
+     * @param alias    The command run by the player.
+     * @param commands The commands run as a result.
+     */
     private void register(String alias, List<String> commands) {
         if (!aliases.containsKey(alias)) {
             aliases.put(alias, commands);
@@ -49,6 +58,9 @@ public class AliasManager {
         }
     }
 
+    /**
+     * @return A list of the registered aliases.
+     */
     public Map<String, List<String>> getAliases() {
         return aliases;
     }

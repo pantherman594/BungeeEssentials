@@ -31,6 +31,13 @@ public class GlobalChatEvent extends Event implements Cancellable {
     private String msg;
     private boolean cancelled;
 
+    /**
+     * The Global Chat event.
+     *
+     * @param server The server that the chat sender is on.
+     * @param sender The chat sender's name.
+     * @param msgPre The message before formatting/filtering.
+     */
     public GlobalChatEvent(String server, String sender, String msgPre) {
         this.server = server;
         this.sender = sender;
@@ -40,10 +47,7 @@ public class GlobalChatEvent extends Event implements Cancellable {
             msgPre = Messenger.filter(ProxyServer.getInstance().getPlayer(sender), msgPre, Messenger.ChatType.GLOBAL);
             TextComponent msg = Dictionary.formatMsg(Dictionary.FORMAT_GCHAT, "SERVER", server, "SENDER", sender, "MESSAGE", msgPre);
             ProxiedPlayer senderP = ProxyServer.getInstance().getPlayer(sender);
-            for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-                if ((player.hasPermission(Permissions.General.CHAT + "." + server) || player.hasPermission(Permissions.General.CHAT)) && (senderP == null || !BungeeEssentials.getInstance().contains("ignore") || !PlayerData.getData(player.getUniqueId()).isIgnored(senderP.getUniqueId())))
-                    player.sendMessage(msg);
-            }
+            ProxyServer.getInstance().getPlayers().stream().filter(player -> (player.hasPermission(Permissions.General.CHAT + "." + server) || player.hasPermission(Permissions.General.CHAT)) && (senderP == null || !BungeeEssentials.getInstance().contains("ignore") || !PlayerData.getData(player.getUniqueId()).isIgnored(senderP.getUniqueId()))).forEach(player -> player.sendMessage(msg));
             if (msg != null) {
                 ProxyServer.getInstance().getConsole().sendMessage(msg);
             }

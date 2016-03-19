@@ -30,11 +30,15 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.logging.*;
 
-public class Log {
+@SuppressWarnings("ResultOfMethodCallIgnored")
+class Log {
     private static Joiner joiner = Joiner.on(", ");
     private static Logger logger;
 
-    public static void reset() {
+    /**
+     * Resets the logger.
+     */
+    static void reset() {
         if (logger != null) {
             // If the logger is null it's because the plugin is loading for the first time
             for (Handler handler : logger.getHandlers()) {
@@ -47,7 +51,12 @@ public class Log {
         logger = null;
     }
 
-    public static boolean setup() {
+    /**
+     * Sets up the logger and cleans up the folder.
+     *
+     * @return Whether logger setup was successful.
+     */
+    static boolean setup() {
         File logDir = new File(BungeeEssentials.getInstance().getDataFolder(), "chat");
         File logFile = new File(logDir, "chat.log");
         if (!logDir.exists()) {
@@ -89,6 +98,13 @@ public class Log {
         return true;
     }
 
+    /**
+     * Logs broken chat rules.
+     *
+     * @param sender The player who sent the message.
+     * @param rule   The rule the message matched.
+     * @param type   The ChatType of the message.
+     */
     public static void log(ProxiedPlayer sender, Rule rule, Messenger.ChatType type) {
         if (BungeeEssentials.getInstance().contains("log") && logger != null) {
             String chatType = "";
@@ -112,6 +128,12 @@ public class Log {
         }
     }
 
+    /**
+     * Logs specific messages.
+     *
+     * @param message The message to log.
+     * @param args    The arguments.
+     */
     public static void log(String message, Object... args) {
         logger.log(Level.FINE, message, args);
     }
@@ -120,7 +142,7 @@ public class Log {
         private final SimpleDateFormat format;
         private final Calendar calendar;
 
-        public LogFormatter() {
+        LogFormatter() {
             this.calendar = Calendar.getInstance();
             this.format = new SimpleDateFormat("H:mm:s");
         }

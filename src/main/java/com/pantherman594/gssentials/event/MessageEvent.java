@@ -34,6 +34,14 @@ public class MessageEvent extends Event implements Cancellable {
     private String msg;
     private boolean cancelled;
 
+    /**
+     * The Message event.
+     * This uses a slightly modified filtering system.
+     *
+     * @param sender    The message sender.
+     * @param recipient The recipient of the message.
+     * @param msg       The message before formatting/filtering.
+     */
     public MessageEvent(CommandSender sender, ProxiedPlayer recipient, String msg) {
         this.sender = sender;
         this.recipient = recipient;
@@ -61,12 +69,7 @@ public class MessageEvent extends Event implements Cancellable {
                 final ProxiedPlayer recp = recipient;
                 final ProxiedPlayer play = player;
                 Messenger.messages.put(play.getUniqueId(), recp.getUniqueId());
-                ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), new Runnable() {
-                    @Override
-                    public void run() {
-                        Messenger.messages.put(recp.getUniqueId(), play.getUniqueId());
-                    }
-                }, 3, TimeUnit.SECONDS);
+                ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), () -> Messenger.messages.put(recp.getUniqueId(), play.getUniqueId()), 3, TimeUnit.SECONDS);
             }
             PlayerData pDR = PlayerData.getData(recipient.getUniqueId());
             if (BungeeEssentials.getInstance().contains("ignore")) {

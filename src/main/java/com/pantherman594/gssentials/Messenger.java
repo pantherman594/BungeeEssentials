@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 
-@SuppressWarnings("deprecation")
 public class Messenger implements Listener {
     public static Map<UUID, UUID> messages = new HashMap<>();
     private static Map<UUID, String> sentMessages = new HashMap<>();
@@ -117,7 +116,7 @@ public class Messenger implements Listener {
         return message;
     }
 
-    public static String filterBannedWords(ProxiedPlayer player, String message, String msg) {
+    private static String filterBannedWords(ProxiedPlayer player, String message, String msg) {
         if (message != null) {
             for (String word : BungeeEssentials.getInstance().getMessages().getStringList("bannedwords.list")) {
                 String finalReg = "\\b(";
@@ -147,13 +146,11 @@ public class Messenger implements Listener {
         return message;
     }
 
-    public static void ruleNotify(String notification, ProxiedPlayer player, String sentMessage) {
-        for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
-            if (p.hasPermission(Permissions.Admin.NOTIFY)) {
-                p.sendMessage(Dictionary.format(notification, "PLAYER", player.getName()));
-                p.sendMessage(ChatColor.GRAY + "Original Message: " + sentMessage);
-            }
-        }
+    private static void ruleNotify(String notification, ProxiedPlayer player, String sentMessage) {
+        ProxyServer.getInstance().getPlayers().stream().filter(p -> p.hasPermission(Permissions.Admin.NOTIFY)).forEach(p -> {
+            p.sendMessage(Dictionary.format(notification, "PLAYER", player.getName()));
+            p.sendMessage(ChatColor.GRAY + "Original Message: " + sentMessage);
+        });
     }
 
     public static UUID reply(ProxiedPlayer player) {
@@ -170,7 +167,7 @@ public class Messenger implements Listener {
         return hiddenNum;
     }
 
-    public static boolean isMutedF(ProxiedPlayer player, String msg) {
+    static boolean isMutedF(ProxiedPlayer player, String msg) {
         Preconditions.checkNotNull(player, "Invalid player specified");
         BungeeEssentials bInst = BungeeEssentials.getInstance();
         if (!player.hasPermission(Permissions.Admin.MUTE_EXEMPT) && (PlayerData.getData(player.getUniqueId()).isMuted() || (bInst.isIntegrated() && bInst.getIntegrationProvider().isMuted(player)))) {
@@ -181,7 +178,7 @@ public class Messenger implements Listener {
         return false;
     }
 
-    public static double compare(String first, String second) {
+    private static double compare(String first, String second) {
         String longer = first, shorter = second;
         if (first.length() < second.length()) {
             longer = second;

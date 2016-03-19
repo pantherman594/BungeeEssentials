@@ -25,12 +25,14 @@ import net.md_5.bungee.config.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by David on 12/05.
  *
  * @author David
  */
+@SuppressWarnings({"WeakerAccess", "ResultOfMethodCallIgnored"})
 public class PlayerData {
     private static Map<UUID, PlayerData> playerDataList;
     private Configuration config;
@@ -48,6 +50,12 @@ public class PlayerData {
     private boolean muted;
     private boolean msging;
 
+    /**
+     * Registers a new player's PlayerData.
+     *
+     * @param uuid The uuid of the player.
+     * @param name The player's name (if the player is online, to update the 'lastname' value).
+     */
     public PlayerData(String uuid, String name) {
         friends = new ArrayList<>();
         outRequests = new ArrayList<>();
@@ -75,9 +83,7 @@ public class PlayerData {
             friends.addAll(config.getStringList("friends"));
             outRequests.addAll(config.getStringList("requests.out"));
             inRequests.addAll(config.getStringList("requests.in"));
-            for (String id : config.getStringList("ignorelist")) {
-                ignoreList.add(UUID.fromString(id));
-            }
+            ignoreList.addAll(config.getStringList("ignorelist").stream().map(UUID::fromString).collect(Collectors.toList()));
             hidden = config.getBoolean("hidden");
             spy = config.getBoolean("spy");
             cSpy = config.getBoolean("cspy");
@@ -97,22 +103,46 @@ public class PlayerData {
         playerDataList.put(UUID.fromString(uuid), this);
     }
 
+    /**
+     * @return All the registered PlayerDatas
+     */
     public static Map<UUID, PlayerData> getDatas() {
         return playerDataList;
     }
 
+    /**
+     * Get the PlayerData of a player. If it does not
+     * exists, create it.
+     *
+     * @param uuid The uuid of the player.
+     * @return The PlayerData that matches the player's uuid.
+     */
     public static PlayerData getData(UUID uuid) {
         return getDatas().containsKey(uuid) ? getDatas().get(uuid) : new PlayerData(uuid.toString(), null);
     }
 
+    /**
+     * Sets a player's PlayerData.
+     *
+     * @param uuid       The uuid of the player.
+     * @param playerData The PlayerData to add to the list.
+     */
     public static void setData(UUID uuid, PlayerData playerData) {
-        getDatas().put(uuid, playerData);
+        playerDataList.put(uuid, playerData);
     }
 
+    /**
+     * Clears the registered PlayerDatas.
+     */
     public static void clearData() {
         playerDataList = new HashMap<>();
     }
 
+    /**
+     * Saves a PlayerData to file.
+     *
+     * @return Whether save was successful.
+     */
     public boolean save() {
         File playerDir = new File(BungeeEssentials.getInstance().getDataFolder(), "playerdata");
         File playerFile = new File(playerDir, uuid + ".yml");

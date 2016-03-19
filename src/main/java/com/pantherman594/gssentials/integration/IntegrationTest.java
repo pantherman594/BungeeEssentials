@@ -23,6 +23,11 @@ import com.pantherman594.gssentials.BungeeEssentials;
 import java.util.logging.Level;
 
 public class IntegrationTest implements Runnable {
+
+    /**
+     * Periodically tests whether the integration provider
+     * plugin is still enabled and running.
+     */
     @Override
     public void run() {
         if (BungeeEssentials.getInstance().isIntegrated() || BungeeEssentials.getInstance().getIntegrationProvider() != null) {

@@ -30,7 +30,7 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings("unused")
 public class MessageCommand extends BECommand implements TabExecutor {
     public MessageCommand() {
         super("message", Permissions.General.MESSAGE);
@@ -70,12 +70,12 @@ public class MessageCommand extends BECommand implements TabExecutor {
                 sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <on|off|toggle>"));
             }
         } else {
-            sender.sendMessage(Dictionary.colour("&cSorry, only players can send messages."));
+            sender.sendMessage(Dictionary.color("&cSorry, only players can send messages."));
         }
     }
 
     @Override
     public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
-        return args.length == 1 ? tabPlayers(sender, args[0]) : ImmutableSet.<String>of();
+        return args.length == 1 ? tabPlayers(sender, args[0]) : ImmutableSet.of();
     }
 }

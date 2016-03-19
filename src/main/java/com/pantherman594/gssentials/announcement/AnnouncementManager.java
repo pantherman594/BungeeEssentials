@@ -34,6 +34,9 @@ import java.util.logging.Level;
 public class AnnouncementManager {
     private Map<String, Announcement> anncs = new HashMap<>();
 
+    /**
+     * Manages Announcements.
+     */
     public AnnouncementManager() {
         anncs.clear();
         Configuration anncSection = BungeeEssentials.getInstance().getMessages().getSection("announcements");
@@ -53,46 +56,62 @@ public class AnnouncementManager {
         }
     }
 
+    /**
+     * Registers announcements and adds them to the map.
+     *
+     * @param anncName The name of the announcement (for permissions).
+     * @param annc     The announcement.
+     */
     private void register(String anncName, Announcement annc) {
         anncs.put(anncName, annc);
     }
 
+    /**
+     * Schedules all announcements to run.
+     */
     private void scheduleAnnc() {
         for (final String anncName : anncs.keySet()) {
             final Announcement annc = anncs.get(anncName);
-            ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    annc(annc.getPlayers(), anncName, annc.getMsg());
-                    scheduleAnnc(anncName, annc);
-                }
+            ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), () -> {
+                annc(annc.getPlayers(), anncName, annc.getMsg());
+                scheduleAnnc(anncName, annc);
             }, annc.getDelay(), TimeUnit.SECONDS);
         }
     }
 
+    /**
+     * Schedules a single announcement to run.
+     *
+     * @param anncName The name of the announcement (for permissions).
+     * @param annc     The announcement.
+     */
     private void scheduleAnnc(final String anncName, final Announcement annc) {
-        ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                annc(annc.getPlayers(), anncName, annc.getMsg());
-                scheduleAnnc(anncName, annc);
-            }
+        ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), () -> {
+            annc(annc.getPlayers(), anncName, annc.getMsg());
+            scheduleAnnc(anncName, annc);
         }, annc.getInterval(), TimeUnit.SECONDS);
     }
 
+    /**
+     * Broadcasts an announcement to players on a server.
+     *
+     * @param players  The list of players to announce to.
+     * @param anncName The name of the announcement (for permissions).
+     * @param msg      The announcement message.
+     */
     private void annc(Collection<ProxiedPlayer> players, String anncName, String... msg) {
         for (String singMsg : msg) {
             if (!players.isEmpty()) {
-                for (ProxiedPlayer p : players) {
-                    if (p.hasPermission(Permissions.General.ANNOUNCEMENT) || p.hasPermission(Permissions.General.ANNOUNCEMENT + "." + anncName)) {
-                        p.sendMessage(Dictionary.format(Dictionary.FORMAT_ALERT, "MESSAGE", singMsg));
-                    }
-                }
+                players.stream().filter(p -> p.hasPermission(Permissions.General.ANNOUNCEMENT) || p.hasPermission(Permissions.General.ANNOUNCEMENT + "." + anncName)).forEach(p -> p.sendMessage(Dictionary.format(Dictionary.FORMAT_ALERT, "MESSAGE", singMsg)));
             }
             ProxyServer.getInstance().getConsole().sendMessage(Dictionary.format(Dictionary.FORMAT_ALERT, "MESSAGE", singMsg));
         }
     }
 
+    /**
+     * @return A list of the announcements.
+     */
+    @SuppressWarnings("unused")
     public Map<String, Announcement> getAnncs() {
         return anncs;
     }

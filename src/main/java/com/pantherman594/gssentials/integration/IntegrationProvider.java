@@ -39,6 +39,12 @@ public abstract class IntegrationProvider {
         providers.put("BungeeSuite", BungeeSuiteProvider.class);
     }
 
+    /**
+     * Gets the Integration Provider from its name.
+     *
+     * @param name Name of the provider.
+     * @return Integration Provider class.
+     */
     public static IntegrationProvider get(String name) {
         Class<? extends IntegrationProvider> clazz = providers.get(name);
         if (instances.get(clazz) == null) {
@@ -60,14 +66,28 @@ public abstract class IntegrationProvider {
         return instances.get(clazz);
     }
 
+    /**
+     * @return A list of the available Integration Providers.
+     */
     public static Set<String> getPlugins() {
         return providers.keySet();
     }
-    
+
+    /**
+     * Uses Integration Provider to check whether a player is muted.
+     *
+     * @param player The player to check.
+     */
     public abstract boolean isMuted(ProxiedPlayer player);
 
+    /**
+     * Uses Integration Provider to check whether a player is banned.
+     *
+     * @param player The player to check.
+     */
     public abstract boolean isBanned(ProxiedPlayer player);
 
     public abstract boolean isEnabled();
+
     public abstract String getName();
 }

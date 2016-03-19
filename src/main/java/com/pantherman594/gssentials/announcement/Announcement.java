@@ -30,6 +30,14 @@ public class Announcement {
     private String msg;
     private String server;
 
+    /**
+     * Sets up an announcement
+     *
+     * @param delay    The delay (seconds) before the announcement starts.
+     * @param interval The interval (seconds) between announcements.
+     * @param msg      The message in the announcement.
+     * @param server   The server to broadcast the announcement.
+     */
     public Announcement(Integer delay, Integer interval, String msg, String server) {
         this.delay = delay;
         this.interval = interval;
@@ -37,11 +45,11 @@ public class Announcement {
         this.server = server;
     }
 
-    public Integer getDelay() {
+    Integer getDelay() {
         return delay;
     }
 
-    public Integer getInterval() {
+    Integer getInterval() {
         return interval;
     }
 
@@ -49,6 +57,9 @@ public class Announcement {
         return msg;
     }
 
+    /**
+     * @return A list of players to announce to.
+     */
     public Collection<ProxiedPlayer> getPlayers() {
         if (server.equals("ALL")) {
             return ProxyServer.getInstance().getPlayers();
