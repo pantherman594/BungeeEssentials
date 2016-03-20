@@ -211,6 +211,7 @@ class Updater {
                 messages.set("friend.inrequests.new", messages.getString("friend.inrequests.new") + "{{ HOVER: Click to accept friend request! }}{{ CLICK: /friend add {{ NAME }} }}");
             case 251:
             case 252:
+            case 253:
                 enabledList = config.getStringList("enable");
                 enabledList.add("server");
                 config.set("enable", enabledList);
@@ -218,7 +219,7 @@ class Updater {
                     messages.set("list.header", "You are on {{ CURRENT }}\n&aServers:");
                 }
                 config.set("configversion", null);
-                config.set("configversion", "2.5.3");
+                config.set("configversion", "2.5.4");
         }
         plugin.saveMainConfig();
         plugin.saveMessagesConfig();
