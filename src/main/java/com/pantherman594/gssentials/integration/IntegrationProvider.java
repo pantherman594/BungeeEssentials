@@ -77,6 +77,7 @@ public abstract class IntegrationProvider {
      * Uses Integration Provider to check whether a player is muted.
      *
      * @param player The player to check.
+     * @return Whether the player is muted.
      */
     public abstract boolean isMuted(ProxiedPlayer player);
 
@@ -84,6 +85,7 @@ public abstract class IntegrationProvider {
      * Uses Integration Provider to check whether a player is banned.
      *
      * @param player The player to check.
+     * @return Whether the player is banned.
      */
     public abstract boolean isBanned(ProxiedPlayer player);
 

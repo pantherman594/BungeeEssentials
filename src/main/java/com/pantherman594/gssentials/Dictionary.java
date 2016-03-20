@@ -191,7 +191,7 @@ public class Dictionary {
     }
 
     /**
-     * Converts '&' to color codes.
+     * Converts color codes to colors.
      *
      * @param str The string to convert.
      * @return The converted string.

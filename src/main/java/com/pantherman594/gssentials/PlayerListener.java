@@ -36,7 +36,8 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-class PlayerListener implements Listener {
+@SuppressWarnings("WeakerAccess")
+public class PlayerListener implements Listener {
     private final HashSet<InetAddress> connections;
     private final Map<InetAddress, ServerInfo> redirServer;
     private Map<UUID, String> cmds;
