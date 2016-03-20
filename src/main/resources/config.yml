@@ -21,6 +21,7 @@ enable:
 - message
 - slap
 - aliases
+- server
 #- betaupdates
 #- clean
 - fulllog

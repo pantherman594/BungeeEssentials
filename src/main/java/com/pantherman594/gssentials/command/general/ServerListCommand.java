@@ -48,7 +48,13 @@ public class ServerListCommand extends BECommand {
         if (!canSeeHidden) {
             online = online - Messenger.hiddenNum();
         }
-        sender.sendMessage(Dictionary.format(Dictionary.LIST_HEADER, "COUNT", String.valueOf(online)));
+
+        String current = "CONSOLE";
+        if (sender instanceof ProxiedPlayer) {
+            current = ((ProxiedPlayer) sender).getServer().getInfo().getName();
+        }
+
+        sender.sendMessage(Dictionary.format(Dictionary.LIST_HEADER, "COUNT", String.valueOf(online), "CURRENT", current));
         for (final ServerInfo info : ProxyServer.getInstance().getServers().values()) {
             try {
                 Socket s = new Socket();

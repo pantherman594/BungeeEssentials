@@ -105,7 +105,7 @@ public class Dictionary {
     public static String INREQUESTS_NEW;
     @Load(key = "friend.inrequests.remove", def = "&cThe friend request from {{ NAME }} was removed.")
     public static String INREQUESTS_REMOVE;
-    @Load(key = "list.header", def = "&aServers")
+    @Load(key = "list.header", def = "You are on {{ CURRENT }}\n&aServers:")
     public static String LIST_HEADER;
     @Load(key = "list.body", def = "&a- {{ SERVER }} {{ DENSITY }}")
     public static String LIST_BODY;

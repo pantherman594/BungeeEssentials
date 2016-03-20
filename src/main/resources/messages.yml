@@ -95,7 +95,9 @@ chat:
   enabled: '&aYou are now chatting in global chat!'
   disabled: '&cYou are no longer chatting in global chat!'
 list:
-  header: '&aServers:'
+  header: |-
+    &aYou are on {{ CURRENT }}
+    &aServers:
   body: '&a- {{ SERVER }} (({{ DENSITY }})&a)'
 lookup:
   header: '&6Found {{ SIZE }} player(s):'
