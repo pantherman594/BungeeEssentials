@@ -124,109 +124,101 @@ class Updater {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (oldVersion == 243) {
-            String muteEnabled = messages.getString("mute.enabled");
-            String muteDisabled = messages.getString("mute.disabled");
-            String muteError = messages.getString("mute.error");
-            messages.set("mute.enabled", null);
-            messages.set("mute.disabled", null);
-            messages.set("mute.error", null);
-            messages.set("mute.muted.enabled", muteEnabled);
-            messages.set("mute.muted.disabled", muteDisabled);
-            messages.set("mute.muted.error", muteError);
-            messages.set("mute.muter.enabled", "&c{{ PLAYER }} is now muted!");
-            messages.set("mute.muter.disabled", "&a{{ PLAYER }} is no longer muted!");
-            messages.set("mute.muter.error", "&cHey, you can't mute that player!");
-            oldVersion = 244;
-        }
-        if (oldVersion == 244) {
-            String muterExemptError = messages.getString("mute.muter.error");
-            messages.set("mute.muter.exempt", muterExemptError);
-            messages.set("mute.muter.error", "&7{{ PLAYER }} tried to chat while muted!");
-            config.set("configversion", "2.4.5");
-            oldVersion = 245;
-        }
-        if (oldVersion == 245) {
-            messages.set("bannedwords.replace", "****");
-            messages.set("bannedwords.list", Arrays.asList("anal", "anus", "aroused", "asshole", "bastard", "bitch", "boob", "bugger", "cock", "cum", "cunt", "dafuq", "dick", "ffs", "fuck", "gay", "hentai", "homo", "homosexual", "horny", "intercourse", "jerk", "lesbian", "milf", "nigga", "nigger", "pedo", "penis", "piss", "prostitute", "pussy", "rape", "rapist", "retard", "sex", "shit", "slag", "slut", "sperm", "spunk", "testicle", "titt", "tosser", "twat", "vagina", "wanker", "whore", "wtf"));
-            config.set("configversion", "2.4.6");
-            oldVersion = 246;
-        }
-        if (oldVersion == 246) {
-            config.set("configversion", "2.4.7");
-            oldVersion = 247;
-        }
-        if (oldVersion == 247) {
-            List<String> enabledList = config.getStringList("enable");
-            enabledList.remove("multirelog");
-            enabledList.add("autoredirect");
-            enabledList.add("fastrelog");
-            enabledList.add("friend");
-            enabledList.add("spam-command");
-            config.set("enable", enabledList);
-            config.set("commands.friend", Arrays.asList("friend", "f"));
-            List<Map<String, String>> section = (List<Map<String, String>>) config.getList("aliases");
-            config.set("aliases", null);
-            for (Map<String, String> map : section) {
-                Preconditions.checkNotNull(map);
-                Preconditions.checkArgument(!map.isEmpty());
-                Preconditions.checkNotNull(map.get("alias"), "invalid alias");
-                Preconditions.checkNotNull(map.get("commands"), "invalid commands");
-                config.set("aliases." + map.get("alias"), map.get("commands"));
-            }
-            messages.set("message.format", messages.get("format.message"));
-            messages.set("message.enabled", "&aMessaging is now enabled!");
-            messages.set("message.disabled", "&cMessaging is now disabled!");
-            messages.set("format.message", null);
-            if (messages.get("bannedwords.replace").equals("****")) {
-                messages.set("bannedwords.replace", "*");
-            }
-            messages.set("multilog", null);
-            messages.set("friend.header", "&2Current Friends:");
-            messages.set("friend.body", "- {{ NAME }} ({{ SERVER }})");
-            messages.set("friend.new", "&aYou are now friends with {{ NAME }}!");
-            messages.set("friend.old", "&aYou are already friends with {{ NAME }}!");
-            messages.set("friend.remove", "&cYou are no longer friends with {{ NAME }}.");
-            messages.set("friend.outrequests.header", "&2Outgoing Friend Requests:");
-            messages.set("friend.outrequests.body", "- {{ NAME }}");
-            messages.set("friend.outrequests.new", "&a{{ NAME }} has received your friend request.");
-            messages.set("friend.outrequests.old", "&cYou already requested to be friends with {{ NAME }}. Please wait for a response!");
-            messages.set("friend.outrequests.remove", "&cThe friend request to {{ NAME }} was removed.");
-            messages.set("friend.inrequests.header", "&2Incoming Friend Requests:");
-            messages.set("friend.inrequests.body", "- {{ NAME }}");
-            messages.set("friend.inrequests.new", "&a{{ NAME }} would like to be your friend. /friend <add|remove> {{ NAME }} to accept or decline the request.");
-            messages.set("friend.inrequests.remove", "&cThe friend request from {{ NAME }} was removed.");
-            messages.set("errors.fastrelog", "&cPlease wait before reconnecting!");
-            List<Map<String, String>> section2 = (List<Map<String, String>>) messages.getList("announcements");
-            messages.set("announcements", null);
-            String name = "annc";
-            int num = 0;
-            for (Map<String, String> map : section2) {
-                Preconditions.checkNotNull(map);
-                Preconditions.checkArgument(!map.isEmpty());
-                Preconditions.checkNotNull(map.get("delay"), "invalid delay");
-                Preconditions.checkNotNull(map.get("interval"), "invalid interval");
-                Preconditions.checkNotNull(map.get("message"), "invalid message");
-                messages.set("announcements." + name + num + ".delay", map.get("delay"));
-                messages.set("announcements." + name + num + ".interval", map.get("interval"));
-                messages.set("announcements." + name + num + ".message", map.get("message"));
-                num++;
-            }
-            config.set("configversion", "2.5.0");
-            oldVersion = 250;
-        }
-        if (oldVersion == 250) {
-            config.set("configversion", null);
-            config.set("configversion", "2.5.1");
-            messages.set("list.body", messages.getString("list.body").replace("{{ DENSITY }}", "({{ DENSITY }})"));
-            messages.set("friend.body", messages.getString("friend.body") + "{{ HOVER: Click to join your friend! }}{{ CLICK: /server {{ SERVER }} }}");
-            messages.set("friend.removeerror", "&cYou can't remove a friend you don't have!");
-            messages.set("friend.inrequests.body", messages.getString("friend.inrequests.body") + "{{ HOVER: Click to accept friend request! }}{{ CLICK: /friend add {{ NAME }} }}");
-            messages.set("friend.inrequests.new", messages.getString("friend.inrequests.new") + "{{ HOVER: Click to accept friend request! }}{{ CLICK: /friend add {{ NAME }} }}");
-            oldVersion = 251;
-        }
-        if (oldVersion == 251) {
-            config.set("configversion", "2.5.2");
+        List<String> enabledList;
+        switch (oldVersion) {
+            case 243:
+                String muteEnabled = messages.getString("mute.enabled");
+                String muteDisabled = messages.getString("mute.disabled");
+                String muteError = messages.getString("mute.error");
+                messages.set("mute.enabled", null);
+                messages.set("mute.disabled", null);
+                messages.set("mute.error", null);
+                messages.set("mute.muted.enabled", muteEnabled);
+                messages.set("mute.muted.disabled", muteDisabled);
+                messages.set("mute.muted.error", muteError);
+                messages.set("mute.muter.enabled", "&c{{ PLAYER }} is now muted!");
+                messages.set("mute.muter.disabled", "&a{{ PLAYER }} is no longer muted!");
+                messages.set("mute.muter.error", "&cHey, you can't mute that player!");
+            case 244:
+                String muterExemptError = messages.getString("mute.muter.error");
+                messages.set("mute.muter.exempt", muterExemptError);
+                messages.set("mute.muter.error", "&7{{ PLAYER }} tried to chat while muted!");
+            case 245:
+                messages.set("bannedwords.replace", "****");
+                messages.set("bannedwords.list", Arrays.asList("anal", "anus", "aroused", "asshole", "bastard", "bitch", "boob", "bugger", "cock", "cum", "cunt", "dafuq", "dick", "ffs", "fuck", "gay", "hentai", "homo", "homosexual", "horny", "intercourse", "jerk", "lesbian", "milf", "nigga", "nigger", "pedo", "penis", "piss", "prostitute", "pussy", "rape", "rapist", "retard", "sex", "shit", "slag", "slut", "sperm", "spunk", "testicle", "titt", "tosser", "twat", "vagina", "wanker", "whore", "wtf"));
+            case 246:
+            case 247:
+                enabledList = config.getStringList("enable");
+                enabledList.remove("multirelog");
+                enabledList.add("autoredirect");
+                enabledList.add("fastrelog");
+                enabledList.add("friend");
+                enabledList.add("spam-command");
+                config.set("enable", enabledList);
+                config.set("commands.friend", Arrays.asList("friend", "f"));
+                List<Map<String, String>> section = (List<Map<String, String>>) config.getList("aliases");
+                config.set("aliases", null);
+                for (Map<String, String> map : section) {
+                    Preconditions.checkNotNull(map);
+                    Preconditions.checkArgument(!map.isEmpty());
+                    Preconditions.checkNotNull(map.get("alias"), "invalid alias");
+                    Preconditions.checkNotNull(map.get("commands"), "invalid commands");
+                    config.set("aliases." + map.get("alias"), map.get("commands"));
+                }
+                messages.set("message.format", messages.get("format.message"));
+                messages.set("message.enabled", "&aMessaging is now enabled!");
+                messages.set("message.disabled", "&cMessaging is now disabled!");
+                messages.set("format.message", null);
+                if (messages.get("bannedwords.replace").equals("****")) {
+                    messages.set("bannedwords.replace", "*");
+                }
+                messages.set("multilog", null);
+                messages.set("friend.header", "&2Current Friends:");
+                messages.set("friend.body", "- {{ NAME }} ({{ SERVER }})");
+                messages.set("friend.new", "&aYou are now friends with {{ NAME }}!");
+                messages.set("friend.old", "&aYou are already friends with {{ NAME }}!");
+                messages.set("friend.remove", "&cYou are no longer friends with {{ NAME }}.");
+                messages.set("friend.outrequests.header", "&2Outgoing Friend Requests:");
+                messages.set("friend.outrequests.body", "- {{ NAME }}");
+                messages.set("friend.outrequests.new", "&a{{ NAME }} has received your friend request.");
+                messages.set("friend.outrequests.old", "&cYou already requested to be friends with {{ NAME }}. Please wait for a response!");
+                messages.set("friend.outrequests.remove", "&cThe friend request to {{ NAME }} was removed.");
+                messages.set("friend.inrequests.header", "&2Incoming Friend Requests:");
+                messages.set("friend.inrequests.body", "- {{ NAME }}");
+                messages.set("friend.inrequests.new", "&a{{ NAME }} would like to be your friend. /friend <add|remove> {{ NAME }} to accept or decline the request.");
+                messages.set("friend.inrequests.remove", "&cThe friend request from {{ NAME }} was removed.");
+                messages.set("errors.fastrelog", "&cPlease wait before reconnecting!");
+                List<Map<String, String>> section2 = (List<Map<String, String>>) messages.getList("announcements");
+                messages.set("announcements", null);
+                String name = "annc";
+                int num = 0;
+                for (Map<String, String> map : section2) {
+                    Preconditions.checkNotNull(map);
+                    Preconditions.checkArgument(!map.isEmpty());
+                    Preconditions.checkNotNull(map.get("delay"), "invalid delay");
+                    Preconditions.checkNotNull(map.get("interval"), "invalid interval");
+                    Preconditions.checkNotNull(map.get("message"), "invalid message");
+                    messages.set("announcements." + name + num + ".delay", map.get("delay"));
+                    messages.set("announcements." + name + num + ".interval", map.get("interval"));
+                    messages.set("announcements." + name + num + ".message", map.get("message"));
+                    num++;
+                }
+            case 250:
+                messages.set("list.body", messages.getString("list.body").replace("{{ DENSITY }}", "({{ DENSITY }})"));
+                messages.set("friend.body", messages.getString("friend.body") + "{{ HOVER: Click to join your friend! }}{{ CLICK: /server {{ SERVER }} }}");
+                messages.set("friend.removeerror", "&cYou can't remove a friend you don't have!");
+                messages.set("friend.inrequests.body", messages.getString("friend.inrequests.body") + "{{ HOVER: Click to accept friend request! }}{{ CLICK: /friend add {{ NAME }} }}");
+                messages.set("friend.inrequests.new", messages.getString("friend.inrequests.new") + "{{ HOVER: Click to accept friend request! }}{{ CLICK: /friend add {{ NAME }} }}");
+            case 251:
+            case 252:
+                enabledList = config.getStringList("enable");
+                enabledList.add("server");
+                config.set("enable", enabledList);
+                if (messages.getString("list.header").equals("&aServers:")) {
+                    messages.set("list.header", "You are on {{ CURRENT }}\n&aServers:");
+                }
+                config.set("configversion", null);
+                config.set("configversion", "2.5.3");
         }
         plugin.saveMainConfig();
         plugin.saveMessagesConfig();
