@@ -156,10 +156,7 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = Byte.MAX_VALUE)
     public void postLogin(PostLoginEvent event) {
         new PlayerData(event.getPlayer().getUniqueId().toString(), event.getPlayer().getName());
-        List<String> players = BungeeEssentials.getInstance().getPlayerConfig().getStringList("players");
-        if (!players.contains(event.getPlayer().getName())) {
-            BungeeEssentials.getInstance().savePlayerConfig(event.getPlayer().getName());
-        }
+        BungeeEssentials.getInstance().savePlayerConfig(event.getPlayer().getName());
         if (BungeeEssentials.getInstance().contains("joinAnnounce") && !PlayerData.getData(event.getPlayer().getUniqueId()).isHidden() && !(Dictionary.FORMAT_JOIN.equals("")) && event.getPlayer().hasPermission(Permissions.General.JOINANNC) && !(BungeeEssentials.getInstance().isIntegrated() && BungeeEssentials.getInstance().getIntegrationProvider().isBanned(event.getPlayer()))) {
             ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_JOIN, "PLAYER", event.getPlayer().getName()));
         }

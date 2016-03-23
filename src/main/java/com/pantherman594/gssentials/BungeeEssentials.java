@@ -41,7 +41,7 @@ import java.util.logging.Level;
 
 public class BungeeEssentials extends Plugin {
     private static BungeeEssentials instance;
-    public List<String> playerList = new ArrayList<>();
+    public Set<String> playerList = new LinkedHashSet<>();
     private Map<String, String> mainList = new HashMap<>();
     private Map<String, String[]> aliasList = new HashMap<>();
     private RuleManager ruleManager;
@@ -371,7 +371,7 @@ public class BungeeEssentials extends Plugin {
                 getPlayerConfig().set("players", playerList);
             }
             ConfigurationProvider.getProvider(YamlConfiguration.class).save(getPlayerConfig(), playerFile);
-            playerList = getPlayerConfig().getStringList("players");
+            playerList = new LinkedHashSet<>(getPlayerConfig().getStringList("players"));
         } catch (IOException e) {
             e.printStackTrace();
         }

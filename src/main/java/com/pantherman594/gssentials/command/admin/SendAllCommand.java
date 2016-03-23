@@ -19,6 +19,7 @@
 package com.pantherman594.gssentials.command.admin;
 
 import com.google.common.collect.ImmutableSet;
+import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.Dictionary;
 import com.pantherman594.gssentials.Permissions;
 import com.pantherman594.gssentials.command.BECommand;
@@ -47,11 +48,11 @@ public class SendAllCommand extends BECommand implements TabExecutor {
             }
             final ServerInfo info = sInfo;
             for (final ProxiedPlayer player : players) {
-                player.connect(info, (success, throwable) -> {
+                ProxyServer.getInstance().getScheduler().runAsync(BungeeEssentials.getInstance(), () -> player.connect(info, (success, throwable) -> {
                     if (!success) {
                         sender.sendMessage(Dictionary.format(Dictionary.ERROR_SENDFAIL, "PLAYER", player.getName(), "SERVER", info.getName()));
                     }
-                });
+                }));
             }
         } else {
             sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " [fromServer] <toServer>"));
