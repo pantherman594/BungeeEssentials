@@ -158,7 +158,7 @@ public class FriendCommand extends BECommand implements TabExecutor {
                         sender.sendMessage(Dictionary.format(Dictionary.CANNOT_REMOVE_FRIEND, "NAME", playerData2.getName()));
                     }
                     if (p != null) {
-                        PlayerData.setData(p.getUniqueId(), playerData2);
+                        PlayerData.setData(p.getUniqueId().toString(), playerData2);
                     } else {
                         playerData2.save();
                     }

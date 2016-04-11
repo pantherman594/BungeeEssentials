@@ -98,6 +98,7 @@ public class BungeeEssentials extends Plugin {
             }
         }
         ProxyServer.getInstance().getScheduler().schedule(this, this::reload, 3, TimeUnit.SECONDS);
+        new PlayerData("CONSOLE", "Console");
     }
 
     @Override
@@ -326,7 +327,7 @@ public class BungeeEssentials extends Plugin {
     /**
      * @return The player list file.
      */
-    Configuration getPlayerConfig() {
+    private Configuration getPlayerConfig() {
         return this.players;
     }
 

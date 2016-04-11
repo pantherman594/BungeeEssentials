@@ -39,8 +39,8 @@ public class MessageCommand extends BECommand implements TabExecutor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if (sender instanceof ProxiedPlayer) {
-            if (args.length == 1) {
+        if (args.length == 1) {
+            if (sender instanceof ProxiedPlayer) {
                 PlayerData pD = PlayerData.getData(((ProxiedPlayer) sender).getUniqueId());
                 boolean change = true;
                 if (args[0].equalsIgnoreCase("toggle")) {
@@ -55,22 +55,26 @@ public class MessageCommand extends BECommand implements TabExecutor {
                     sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <on|off|toggle>"));
                 }
                 if (change) {
-                    PlayerData.setData(((ProxiedPlayer) sender).getUniqueId(), pD);
+                    PlayerData.setData(((ProxiedPlayer) sender).getUniqueId().toString(), pD);
                     if (pD.isMsging()) {
                         sender.sendMessage(Dictionary.format(Dictionary.MESSAGE_ENABLED));
                     } else {
                         sender.sendMessage(Dictionary.format(Dictionary.MESSAGE_DISABLED));
                     }
                 }
-            } else if (args.length > 1) {
+            } else {
+                sender.sendMessage("&cSorry, Console cannot toggle messages.");
+            }
+        } else if (args.length > 1) {
+            if (args[0].equalsIgnoreCase("CONSOLE")) {
                 ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(args[0]);
                 ProxyServer.getInstance().getPluginManager().callEvent(new MessageEvent(sender, recipient, Dictionary.combine(0, args)));
             } else {
-                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <player> <message>"));
-                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <on|off|toggle>"));
+                ProxyServer.getInstance().getPluginManager().callEvent(new MessageEvent(sender, ProxyServer.getInstance().getConsole(), Dictionary.combine(0, args)));
             }
         } else {
-            sender.sendMessage(Dictionary.color("&cSorry, only players can send messages."));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <player> <message>"));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <on|off|toggle>"));
         }
     }
 

@@ -42,7 +42,7 @@ public class IgnoreCommand extends BECommand implements TabExecutor {
                 PlayerData pD = PlayerData.getData(((ProxiedPlayer) sender).getUniqueId());
                 if (p != null && !pD.isHidden()) {
                     if (p != sender)
-                        if (pD.toggleIgnore(p.getUniqueId())) {
+                        if (pD.toggleIgnore(p.getUniqueId().toString())) {
                             sender.sendMessage(Dictionary.format(Dictionary.IGNORE_ENABLED, "PLAYER", p.getName()));
                         } else {
                             sender.sendMessage(Dictionary.format(Dictionary.IGNORE_DISABLED, "PLAYER", p.getName()));

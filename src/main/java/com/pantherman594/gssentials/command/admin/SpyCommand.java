@@ -33,32 +33,33 @@ public class SpyCommand extends ServerSpecificCommand {
 
     @Override
     public void run(CommandSender sender, String[] args) {
+        PlayerData pD;
         if (sender instanceof ProxiedPlayer) {
             ProxiedPlayer player = (ProxiedPlayer) sender;
-            PlayerData pD = PlayerData.getData(player.getUniqueId());
-            if (args != null && args.length == 1) {
-                switch (args[0]) {
-                    case "on":
-                        pD.setSpy(true);
-                        player.sendMessage(Dictionary.format(Dictionary.SPY_ENABLED));
-                        break;
-                    case "off":
-                        pD.setSpy(false);
-                        player.sendMessage(Dictionary.format(Dictionary.SPY_DISABLED));
-                        break;
-                    default:
-                        sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " [on|off]"));
-                        break;
-                }
-            } else {
-                if (pD.toggleSpy()) {
-                    player.sendMessage(Dictionary.format(Dictionary.SPY_ENABLED));
-                } else {
-                    player.sendMessage(Dictionary.format(Dictionary.SPY_DISABLED));
-                }
+            pD = PlayerData.getData(player.getUniqueId());
+        } else {
+            pD = PlayerData.getData("CONSOLE");
+        }
+        if (args != null && args.length == 1) {
+            switch (args[0]) {
+                case "on":
+                    pD.setSpy(true);
+                    sender.sendMessage(Dictionary.format(Dictionary.SPY_ENABLED));
+                    break;
+                case "off":
+                    pD.setSpy(false);
+                    sender.sendMessage(Dictionary.format(Dictionary.SPY_DISABLED));
+                    break;
+                default:
+                    sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " [on|off]"));
+                    break;
             }
         } else {
-            sender.sendMessage(Dictionary.color("&cConsole may not toggle social spy"));
+            if (pD.toggleSpy()) {
+                sender.sendMessage(Dictionary.format(Dictionary.SPY_ENABLED));
+            } else {
+                sender.sendMessage(Dictionary.format(Dictionary.SPY_DISABLED));
+            }
         }
     }
 }

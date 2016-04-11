@@ -33,32 +33,33 @@ public class CSpyCommand extends ServerSpecificCommand {
 
     @Override
     public void run(CommandSender sender, String[] args) {
+        PlayerData pD;
         if (sender instanceof ProxiedPlayer) {
             ProxiedPlayer player = (ProxiedPlayer) sender;
-            PlayerData pD = PlayerData.getData(player.getUniqueId());
-            if (args != null && args.length == 1) {
-                switch (args[0]) {
-                    case "on":
-                        pD.setCSpy(true);
-                        player.sendMessage(Dictionary.format(Dictionary.CSPY_ENABLED));
-                        break;
-                    case "off":
-                        pD.setCSpy(false);
-                        player.sendMessage(Dictionary.format(Dictionary.CSPY_DISABLED));
-                        break;
-                    default:
-                        sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " [on|off]"));
-                        break;
-                }
-            } else {
-                if (pD.toggleCSpy()) {
-                    player.sendMessage(Dictionary.format(Dictionary.CSPY_ENABLED));
-                } else {
-                    player.sendMessage(Dictionary.format(Dictionary.CSPY_DISABLED));
-                }
+            pD = PlayerData.getData(player.getUniqueId());
+        } else {
+            pD = PlayerData.getData("CONSOLE");
+        }
+        if (args != null && args.length == 1) {
+            switch (args[0]) {
+                case "on":
+                    pD.setCSpy(true);
+                    sender.sendMessage(Dictionary.format(Dictionary.CSPY_ENABLED));
+                    break;
+                case "off":
+                    pD.setCSpy(false);
+                    sender.sendMessage(Dictionary.format(Dictionary.CSPY_DISABLED));
+                    break;
+                default:
+                    sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " [on|off]"));
+                    break;
             }
         } else {
-            sender.sendMessage(Dictionary.color("&cConsole may not toggle command spy"));
+            if (pD.toggleCSpy()) {
+                sender.sendMessage(Dictionary.format(Dictionary.CSPY_ENABLED));
+            } else {
+                sender.sendMessage(Dictionary.format(Dictionary.CSPY_DISABLED));
+            }
         }
     }
 }

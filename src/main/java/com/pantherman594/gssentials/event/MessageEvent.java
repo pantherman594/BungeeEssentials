@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MessageEvent extends Event implements Cancellable {
     private CommandSender sender;
-    private ProxiedPlayer recipient;
+    private CommandSender recipient;
     private String msg;
     private boolean cancelled;
 
@@ -42,12 +42,12 @@ public class MessageEvent extends Event implements Cancellable {
      * @param recipient The recipient of the message.
      * @param msg       The message before formatting/filtering.
      */
-    public MessageEvent(CommandSender sender, ProxiedPlayer recipient, String msg) {
+    public MessageEvent(CommandSender sender, CommandSender recipient, String msg) {
         this.sender = sender;
         this.recipient = recipient;
         this.msg = msg;
         String message = msg;
-        if (recipient != null && !PlayerData.getData(recipient.getUniqueId()).isHidden()) {
+        if (recipient != null && recipient instanceof ProxiedPlayer && !PlayerData.getData(((ProxiedPlayer) recipient).getUniqueId()).isHidden()) {
             ProxiedPlayer player = null;
             if (sender instanceof ProxiedPlayer) {
                 player = (ProxiedPlayer) sender;
@@ -59,35 +59,39 @@ public class MessageEvent extends Event implements Cancellable {
                 if (!sender.hasPermission(Permissions.Admin.SPY_EXEMPT)) {
                     TextComponent spyMessage = Dictionary.format(Dictionary.SPY_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message);
                     for (ProxiedPlayer onlinePlayer : ProxyServer.getInstance().getPlayers()) {
-                        if (player.getUniqueId() != onlinePlayer.getUniqueId() && recipient.getUniqueId() != onlinePlayer.getUniqueId()) {
+                        if (player.getUniqueId() != onlinePlayer.getUniqueId() && ((ProxiedPlayer) recipient).getUniqueId() != onlinePlayer.getUniqueId()) {
                             if (onlinePlayer.hasPermission(Permissions.Admin.SPY) && PlayerData.getData(onlinePlayer.getUniqueId()).isSpy()) {
                                 onlinePlayer.sendMessage(spyMessage);
                             }
                         }
                     }
                 }
-                final ProxiedPlayer recp = recipient;
+                final ProxiedPlayer recp = (ProxiedPlayer) recipient;
                 final ProxiedPlayer play = player;
                 Messenger.messages.put(play.getUniqueId(), recp.getUniqueId());
                 ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), () -> Messenger.messages.put(recp.getUniqueId(), play.getUniqueId()), 3, TimeUnit.SECONDS);
             }
-            PlayerData pDR = PlayerData.getData(recipient.getUniqueId());
+            PlayerData pDR = PlayerData.getData(((ProxiedPlayer) recipient).getUniqueId());
             if (BungeeEssentials.getInstance().contains("ignore")) {
                 PlayerData pDS = PlayerData.getData(((ProxiedPlayer) sender).getUniqueId());
-                if (!pDS.isIgnored(recipient.getUniqueId())) {
-                    if (!pDR.isIgnored(((ProxiedPlayer) sender).getUniqueId()) && (pDR.isMsging() || sender.hasPermission(Permissions.Admin.BYPASS_MSG))) {
-                        recipient.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
+                if (!pDS.isIgnored(((ProxiedPlayer) recipient).getUniqueId().toString())) {
+                    if (!pDR.isIgnored(((ProxiedPlayer) sender).getUniqueId().toString()) && (pDR.isMsging() || sender.hasPermission(Permissions.Admin.BYPASS_MSG))) {
+                        recipient.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_RECEIVE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
                     }
-                    sender.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT, "SERVER", recipient.getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
+                    sender.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_SEND, "SERVER", ((ProxiedPlayer) recipient).getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
                 } else {
                     sender.sendMessage(Dictionary.format(Dictionary.ERROR_IGNORING));
                 }
             } else {
-                sender.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT, "SERVER", recipient.getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
+                sender.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_SEND, "SERVER", ((ProxiedPlayer) recipient).getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
                 if (pDR.isMsging() || sender.hasPermission(Permissions.Admin.BYPASS_MSG)) {
-                    recipient.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
+                    recipient.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_RECEIVE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
                 }
             }
+        } else if (recipient == ProxyServer.getInstance().getConsole()) {
+            String server = sender instanceof ProxiedPlayer ? ((ProxiedPlayer) sender).getServer().getInfo().getName() : "CONSOLE";
+            recipient.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_RECEIVE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
+            sender.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_SEND, "SERVER", ((ProxiedPlayer) recipient).getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
         } else {
             sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
         }
@@ -101,7 +105,7 @@ public class MessageEvent extends Event implements Cancellable {
         this.sender = sender;
     }
 
-    public ProxiedPlayer getRecipient() {
+    public CommandSender getRecipient() {
         return recipient;
     }
 

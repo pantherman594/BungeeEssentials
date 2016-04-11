@@ -7,7 +7,9 @@ format:
   find: '&e{{ PLAYER }} &ais playing on &e{{ SERVER }}'
   send: '&aSending &e{{ PLAYER }} &ato server &e{{ SERVER }}'
 message:
-  format: '&a({{ SERVER }}) &7[{{ SENDER }} ?? {{ RECIPIENT }}] &f{{ MESSAGE }}'
+  format:
+    send: '&a({{ SERVER }}) &7[me » {{ RECIPIENT }}] &f{{ MESSAGE }}'
+    receive: '&a({{ SERVER }}) &7[{{ SENDER }} » me] &f{{ MESSAGE }}'
   enabled: '&aMessaging is now enabled!'
   disabled: '&cMessaging is now disabled!'
 warnings:
@@ -87,11 +89,11 @@ rulenotify:
   replace: '&7{{ PLAYER }} swore but was replaced!'
   command: '&7{{ PLAYER }} swore, triggering a command!'
 staffchat:
-  message: '&c{{ SERVER }} - {{ SENDER }} ?? &7{{ MESSAGE }}'
+  message: '&c{{ SERVER }} - {{ SENDER }} » &7{{ MESSAGE }}'
   enabled: '&aYou are now chatting in staff chat!'
   disabled: '&cYou are no longer chatting in staff chat!'
 chat:
-  message: '&e{{ SERVER }} - {{ SENDER }} ?? &7{{ MESSAGE }}'
+  message: '&e{{ SERVER }} - {{ SENDER }} » &7{{ MESSAGE }}'
   enabled: '&aYou are now chatting in global chat!'
   disabled: '&cYou are no longer chatting in global chat!'
 list:
@@ -103,7 +105,7 @@ lookup:
   header: '&6Found {{ SIZE }} player(s):'
   body: '&f - {{ PLAYER }}'
 spy:
-  message: '&7[{{ SENDER }} ?? {{ RECIPIENT }}] &7{{ MESSAGE }}'
+  message: '&7[{{ SENDER }} » {{ RECIPIENT }}] &7{{ MESSAGE }}'
   enabled: '&aSpy has been enabled'
   disabled: '&cSpy has been disabled'
 commandspy:

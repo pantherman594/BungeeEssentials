@@ -25,7 +25,6 @@ import net.md_5.bungee.config.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Created by David on 12/05.
@@ -34,14 +33,14 @@ import java.util.stream.Collectors;
  */
 @SuppressWarnings({"WeakerAccess", "ResultOfMethodCallIgnored"})
 public class PlayerData {
-    private static Map<UUID, PlayerData> playerDataList;
+    private static Map<String, PlayerData> playerDataList;
     private Configuration config;
     private String name;
     private String uuid;
     private List<String> friends;
     private List<String> outRequests;
     private List<String> inRequests;
-    private List<UUID> ignoreList;
+    private List<String> ignoreList;
     private boolean hidden;
     private boolean spy;
     private boolean cSpy;
@@ -83,7 +82,7 @@ public class PlayerData {
             friends.addAll(config.getStringList("friends"));
             outRequests.addAll(config.getStringList("requests.out"));
             inRequests.addAll(config.getStringList("requests.in"));
-            ignoreList.addAll(config.getStringList("ignorelist").stream().map(UUID::fromString).collect(Collectors.toList()));
+            ignoreList.addAll(config.getStringList("ignorelist"));
             hidden = config.getBoolean("hidden");
             spy = config.getBoolean("spy");
             cSpy = config.getBoolean("cspy");
@@ -100,14 +99,25 @@ public class PlayerData {
             muted = false;
             msging = true;
         }
-        playerDataList.put(UUID.fromString(uuid), this);
+        playerDataList.put(uuid, this);
     }
 
     /**
      * @return All the registered PlayerDatas
      */
-    public static Map<UUID, PlayerData> getDatas() {
+    public static Map<String, PlayerData> getDatas() {
         return playerDataList;
+    }
+
+    /**
+     * Get the PlayerData of a player. If it does not
+     * exists, create it.
+     *
+     * @param uuid The uuid of the player as a string.
+     * @return The PlayerData that matches the player's uuid.
+     */
+    public static PlayerData getData(String uuid) {
+        return getDatas().containsKey(uuid) ? getDatas().get(uuid) : new PlayerData(uuid, null);
     }
 
     /**
@@ -118,7 +128,7 @@ public class PlayerData {
      * @return The PlayerData that matches the player's uuid.
      */
     public static PlayerData getData(UUID uuid) {
-        return getDatas().containsKey(uuid) ? getDatas().get(uuid) : new PlayerData(uuid.toString(), null);
+        return getData(uuid.toString());
     }
 
     /**
@@ -127,7 +137,7 @@ public class PlayerData {
      * @param uuid       The uuid of the player.
      * @param playerData The PlayerData to add to the list.
      */
-    public static void setData(UUID uuid, PlayerData playerData) {
+    public static void setData(String uuid, PlayerData playerData) {
         playerDataList.put(uuid, playerData);
     }
 
@@ -176,7 +186,7 @@ public class PlayerData {
             BungeeEssentials.getInstance().getLogger().warning("Unable to save " + name + "'s data.");
             return false;
         }
-        playerDataList.remove(UUID.fromString(uuid));
+        playerDataList.remove(uuid);
         return true;
     }
 
@@ -205,11 +215,11 @@ public class PlayerData {
         return isMuted();
     }
 
-    public boolean isIgnored(UUID uuid) {
+    public boolean isIgnored(String uuid) {
         return ignoreList.contains(uuid);
     }
 
-    public void setIgnored(UUID uuid, boolean status) {
+    public void setIgnored(String uuid, boolean status) {
         if (status) {
             ignoreList.add(uuid);
         } else {
@@ -217,7 +227,7 @@ public class PlayerData {
         }
     }
 
-    public boolean toggleIgnore(UUID uuid) {
+    public boolean toggleIgnore(String uuid) {
         setIgnored(uuid, !isIgnored(uuid));
         return isIgnored(uuid);
     }

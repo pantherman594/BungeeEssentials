@@ -69,8 +69,10 @@ public class Dictionary {
     public static String FORMAT_CHAT;
     @Load(key = "format.alert", def = "&8[&c!&8] &7{{ MESSAGE }}")
     public static String FORMAT_ALERT;
-    @Load(key = "message.format", def = "&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{ MESSAGE }}")
-    public static String MESSAGE_FORMAT;
+    @Load(key = "message.format.send", def = "&a({{ SERVER }}) &7[me » {{ RECIPIENT }}] &f{{ MESSAGE }}")
+    public static String MESSAGE_FORMAT_SEND;
+    @Load(key = "message.format.receive", def = "&a({{ SERVER }}) &7[{{ SENDER }} » me] &f{{ MESSAGE }}")
+    public static String MESSAGE_FORMAT_RECEIVE;
     @Load(key = "message.enabled", def = "&aMessaging is now enabled!")
     public static String MESSAGE_ENABLED;
     @Load(key = "message.disabled", def = "&cMessaging is now disabled!")
