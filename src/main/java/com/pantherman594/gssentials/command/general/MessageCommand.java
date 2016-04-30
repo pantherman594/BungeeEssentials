@@ -54,6 +54,16 @@ public class MessageCommand extends BECommand implements TabExecutor {
                 if (change) {
                     PlayerData.setData(((ProxiedPlayer) sender).getUniqueId().toString(), pD);
                     if (pD.isMsging()) {
+                        if (Messenger.reply((ProxiedPlayer) sender) == null) {
+                            sender.sendMessage(Dictionary.format(Dictionary.ERROR_NOBODY_HAS_MESSAGED));
+                            return;
+                        }
+
+                        if (ProxyServer.getInstance().getPlayer(Messenger.reply((ProxiedPlayer) sender)) == null) {
+                            sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
+                            return;
+                        }
+
                         sender.sendMessage(Dictionary.format(Dictionary.MESSAGE_ENABLED, "PLAYER", ProxyServer.getInstance().getPlayer(Messenger.reply((ProxiedPlayer) sender)).getName()));
                     } else {
                         sender.sendMessage(Dictionary.format(Dictionary.MESSAGE_DISABLED));

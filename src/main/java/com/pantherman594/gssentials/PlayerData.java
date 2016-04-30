@@ -99,7 +99,7 @@ public class PlayerData {
             globalChat = false;
             staffChat = false;
             muted = false;
-            msging = true;
+            msging = false;
         }
         playerDataList.put(uuid, this);
     }
