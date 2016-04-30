@@ -8,8 +8,10 @@ format:
   send: '&aSending &e{{ PLAYER }} &ato server &e{{ SERVER }}'
 message:
   format:
-    send: '&7[me » {{ BREAK }}&7{{ RECIPIENT }}{{ HOVER: On the {{ SERVER }} server. }}{{ BREAK }}&7] &f{{ MESSAGE }}'
-    receive: '&7[{{ BREAK }}&7{{ SENDER }}{{ HOVER: On the {{ SERVER }} server. }}{{ BREAK }}&7 » me] &f{{ MESSAGE }}'
+    send: '&7[me » {{ BREAK }}&7{{ RECIPIENT }}{{ HOVER: On the {{ SERVER }} server.
+      }}{{ BREAK }}&7] &f{{ MESSAGE }}'
+    receive: '&7[{{ BREAK }}&7{{ SENDER }}{{ HOVER: On the {{ SERVER }} server. }}{{
+      BREAK }}&7 » me] &f{{ MESSAGE }}'
   enabled: '&aMessaging is now enabled!'
   disabled: '&cMessaging is now disabled!'
 warnings:
@@ -100,7 +102,7 @@ list:
   header: |-
     &aYou are on {{ CURRENT }}
     &aServers:
-  body: '&a- {{ SERVER }} (({{ DENSITY }})&a)'
+  body: '&a- {{ SERVER }} ({{ DENSITY }}&a)'
 lookup:
   header: '&6Found {{ SIZE }} player(s):'
   body: '&f - {{ PLAYER }}'
@@ -119,6 +121,7 @@ friend:
   new: '&aYou are now friends with {{ NAME }}!'
   old: '&aYou are already friends with {{ NAME }}!'
   remove: '&cYou are no longer friends with {{ NAME }}.'
+  removeerror: '&cYou can''t remove a friend you don''t have!'
   outrequests:
     header: '&2Outgoing Friend Requests:'
     body: '- {{ NAME }}'
@@ -128,12 +131,13 @@ friend:
     remove: '&cThe friend request to {{ NAME }} was cancelled.'
   inrequests:
     header: '&2Incoming Friend Requests:'
-    body: '- {{ NAME }}{{ BREAK }}  &a[Y]{{ HOVER: Click to accept the request! }}{{ CLICK: /friend add {{ NAME }} }}{{ BREAK }} {{ BREAK }}&c[N]{{ HOVER: Click to deny the request. }}{{ CLICK: /friend remove {{ NAME }} }}'
+    body: '- {{ NAME }}{{ BREAK }}  &a[Y]{{ HOVER: Click to accept the request! }}{{
+      CLICK: /friend add {{ NAME }} }}{{ BREAK }} {{ BREAK }}&c[N]{{ HOVER: Click
+      to deny the request. }}{{ CLICK: /friend remove {{ NAME }} }}'
     new: |-
       &a{{ NAME }} would like to be your friend! Click one:{{ BREAK }}
       &a[Yes!]{{ HOVER: Click to accept the request! }}{{ CLICK: /friend add {{ NAME }} }}{{ BREAK }}     {{ BREAK }}&c[No]{{ HOVER: Click to deny the request. }}{{ CLICK: /friend remove {{ NAME }} }}
     remove: '&cThe friend request from {{ NAME }} was cancelled.'
-    removeerror: '&cYou can''t remove a friend you don''t have!'
 hide:
   enabled: '&aYou are now hidden from all players!'
   disabled: '&cYou are now visible to all players!'

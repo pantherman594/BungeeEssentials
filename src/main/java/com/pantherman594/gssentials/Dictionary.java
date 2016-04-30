@@ -109,7 +109,7 @@ public class Dictionary {
     public static String INREQUESTS_REMOVE;
     @Load(key = "list.header", def = "You are on {{ CURRENT }}\n&aServers:")
     public static String LIST_HEADER;
-    @Load(key = "list.body", def = "&a- {{ SERVER }} {{ DENSITY }}")
+    @Load(key = "list.body", def = "&a- {{ SERVER }} ({{ DENSITY }}&a)")
     public static String LIST_BODY;
     @Load(key = "lookup.header", def = "&6Found {{ SIZE }} player(s):")
     public static String LOOKUP_HEADER;
