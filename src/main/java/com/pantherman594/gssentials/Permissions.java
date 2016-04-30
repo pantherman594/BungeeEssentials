@@ -22,43 +22,45 @@ package com.pantherman594.gssentials;
 public class Permissions {
 
     public static class Admin {
-        public static final String ALERT = "gssentials.admin.alert";
-        public static final String CHAT = "gssentials.admin.chat";
-        public static final String SEND = "gssentials.admin.send";
-        public static final String SENDALL = "gssentials.admin.sendall";
-        public static final String SPY = "gssentials.admin.spy";
+        public static final String PREFIX = "gssentials.admin.";
+        public static final String ALERT = PREFIX + "alert";
+        public static final String CHAT = PREFIX + "chat";
+        public static final String SEND = PREFIX + "asend";
+        public static final String SENDALL = PREFIX + "sendall";
+        public static final String SPY = PREFIX + "spy";
         public static final String SPY_EXEMPT = SPY + ".exempt";
         public static final String SPY_COMMAND = SPY + ".command";
-        public static final String HIDE = "gssentials.admin.hide";
+        public static final String HIDE = PREFIX + "hide";
         public static final String SEE_HIDDEN = HIDE + ".bypass";
-        public static final String RELOAD = "gssentials.admin.reload";
-        public static final String BYPASS_FILTER = "gssentials.admin.bypass-filter";
-        public static final String BYPASS_MSG = General.MESSAGE + "bypass";
-        public static final String LOOKUP = "gssentials.admin.lookup";
-        public static final String NOTIFY = "gssentials.admin.notify";
-        public static final String MUTE = "gssentials.admin.mute";
+        public static final String RELOAD = PREFIX + "reload";
+        public static final String BYPASS_FILTER = PREFIX + "bypass-filter";
+        public static final String BYPASS_MSG = General.MESSAGE + ".bypass";
+        public static final String LOOKUP = PREFIX + "lookup";
+        public static final String NOTIFY = PREFIX + "notify";
+        public static final String MUTE = PREFIX + "mute";
         public static final String MUTE_EXEMPT = MUTE + ".exempt";
     }
 
     public static class General {
-        public static final String MESSAGE = "gssentials.message";
+        public static final String PREFIX = "gssentials.";
+        public static final String MESSAGE = PREFIX + "message";
         public static final String MESSAGE_COLOR = MESSAGE + ".color";
         public static final String MESSAGE_HOVER = MESSAGE + ".hover";
         public static final String MESSAGE_CLICK = MESSAGE + ".click";
-        public static final String FIND = "gssentials.find";
-        public static final String LIST = "gssentials.list";
-        public static final String LIST_OFFLINE = "gssentials.list.offline";
-        public static final String LIST_RESTRICTED = "gssentials.list.restricted";
-        public static final String SLAP = "gssentials.slap";
-        public static final String JOIN = "gssentials.join";
-        public static final String CHAT = "gssentials.chat";
-        public static final String IGNORE = "gssentials.ignore";
-        public static final String ANNOUNCE = "gssentials.announce";
+        public static final String FIND = PREFIX + "find";
+        public static final String LIST = PREFIX + "list";
+        public static final String LIST_OFFLINE = PREFIX + "list.offline";
+        public static final String LIST_RESTRICTED = PREFIX + "list.restricted";
+        public static final String SLAP = PREFIX + "slap";
+        public static final String JOIN = PREFIX + "join";
+        public static final String CHAT = PREFIX + "chat";
+        public static final String IGNORE = PREFIX + "ignore";
+        public static final String ANNOUNCE = PREFIX + "announce";
         public static final String JOINANNC = ANNOUNCE + ".join";
         public static final String QUITANNC = ANNOUNCE + ".quit";
-        public static final String ALIAS = "gssentials.alias";
-        public static final String ANNOUNCEMENT = "gssentials.announcement";
-        public static final String FRIEND = "gssentials.friend";
+        public static final String ALIAS = PREFIX + "alias";
+        public static final String ANNOUNCEMENT = PREFIX + "announcement";
+        public static final String FRIEND = PREFIX + "friend";
     }
 
 }

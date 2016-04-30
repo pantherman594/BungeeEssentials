@@ -19,6 +19,7 @@
 package com.pantherman594.gssentials.event;
 
 import com.pantherman594.gssentials.Dictionary;
+import com.pantherman594.gssentials.Log;
 import com.pantherman594.gssentials.Messenger;
 import com.pantherman594.gssentials.Permissions;
 import net.md_5.bungee.api.ProxyServer;
@@ -50,6 +51,7 @@ public class StaffChatEvent extends Event implements Cancellable {
             ProxyServer.getInstance().getPlayers().stream().filter(player -> player.hasPermission(Permissions.Admin.CHAT + "." + server) || player.hasPermission(Permissions.Admin.CHAT)).forEach(player -> player.sendMessage(msg));
             if (msg != null) {
                 ProxyServer.getInstance().getConsole().sendMessage(msg);
+                Log.log("[SCHAT] " + msg.toLegacyText());
             }
         }
     }

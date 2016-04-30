@@ -114,7 +114,7 @@ public class PlayerListener implements Listener {
             }
         }
         if (BungeeEssentials.getInstance().contains("fulllog")) {
-            Log.log(Dictionary.format(Dictionary.FORMAT_CHAT, "PLAYER", sender, "MESSAGE", event.getMessage()).toLegacyText());
+            Log.log(Dictionary.format(Dictionary.FORMAT_CHAT, "PLAYER", sender, "MESSAGE", "[CHAT] " + event.getMessage()).toLegacyText());
         }
     }
 
@@ -161,7 +161,7 @@ public class PlayerListener implements Listener {
             ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_JOIN, "PLAYER", event.getPlayer().getName()));
         }
         if (BungeeEssentials.getInstance().contains("fulllog")) {
-            Log.log(Dictionary.format(Dictionary.FORMAT_JOIN, "PLAYER", event.getPlayer().getName()).toLegacyText());
+            Log.log(Dictionary.format(Dictionary.FORMAT_JOIN, "PLAYER", "[JOIN] " + event.getPlayer().getName()).toLegacyText());
         }
     }
 
@@ -201,7 +201,7 @@ public class PlayerListener implements Listener {
             ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_QUIT, "PLAYER", event.getPlayer().getName()));
         }
         if (BungeeEssentials.getInstance().contains("fulllog")) {
-            Log.log(Dictionary.format(Dictionary.FORMAT_QUIT, "PLAYER", event.getPlayer().getName()).toLegacyText());
+            Log.log(Dictionary.format(Dictionary.FORMAT_QUIT, "PLAYER", "[QUIT] " + event.getPlayer().getName()).toLegacyText());
         }
         PlayerData.getData(event.getPlayer().getUniqueId()).save();
     }
@@ -216,7 +216,7 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = Byte.MAX_VALUE)
     public void kick(ServerKickEvent event) {
         if (BungeeEssentials.getInstance().contains("fulllog")) {
-            Log.log(Dictionary.format(Dictionary.FORMAT_KICK, "PLAYER", event.getPlayer().getName(), "REASON", event.getKickReason()).toLegacyText());
+            Log.log(Dictionary.format(Dictionary.FORMAT_KICK, "PLAYER", event.getPlayer().getName(), "REASON", "[KICK] " + event.getKickReason()).toLegacyText());
         }
         if (event.getKickReasonComponent()[0].toPlainText().equals("Server closed")) {
             sendFallback(event);

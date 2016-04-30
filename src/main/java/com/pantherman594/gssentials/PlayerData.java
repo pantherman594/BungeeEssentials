@@ -18,6 +18,8 @@
 
 package com.pantherman594.gssentials;
 
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
@@ -145,6 +147,9 @@ public class PlayerData {
      * Clears the registered PlayerDatas.
      */
     public static void clearData() {
+        for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
+            getData(p.getUniqueId()).save();
+        }
         playerDataList = new HashMap<>();
     }
 

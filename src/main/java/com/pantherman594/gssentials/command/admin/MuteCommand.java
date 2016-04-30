@@ -38,8 +38,8 @@ public class MuteCommand extends ServerSpecificCommand implements TabExecutor {
     public void run(CommandSender sender, String[] args) {
         if (args != null && args.length > 0) {
             ProxiedPlayer player = ProxyServer.getInstance().getPlayer(args[0]);
-            PlayerData pD = PlayerData.getData(player.getUniqueId());
             if (player != null) {
+                PlayerData pD = PlayerData.getData(player.getUniqueId());
                 if (!player.hasPermission(Permissions.Admin.MUTE_EXEMPT)) {
                     if (pD.toggleMuted()) {
                         player.sendMessage(Dictionary.format(Dictionary.MUTE_ENABLED));

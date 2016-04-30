@@ -31,7 +31,7 @@ import java.util.Calendar;
 import java.util.logging.*;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
-class Log {
+public class Log {
     private static Joiner joiner = Joiner.on(", ");
     private static Logger logger;
 
@@ -122,9 +122,23 @@ class Log {
                     chatType = "staff chat";
                     break;
             }
-            if (!chatType.equals("")) {
-                log("{0} broke a chat rule in " + chatType + ": \"{1}\"", sender.getName(), joiner.join(rule.getMatches()));
+
+            String prefix = "[CHAT/";
+            switch (rule.getHandle()) {
+                case ADVERTISEMENT:
+                    prefix += "ADVERTISEMENT";
+                    break;
+                case CURSING:
+                    prefix += "CURSING";
+                    break;
+                case REPLACE:
+                    prefix += "FILTER";
+                    break;
+                case COMMAND:
+                    prefix += "FILTER";
+                    break;
             }
+            log(prefix + "] {0} broke a chat rule in " + chatType + ": \"{1}\"", sender.getName(), joiner.join(rule.getMatches()));
         }
     }
 
@@ -135,7 +149,8 @@ class Log {
      * @param args    The arguments.
      */
     public static void log(String message, Object... args) {
-        logger.log(Level.FINE, message, args);
+        if (logger != null)
+            logger.log(Level.FINE, message, args);
     }
 
     private static class LogFormatter extends Formatter {
@@ -149,28 +164,7 @@ class Log {
 
         @Override
         public String format(LogRecord record) {
-            StringBuilder builder = new StringBuilder();
-            builder.append(format.format(calendar.getTime()));
-            builder.append(" ");
-            builder.append("[");
-            builder.append("Chat");
-            builder.append("/");
-
-            if (record.getLevel() == Level.FINE) {
-                builder.append("ADVERTISEMENT");
-            } else if (record.getLevel() == Level.INFO) {
-                builder.append("CURSING");
-            } else if (record.getLevel() == Level.WARNING) {
-                builder.append("FILTER");
-            } else {
-                builder.append("OTHER");
-            }
-
-            builder.append("]");
-            builder.append(" ");
-            builder.append(MessageFormat.format(record.getMessage(), record.getParameters()));
-            builder.append(System.lineSeparator());
-            return builder.toString();
+            return format.format(calendar.getTime()) + " " + MessageFormat.format(record.getMessage(), record.getParameters()) + System.lineSeparator();
         }
     }
 }
