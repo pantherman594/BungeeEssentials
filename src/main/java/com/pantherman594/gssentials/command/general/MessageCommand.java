@@ -19,7 +19,10 @@
 package com.pantherman594.gssentials.command.general;
 
 import com.google.common.collect.ImmutableSet;
-import com.pantherman594.gssentials.*;
+import com.pantherman594.gssentials.BungeeEssentials;
+import com.pantherman594.gssentials.Dictionary;
+import com.pantherman594.gssentials.Permissions;
+import com.pantherman594.gssentials.PlayerData;
 import com.pantherman594.gssentials.command.BECommand;
 import com.pantherman594.gssentials.event.MessageEvent;
 import net.md_5.bungee.api.CommandSender;
@@ -54,21 +57,7 @@ public class MessageCommand extends BECommand implements TabExecutor {
                 if (change) {
                     PlayerData.setData(((ProxiedPlayer) sender).getUniqueId().toString(), pD);
                     if (pD.isMsging()) {
-                        if (Messenger.reply((ProxiedPlayer) sender) == null) {
-                            sender.sendMessage(Dictionary.format(Dictionary.ERROR_NOBODY_HAS_MESSAGED));
-                            sender.sendMessage(Dictionary.format(Dictionary.MESSAGE_DISABLED));
-                            pD.setMsging(false);
-                            return;
-                        }
-
-                        if (ProxyServer.getInstance().getPlayer(Messenger.reply((ProxiedPlayer) sender)) == null) {
-                            sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
-                            sender.sendMessage(Dictionary.format(Dictionary.MESSAGE_DISABLED));
-                            pD.setMsging(false);
-                            return;
-                        }
-
-                        sender.sendMessage(Dictionary.format(Dictionary.MESSAGE_ENABLED, "PLAYER", ProxyServer.getInstance().getPlayer(Messenger.reply((ProxiedPlayer) sender)).getName()));
+                        sender.sendMessage(Dictionary.format(Dictionary.MESSAGE_ENABLED));
                     } else {
                         sender.sendMessage(Dictionary.format(Dictionary.MESSAGE_DISABLED));
                     }

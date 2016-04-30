@@ -12,7 +12,7 @@ message:
       }}{{ BREAK }}&7] &f{{ MESSAGE }}'
     receive: '&7[{{ BREAK }}&7{{ SENDER }}{{ HOVER: On the {{ SERVER }} server. }}{{
       BREAK }}&7 » me] &f{{ MESSAGE }}'
-  enabled: '&aMessaging to {{ PLAYER }} is now enabled!'
+  enabled: '&aMessaging is now enabled!'
   disabled: '&cMessaging is now disabled!'
 warnings:
   similarity: '&cPlease do not spam other players!'

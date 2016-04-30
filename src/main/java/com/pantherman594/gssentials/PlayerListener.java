@@ -19,7 +19,6 @@
 package com.pantherman594.gssentials;
 
 import com.pantherman594.gssentials.event.GlobalChatEvent;
-import com.pantherman594.gssentials.event.MessageEvent;
 import com.pantherman594.gssentials.event.StaffChatEvent;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.ServerPing;
@@ -97,16 +96,6 @@ public class PlayerListener implements Listener {
                 return;
             }
             if (!event.isCancelled() && !event.isCommand()) {
-                if (pD.isMsging()) {
-                    UUID uuid = Messenger.reply(player);
-                    if (uuid == null) {
-                        player.sendMessage(Dictionary.format(Dictionary.ERROR_NOBODY_HAS_MESSAGED));
-                        return;
-                    }
-                    ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(uuid);
-                    ProxyServer.getInstance().getPluginManager().callEvent(new MessageEvent(player, recipient, event.getMessage()));
-                    event.setCancelled(true);
-                }
                 if (pD.isStaffChat()) {
                     String server = player.getServer().getInfo().getName();
                     ProxyServer.getInstance().getPluginManager().callEvent(new StaffChatEvent(server, sender, event.getMessage()));

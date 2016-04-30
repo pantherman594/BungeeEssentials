@@ -73,7 +73,7 @@ public class Dictionary {
     public static String MESSAGE_FORMAT_SEND;
     @Load(key = "message.format.receive", def = "&7[{{ BREAK }}&7{{ SENDER }}{{ HOVER: On the {{ SERVER }} server. }}{{ BREAK }}&7 » me] &f{{ MESSAGE }}")
     public static String MESSAGE_FORMAT_RECEIVE;
-    @Load(key = "message.enabled", def = "&aMessaging to {{ PLAYER }} is now enabled!")
+    @Load(key = "message.enabled", def = "&aMessaging is now enabled!")
     public static String MESSAGE_ENABLED;
     @Load(key = "message.disabled", def = "&cMessaging is now disabled!")
     public static String MESSAGE_DISABLED;
