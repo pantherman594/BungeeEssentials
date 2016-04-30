@@ -19,10 +19,7 @@
 package com.pantherman594.gssentials.command.general;
 
 import com.google.common.collect.ImmutableSet;
-import com.pantherman594.gssentials.BungeeEssentials;
-import com.pantherman594.gssentials.Dictionary;
-import com.pantherman594.gssentials.Permissions;
-import com.pantherman594.gssentials.PlayerData;
+import com.pantherman594.gssentials.*;
 import com.pantherman594.gssentials.command.BECommand;
 import com.pantherman594.gssentials.event.MessageEvent;
 import net.md_5.bungee.api.CommandSender;
@@ -57,7 +54,7 @@ public class MessageCommand extends BECommand implements TabExecutor {
                 if (change) {
                     PlayerData.setData(((ProxiedPlayer) sender).getUniqueId().toString(), pD);
                     if (pD.isMsging()) {
-                        sender.sendMessage(Dictionary.format(Dictionary.MESSAGE_ENABLED));
+                        sender.sendMessage(Dictionary.format(Dictionary.MESSAGE_ENABLED, "PLAYER", ProxyServer.getInstance().getPlayer(Messenger.reply((ProxiedPlayer) sender)).getName()));
                     } else {
                         sender.sendMessage(Dictionary.format(Dictionary.MESSAGE_DISABLED));
                     }

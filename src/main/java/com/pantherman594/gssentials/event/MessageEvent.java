@@ -69,7 +69,9 @@ public class MessageEvent extends Event implements Cancellable {
                 final ProxiedPlayer recp = (ProxiedPlayer) recipient;
                 final ProxiedPlayer play = player;
                 Messenger.messages.put(play.getUniqueId(), recp.getUniqueId());
-                ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), () -> Messenger.messages.put(recp.getUniqueId(), play.getUniqueId()), 3, TimeUnit.SECONDS);
+                if (!PlayerData.getData(recp.getUniqueId()).isMsging()) {
+                    ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), () -> Messenger.messages.put(recp.getUniqueId(), play.getUniqueId()), 3, TimeUnit.SECONDS);
+                }
             }
             PlayerData pDR = PlayerData.getData(((ProxiedPlayer) recipient).getUniqueId());
             if (sender != ProxyServer.getInstance().getConsole() && BungeeEssentials.getInstance().contains("ignore")) {
