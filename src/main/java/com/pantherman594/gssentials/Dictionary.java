@@ -69,9 +69,9 @@ public class Dictionary {
     public static String FORMAT_CHAT;
     @Load(key = "format.alert", def = "&8[&c!&8] &7{{ MESSAGE }}")
     public static String FORMAT_ALERT;
-    @Load(key = "message.format.send", def = "&a({{ SERVER }}) &7[me » {{ RECIPIENT }}] &f{{ MESSAGE }}")
+    @Load(key = "message.format.send", def = "&7[me » {{ BREAK }}&7{{ RECIPIENT }}{{ HOVER: On the {{ SERVER }} server. }}{{ BREAK }}&7] &f{{ MESSAGE }}")
     public static String MESSAGE_FORMAT_SEND;
-    @Load(key = "message.format.receive", def = "&a({{ SERVER }}) &7[{{ SENDER }} » me] &f{{ MESSAGE }}")
+    @Load(key = "message.format.receive", def = "&7[{{ BREAK }}&7{{ SENDER }}{{ HOVER: On the {{ SERVER }} server. }}{{ BREAK }}&7 » me] &f{{ MESSAGE }}")
     public static String MESSAGE_FORMAT_RECEIVE;
     @Load(key = "message.enabled", def = "&aMessaging is now enabled!")
     public static String MESSAGE_ENABLED;
@@ -97,15 +97,15 @@ public class Dictionary {
     public static String OUTREQUESTS_NEW;
     @Load(key = "friend.outrequests.old", def = "&cYou already requested to be friends with {{ NAME }}. Please wait for a response!")
     public static String OUTREQUESTS_OLD;
-    @Load(key = "friend.outrequests.remove", def = "&cThe friend request to {{ NAME }} was removed.")
+    @Load(key = "friend.outrequests.remove", def = "&cThe friend request to {{ NAME }} was cancelled.")
     public static String OUTREQUESTS_REMOVE;
     @Load(key = "friend.inrequests.header", def = "&2Incoming Friend Requests:")
     public static String INREQUESTS_HEADER;
-    @Load(key = "friend.inrequests.body", def = "- {{ NAME }}")
+    @Load(key = "friend.inrequests.body", def = "- {{ NAME }}{{ BREAK }}  &a[Y]{{ HOVER: Click to accept the request! }}{{ CLICK: /friend add {{ NAME }} }}{{ BREAK }} {{ BREAK }}&c[N]{{ HOVER: Click to deny the request. }}{{ CLICK: /friend remove {{ NAME }} }}")
     public static String INREQUESTS_BODY;
-    @Load(key = "friend.inrequests.new", def = "&a{{ NAME }} would like to be your friend. /friend <add|remove> {{ NAME }} to accept or decline the request.")
+    @Load(key = "friend.inrequests.new", def = "&a{{ NAME }} would like to be your friend! Click one:{{ BREAK }}\n&a[Yes!]{{ HOVER: Click to accept the request! }}{{ CLICK: /friend add {{ NAME }} }}{{ BREAK }}     {{ BREAK }}&c[No]{{ HOVER: Click to deny the request. }}{{ CLICK: /friend remove {{ NAME }} }}")
     public static String INREQUESTS_NEW;
-    @Load(key = "friend.inrequests.remove", def = "&cThe friend request from {{ NAME }} was removed.")
+    @Load(key = "friend.inrequests.remove", def = "&cThe friend request from {{ NAME }} was cancelled.")
     public static String INREQUESTS_REMOVE;
     @Load(key = "list.header", def = "You are on {{ CURRENT }}\n&aServers:")
     public static String LIST_HEADER;
@@ -264,42 +264,53 @@ public class Dictionary {
             }
         }
 
-        HoverEvent hoverEvent = null;
-        ClickEvent clickEvent = null;
+        if (!input.contains("{{ BREAK }}"))
+            input += "{{ BREAK }}";
 
-        if (hover) {
-            if (input.contains("{{ HOVER: ")) {
-                String[] hoverTextStripped = input.split("(\\{\\{ HOVER: )([^\\}]+)( \\}\\})");
-                String hoverText = input;
-                for (String aHoverTextStripped : hoverTextStripped) {
-                    hoverText = hoverText.replace(aHoverTextStripped, "");
-                }
-                hoverText = hoverText.replace("{{ HOVER: ", "").replace(" }}", "");
-                if (hoverText != null) {
-                    hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(color ? color(hoverText) : hoverText).retain(ComponentBuilder.FormatRetention.ALL).create());
-                    input = Joiner.on("").join(hoverTextStripped);
+        TextComponent finalText = new TextComponent("");
+
+        for (String segment : input.split("\\{\\{ BREAK }}")) {
+
+            HoverEvent hoverEvent = null;
+            ClickEvent clickEvent = null;
+
+            if (hover) {
+                if (segment.contains("{{ HOVER: ")) {
+                    String[] hoverTextStripped = segment.split("(\\{\\{ HOVER: )([^\\}]+)( \\}\\})");
+                    String hoverText = segment;
+                    for (String aHoverTextStripped : hoverTextStripped) {
+                        hoverText = hoverText.replace(aHoverTextStripped, "");
+                    }
+                    hoverText = hoverText.replace("{{ HOVER: ", "").replace(" }}", "");
+                    if (hoverText != null) {
+                        hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(color ? color(hoverText) : hoverText).retain(ComponentBuilder.FormatRetention.ALL).create());
+                        segment = Joiner.on("").join(hoverTextStripped);
+                    }
                 }
             }
-        }
 
-        if (click) {
-            if (input.contains("{{ CLICK: ")) {
-                String[] clickTextStripped = input.split("(\\{\\{ CLICK: )([^\\}]+)( \\}\\})");
-                String clickText = input;
-                for (String aClickTextStripped : clickTextStripped) {
-                    clickText = clickText.replace(aClickTextStripped, "");
-                }
-                clickText = clickText.replace("{{ CLICK: ", "").replace(" }}", "");
-                if (clickText != null) {
-                    clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, clickText);
-                    input = Joiner.on("").join(clickTextStripped);
+            if (click) {
+                if (segment.contains("{{ CLICK: ")) {
+                    String[] clickTextStripped = segment.split("(\\{\\{ CLICK: )([^\\}]+)( \\}\\})");
+                    String clickText = segment;
+                    for (String aClickTextStripped : clickTextStripped) {
+                        clickText = clickText.replace(aClickTextStripped, "");
+                    }
+                    clickText = clickText.replace("{{ CLICK: ", "").replace(" }}", "");
+                    if (clickText != null) {
+                        clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, clickText);
+                        segment = Joiner.on("").join(clickTextStripped);
+                    }
                 }
             }
+
+            TextComponent textSegment = new TextComponent(TextComponent.fromLegacyText(color ? color(segment) : segment));
+            textSegment.setHoverEvent(hoverEvent);
+            textSegment.setClickEvent(clickEvent);
+
+            finalText.addExtra(textSegment);
         }
 
-        TextComponent finalText = new TextComponent(TextComponent.fromLegacyText(color ? color(input) : input));
-        finalText.setHoverEvent(hoverEvent);
-        finalText.setClickEvent(clickEvent);
         return finalText;
     }
 
@@ -335,7 +346,7 @@ public class Dictionary {
      *
      * @throws IllegalAccessException
      */
-    static void load() throws IllegalAccessException {
+    synchronized static void load() throws IllegalAccessException {
         Configuration messages = BungeeEssentials.getInstance().getMessages();
         for (Field field : Dictionary.class.getDeclaredFields()) {
             int mod = field.getModifiers();

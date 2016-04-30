@@ -8,8 +8,8 @@ format:
   send: '&aSending &e{{ PLAYER }} &ato server &e{{ SERVER }}'
 message:
   format:
-    send: '&a({{ SERVER }}) &7[me » {{ RECIPIENT }}] &f{{ MESSAGE }}'
-    receive: '&a({{ SERVER }}) &7[{{ SENDER }} » me] &f{{ MESSAGE }}'
+    send: '&7[me » {{ BREAK }}&7{{ RECIPIENT }}{{ HOVER: On the {{ SERVER }} server. }}{{ BREAK }}&7] &f{{ MESSAGE }}'
+    receive: '&7[{{ BREAK }}&7{{ SENDER }}{{ HOVER: On the {{ SERVER }} server. }}{{ BREAK }}&7 » me] &f{{ MESSAGE }}'
   enabled: '&aMessaging is now enabled!'
   disabled: '&cMessaging is now disabled!'
 warnings:
@@ -125,15 +125,14 @@ friend:
     new: '&a{{ NAME }} has received your friend request.'
     old: '&cYou already requested to be friends with {{ NAME }}. Please wait for a
       response!'
-    remove: '&cThe friend request to {{ NAME }} was removed.'
+    remove: '&cThe friend request to {{ NAME }} was cancelled.'
   inrequests:
     header: '&2Incoming Friend Requests:'
-    body: '- {{ NAME }}{{ HOVER: Click to accept friend request! }}{{ CLICK: /friend
-      add {{ NAME }} }}'
-    new: '&a{{ NAME }} would like to be your friend. /friend <add|remove> {{ NAME
-      }} to accept or decline the request.{{ HOVER: Click to accept friend request!
-      }}{{ CLICK: /friend add {{ NAME }} }}'
-    remove: '&cThe friend request from {{ NAME }} was removed.'
+    body: '- {{ NAME }}{{ BREAK }}  &a[Y]{{ HOVER: Click to accept the request! }}{{ CLICK: /friend add {{ NAME }} }}{{ BREAK }} {{ BREAK }}&c[N]{{ HOVER: Click to deny the request. }}{{ CLICK: /friend remove {{ NAME }} }}'
+    new: |-
+      &a{{ NAME }} would like to be your friend! Click one:{{ BREAK }}
+      &a[Yes!]{{ HOVER: Click to accept the request! }}{{ CLICK: /friend add {{ NAME }} }}{{ BREAK }}     {{ BREAK }}&c[No]{{ HOVER: Click to deny the request. }}{{ CLICK: /friend remove {{ NAME }} }}
+    remove: '&cThe friend request from {{ NAME }} was cancelled.'
     removeerror: '&cYou can''t remove a friend you don''t have!'
 hide:
   enabled: '&aYou are now hidden from all players!'

@@ -41,7 +41,7 @@ import java.util.logging.Level;
 
 public class BungeeEssentials extends Plugin {
     private static BungeeEssentials instance;
-    public Set<String> playerList = new LinkedHashSet<>();
+    public List<String> playerList = new ArrayList<>();
     private Map<String, String> mainList = new HashMap<>();
     private Map<String, String[]> aliasList = new HashMap<>();
     private RuleManager ruleManager;
@@ -90,7 +90,8 @@ public class BungeeEssentials extends Plugin {
         playerFile = new File(getDataFolder(), "players.yml");
         try {
             loadConfig();
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         if (getConfig().getStringList("enable").contains("updater")) {
             if (new Updater().update(getConfig().getStringList("enable").contains("betaupdates"))) {
@@ -98,11 +99,11 @@ public class BungeeEssentials extends Plugin {
             }
         }
         ProxyServer.getInstance().getScheduler().schedule(this, this::reload, 3, TimeUnit.SECONDS);
-        new PlayerData("CONSOLE", "Console");
     }
 
     @Override
     public void onDisable() {
+        PlayerData.getData("CONSOLE").save();
         Log.reset();
         savePlayerConfig();
     }
@@ -238,6 +239,9 @@ public class BungeeEssentials extends Plugin {
         for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
             new PlayerData(p.getUniqueId().toString(), p.getName());
         }
+        if (!PlayerData.getDatas().containsKey("CONSOLE")) {
+            new PlayerData("CONSOLE", "Console");
+        }
         return true;
     }
 
@@ -363,7 +367,7 @@ public class BungeeEssentials extends Plugin {
     }
 
     /**
-     * Saves the player list to a file.
+     * Saves the player list to a file and reloads it.
      */
     private void savePlayerConfig() {
         try {
@@ -372,7 +376,8 @@ public class BungeeEssentials extends Plugin {
                 getPlayerConfig().set("players", playerList);
             }
             ConfigurationProvider.getProvider(YamlConfiguration.class).save(getPlayerConfig(), playerFile);
-            playerList = new LinkedHashSet<>(getPlayerConfig().getStringList("players"));
+            playerList = new ArrayList<>();
+            getPlayerConfig().getStringList("players").stream().filter(player -> !playerList.contains(player)).forEachOrdered(player -> playerList.add(player));
         } catch (IOException e) {
             e.printStackTrace();
         }

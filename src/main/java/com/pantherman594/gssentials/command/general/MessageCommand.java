@@ -63,7 +63,7 @@ public class MessageCommand extends BECommand implements TabExecutor {
                     }
                 }
             } else {
-                sender.sendMessage("&cSorry, Console cannot toggle messages.");
+                sender.sendMessage(Dictionary.format("&cSorry, Console cannot toggle messages."));
             }
         } else if (args.length > 1) {
             if (args[0].equalsIgnoreCase("CONSOLE")) {
