@@ -62,6 +62,9 @@ public class PlayerListener implements Listener {
         PlayerData pD = PlayerData.getData(player.getUniqueId());
         String sender = player.getName();
         if (event.isCommand()) {
+            if (BungeeEssentials.getInstance().contains("fulllog")) {
+                Log.log(Dictionary.format("[COMMAND] " + Dictionary.FORMAT_CHAT, "PLAYER", sender, "MESSAGE", event.getMessage()).toLegacyText());
+            }
             String cmd = event.getMessage().substring(1);
             if (BungeeEssentials.getInstance().contains("spam-command") && !player.hasPermission(Permissions.Admin.BYPASS_FILTER)) {
                 if (cmds.get(player.getUniqueId()) != null && cmd.equals(cmds.get(player.getUniqueId())) & cmdLog.containsKey(player.getUniqueId())) {
@@ -84,8 +87,10 @@ public class PlayerListener implements Listener {
                 event.setCancelled(true);
                 ProxyServer.getInstance().getPluginManager().dispatchCommand(player, BungeeEssentials.getInstance().getMain("list"));
             }
-            return;
         } else {
+            if (BungeeEssentials.getInstance().contains("fulllog")) {
+                Log.log(Dictionary.format("[CHAT] " + Dictionary.FORMAT_CHAT, "PLAYER", sender, "MESSAGE", event.getMessage()).toLegacyText());
+            }
             if (Messenger.isMutedF(player, event.getMessage())) {
                 event.setCancelled(true);
                 return;
@@ -112,9 +117,6 @@ public class PlayerListener implements Listener {
                     }
                 }
             }
-        }
-        if (BungeeEssentials.getInstance().contains("fulllog")) {
-            Log.log(Dictionary.format(Dictionary.FORMAT_CHAT, "PLAYER", sender, "MESSAGE", "[CHAT] " + event.getMessage()).toLegacyText());
         }
     }
 
@@ -161,7 +163,7 @@ public class PlayerListener implements Listener {
             ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_JOIN, "PLAYER", event.getPlayer().getName()));
         }
         if (BungeeEssentials.getInstance().contains("fulllog")) {
-            Log.log(Dictionary.format(Dictionary.FORMAT_JOIN, "PLAYER", "[JOIN] " + event.getPlayer().getName()).toLegacyText());
+            Log.log(Dictionary.format("[JOIN] " + Dictionary.FORMAT_JOIN, "PLAYER", event.getPlayer().getName()).toLegacyText());
         }
     }
 
@@ -179,6 +181,9 @@ public class PlayerListener implements Listener {
                 event.getPlayer().connect(info);
             }
             redirServer.remove(event.getPlayer().getAddress().getAddress());
+        }
+        if (BungeeEssentials.getInstance().contains("fulllog")) {
+            Log.log(Dictionary.format("[CONNECT] {{ PLAYER }} connected to {{ SERVER }}.", "PLAYER", event.getPlayer().getName(), "SERVER", event.getServer().getInfo().getName()).toLegacyText());
         }
     }
 
@@ -201,7 +206,7 @@ public class PlayerListener implements Listener {
             ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_QUIT, "PLAYER", event.getPlayer().getName()));
         }
         if (BungeeEssentials.getInstance().contains("fulllog")) {
-            Log.log(Dictionary.format(Dictionary.FORMAT_QUIT, "PLAYER", "[QUIT] " + event.getPlayer().getName()).toLegacyText());
+            Log.log(Dictionary.format("[QUIT] " + Dictionary.FORMAT_QUIT, "PLAYER", event.getPlayer().getName()).toLegacyText());
         }
         PlayerData.getData(event.getPlayer().getUniqueId()).save();
     }
@@ -216,7 +221,7 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = Byte.MAX_VALUE)
     public void kick(ServerKickEvent event) {
         if (BungeeEssentials.getInstance().contains("fulllog")) {
-            Log.log(Dictionary.format(Dictionary.FORMAT_KICK, "PLAYER", event.getPlayer().getName(), "REASON", "[KICK] " + event.getKickReason()).toLegacyText());
+            Log.log(Dictionary.format("[KICK] " + Dictionary.FORMAT_KICK, "PLAYER", event.getPlayer().getName(), "REASON", event.getKickReason()).toLegacyText());
         }
         if (event.getKickReasonComponent()[0].toPlainText().equals("Server closed")) {
             sendFallback(event);

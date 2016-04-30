@@ -72,7 +72,7 @@ public class MessageEvent extends Event implements Cancellable {
                 ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), () -> Messenger.messages.put(recp.getUniqueId(), play.getUniqueId()), 3, TimeUnit.SECONDS);
             }
             PlayerData pDR = PlayerData.getData(((ProxiedPlayer) recipient).getUniqueId());
-            if (BungeeEssentials.getInstance().contains("ignore")) {
+            if (sender != ProxyServer.getInstance().getConsole() && BungeeEssentials.getInstance().contains("ignore")) {
                 PlayerData pDS = PlayerData.getData(((ProxiedPlayer) sender).getUniqueId());
                 if (!pDS.isIgnored(((ProxiedPlayer) recipient).getUniqueId().toString())) {
                     if (!pDR.isIgnored(((ProxiedPlayer) sender).getUniqueId().toString()) && (pDR.isMsging() || sender.hasPermission(Permissions.Admin.BYPASS_MSG))) {
@@ -90,8 +90,9 @@ public class MessageEvent extends Event implements Cancellable {
             }
         } else if (recipient == ProxyServer.getInstance().getConsole()) {
             String server = sender instanceof ProxiedPlayer ? ((ProxiedPlayer) sender).getServer().getInfo().getName() : "CONSOLE";
+            String serverC = recipient instanceof ProxiedPlayer ? ((ProxiedPlayer) recipient).getServer().getInfo().getName() : "CONSOLE";
             recipient.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_RECEIVE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
-            sender.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_SEND, "SERVER", ((ProxiedPlayer) recipient).getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
+            sender.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_SEND, "SERVER", serverC, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
         } else {
             sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
         }

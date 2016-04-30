@@ -333,9 +333,36 @@ public class Dictionary {
      * @return The formatted string.
      */
     public static TextComponent formatMsg(String input, String... args) {
+        TextComponent finalText = new TextComponent("");
+
         ProxiedPlayer player = ProxyServer.getInstance().getPlayer(args[3]);
         if (player != null) {
-            return format(color(input), player.hasPermission(Permissions.General.MESSAGE_COLOR), player.hasPermission(Permissions.General.MESSAGE_HOVER), player.hasPermission(Permissions.General.MESSAGE_CLICK), args);
+            int count = (input.length() - input.replace("{{ MESSAGE }}", "").length()) / 13;
+            TextComponent message = format("{{ MESSAGE }}", player.hasPermission(Permissions.General.MESSAGE_COLOR), player.hasPermission(Permissions.General.MESSAGE_HOVER), player.hasPermission(Permissions.General.MESSAGE_CLICK), args);
+
+            if (input.startsWith("{{ MESSAGE }}")) {
+                count--;
+                finalText.addExtra(message);
+            }
+
+            if (input.endsWith("{{ MESSAGE }}")) {
+                count--;
+            }
+
+            for (String part : input.split("\\{\\{ MESSAGE }}")) {
+                finalText.addExtra(format(part, args));
+                if (count > 0) {
+                    count--;
+                    finalText.addExtra(message);
+                }
+            }
+
+            if (input.endsWith("{{ MESSAGE }}")) {
+                finalText.addExtra(message);
+            }
+
+            return finalText;
+
         }
         return format(color(input), args);
     }

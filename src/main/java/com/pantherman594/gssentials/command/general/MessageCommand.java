@@ -66,7 +66,7 @@ public class MessageCommand extends BECommand implements TabExecutor {
                 sender.sendMessage(Dictionary.format("&cSorry, Console cannot toggle messages."));
             }
         } else if (args.length > 1) {
-            if (args[0].equalsIgnoreCase("CONSOLE")) {
+            if (!args[0].equalsIgnoreCase("CONSOLE")) {
                 ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(args[0]);
                 ProxyServer.getInstance().getPluginManager().callEvent(new MessageEvent(sender, recipient, Dictionary.combine(0, args)));
             } else {
