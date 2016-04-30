@@ -218,8 +218,15 @@ class Updater {
                 if (messages.getString("list.header").equals("&aServers:")) {
                     messages.set("list.header", "You are on {{ CURRENT }}\n&aServers:");
                 }
+            case 254:
+                String msgFormat = messages.getString("message.format");
+                messages.set("message.format", null);
+                messages.set("message.format.send", msgFormat.replace("{{ SENDER }}", "me"));
+                messages.set("message.format.receive", msgFormat.replace("{{ RECIPIENT }}", "me"));
+                messages.set("friend.removeerror", messages.get("friend.inrequests.removeerror"));
+                messages.set("friend.inrequests.removeerror", null);
                 config.set("configversion", null);
-                config.set("configversion", "2.5.4");
+                config.set("configversion", "2.5.5");
         }
         plugin.saveMainConfig();
         plugin.saveMessagesConfig();
