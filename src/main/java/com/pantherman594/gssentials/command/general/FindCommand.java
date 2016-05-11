@@ -38,12 +38,16 @@ public class FindCommand extends BECommand implements TabExecutor {
     public void execute(CommandSender sender, String[] args) {
         if (args.length > 0) {
             ProxiedPlayer player = ProxyServer.getInstance().getPlayer(args[0]);
-            PlayerData pD = PlayerData.getData(player.getUniqueId());
-
-            if (player != null && !pD.isHidden()) {
-                sender.sendMessage(Dictionary.format(Dictionary.FORMAT_FIND_PLAYER, "SERVER", player.getServer().getInfo().getName(), "PLAYER", player.getName()));
-            } else {
+            if (player == null) {
                 sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
+            } else {
+                PlayerData pD = PlayerData.getData(player.getUniqueId());
+
+                if (!pD.isHidden()) {
+                    sender.sendMessage(Dictionary.format(Dictionary.FORMAT_FIND_PLAYER, "SERVER", player.getServer().getInfo().getName(), "PLAYER", player.getName()));
+                } else {
+                    sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
+                }
             }
         } else {
             sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <player>"));
