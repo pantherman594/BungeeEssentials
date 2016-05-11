@@ -117,11 +117,18 @@
             <systemPath>${project.basedir}/libs/BungeeAdminTools.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>com.bloodsplat</groupId>
+            <groupId>main</groupId>
             <artifactId>BungeeSuite</artifactId>
-            <version>0.51</version>
+            <version>3.0</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/libs/BungeeSuite.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.minecraftdimensions</groupId>
+            <artifactId>BungeeSuite</artifactId>
+            <version>0.51b-99</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/BungeeSuite99.jar</systemPath>
         </dependency>
     </dependencies>
 </project>

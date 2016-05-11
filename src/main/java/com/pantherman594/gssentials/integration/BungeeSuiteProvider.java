@@ -18,11 +18,8 @@
 
 package com.pantherman594.gssentials.integration;
 
-import managers.BansManager;
-import managers.PlayerManager;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import objects.BSPlayer;
 
 class BungeeSuiteProvider extends IntegrationProvider {
 
@@ -34,7 +31,16 @@ class BungeeSuiteProvider extends IntegrationProvider {
      */
     @Override
     public boolean isMuted(ProxiedPlayer player) {
-        BSPlayer suitePlayer = PlayerManager.getPlayer(player);
+        //Build 99
+        try {
+            Class.forName("com.minecraftdimensions.bungeesuite.managers.PlayerManager");
+            com.minecraftdimensions.bungeesuite.objects.BSPlayer suitePlayer = com.minecraftdimensions.bungeesuite.managers.PlayerManager.getPlayer(player);
+            return suitePlayer != null && suitePlayer.isMuted();
+        } catch (ClassNotFoundException ignored) {
+        }
+
+        //Version 51
+        objects.BSPlayer suitePlayer = managers.PlayerManager.getPlayer(player);
         return suitePlayer != null && suitePlayer.isMuted();
     }
 
@@ -46,7 +52,16 @@ class BungeeSuiteProvider extends IntegrationProvider {
      */
     @Override
     public boolean isBanned(ProxiedPlayer player) {
-        return BansManager.isPlayerBanned(player.getName());
+        //Build 99
+        try {
+            Class.forName("com.minecraftdimensions.bungeesuite.managers.PlayerManager");
+            return com.minecraftdimensions.bungeesuite.managers.BansManager.isPlayerBanned(player.getName());
+
+        } catch (ClassNotFoundException ignored) {
+        }
+
+        //Version 51
+        return managers.BansManager.isPlayerBanned(player.getName());
     }
 
     /**
