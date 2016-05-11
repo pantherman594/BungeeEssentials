@@ -225,8 +225,9 @@ class Updater {
                 messages.set("message.format.receive", msgFormat.replace("{{ RECIPIENT }}", "me"));
                 messages.set("friend.removeerror", messages.get("friend.inrequests.removeerror"));
                 messages.set("friend.inrequests.removeerror", null);
+            case 255:
                 config.set("configversion", null);
-                config.set("configversion", "2.5.5");
+                config.set("configversion", "2.5.6");
         }
         plugin.saveMainConfig();
         plugin.saveMessagesConfig();
