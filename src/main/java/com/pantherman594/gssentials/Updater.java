@@ -227,8 +227,9 @@ class Updater {
                 messages.set("friend.inrequests.removeerror", null);
             case 255:
             case 256:
+            case 257:
                 config.set("configversion", null);
-                config.set("configversion", "2.5.7");
+                config.set("configversion", "2.5.8");
         }
         plugin.saveMainConfig();
         plugin.saveMessagesConfig();
