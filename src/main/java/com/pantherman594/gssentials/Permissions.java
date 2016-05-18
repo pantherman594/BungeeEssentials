@@ -25,7 +25,7 @@ public class Permissions {
         public static final String PREFIX = "gssentials.admin.";
         public static final String ALERT = PREFIX + "alert";
         public static final String CHAT = PREFIX + "chat";
-        public static final String SEND = PREFIX + "asend";
+        public static final String SEND = PREFIX + "send";
         public static final String SENDALL = PREFIX + "sendall";
         public static final String SPY = PREFIX + "spy";
         public static final String SPY_EXEMPT = SPY + ".exempt";
