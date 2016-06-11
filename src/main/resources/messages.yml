@@ -23,7 +23,7 @@ rules:
   handle: CURSING
 - pattern: \b(([\w\d]{2,})\s*.(\.|d.t).{0,5})+(net|com|xyz|me|org|site|pw|top|io|co|biz|eu|uk)
   handle: ADVERTISEMENT
-- pattern: \b.+((\.|dot).+)*(\.|dot)[^\s]*([a-zA-Z]{2,5}|[0-9]{1,3})
+- pattern: \b.+((\.|dot).+)*(\.|dot)[^\s]*[a-zA-Z]{2,5}
   handle: ADVERTISEMENT
 - pattern: (\d{1,4}\.){3}\d{1,4}
   handle: ADVERTISEMENT

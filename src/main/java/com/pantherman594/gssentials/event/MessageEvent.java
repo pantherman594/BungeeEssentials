@@ -65,6 +65,9 @@ public class MessageEvent extends Event implements Cancellable {
                             }
                         }
                     }
+                    if (PlayerData.getData("CONSOLE").isSpy()) {
+                        ProxyServer.getInstance().getConsole().sendMessage(spyMessage.toLegacyText());
+                    }
                 }
                 final ProxiedPlayer recp = (ProxiedPlayer) recipient;
                 final ProxiedPlayer play = player;

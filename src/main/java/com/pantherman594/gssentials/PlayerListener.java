@@ -82,6 +82,9 @@ public class PlayerListener implements Listener {
             }
             if (!event.isCancelled() && !player.hasPermission(Permissions.Admin.SPY_EXEMPT) && BungeeEssentials.getInstance().contains("commandSpy")) {
                 ProxyServer.getInstance().getPlayers().stream().filter(onlinePlayer -> (onlinePlayer.getUniqueId() != player.getUniqueId()) && (onlinePlayer.hasPermission(Permissions.Admin.SPY_COMMAND)) && PlayerData.getData(onlinePlayer.getUniqueId()).isCSpy()).forEach(onlinePlayer -> onlinePlayer.sendMessage(Dictionary.format(Dictionary.CSPY_COMMAND, "SENDER", sender, "COMMAND", event.getMessage())));
+                if (PlayerData.getData("CONSOLE").isCSpy()) {
+                    ProxyServer.getInstance().getConsole().sendMessage(Dictionary.format(Dictionary.CSPY_COMMAND, "SENDER", sender, "COMMAND", event.getMessage()).toLegacyText());
+                }
             }
             if (BungeeEssentials.getInstance().contains("server") && player.hasPermission(Permissions.General.LIST) && cmd.split(" ")[0].startsWith("server") && cmd.split(" ").length == 1) {
                 event.setCancelled(true);

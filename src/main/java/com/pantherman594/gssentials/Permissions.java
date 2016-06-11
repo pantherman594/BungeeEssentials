@@ -44,13 +44,14 @@ public class Permissions {
     public static class General {
         public static final String PREFIX = "gssentials.";
         public static final String MESSAGE = PREFIX + "message";
+        public static final String MESSAGE_GLOBAL = MESSAGE + ".global";
         public static final String MESSAGE_COLOR = MESSAGE + ".color";
         public static final String MESSAGE_HOVER = MESSAGE + ".hover";
         public static final String MESSAGE_CLICK = MESSAGE + ".click";
         public static final String FIND = PREFIX + "find";
         public static final String LIST = PREFIX + "list";
-        public static final String LIST_OFFLINE = PREFIX + "list.offline";
-        public static final String LIST_RESTRICTED = PREFIX + "list.restricted";
+        public static final String LIST_OFFLINE = LIST + ".offline";
+        public static final String LIST_RESTRICTED = LIST + ".restricted";
         public static final String SLAP = PREFIX + "slap";
         public static final String JOIN = PREFIX + "join";
         public static final String CHAT = PREFIX + "chat";
