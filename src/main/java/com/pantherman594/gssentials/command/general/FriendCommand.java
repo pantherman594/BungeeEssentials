@@ -69,9 +69,14 @@ public class FriendCommand extends BECommand implements TabExecutor {
                     sender.sendMessage(Dictionary.format(Dictionary.FRIEND_BODY, "NAME", name, "SERVER", server));
                 }
 
-                sender.sendMessage(Dictionary.format(Dictionary.OUTREQUESTS_HEADER, "COUNT", String.valueOf(playerData.getOutRequests().size())));
+                boolean headerSent = false;
 
                 for (String uuid : playerData.getOutRequests()) {
+                    if (!headerSent) {
+                        sender.sendMessage(Dictionary.format(Dictionary.OUTREQUESTS_HEADER, "COUNT", String.valueOf(playerData.getOutRequests().size())));
+                        headerSent = true;
+                    }
+
                     String name;
 
                     if (ProxyServer.getInstance().getPlayer(UUID.fromString(uuid)) != null) {
@@ -83,9 +88,14 @@ public class FriendCommand extends BECommand implements TabExecutor {
                     sender.sendMessage(Dictionary.format(Dictionary.OUTREQUESTS_BODY, "NAME", name));
                 }
 
-                sender.sendMessage(Dictionary.format(Dictionary.INREQUESTS_HEADER, "COUNT", String.valueOf(playerData.getInRequests().size())));
+                headerSent = false;
 
                 for (String uuid : playerData.getInRequests()) {
+                    if (!headerSent) {
+                        sender.sendMessage(Dictionary.format(Dictionary.INREQUESTS_HEADER, "COUNT", String.valueOf(playerData.getInRequests().size())));
+                        headerSent = true;
+                    }
+
                     String name;
 
                     if (ProxyServer.getInstance().getPlayer(UUID.fromString(uuid)) != null) {

@@ -209,6 +209,7 @@ public class BungeeEssentials extends Plugin {
         addEnabled("ignore");
         addEnabled("joinAnnounce");
         addEnabled("fulllog");
+        addEnabled("hoverlist");
         addEnabled("mute");
         addEnabled("server");
         addEnabled("autoredirect");

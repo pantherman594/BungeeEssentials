@@ -48,7 +48,7 @@ public class LookupCommand extends ServerSpecificCommand {
             boolean error = true;
             String partialPlayerName = args[0].toLowerCase();
             int arg = 0;
-            String[] possibleArgs = new String[]{"b", "m", "e", "a"};
+            String[] possibleArgs = new String[]{"b", "m", "e", "a", "ip"};
             for (String a : possibleArgs) {
                 if (args[0].equals("-" + a)) {
                     partialPlayerName = args[1].toLowerCase();
@@ -89,6 +89,8 @@ public class LookupCommand extends ServerSpecificCommand {
                                 matches.add(p);
                             }
                         }
+                        break;
+                    case "-ip":
                         break;
                     default:
                         break;

@@ -39,6 +39,7 @@ public class PlayerData {
     private Configuration config;
     private String name;
     private String uuid;
+    private String ip;
     private List<String> friends;
     private List<String> outRequests;
     private List<String> inRequests;
@@ -81,6 +82,7 @@ public class PlayerData {
             if (name == null) {
                 this.name = config.getString("lastname");
             }
+            ip = config.getString("ip");
             friends.addAll(config.getStringList("friends"));
             outRequests.addAll(config.getStringList("requests.out"));
             inRequests.addAll(config.getStringList("requests.in"));
@@ -174,6 +176,9 @@ public class PlayerData {
             return false;
         }
         config.set("lastname", name);
+        if (BungeeEssentials.getInstance().getProxy().getPlayer(uuid) != null) {
+            config.set("ip", BungeeEssentials.getInstance().getProxy().getPlayer(uuid).getAddress().getAddress().getHostAddress());
+        }
         config.set("friends", friends);
         config.set("requests.out", outRequests);
         config.set("requests.in", inRequests);
@@ -193,6 +198,10 @@ public class PlayerData {
         }
         playerDataList.remove(uuid);
         return true;
+    }
+
+    public String getIp() {
+        return ip;
     }
 
     public List<String> getFriends() {

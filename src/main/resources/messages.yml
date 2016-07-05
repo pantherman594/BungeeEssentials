@@ -18,6 +18,97 @@ warnings:
   similarity: '&cPlease do not spam other players!'
   swearing: '&cPlease do not swear at other players!'
   advertising: '&cPlease do not advertise other servers!'
+rulenotify:
+  advertisement: '&7{{ PLAYER }} just advertised!'
+  cursing: '&7{{ PLAYER }} just swore!'
+  replace: '&7{{ PLAYER }} swore but was replaced!'
+  command: '&7{{ PLAYER }} swore, triggering a command!'
+staffchat:
+  message: '&c{{ SERVER }} - {{ SENDER }} » &7{{ MESSAGE }}'
+  enabled: '&aYou are now chatting in staff chat!'
+  disabled: '&cYou are no longer chatting in staff chat!'
+chat:
+  message: '&e{{ SERVER }} - {{ SENDER }} » &7{{ MESSAGE }}'
+  enabled: '&aYou are now chatting in global chat!'
+  disabled: '&cYou are no longer chatting in global chat!'
+list:
+  header: |-
+    &aYou are on {{ CURRENT }}
+    &aServers:
+  body: '&a- {{ SERVER }} ({{ DENSITY }}&a)'
+hoverlist:
+  friend:
+    order: 1
+    header: '&aFriends Online:'
+  staff:
+    order: 2
+    header: '&6Staff Online:'
+  other:
+    order: 0 #Will not be shown
+    header: '&fOther Players:'
+lookup:
+  header: '&6Found {{ SIZE }} player(s):'
+  body: '&f - {{ PLAYER }}'
+spy:
+  message: '&7[{{ SENDER }} » {{ RECIPIENT }}] &7{{ MESSAGE }}'
+  enabled: '&aSpy has been enabled'
+  disabled: '&cSpy has been disabled'
+commandspy:
+  command: '&7[{{ SENDER }}] &b{{ COMMAND }}'
+  enabled: '&aCommand Spy has been enabled'
+  disabled: '&cCommand Spy has been disabled'
+friend:
+  header: '&2Current Friends:'
+  body: '- {{ NAME }} ({{ SERVER }}){{ HOVER: Click to join your friend! }}{{ CLICK:
+    /server {{ SERVER }} }}'
+  new: '&aYou are now friends with {{ NAME }}!'
+  old: '&aYou are already friends with {{ NAME }}!'
+  remove: '&cYou are no longer friends with {{ NAME }}.'
+  removeerror: '&cYou can''t remove a friend you don''t have!'
+  outrequests:
+    header: '&2Outgoing Friend Requests:'
+    body: '- {{ NAME }}'
+    new: '&a{{ NAME }} has received your friend request.'
+    old: '&cYou already requested to be friends with {{ NAME }}. Please wait for a
+      response!'
+    remove: '&cThe friend request to {{ NAME }} was cancelled.'
+  inrequests:
+    header: '&2Incoming Friend Requests:'
+    body: '- {{ NAME }}{{ BREAK }}  &a[Y]{{ HOVER: Click to accept the request! }}{{
+      CLICK: /friend add {{ NAME }} }}{{ BREAK }} {{ BREAK }}&c[N]{{ HOVER: Click
+      to deny the request. }}{{ CLICK: /friend remove {{ NAME }} }}'
+    new: |-
+      &a{{ NAME }} would like to be your friend! Click one:{{ BREAK }}
+      &a[Yes!]{{ HOVER: Click to accept the request! }}{{ CLICK: /friend add {{ NAME }} }}{{ BREAK }}     {{ BREAK }}&c[No]{{ HOVER: Click to deny the request. }}{{ CLICK: /friend remove {{ NAME }} }}
+    remove: '&cThe friend request from {{ NAME }} was cancelled.'
+hide:
+  enabled: '&aYou are now hidden from all players!'
+  disabled: '&cYou are now visible to all players!'
+ignore:
+  enabled: '&6Now ignoring {{ PLAYER }}.'
+  disabled: '&6No longer ignoring {{ PLAYER }}.'
+slap:
+  slapper: '&aYou just slapped &e{{ SLAPPED }}&a. I bet that felt good, didn''t it?'
+  slapped: '&cYou were just slapped by &e{{ SLAPPER }}&c! Ouch! (/slap him back!)'
+mute:
+  muted:
+    enabled: '&cYou are now muted!'
+    disabled: '&aYou are no longer muted!'
+    error: '&cHey, you can''t chat while muted!'
+  muter:
+    enabled: '&c{{ PLAYER }} is now muted!'
+    disabled: '&a{{ PLAYER }} is no longer muted!'
+    exempt: '&cHey, you can''t mute that player!'
+    error: '&7{{ PLAYER }} tried to chat while muted!'
+errors:
+  invalid: '&cInvalid arguments provided. Usage: {{ HELP }}'
+  offline: '&cSorry, that player is offline.'
+  slap: '&cYou are unworthy of slapping people.'
+  messages: '&cNobody has messaged you recently.'
+  ignoreself: '&cYou can''t ignore yourself!'
+  ignoring: '&cYou can''t send a message to someone you''re ignoring!'
+  sendfail: '&cUnable to send {{ PLAYER }} to {{ SERVER }}.'
+  fastrelog: '&cPlease wait before reconnecting!'
 rules:
 - pattern: \bfuck\b
   handle: CURSING
@@ -87,87 +178,6 @@ bannedwords:
   - wanker
   - whore
   - wtf
-rulenotify:
-  advertisement: '&7{{ PLAYER }} just advertised!'
-  cursing: '&7{{ PLAYER }} just swore!'
-  replace: '&7{{ PLAYER }} swore but was replaced!'
-  command: '&7{{ PLAYER }} swore, triggering a command!'
-staffchat:
-  message: '&c{{ SERVER }} - {{ SENDER }} » &7{{ MESSAGE }}'
-  enabled: '&aYou are now chatting in staff chat!'
-  disabled: '&cYou are no longer chatting in staff chat!'
-chat:
-  message: '&e{{ SERVER }} - {{ SENDER }} » &7{{ MESSAGE }}'
-  enabled: '&aYou are now chatting in global chat!'
-  disabled: '&cYou are no longer chatting in global chat!'
-list:
-  header: |-
-    &aYou are on {{ CURRENT }}
-    &aServers:
-  body: '&a- {{ SERVER }} ({{ DENSITY }}&a)'
-lookup:
-  header: '&6Found {{ SIZE }} player(s):'
-  body: '&f - {{ PLAYER }}'
-spy:
-  message: '&7[{{ SENDER }} » {{ RECIPIENT }}] &7{{ MESSAGE }}'
-  enabled: '&aSpy has been enabled'
-  disabled: '&cSpy has been disabled'
-commandspy:
-  command: '&7[{{ SENDER }}] &b{{ COMMAND }}'
-  enabled: '&aCommand Spy has been enabled'
-  disabled: '&cCommand Spy has been disabled'
-friend:
-  header: '&2Current Friends:'
-  body: '- {{ NAME }} ({{ SERVER }}){{ HOVER: Click to join your friend! }}{{ CLICK:
-    /server {{ SERVER }} }}'
-  new: '&aYou are now friends with {{ NAME }}!'
-  old: '&aYou are already friends with {{ NAME }}!'
-  remove: '&cYou are no longer friends with {{ NAME }}.'
-  removeerror: '&cYou can''t remove a friend you don''t have!'
-  outrequests:
-    header: '&2Outgoing Friend Requests:'
-    body: '- {{ NAME }}'
-    new: '&a{{ NAME }} has received your friend request.'
-    old: '&cYou already requested to be friends with {{ NAME }}. Please wait for a
-      response!'
-    remove: '&cThe friend request to {{ NAME }} was cancelled.'
-  inrequests:
-    header: '&2Incoming Friend Requests:'
-    body: '- {{ NAME }}{{ BREAK }}  &a[Y]{{ HOVER: Click to accept the request! }}{{
-      CLICK: /friend add {{ NAME }} }}{{ BREAK }} {{ BREAK }}&c[N]{{ HOVER: Click
-      to deny the request. }}{{ CLICK: /friend remove {{ NAME }} }}'
-    new: |-
-      &a{{ NAME }} would like to be your friend! Click one:{{ BREAK }}
-      &a[Yes!]{{ HOVER: Click to accept the request! }}{{ CLICK: /friend add {{ NAME }} }}{{ BREAK }}     {{ BREAK }}&c[No]{{ HOVER: Click to deny the request. }}{{ CLICK: /friend remove {{ NAME }} }}
-    remove: '&cThe friend request from {{ NAME }} was cancelled.'
-hide:
-  enabled: '&aYou are now hidden from all players!'
-  disabled: '&cYou are now visible to all players!'
-ignore:
-  enabled: '&6Now ignoring {{ PLAYER }}.'
-  disabled: '&6No longer ignoring {{ PLAYER }}.'
-slap:
-  slapper: '&aYou just slapped &e{{ SLAPPED }}&a. I bet that felt good, didn''t it?'
-  slapped: '&cYou were just slapped by &e{{ SLAPPER }}&c! Ouch! (/slap him back!)'
-mute:
-  muted:
-    enabled: '&cYou are now muted!'
-    disabled: '&aYou are no longer muted!'
-    error: '&cHey, you can''t chat while muted!'
-  muter:
-    enabled: '&c{{ PLAYER }} is now muted!'
-    disabled: '&a{{ PLAYER }} is no longer muted!'
-    exempt: '&cHey, you can''t mute that player!'
-    error: '&7{{ PLAYER }} tried to chat while muted!'
-errors:
-  invalid: '&cInvalid arguments provided. Usage: {{ HELP }}'
-  offline: '&cSorry, that player is offline.'
-  slap: '&cYou are unworthy of slapping people.'
-  messages: '&cNobody has messaged you recently.'
-  ignoreself: '&cYou can''t ignore yourself!'
-  ignoring: '&cYou can''t send a message to someone you''re ignoring!'
-  sendfail: '&cUnable to send {{ PLAYER }} to {{ SERVER }}.'
-  fastrelog: '&cPlease wait before reconnecting!'
 announcements:
   vote:
     delay: 30 #Time measured in seconds

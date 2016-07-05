@@ -39,6 +39,7 @@ public class Permissions {
         public static final String NOTIFY = PREFIX + "notify";
         public static final String MUTE = PREFIX + "mute";
         public static final String MUTE_EXEMPT = MUTE + ".exempt";
+        public static final String HOVER_LIST = PREFIX + "hover-list";
     }
 
     public static class General {

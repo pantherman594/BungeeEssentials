@@ -29,6 +29,7 @@ import net.md_5.bungee.api.event.*;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -243,7 +244,7 @@ public class PlayerListener implements Listener {
 
     /**
      * Event fired when a player pings the proxy. If there are hidden players, they are
-     * removed from the player count.
+     * removed from the player count and the player list.
      *
      * @param event The Proxy Ping Event.
      */
@@ -251,9 +252,81 @@ public class PlayerListener implements Listener {
     public void ping(ProxyPingEvent event) {
         ServerPing response = event.getResponse();
         ServerPing.Players players = response.getPlayers();
-        players = new ServerPing.Players(players.getMax(), players.getOnline() - Messenger.hiddenNum(), players.getSample());
+        ServerPing.PlayerInfo[] sample = players.getSample();
+
+        if (BungeeEssentials.getInstance().contains("hoverlist")) {
+            List<ServerPing.PlayerInfo> infos = new ArrayList<>();
+
+            File pDataDir = new File(BungeeEssentials.getInstance().getDataFolder() + File.separator + "playerdata");
+            if (pDataDir.exists()) {
+
+                PlayerData pD = null;
+
+                for (File f : pDataDir.listFiles()) {
+                    PlayerData pDS = PlayerData.getData(f.getName().split("\\.yml")[0]);
+                    if (pDS.getIp().equals(event.getConnection().getAddress().getAddress().getHostAddress())) {
+                        pD = pDS;
+                        break;
+                    }
+                }
+
+                if (pD != null) {
+
+                    UUID EMPTY_UUID = UUID.fromString("0-0-0-0-0");
+
+                    List<ServerPing.PlayerInfo> friends = new ArrayList<>();
+
+                    for (String uuid : pD.getFriends()) {
+                        ProxiedPlayer friend = BungeeEssentials.getInstance().getProxy().getPlayer(uuid);
+                        if (friend != null) {
+                            friends.add(new ServerPing.PlayerInfo(friend.getName(), friend.getUniqueId()));
+                        }
+                    }
+
+                    if (!friends.isEmpty()) {
+                        friends.add(0, new ServerPing.PlayerInfo(Dictionary.HOVER_FRIEND_HEADER, EMPTY_UUID));
+                    }
+
+                    List<ServerPing.PlayerInfo> staff = new ArrayList<>();
+                    List<ServerPing.PlayerInfo> other = new ArrayList<>();
+
+                    for (ProxiedPlayer p : BungeeEssentials.getInstance().getProxy().getPlayers()) {
+                        ServerPing.PlayerInfo info = new ServerPing.PlayerInfo(p.getName(), p.getUniqueId());
+                        if (p.hasPermission(Permissions.Admin.HOVER_LIST)) {
+                            staff.add(info);
+                        } else {
+                            other.add(info);
+                        }
+                    }
+
+                    if (!staff.isEmpty()) {
+                        other.add(0, new ServerPing.PlayerInfo(Dictionary.HOVER_OTHER_HEADER, EMPTY_UUID));
+                    }
+
+                    if (!other.isEmpty()) {
+                        other.add(0, new ServerPing.PlayerInfo(Dictionary.HOVER_OTHER_HEADER, EMPTY_UUID));
+                    }
+
+                    Map<String, List<ServerPing.PlayerInfo>> orders = new TreeMap<>();
+                    orders.put(Dictionary.HOVER_FRIEND_ORDER, friends);
+                    orders.put(Dictionary.HOVER_STAFF_ORDER, staff);
+                    orders.put(Dictionary.HOVER_OTHER_ORDER, other);
+
+                    orders.keySet().stream().filter(order -> Integer.valueOf(order) > 0).forEach(order -> infos.addAll(orders.get(order)));
+
+                    sample = infos.toArray(new ServerPing.PlayerInfo[infos.size() > 12 ? 12 : infos.size()]);
+                }
+            }
+        }
+
+        players.setSample(sample);
+        response.setPlayers(players);
+        event.setResponse(response);
+        /*
+        players = new ServerPing.Players(players.getMax(), players.getOnline() - Messenger.hiddenNum(), sample);
         final ServerPing ping = new ServerPing(response.getVersion(), players, response.getDescription(), response.getFaviconObject());
         event.setResponse(ping);
+        */
     }
 
     /**

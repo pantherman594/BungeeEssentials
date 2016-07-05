@@ -111,6 +111,18 @@ public class Dictionary {
     public static String LIST_HEADER;
     @Load(key = "list.body", def = "&a- {{ SERVER }} ({{ DENSITY }}&a)")
     public static String LIST_BODY;
+    @Load(key = "hoverlist.friend.order", def = "1")
+    public static String HOVER_FRIEND_ORDER;
+    @Load(key = "hoverlist.friend.header", def = "&aFriends Online:")
+    public static String HOVER_FRIEND_HEADER;
+    @Load(key = "hoverlist.staff.order", def = "2")
+    public static String HOVER_STAFF_ORDER;
+    @Load(key = "hoverlist.staff.header", def = "&6Staff Online:")
+    public static String HOVER_STAFF_HEADER;
+    @Load(key = "hoverlist.other.order", def = "0")
+    public static String HOVER_OTHER_ORDER;
+    @Load(key = "hoverlist.other.header", def = "&fOther Players:")
+    public static String HOVER_OTHER_HEADER;
     @Load(key = "lookup.header", def = "&6Found {{ SIZE }} player(s):")
     public static String LOOKUP_HEADER;
     @Load(key = "lookup.body", def = "&f - {{ PLAYER }}")
