@@ -79,7 +79,7 @@ public class MessageEvent extends Event implements Cancellable {
             PlayerData pDR = PlayerData.getData(((ProxiedPlayer) recipient).getUniqueId());
             if (sender != ProxyServer.getInstance().getConsole() && BungeeEssentials.getInstance().contains("ignore")) {
                 PlayerData pDS = PlayerData.getData(((ProxiedPlayer) sender).getUniqueId());
-                if (!pDS.isIgnored(((ProxiedPlayer) recipient).getUniqueId().toString())) {
+                if (message != null && !pDS.isIgnored(((ProxiedPlayer) recipient).getUniqueId().toString())) {
                     if (!pDR.isIgnored(((ProxiedPlayer) sender).getUniqueId().toString()) && (pDR.isMsging() || sender.hasPermission(Permissions.Admin.BYPASS_MSG))) {
                         recipient.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_RECEIVE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
                     }
@@ -89,15 +89,17 @@ public class MessageEvent extends Event implements Cancellable {
                 }
             } else {
                 sender.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_SEND, "SERVER", ((ProxiedPlayer) recipient).getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
-                if (pDR.isMsging() || sender.hasPermission(Permissions.Admin.BYPASS_MSG)) {
+                if (message != null && pDR.isMsging() || sender.hasPermission(Permissions.Admin.BYPASS_MSG)) {
                     recipient.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_RECEIVE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
                 }
             }
         } else if (recipient == ProxyServer.getInstance().getConsole()) {
             String server = sender instanceof ProxiedPlayer ? ((ProxiedPlayer) sender).getServer().getInfo().getName() : "CONSOLE";
             String serverC = recipient instanceof ProxiedPlayer ? ((ProxiedPlayer) recipient).getServer().getInfo().getName() : "CONSOLE";
-            recipient.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_RECEIVE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
-            sender.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_SEND, "SERVER", serverC, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
+            if (message != null) {
+                recipient.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_RECEIVE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
+                sender.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_SEND, "SERVER", serverC, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
+            }
         } else {
             sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
         }

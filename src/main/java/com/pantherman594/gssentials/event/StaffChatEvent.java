@@ -47,11 +47,13 @@ public class StaffChatEvent extends Event implements Cancellable {
 
         if (msgPre != null) {
             msgPre = Messenger.filter(ProxyServer.getInstance().getPlayer(sender), msgPre, Messenger.ChatType.STAFF);
-            TextComponent msg = Dictionary.formatMsg(Dictionary.FORMAT_STAFF_CHAT, "SERVER", server, "SENDER", sender, "MESSAGE", msgPre);
-            ProxyServer.getInstance().getPlayers().stream().filter(player -> player.hasPermission(Permissions.Admin.CHAT + "." + server) || player.hasPermission(Permissions.Admin.CHAT)).forEach(player -> player.sendMessage(msg));
-            if (msg != null) {
-                ProxyServer.getInstance().getConsole().sendMessage(msg);
-                Log.log("[SCHAT] " + msg.toLegacyText());
+            if (msgPre != null) {
+                TextComponent msg = Dictionary.formatMsg(Dictionary.FORMAT_STAFF_CHAT, "SERVER", server, "SENDER", sender, "MESSAGE", msgPre);
+                ProxyServer.getInstance().getPlayers().stream().filter(player -> player.hasPermission(Permissions.Admin.CHAT + "." + server) || player.hasPermission(Permissions.Admin.CHAT)).forEach(player -> player.sendMessage(msg));
+                if (msg != null) {
+                    ProxyServer.getInstance().getConsole().sendMessage(msg);
+                    Log.log("[SCHAT] " + msg.toLegacyText());
+                }
             }
         }
     }

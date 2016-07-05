@@ -68,7 +68,11 @@ public class MessageCommand extends BECommand implements TabExecutor {
         } else if (args.length > 1) {
             if (!args[0].equalsIgnoreCase("CONSOLE")) {
                 ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(args[0]);
-                ProxyServer.getInstance().getPluginManager().callEvent(new MessageEvent(sender, recipient, Dictionary.combine(0, args)));
+                if (sender instanceof ProxiedPlayer && (((ProxiedPlayer) sender).getServer() == recipient.getServer() || sender.hasPermission(Permissions.General.MESSAGE_GLOBAL))) {
+                    ProxyServer.getInstance().getPluginManager().callEvent(new MessageEvent(sender, recipient, Dictionary.combine(0, args)));
+                } else {
+                    sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
+                }
             } else {
                 ProxyServer.getInstance().getPluginManager().callEvent(new MessageEvent(sender, ProxyServer.getInstance().getConsole(), Dictionary.combine(0, args)));
             }
