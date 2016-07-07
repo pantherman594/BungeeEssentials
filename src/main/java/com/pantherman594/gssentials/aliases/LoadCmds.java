@@ -63,14 +63,14 @@ class LoadCmds extends Command {
 		
         if (command.contains("{*}")) {
             String joinedArgs = "";
-		for (String arg : args) {
-		    joinedArgs = joinedArgs + " " + arg;
-		}
+	    for (String arg : args) {
+	        joinedArgs = joinedArgs + " " + arg;
+	    }
             command = command.replace("{*}", joinedArgs);
         }
         
         while (args.length > num) {
-            if  (command.contains("{" + num + "}") {
+            if  (command.contains("{" + num + "}")) {
                 if ((args[num] != null) && (!args[num].equals(""))) {
                     command = command.replace("{" + num + "}", args[num]);
                 } else {
