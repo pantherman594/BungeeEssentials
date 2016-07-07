@@ -81,8 +81,10 @@ public class PlayerData {
             }
             if (name == null) {
                 this.name = config.getString("lastname");
+                ip = config.getString("ip") != null ? config.getString("ip") : "0.0.0.0";
+            } else if (!uuid.equals("CONSOLE")) {
+                ip = BungeeEssentials.getInstance().getProxy().getPlayer(UUID.fromString(uuid)).getAddress().getAddress().getHostAddress();
             }
-            ip = config.getString("ip");
             friends.addAll(config.getStringList("friends"));
             outRequests.addAll(config.getStringList("requests.out"));
             inRequests.addAll(config.getStringList("requests.in"));
@@ -122,6 +124,17 @@ public class PlayerData {
      */
     public static PlayerData getData(String uuid) {
         return getDatas().containsKey(uuid) ? getDatas().get(uuid) : new PlayerData(uuid, null);
+    }
+
+    /**
+     * Get the PlayerData of a player. If it does not
+     * exists, create it.
+     *
+     * @param p The proxied player.
+     * @return The PlayerData that matches the player.
+     */
+    public static PlayerData getData(ProxiedPlayer p) {
+        return getData(p.getUniqueId().toString());
     }
 
     /**
@@ -176,9 +189,7 @@ public class PlayerData {
             return false;
         }
         config.set("lastname", name);
-        if (BungeeEssentials.getInstance().getProxy().getPlayer(uuid) != null) {
-            config.set("ip", BungeeEssentials.getInstance().getProxy().getPlayer(uuid).getAddress().getAddress().getHostAddress());
-        }
+        config.set("ip", ip);
         config.set("friends", friends);
         config.set("requests.out", outRequests);
         config.set("requests.in", inRequests);
@@ -201,7 +212,7 @@ public class PlayerData {
     }
 
     public String getIp() {
-        return ip;
+        return ip == null ? "0.0.0.0" : ip;
     }
 
     public List<String> getFriends() {

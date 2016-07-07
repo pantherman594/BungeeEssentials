@@ -19,6 +19,8 @@
 package com.pantherman594.gssentials;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.pantherman594.gssentials.aliases.AliasManager;
 import com.pantherman594.gssentials.announcement.AnnouncementManager;
 import com.pantherman594.gssentials.integration.IntegrationProvider;
@@ -32,8 +34,12 @@ import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -41,7 +47,7 @@ import java.util.logging.Level;
 
 public class BungeeEssentials extends Plugin {
     private static BungeeEssentials instance;
-    public List<String> playerList = new ArrayList<>();
+    public Map<String, String> playerList = new HashMap<>();
     private Map<String, String> mainList = new HashMap<>();
     private Map<String, String[]> aliasList = new HashMap<>();
     private RuleManager ruleManager;
@@ -106,6 +112,23 @@ public class BungeeEssentials extends Plugin {
         PlayerData.getData("CONSOLE").save();
         Log.reset();
         savePlayerConfig();
+    }
+
+    public String getOfflineUUID(String name) {
+        String uuid;
+        if (ProxyServer.getInstance().getConfig().isOnlineMode()) {
+            try {
+                BufferedReader in = new BufferedReader(new InputStreamReader(new URL("https://api.mojang.com/users/profiles/minecraft/" + name).openStream()));
+                uuid = (((JsonObject) new JsonParser().parse(in)).get("id")).toString().replaceAll("\"", "").replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5");
+                in.close();
+            } catch (Exception e) {
+                return null;
+            }
+        } else {
+            uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8)).toString();
+        }
+
+        return uuid;
     }
 
     /**
@@ -363,8 +386,8 @@ public class BungeeEssentials extends Plugin {
      *
      * @param player The name of the player to add.
      */
-    void savePlayerConfig(String player) {
-        playerList.add(player);
+    void savePlayerConfig(String player, String ip) {
+        playerList.put(player, ip);
     }
 
     /**
@@ -377,8 +400,8 @@ public class BungeeEssentials extends Plugin {
                 getPlayerConfig().set("players", playerList);
             }
             ConfigurationProvider.getProvider(YamlConfiguration.class).save(getPlayerConfig(), playerFile);
-            playerList = new ArrayList<>();
-            getPlayerConfig().getStringList("players").stream().filter(player -> !playerList.contains(player)).forEachOrdered(player -> playerList.add(player));
+            playerList = new HashMap<>();
+            getPlayerConfig().getSection("players").getKeys().stream().filter(player -> !playerList.containsKey(player)).forEachOrdered(player -> playerList.put(player, getPlayerConfig().getString("players." + player)));
         } catch (IOException e) {
             e.printStackTrace();
         }

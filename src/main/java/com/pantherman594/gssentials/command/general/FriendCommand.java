@@ -19,8 +19,7 @@
 package com.pantherman594.gssentials.command.general;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.Dictionary;
 import com.pantherman594.gssentials.Permissions;
 import com.pantherman594.gssentials.PlayerData;
@@ -30,10 +29,6 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 /**
@@ -119,18 +114,12 @@ public class FriendCommand extends BECommand implements TabExecutor {
                         uuid = p.getUniqueId().toString();
                         playerData2 = PlayerData.getData(p.getUniqueId());
                     } else { // If the player is offline, lookup the player's uuid and load it.
-                        if (ProxyServer.getInstance().getConfig().isOnlineMode()) {
-                            try {
-                                BufferedReader in = new BufferedReader(new InputStreamReader(new URL("https://api.mojang.com/users/profiles/minecraft/" + args[1]).openStream()));
-                                uuid = (((JsonObject) new JsonParser().parse(in)).get("id")).toString().replaceAll("\"", "").replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5");
-                                in.close();
-                            } catch (Exception e) {
-                                sender.sendMessage(Dictionary.format("&cError: Could not find player."));
-                                return;
-                            }
-                        } else {
-                            uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + args[1]).getBytes(StandardCharsets.UTF_8)).toString();
+                        uuid = BungeeEssentials.getInstance().getOfflineUUID(args[1]);
+                        if (uuid == null) {
+                            sender.sendMessage(Dictionary.format("&cError: Could not find player."));
+                            return;
                         }
+
                         playerData2 = new PlayerData(uuid, null);
                     }
 

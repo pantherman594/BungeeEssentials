@@ -29,7 +29,6 @@ import net.md_5.bungee.api.event.*;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -164,7 +163,7 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = Byte.MAX_VALUE)
     public void postLogin(PostLoginEvent event) {
         new PlayerData(event.getPlayer().getUniqueId().toString(), event.getPlayer().getName());
-        BungeeEssentials.getInstance().savePlayerConfig(event.getPlayer().getName());
+        BungeeEssentials.getInstance().savePlayerConfig(event.getPlayer().getName(), event.getPlayer().getAddress().getAddress().getHostAddress());
         if (BungeeEssentials.getInstance().contains("joinAnnounce") && !PlayerData.getData(event.getPlayer().getUniqueId()).isHidden() && !(Dictionary.FORMAT_JOIN.equals("")) && event.getPlayer().hasPermission(Permissions.General.JOINANNC) && !(BungeeEssentials.getInstance().isIntegrated() && BungeeEssentials.getInstance().getIntegrationProvider().isBanned(event.getPlayer()))) {
             ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_JOIN, "PLAYER", event.getPlayer().getName()));
         }
@@ -255,71 +254,72 @@ public class PlayerListener implements Listener {
         ServerPing.PlayerInfo[] sample = players.getSample();
 
         if (BungeeEssentials.getInstance().contains("hoverlist")) {
-            List<ServerPing.PlayerInfo> infos = new ArrayList<>();
 
-            File pDataDir = new File(BungeeEssentials.getInstance().getDataFolder() + File.separator + "playerdata");
-            if (pDataDir.exists()) {
+            PlayerData pD = null;
 
-                PlayerData pD = null;
-
-                for (File f : pDataDir.listFiles()) {
-                    PlayerData pDS = PlayerData.getData(f.getName().split("\\.yml")[0]);
-                    if (pDS.getIp().equals(event.getConnection().getAddress().getAddress().getHostAddress())) {
-                        pD = pDS;
+            for (String p : BungeeEssentials.getInstance().playerList.keySet()) {
+                if (BungeeEssentials.getInstance().playerList.get(p).equals(event.getConnection().getAddress().getAddress().getHostAddress())) {
+                    String uuid = BungeeEssentials.getInstance().getOfflineUUID(p);
+                    if (uuid != null) {
+                        pD = PlayerData.getData(uuid);
                         break;
                     }
                 }
+            }
 
-                if (pD != null) {
+            UUID EMPTY_UUID = UUID.fromString("0-0-0-0-0");
+            List<ServerPing.PlayerInfo> infos = new ArrayList<>();
+            List<ServerPing.PlayerInfo> friends = new ArrayList<>();
 
-                    UUID EMPTY_UUID = UUID.fromString("0-0-0-0-0");
-
-                    List<ServerPing.PlayerInfo> friends = new ArrayList<>();
-
-                    for (String uuid : pD.getFriends()) {
-                        ProxiedPlayer friend = BungeeEssentials.getInstance().getProxy().getPlayer(uuid);
-                        if (friend != null) {
-                            friends.add(new ServerPing.PlayerInfo(friend.getName(), friend.getUniqueId()));
-                        }
+            if (pD != null) {
+                for (String uuid : pD.getFriends()) {
+                    ProxiedPlayer friend = BungeeEssentials.getInstance().getProxy().getPlayer(UUID.fromString(uuid));
+                    if (friend != null && !PlayerData.getData(friend).isHidden()) {
+                        friends.add(new ServerPing.PlayerInfo(friend.getName(), friend.getUniqueId()));
                     }
+                }
 
-                    if (!friends.isEmpty()) {
-                        friends.add(0, new ServerPing.PlayerInfo(Dictionary.HOVER_FRIEND_HEADER, EMPTY_UUID));
-                    }
-
-                    List<ServerPing.PlayerInfo> staff = new ArrayList<>();
-                    List<ServerPing.PlayerInfo> other = new ArrayList<>();
-
-                    for (ProxiedPlayer p : BungeeEssentials.getInstance().getProxy().getPlayers()) {
-                        ServerPing.PlayerInfo info = new ServerPing.PlayerInfo(p.getName(), p.getUniqueId());
-                        if (p.hasPermission(Permissions.Admin.HOVER_LIST)) {
-                            staff.add(info);
-                        } else {
-                            other.add(info);
-                        }
-                    }
-
-                    if (!staff.isEmpty()) {
-                        other.add(0, new ServerPing.PlayerInfo(Dictionary.HOVER_OTHER_HEADER, EMPTY_UUID));
-                    }
-
-                    if (!other.isEmpty()) {
-                        other.add(0, new ServerPing.PlayerInfo(Dictionary.HOVER_OTHER_HEADER, EMPTY_UUID));
-                    }
-
-                    Map<String, List<ServerPing.PlayerInfo>> orders = new TreeMap<>();
-                    orders.put(Dictionary.HOVER_FRIEND_ORDER, friends);
-                    orders.put(Dictionary.HOVER_STAFF_ORDER, staff);
-                    orders.put(Dictionary.HOVER_OTHER_ORDER, other);
-
-                    orders.keySet().stream().filter(order -> Integer.valueOf(order) > 0).forEach(order -> infos.addAll(orders.get(order)));
-
-                    sample = infos.toArray(new ServerPing.PlayerInfo[infos.size() > 12 ? 12 : infos.size()]);
+                if (!friends.isEmpty()) {
+                    friends.add(0, new ServerPing.PlayerInfo(Dictionary.color(Dictionary.HOVER_FRIEND_HEADER), EMPTY_UUID));
                 }
             }
+
+            List<ServerPing.PlayerInfo> staff = new ArrayList<>();
+            List<ServerPing.PlayerInfo> other = new ArrayList<>();
+
+            for (ProxiedPlayer p : Messenger.getVisiblePlayers(false)) {
+                ServerPing.PlayerInfo info = new ServerPing.PlayerInfo(p.getName(), p.getUniqueId());
+                if (!friends.contains(info)) {
+                    if (p.hasPermission(Permissions.Admin.HOVER_LIST)) {
+                        staff.add(info);
+                    } else {
+                        other.add(info);
+                    }
+                }
+            }
+
+            if (!staff.isEmpty()) {
+                staff.add(0, new ServerPing.PlayerInfo(Dictionary.color(Dictionary.HOVER_STAFF_HEADER), EMPTY_UUID));
+            }
+
+            if (!other.isEmpty()) {
+                other.add(0, new ServerPing.PlayerInfo(Dictionary.color(Dictionary.HOVER_OTHER_HEADER), EMPTY_UUID));
+            }
+
+            Map<String, List<ServerPing.PlayerInfo>> orders = new TreeMap<>();
+            orders.put(Dictionary.HOVER_FRIEND_ORDER, friends);
+            orders.put(Dictionary.HOVER_STAFF_ORDER, staff);
+            orders.put(Dictionary.HOVER_OTHER_ORDER, other);
+
+            orders.keySet().stream().filter(order -> Integer.valueOf(order) > 0).forEach(order -> {
+                infos.addAll(orders.get(order));
+            });
+
+            sample = infos.toArray(new ServerPing.PlayerInfo[infos.size() > 12 ? 12 : infos.size()]);
         }
 
         players.setSample(sample);
+        players.setOnline(Messenger.getVisiblePlayers(false).size());
         response.setPlayers(players);
         event.setResponse(response);
         /*

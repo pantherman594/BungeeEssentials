@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 public class Messenger implements Listener {
     public static Map<UUID, UUID> messages = new HashMap<>();
@@ -155,6 +156,10 @@ public class Messenger implements Listener {
 
     public static UUID reply(ProxiedPlayer player) {
         return messages.get(player.getUniqueId());
+    }
+
+    public static List<ProxiedPlayer> getVisiblePlayers(boolean seeHidden) {
+        return BungeeEssentials.getInstance().getProxy().getPlayers().stream().filter(p -> seeHidden || !PlayerData.getData(p).isHidden()).collect(Collectors.toList());
     }
 
     public static Integer hiddenNum() {

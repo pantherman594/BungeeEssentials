@@ -19,10 +19,9 @@
 package com.pantherman594.gssentials.command;
 
 import com.pantherman594.gssentials.BungeeEssentials;
+import com.pantherman594.gssentials.Messenger;
 import com.pantherman594.gssentials.Permissions;
-import com.pantherman594.gssentials.PlayerData;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
@@ -48,7 +47,7 @@ public abstract class BECommand extends Command {
      * @return A list of visible players on the proxy that match the search string.
      */
     public Iterable<String> tabPlayers(CommandSender sender, String search) {
-        return ProxyServer.getInstance().getPlayers().stream().filter(player -> !player.getName().equals(sender.getName()) && player.getName().toLowerCase().startsWith(search.toLowerCase()) && (sender.hasPermission(Permissions.Admin.SEE_HIDDEN) || !PlayerData.getData(player.getUniqueId()).isHidden())).map(ProxiedPlayer::getName).collect(Collectors.toSet());
+        return Messenger.getVisiblePlayers(sender.hasPermission(Permissions.Admin.SEE_HIDDEN)).stream().filter(player -> !player.getName().equals(sender.getName()) && player.getName().toLowerCase().startsWith(search.toLowerCase())).map(ProxiedPlayer::getName).collect(Collectors.toSet());
     }
 
     /**

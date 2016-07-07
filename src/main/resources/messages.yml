@@ -38,14 +38,14 @@ list:
   body: '&a- {{ SERVER }} ({{ DENSITY }}&a)'
 hoverlist:
   friend:
-    order: 1
+    order: '1'
     header: '&aFriends Online:'
   staff:
-    order: 2
+    order: '2'
     header: '&6Staff Online:'
   other:
-    order: 0 #Will not be shown
-    header: '&fOther Players:'
+    order: '0' #Will not be shown
+    header: '&7Other Players:'
 lookup:
   header: '&6Found {{ SIZE }} player(s):'
   body: '&f - {{ PLAYER }}'

@@ -39,7 +39,7 @@ public class LookupCommand extends ServerSpecificCommand {
         Set<String> matches = new HashSet<>();
         if (args.length == 1) {
             String partialPlayerName = args[0].toLowerCase();
-            matches.addAll(BungeeEssentials.getInstance().playerList.stream().filter(p -> p.toLowerCase().contains(partialPlayerName.toLowerCase())).collect(Collectors.toList()));
+            matches.addAll(BungeeEssentials.getInstance().playerList.keySet().stream().filter(p -> p.toLowerCase().contains(partialPlayerName.toLowerCase())).collect(Collectors.toList()));
             sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_HEADER, "SIZE", String.valueOf(matches.size())));
             for (String match : matches) {
                 sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_BODY, "PLAYER", match));
@@ -61,39 +61,36 @@ public class LookupCommand extends ServerSpecificCommand {
             if (error) {
                 sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <part of name> [-b|-m|-e|-a]"));
             } else {
-                switch (args[arg]) {
-                    case "-m":
-                        for (String p : BungeeEssentials.getInstance().playerList) {
+                for (String p : BungeeEssentials.getInstance().playerList.keySet()) {
+                    switch (args[arg]) {
+                        case "-m":
                             if (p.toLowerCase().substring(1, p.length() - 1).contains(partialPlayerName.toLowerCase())) {
                                 matches.add(p);
                             }
-                        }
-                        break;
-                    case "-e":
-                        for (String p : BungeeEssentials.getInstance().playerList) {
+                            break;
+                        case "-e":
                             if (p.toLowerCase().endsWith(partialPlayerName.toLowerCase())) {
                                 matches.add(p);
                             }
-                        }
-                        break;
-                    case "-b":
-                        for (String p : BungeeEssentials.getInstance().playerList) {
+                            break;
+                        case "-b":
                             if (p.toLowerCase().startsWith(partialPlayerName.toLowerCase())) {
                                 matches.add(p);
                             }
-                        }
-                        break;
-                    case "-a":
-                        for (String p : BungeeEssentials.getInstance().playerList) {
+                            break;
+                        case "-a":
                             if (p.toLowerCase().contains(partialPlayerName.toLowerCase())) {
                                 matches.add(p);
                             }
-                        }
-                        break;
-                    case "-ip":
-                        break;
-                    default:
-                        break;
+                            break;
+                        case "-ip":
+                            if (BungeeEssentials.getInstance().playerList.get(p).equals(partialPlayerName)) {
+                                matches.add(p);
+                            }
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_HEADER, "SIZE", String.valueOf(matches.size())));
                 for (String match : matches) {
@@ -102,13 +99,13 @@ public class LookupCommand extends ServerSpecificCommand {
             }
         } else if (args.length == 1) {
             String partialPlayerName = args[0].toLowerCase();
-            matches.addAll(BungeeEssentials.getInstance().playerList.stream().filter(p -> p.toLowerCase().startsWith(partialPlayerName.toLowerCase())).collect(Collectors.toList()));
+            matches.addAll(BungeeEssentials.getInstance().playerList.keySet().stream().filter(p -> p.toLowerCase().startsWith(partialPlayerName.toLowerCase())).collect(Collectors.toList()));
             sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_HEADER, "SIZE", String.valueOf(matches.size())));
             for (String match : matches) {
                 sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_BODY, "PLAYER", match));
             }
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <part of name> [-b|-m|-e|-a]"));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <part of name> [-b|-m|-e|-a|-ip]"));
         }
     }
 }

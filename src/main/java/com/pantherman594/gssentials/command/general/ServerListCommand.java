@@ -44,10 +44,7 @@ public class ServerListCommand extends BECommand {
     @Override
     public void execute(final CommandSender sender, String[] args) {
         boolean canSeeHidden = sender.hasPermission(Permissions.Admin.SEE_HIDDEN);
-        int online = ProxyServer.getInstance().getOnlineCount();
-        if (!canSeeHidden) {
-            online = online - Messenger.hiddenNum();
-        }
+        int online = Messenger.getVisiblePlayers(canSeeHidden).size();
 
         String current = "CONSOLE";
         if (sender instanceof ProxiedPlayer) {
@@ -109,10 +106,7 @@ public class ServerListCommand extends BECommand {
             return ChatColor.RED;
         }
 
-        int total = ProxyServer.getInstance().getOnlineCount();
-        if (!canSeeHidden) {
-            total = total - Messenger.hiddenNum();
-        }
+        int total = Messenger.getVisiblePlayers(canSeeHidden).size();
         double percent = (players * 100.0f) / total;
         if (percent <= 33) {
             return ChatColor.RED;
