@@ -57,17 +57,18 @@ class LoadCmds extends Command {
             server = "CONSOLE";
         }
         
-		for (String arg : args) {
-			arg = arg.replace("{"; "Ƃ");
-		}
+	for (String arg : args) {
+	    arg = arg.replace("{", "Ƃ");
+	}
 		
         if (command.contains("{*}")) {
             String joinedArgs = "";
-			for (String arg : args) {
-				joinedArgs = joinedArgs + " " + arg;
-			}
+		for (String arg : args) {
+		    joinedArgs = joinedArgs + " " + arg;
+		}
             command = command.replace("{*}", joinedArgs);
         }
+        
         while (args.length > num) {
             if  (command.contains("{" + num + "}") {
                 if ((args[num] != null) && (!args[num].equals(""))) {
@@ -80,12 +81,11 @@ class LoadCmds extends Command {
             num++;
         }
         
-        
         command = command.replace("{{ PLAYER }}", sender.getName()).replace("{{ SERVER }}", server);
         
-		for (String arg : args) {
-			arg = arg.replace("Ƃ"; "{");
-		}
+	for (String arg : args) {
+	    arg = arg.replace("Ƃ", "{");
+	}
 		
         ProxyServer.getInstance().getLogger().info(command);
         switch (command.contains(" ") ? command.split(" ")[0] : command) {
