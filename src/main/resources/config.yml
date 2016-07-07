@@ -92,6 +92,9 @@ commands:
   - smack
   reload:
   - gssreload
+capspam:
+  enabled: true
+  percent: 50 #Will make all lowercase if at least 50% of letters are capitalized.
 aliases:
   greet:
   - 'TELL: Joining {0}...'

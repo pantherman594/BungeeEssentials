@@ -39,7 +39,7 @@ public class LookupCommand extends ServerSpecificCommand {
         Set<String> matches = new HashSet<>();
         if (args.length == 1) {
             String partialPlayerName = args[0].toLowerCase();
-            matches.addAll(BungeeEssentials.getInstance().playerList.keySet().stream().filter(p -> p.toLowerCase().contains(partialPlayerName.toLowerCase())).collect(Collectors.toList()));
+            matches.addAll(BungeeEssentials.getInstance().getPlayerList().keySet().stream().filter(p -> p.toLowerCase().contains(partialPlayerName.toLowerCase())).collect(Collectors.toList()));
             sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_HEADER, "SIZE", String.valueOf(matches.size())));
             for (String match : matches) {
                 sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_BODY, "PLAYER", match));
@@ -61,7 +61,7 @@ public class LookupCommand extends ServerSpecificCommand {
             if (error) {
                 sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <part of name> [-b|-m|-e|-a]"));
             } else {
-                for (String p : BungeeEssentials.getInstance().playerList.keySet()) {
+                for (String p : BungeeEssentials.getInstance().getPlayerList().keySet()) {
                     switch (args[arg]) {
                         case "-m":
                             if (p.toLowerCase().substring(1, p.length() - 1).contains(partialPlayerName.toLowerCase())) {
@@ -84,7 +84,7 @@ public class LookupCommand extends ServerSpecificCommand {
                             }
                             break;
                         case "-ip":
-                            if (BungeeEssentials.getInstance().playerList.get(p).equals(partialPlayerName)) {
+                            if (BungeeEssentials.getInstance().getPlayerList().get(p).equals(partialPlayerName)) {
                                 matches.add(p);
                             }
                             break;
@@ -99,7 +99,7 @@ public class LookupCommand extends ServerSpecificCommand {
             }
         } else if (args.length == 1) {
             String partialPlayerName = args[0].toLowerCase();
-            matches.addAll(BungeeEssentials.getInstance().playerList.keySet().stream().filter(p -> p.toLowerCase().startsWith(partialPlayerName.toLowerCase())).collect(Collectors.toList()));
+            matches.addAll(BungeeEssentials.getInstance().getPlayerList().keySet().stream().filter(p -> p.toLowerCase().startsWith(partialPlayerName.toLowerCase())).collect(Collectors.toList()));
             sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_HEADER, "SIZE", String.valueOf(matches.size())));
             for (String match : matches) {
                 sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_BODY, "PLAYER", match));

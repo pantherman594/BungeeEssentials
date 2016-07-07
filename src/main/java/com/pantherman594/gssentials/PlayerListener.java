@@ -91,6 +91,18 @@ public class PlayerListener implements Listener {
                 ProxyServer.getInstance().getPluginManager().dispatchCommand(player, BungeeEssentials.getInstance().getMain("list"));
             }
         } else {
+            if (BungeeEssentials.getInstance().getConfig().getBoolean("capspam.enabled", true) && !(player.hasPermission(Permissions.Admin.BYPASS_FILTER)) && event.getMessage().length() >= 5) {
+                int upperC = 0;
+
+                for (char letter : event.getMessage().toCharArray()) {
+                    if (Character.isUpperCase(letter)) upperC++;
+                }
+                BungeeEssentials.getInstance().getLogger().info(upperC + "/" + event.getMessage().length() + "=" + (upperC * 100 / event.getMessage().length()));
+
+                if (upperC * 100 / event.getMessage().length() >= BungeeEssentials.getInstance().getConfig().getDouble("capspam.percent", 50))
+                    event.setMessage(event.getMessage().toLowerCase());
+            }
+
             if (BungeeEssentials.getInstance().contains("fulllog")) {
                 Log.log(Dictionary.format("[CHAT] " + Dictionary.FORMAT_CHAT, "PLAYER", sender, "MESSAGE", event.getMessage()).toLegacyText());
             }
@@ -257,8 +269,8 @@ public class PlayerListener implements Listener {
 
             PlayerData pD = null;
 
-            for (String p : BungeeEssentials.getInstance().playerList.keySet()) {
-                if (BungeeEssentials.getInstance().playerList.get(p).equals(event.getConnection().getAddress().getAddress().getHostAddress())) {
+            for (String p : BungeeEssentials.getInstance().getPlayerList().keySet()) {
+                if (BungeeEssentials.getInstance().getPlayerList().get(p).equals(event.getConnection().getAddress().getAddress().getHostAddress())) {
                     String uuid = BungeeEssentials.getInstance().getOfflineUUID(p);
                     if (uuid != null) {
                         pD = PlayerData.getData(uuid);
@@ -311,9 +323,7 @@ public class PlayerListener implements Listener {
             orders.put(Dictionary.HOVER_STAFF_ORDER, staff);
             orders.put(Dictionary.HOVER_OTHER_ORDER, other);
 
-            orders.keySet().stream().filter(order -> Integer.valueOf(order) > 0).forEach(order -> {
-                infos.addAll(orders.get(order));
-            });
+            orders.keySet().stream().filter(order -> Integer.valueOf(order) > 0).forEach(order -> infos.addAll(orders.get(order)));
 
             sample = infos.toArray(new ServerPing.PlayerInfo[infos.size() > 12 ? 12 : infos.size()]);
         }

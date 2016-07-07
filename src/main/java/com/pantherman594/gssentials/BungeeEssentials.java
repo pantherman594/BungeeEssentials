@@ -47,7 +47,7 @@ import java.util.logging.Level;
 
 public class BungeeEssentials extends Plugin {
     private static BungeeEssentials instance;
-    public Map<String, String> playerList = new HashMap<>();
+    private Map<String, String> playerList = new HashMap<>();
     private Map<String, String> mainList = new HashMap<>();
     private Map<String, String[]> aliasList = new HashMap<>();
     private RuleManager ruleManager;
@@ -66,6 +66,10 @@ public class BungeeEssentials extends Plugin {
      */
     public static BungeeEssentials getInstance() {
         return instance;
+    }
+
+    public Map<String, String> getPlayerList() {
+        return playerList;
     }
 
     RuleManager getRuleManager() {
@@ -114,6 +118,12 @@ public class BungeeEssentials extends Plugin {
         savePlayerConfig();
     }
 
+    /**
+     * Returns the uuid from a player's name.
+     *
+     * @param name The name of the player.
+     * @return The player's uuid if found, null if not.
+     */
     public String getOfflineUUID(String name) {
         String uuid;
         if (ProxyServer.getInstance().getConfig().isOnlineMode()) {
