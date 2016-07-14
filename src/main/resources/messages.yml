@@ -112,7 +112,9 @@ errors:
 rules:
 - pattern: \bfuck\b
   handle: CURSING
-- pattern: \b(([\w\d]{2,})\s*.(\.|d.t).{0,5})+(net|com|xyz|me|org|site|pw|top|io|co|biz|eu|uk)
+- pattern: \b(([\w\d]{2,})\s*.(\.|d.t).{0,5})+(net|com|xyz|me|org|site|pw|top|io|co|biz|eu|uk)\b
+  handle: ADVERTISEMENT
+- pattern: \b(([\w\d]{2,})\s*.(\.|dot).{0,5})+(net|com|xyz|me|org|site|pw|top|io|co|biz|eu|uk)
   handle: ADVERTISEMENT
 - pattern: \b.+((\.|dot).+)*(\.|dot)[^\s]*[a-zA-Z]{2,5}
   handle: ADVERTISEMENT
