@@ -19,10 +19,11 @@
 package com.pantherman594.gssentials.command.general;
 
 import com.google.common.collect.ImmutableSet;
+import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.Dictionary;
 import com.pantherman594.gssentials.Permissions;
-import com.pantherman594.gssentials.PlayerData;
 import com.pantherman594.gssentials.command.BECommand;
+import com.pantherman594.gssentials.database.PlayerData;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -30,6 +31,8 @@ import net.md_5.bungee.api.plugin.TabExecutor;
 
 @SuppressWarnings("unused")
 public class IgnoreCommand extends BECommand implements TabExecutor {
+    private PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
+
     public IgnoreCommand() {
         super("ignore", Permissions.General.IGNORE);
     }
@@ -39,10 +42,10 @@ public class IgnoreCommand extends BECommand implements TabExecutor {
         if (sender instanceof ProxiedPlayer) {
             if (args.length > 0) {
                 ProxiedPlayer p = ProxyServer.getInstance().getPlayer(args[0]);
-                PlayerData pD = PlayerData.getData(((ProxiedPlayer) sender).getUniqueId());
-                if (p != null && !pD.isHidden()) {
+                String uuid = ((ProxiedPlayer) sender).getUniqueId().toString();
+                if (p != null && !pD.isHidden(uuid)) {
                     if (p != sender)
-                        if (pD.toggleIgnore(p.getUniqueId().toString())) {
+                        if (pD.toggleIgnore(uuid, p.getUniqueId().toString())) {
                             sender.sendMessage(Dictionary.format(Dictionary.IGNORE_ENABLED, "PLAYER", p.getName()));
                         } else {
                             sender.sendMessage(Dictionary.format(Dictionary.IGNORE_DISABLED, "PLAYER", p.getName()));

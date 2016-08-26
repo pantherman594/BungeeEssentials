@@ -22,13 +22,14 @@ import com.google.common.collect.ImmutableSet;
 import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.Dictionary;
 import com.pantherman594.gssentials.Permissions;
-import com.pantherman594.gssentials.PlayerData;
 import com.pantherman594.gssentials.command.BECommand;
+import com.pantherman594.gssentials.database.PlayerData;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -38,6 +39,8 @@ import java.util.UUID;
  */
 @SuppressWarnings("unused")
 public class FriendCommand extends BECommand implements TabExecutor {
+    private PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
+    
     public FriendCommand() {
         super("friend", Permissions.General.FRIEND);
     }
@@ -45,20 +48,20 @@ public class FriendCommand extends BECommand implements TabExecutor {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (sender instanceof ProxiedPlayer) {
-            PlayerData playerData = PlayerData.getData(((ProxiedPlayer) sender).getUniqueId());
-
+            String uuid = ((ProxiedPlayer) sender).getUniqueId().toString();
+            List<String> friends = pD.getFriends(uuid);
             if (args.length == 0 || (args.length == 1 && args[0].equalsIgnoreCase("list"))) {
-                sender.sendMessage(Dictionary.format(Dictionary.FRIEND_HEADER, "COUNT", String.valueOf(playerData.getFriends().size())));
+                sender.sendMessage(Dictionary.format(Dictionary.FRIEND_HEADER, "COUNT", String.valueOf(pD.getFriends(uuid).size())));
 
-                for (String uuid : playerData.getFriends()) {
+                for (String friend : friends) {
                     String server = "Offline";
                     String name;
 
-                    if (ProxyServer.getInstance().getPlayer(UUID.fromString(uuid)) != null) {
-                        server = ProxyServer.getInstance().getPlayer(UUID.fromString(uuid)).getServer().getInfo().getName();
-                        name = ProxyServer.getInstance().getPlayer(UUID.fromString(uuid)).getName();
+                    if (ProxyServer.getInstance().getPlayer(UUID.fromString(friend)) != null) {
+                        server = ProxyServer.getInstance().getPlayer(UUID.fromString(friend)).getServer().getInfo().getName();
+                        name = ProxyServer.getInstance().getPlayer(UUID.fromString(friend)).getName();
                     } else {
-                        name = (new PlayerData(uuid, null)).getName();
+                        name = pD.getName(uuid);
                     }
 
                     sender.sendMessage(Dictionary.format(Dictionary.FRIEND_BODY, "NAME", name, "SERVER", server));
@@ -66,18 +69,19 @@ public class FriendCommand extends BECommand implements TabExecutor {
 
                 boolean headerSent = false;
 
-                for (String uuid : playerData.getOutRequests()) {
+                List<String> outRequests = pD.getOutRequests(uuid);
+                for (String outRequest : outRequests) {
                     if (!headerSent) {
-                        sender.sendMessage(Dictionary.format(Dictionary.OUTREQUESTS_HEADER, "COUNT", String.valueOf(playerData.getOutRequests().size())));
+                        sender.sendMessage(Dictionary.format(Dictionary.OUTREQUESTS_HEADER, "COUNT", String.valueOf(outRequests.size())));
                         headerSent = true;
                     }
 
                     String name;
 
-                    if (ProxyServer.getInstance().getPlayer(UUID.fromString(uuid)) != null) {
-                        name = ProxyServer.getInstance().getPlayer(UUID.fromString(uuid)).getName();
+                    if (ProxyServer.getInstance().getPlayer(UUID.fromString(outRequest)) != null) {
+                        name = ProxyServer.getInstance().getPlayer(UUID.fromString(outRequest)).getName();
                     } else {
-                        name = (new PlayerData(uuid, null)).getName();
+                        name = pD.getName(outRequest);
                     }
 
                     sender.sendMessage(Dictionary.format(Dictionary.OUTREQUESTS_BODY, "NAME", name));
@@ -85,71 +89,70 @@ public class FriendCommand extends BECommand implements TabExecutor {
 
                 headerSent = false;
 
-                for (String uuid : playerData.getInRequests()) {
+                List<String> inRequests = pD.getInRequests(uuid);
+                for (String inRequest : inRequests) {
                     if (!headerSent) {
-                        sender.sendMessage(Dictionary.format(Dictionary.INREQUESTS_HEADER, "COUNT", String.valueOf(playerData.getInRequests().size())));
+                        sender.sendMessage(Dictionary.format(Dictionary.INREQUESTS_HEADER, "COUNT", String.valueOf(inRequests.size())));
                         headerSent = true;
                     }
 
                     String name;
 
-                    if (ProxyServer.getInstance().getPlayer(UUID.fromString(uuid)) != null) {
-                        name = ProxyServer.getInstance().getPlayer(UUID.fromString(uuid)).getName();
+                    if (ProxyServer.getInstance().getPlayer(UUID.fromString(inRequest)) != null) {
+                        name = ProxyServer.getInstance().getPlayer(UUID.fromString(inRequest)).getName();
                     } else {
-                        name = (new PlayerData(uuid, null)).getName();
+                        name = pD.getName(inRequest);
                     }
 
                     sender.sendMessage(Dictionary.format(Dictionary.INREQUESTS_BODY, "NAME", name));
                 }
             } else if (args.length == 2 && (args[0].equalsIgnoreCase("add") || args[0].equalsIgnoreCase("accept") || args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("deny"))) {
                 ProxiedPlayer p = ProxyServer.getInstance().getPlayer(args[1]);
-                String uuid;
-                PlayerData playerData2;
+                String friendUuid;
 
                 if (p == sender) {
                     sender.sendMessage(Dictionary.color("&cYou can't be friends with yourself!."));
                 } else {
 
                     if (p != null) { // If the player is online, pull up the player's data.
-                        uuid = p.getUniqueId().toString();
-                        playerData2 = PlayerData.getData(p.getUniqueId());
+                        friendUuid = p.getUniqueId().toString();
                     } else { // If the player is offline, lookup the player's uuid and load it.
-                        uuid = BungeeEssentials.getInstance().getOfflineUUID(args[1]);
-                        if (uuid == null) {
+                        friendUuid = BungeeEssentials.getInstance().getOfflineUUID(args[1]);
+                        if (friendUuid == null) {
                             sender.sendMessage(Dictionary.format("&cError: Could not find player."));
                             return;
                         }
-
-                        playerData2 = new PlayerData(uuid, null);
                     }
 
+                    String friendName = pD.getName(friendUuid);
+
                     if (args[0].equalsIgnoreCase("add") || args[0].equalsIgnoreCase("accept")) {
-                        if (playerData.getFriends().contains(uuid)) { // Tell player if they are already friends
+                        if (pD.getFriends(uuid).contains(friendUuid)) { // Tell player if they are already friends
                             sender.sendMessage(Dictionary.format(Dictionary.FRIEND_OLD, "NAME", args[1]));
                         } else {
-                            if (p != null && !PlayerData.getData(p.getUniqueId()).isHidden()) { // Will only add if player is online.
+                            if (p != null && !pD.isHidden(friendUuid)) { // Will only add if player is online.
 
                                 // playerData2 = PlayerData.getData(p.getUniqueId());  // Doesn't seem to be necessary, already loaded earlier. Will remove if that's the case.
                                 // uuid = p.getUniqueId().toString();
 
-                                if (playerData.getInRequests().contains(uuid)) {
+                                if (pD.getInRequests(uuid).contains(friendUuid)) {
                                 /*
                                  * If the command sender already has an incoming request from the target player, will treat as accepting the request.
                                  * Will add as a friend on both sides and remove the requests.
                                  */
-                                    playerData.getInRequests().remove(uuid);
-                                    playerData.getFriends().add(uuid);
+                                    pD.removeInRequest(uuid, friendUuid);
+                                    pD.addFriend(uuid, friendUuid);
 
-                                    playerData2.getOutRequests().remove(((ProxiedPlayer) sender).getUniqueId().toString());
-                                    playerData2.getFriends().add(((ProxiedPlayer) sender).getUniqueId().toString());
+                                    pD.removeOutRequest(friendUuid, uuid);
+                                    pD.addFriend(friendUuid, uuid);
 
                                     p.sendMessage(Dictionary.format(Dictionary.FRIEND_NEW, "NAME", sender.getName()));
                                     sender.sendMessage(Dictionary.format(Dictionary.FRIEND_NEW, "NAME", p.getName()));
 
-                                } else if (!playerData.getOutRequests().contains(uuid)) {
+                                } else if (!pD.getOutRequests(uuid).contains(friendUuid)) {
                                     // If not sender's outgoing requests already, will add. Will also add to target's incoming requests.
-                                    playerData.getOutRequests().add(uuid);
-                                    playerData2.getInRequests().add(((ProxiedPlayer) sender).getUniqueId().toString());
+                                    pD.addOutRequest(uuid, friendUuid);
+                                    pD.addInRequest(friendUuid, uuid);
 
                                     p.sendMessage(Dictionary.format(Dictionary.INREQUESTS_NEW, "NAME", sender.getName()));
                                     sender.sendMessage(Dictionary.format(Dictionary.OUTREQUESTS_NEW, "NAME", p.getName()));
@@ -162,40 +165,35 @@ public class FriendCommand extends BECommand implements TabExecutor {
                             }
                         }
                     } else { // For denying/removing
-                        if (playerData.getFriends().contains(uuid)) { // If they are currently friends, will remove from both.
-                            playerData.getFriends().remove(uuid);
-                            playerData2.getFriends().remove(((ProxiedPlayer) sender).getUniqueId().toString());
+                        if (pD.getFriends(uuid).contains(friendUuid)) { // If they are currently friends, will remove from both.
+                            pD.removeFriend(uuid, friendUuid);
+                            pD.removeFriend(friendUuid, uuid);
 
-                            sender.sendMessage(Dictionary.format(Dictionary.FRIEND_REMOVE, "NAME", playerData2.getName()));
+                            sender.sendMessage(Dictionary.format(Dictionary.FRIEND_REMOVE, "NAME", friendName));
                             if (p != null) {
                                 p.sendMessage(Dictionary.format(Dictionary.FRIEND_REMOVE, "NAME", sender.getName()));
                             }
 
-                        } else if (playerData.getOutRequests().contains(uuid)) { // If sender has a pending outgoing request, will remove that and the target's incoming request.
-                            playerData.getOutRequests().remove(uuid);
-                            playerData2.getInRequests().remove(((ProxiedPlayer) sender).getUniqueId().toString());
+                        } else if (pD.getOutRequests(uuid).contains(friendUuid)) { // If sender has a pending outgoing request, will remove that and the target's incoming request.
+                            pD.removeOutRequest(uuid, friendUuid);
+                            pD.removeInRequest(friendUuid, uuid);
 
-                            sender.sendMessage(Dictionary.format(Dictionary.OUTREQUESTS_REMOVE, "NAME", playerData2.getName()));
+                            sender.sendMessage(Dictionary.format(Dictionary.OUTREQUESTS_REMOVE, "NAME", friendName));
                             if (p != null) {
                                 p.sendMessage(Dictionary.format(Dictionary.INREQUESTS_REMOVE, "NAME", sender.getName()));
                             }
 
-                        } else if (playerData.getInRequests().contains(uuid)) { // If sender has incoming request, will treat as denying request.
-                            playerData.getInRequests().remove(uuid);
-                            playerData2.getOutRequests().remove(((ProxiedPlayer) sender).getUniqueId().toString());
+                        } else if (pD.getInRequests(uuid).contains(friendUuid)) { // If sender has incoming request, will treat as denying request.
+                            pD.removeInRequest(uuid, friendUuid);
+                            pD.removeOutRequest(friendUuid, uuid);
 
-                            sender.sendMessage(Dictionary.format(Dictionary.INREQUESTS_REMOVE, "NAME", playerData2.getName()));
+                            sender.sendMessage(Dictionary.format(Dictionary.INREQUESTS_REMOVE, "NAME", friendName));
                             if (p != null) {
                                 p.sendMessage(Dictionary.format(Dictionary.OUTREQUESTS_REMOVE, "NAME", sender.getName()));
                             }
 
                         } else {
-                            sender.sendMessage(Dictionary.format(Dictionary.CANNOT_REMOVE_FRIEND, "NAME", playerData2.getName()));
-                        }
-                        if (p != null) { // If target player is online, will save. If not, will write to disk and unload.
-                            PlayerData.setData(p.getUniqueId().toString(), playerData2);
-                        } else {
-                            playerData2.save();
+                            sender.sendMessage(Dictionary.format(Dictionary.CANNOT_REMOVE_FRIEND, "NAME", friendName));
                         }
                     }
                 }

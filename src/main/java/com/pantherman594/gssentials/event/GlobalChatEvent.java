@@ -19,6 +19,7 @@
 package com.pantherman594.gssentials.event;
 
 import com.pantherman594.gssentials.*;
+import com.pantherman594.gssentials.database.PlayerData;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -26,6 +27,7 @@ import net.md_5.bungee.api.plugin.Cancellable;
 import net.md_5.bungee.api.plugin.Event;
 
 public class GlobalChatEvent extends Event implements Cancellable {
+    private static PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
     private String server;
     private String sender;
     private String msg;
@@ -48,7 +50,7 @@ public class GlobalChatEvent extends Event implements Cancellable {
             if (msgPre != null) {
                 TextComponent msg = Dictionary.formatMsg(Dictionary.FORMAT_GCHAT, "SERVER", server, "SENDER", sender, "MESSAGE", msgPre);
                 ProxiedPlayer senderP = ProxyServer.getInstance().getPlayer(sender);
-                ProxyServer.getInstance().getPlayers().stream().filter(player -> (player.hasPermission(Permissions.General.CHAT + "." + server) || player.hasPermission(Permissions.General.CHAT)) && (senderP == null || !BungeeEssentials.getInstance().contains("ignore") || !PlayerData.getData(player.getUniqueId()).isIgnored(senderP.getUniqueId().toString()))).forEach(player -> player.sendMessage(msg));
+                ProxyServer.getInstance().getPlayers().stream().filter(player -> (player.hasPermission(Permissions.General.CHAT + "." + server) || player.hasPermission(Permissions.General.CHAT)) && (senderP == null || !BungeeEssentials.getInstance().contains("ignore") || !pD.isIgnored(player.getUniqueId().toString(), senderP.getUniqueId().toString()))).forEach(player -> player.sendMessage(msg));
                 if (msg != null) {
                     ProxyServer.getInstance().getConsole().sendMessage(msg);
                     Log.log("[GCHAT] " + msg.toLegacyText());

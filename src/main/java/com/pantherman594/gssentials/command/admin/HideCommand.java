@@ -18,15 +18,18 @@
 
 package com.pantherman594.gssentials.command.admin;
 
+import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.Dictionary;
 import com.pantherman594.gssentials.Permissions;
-import com.pantherman594.gssentials.PlayerData;
 import com.pantherman594.gssentials.command.ServerSpecificCommand;
+import com.pantherman594.gssentials.database.PlayerData;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 @SuppressWarnings("unused")
 public class HideCommand extends ServerSpecificCommand {
+    private PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
+
     public HideCommand() {
         super("hide", Permissions.Admin.HIDE);
     }
@@ -35,15 +38,15 @@ public class HideCommand extends ServerSpecificCommand {
     public void run(CommandSender sender, String[] args) {
         if (sender instanceof ProxiedPlayer) {
             ProxiedPlayer player = (ProxiedPlayer) sender;
-            PlayerData pD = PlayerData.getData(player.getUniqueId());
+            String uuid = player.getUniqueId().toString();
             if (args != null && args.length == 1) {
                 switch (args[0]) {
                     case "on":
-                        pD.setHidden(true);
+                        pD.setHidden(uuid, true);
                         player.sendMessage(Dictionary.format(Dictionary.HIDE_ENABLED));
                         break;
                     case "off":
-                        pD.setHidden(false);
+                        pD.setHidden(uuid, false);
                         player.sendMessage(Dictionary.format(Dictionary.HIDE_DISABLED));
                         break;
                     default:
@@ -51,7 +54,7 @@ public class HideCommand extends ServerSpecificCommand {
                         break;
                 }
             } else {
-                if (pD.toggleHidden()) {
+                if (pD.toggleHidden(uuid)) {
                     player.sendMessage(Dictionary.format(Dictionary.HIDE_ENABLED));
                 } else {
                     player.sendMessage(Dictionary.format(Dictionary.HIDE_DISABLED));

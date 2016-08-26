@@ -22,8 +22,8 @@ import com.google.common.collect.ImmutableSet;
 import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.Dictionary;
 import com.pantherman594.gssentials.Permissions;
-import com.pantherman594.gssentials.PlayerData;
 import com.pantherman594.gssentials.command.BECommand;
+import com.pantherman594.gssentials.database.PlayerData;
 import com.pantherman594.gssentials.event.MessageEvent;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -32,6 +32,8 @@ import net.md_5.bungee.api.plugin.TabExecutor;
 
 @SuppressWarnings("unused")
 public class MessageCommand extends BECommand implements TabExecutor {
+    private PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
+
     public MessageCommand() {
         super("message", Permissions.General.MESSAGE);
         ProxyServer.getInstance().getPluginManager().registerCommand(BungeeEssentials.getInstance(), new ReplyCommand());
@@ -41,22 +43,23 @@ public class MessageCommand extends BECommand implements TabExecutor {
     public void execute(CommandSender sender, String[] args) {
         if (args.length == 1) {
             if (sender instanceof ProxiedPlayer) {
-                PlayerData pD = PlayerData.getData(((ProxiedPlayer) sender).getUniqueId());
+                String uuid = ((ProxiedPlayer) sender).getUniqueId().toString();
                 boolean change = true;
+                boolean status = false;
                 if (args[0].equalsIgnoreCase("toggle")) {
-                    pD.setMsging(!pD.isMsging());
+                    status = pD.toggleMsging(uuid);
                 } else if (args[0].equalsIgnoreCase("on")) {
-                    pD.setMsging(true);
+                    pD.setMsging(uuid, true);
+                    status = true;
                 } else if (args[0].equalsIgnoreCase("off")) {
-                    pD.setMsging(false);
+                    pD.setMsging(uuid, false);
                 } else {
                     change = false;
                     sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <player> <message>"));
                     sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <on|off|toggle>"));
                 }
                 if (change) {
-                    PlayerData.setData(((ProxiedPlayer) sender).getUniqueId().toString(), pD);
-                    if (pD.isMsging()) {
+                    if (status) {
                         sender.sendMessage(Dictionary.format(Dictionary.MESSAGE_ENABLED));
                     } else {
                         sender.sendMessage(Dictionary.format(Dictionary.MESSAGE_DISABLED));

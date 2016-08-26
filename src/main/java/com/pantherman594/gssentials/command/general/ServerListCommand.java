@@ -18,11 +18,12 @@
 
 package com.pantherman594.gssentials.command.general;
 
+import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.Dictionary;
 import com.pantherman594.gssentials.Messenger;
 import com.pantherman594.gssentials.Permissions;
-import com.pantherman594.gssentials.PlayerData;
 import com.pantherman594.gssentials.command.BECommand;
+import com.pantherman594.gssentials.database.PlayerData;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -37,6 +38,8 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class ServerListCommand extends BECommand {
+    private PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
+
     public ServerListCommand() {
         super("list", Permissions.General.LIST);
     }
@@ -77,7 +80,7 @@ public class ServerListCommand extends BECommand {
         if (canSeeHidden && !info.getPlayers().isEmpty()) {
             return info.getPlayers();
         }
-        return info.getPlayers().stream().filter(player -> !PlayerData.getData((player).getUniqueId()).isHidden()).collect(Collectors.toCollection(ArrayList::new));
+        return info.getPlayers().stream().filter(player -> !pD.isHidden((player).getUniqueId().toString())).collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**

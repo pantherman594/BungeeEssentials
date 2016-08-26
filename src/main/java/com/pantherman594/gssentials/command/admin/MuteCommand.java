@@ -19,10 +19,11 @@
 package com.pantherman594.gssentials.command.admin;
 
 import com.google.common.collect.ImmutableSet;
+import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.Dictionary;
 import com.pantherman594.gssentials.Permissions;
-import com.pantherman594.gssentials.PlayerData;
 import com.pantherman594.gssentials.command.ServerSpecificCommand;
+import com.pantherman594.gssentials.database.PlayerData;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -30,6 +31,8 @@ import net.md_5.bungee.api.plugin.TabExecutor;
 
 @SuppressWarnings("unused")
 public class MuteCommand extends ServerSpecificCommand implements TabExecutor {
+    private PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
+
     public MuteCommand() {
         super("mute", Permissions.Admin.MUTE);
     }
@@ -39,9 +42,9 @@ public class MuteCommand extends ServerSpecificCommand implements TabExecutor {
         if (args != null && args.length > 0) {
             ProxiedPlayer player = ProxyServer.getInstance().getPlayer(args[0]);
             if (player != null) {
-                PlayerData pD = PlayerData.getData(player.getUniqueId());
+                String uuid = player.getUniqueId().toString();
                 if (!player.hasPermission(Permissions.Admin.MUTE_EXEMPT)) {
-                    if (pD.toggleMuted()) {
+                    if (pD.toggleMuted(uuid)) {
                         player.sendMessage(Dictionary.format(Dictionary.MUTE_ENABLED));
                         ProxyServer.getInstance().getPlayers().stream().filter(p -> p.hasPermission(Permissions.Admin.NOTIFY)).forEach(p -> sender.sendMessage(Dictionary.format(Dictionary.MUTE_ENABLEDN, "PLAYER", player.getName())));
                     } else {

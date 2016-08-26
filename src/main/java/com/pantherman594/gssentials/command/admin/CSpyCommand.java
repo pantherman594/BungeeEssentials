@@ -18,36 +18,39 @@
 
 package com.pantherman594.gssentials.command.admin;
 
+import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.Dictionary;
 import com.pantherman594.gssentials.Permissions;
-import com.pantherman594.gssentials.PlayerData;
 import com.pantherman594.gssentials.command.ServerSpecificCommand;
+import com.pantherman594.gssentials.database.PlayerData;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 @SuppressWarnings("unused")
 public class CSpyCommand extends ServerSpecificCommand {
+    private PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
+
     public CSpyCommand() {
         super("commandspy", Permissions.Admin.SPY_COMMAND);
     }
 
     @Override
     public void run(CommandSender sender, String[] args) {
-        PlayerData pD;
+        String uuid;
         if (sender instanceof ProxiedPlayer) {
             ProxiedPlayer player = (ProxiedPlayer) sender;
-            pD = PlayerData.getData(player.getUniqueId());
+            uuid = player.getUniqueId().toString();
         } else {
-            pD = PlayerData.getData("CONSOLE");
+            uuid = "CONSOLE";
         }
         if (args != null && args.length == 1) {
             switch (args[0]) {
                 case "on":
-                    pD.setCSpy(true);
+                    pD.setCSpy(uuid, true);
                     sender.sendMessage(Dictionary.format(Dictionary.CSPY_ENABLED));
                     break;
                 case "off":
-                    pD.setCSpy(false);
+                    pD.setCSpy(uuid, false);
                     sender.sendMessage(Dictionary.format(Dictionary.CSPY_DISABLED));
                     break;
                 default:
@@ -55,7 +58,7 @@ public class CSpyCommand extends ServerSpecificCommand {
                     break;
             }
         } else {
-            if (pD.toggleCSpy()) {
+            if (pD.toggleCSpy(uuid)) {
                 sender.sendMessage(Dictionary.format(Dictionary.CSPY_ENABLED));
             } else {
                 sender.sendMessage(Dictionary.format(Dictionary.CSPY_DISABLED));

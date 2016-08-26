@@ -23,11 +23,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.pantherman594.gssentials.aliases.AliasManager;
 import com.pantherman594.gssentials.announcement.AnnouncementManager;
+import com.pantherman594.gssentials.database.PlayerData;
 import com.pantherman594.gssentials.integration.IntegrationProvider;
 import com.pantherman594.gssentials.integration.IntegrationTest;
 import com.pantherman594.gssentials.regex.RuleManager;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
@@ -59,6 +59,7 @@ public class BungeeEssentials extends Plugin {
     private File configFile;
     private File messageFile;
     private File playerFile;
+    private PlayerData playerData;
     private boolean integrated;
 
     /**
@@ -108,12 +109,12 @@ public class BungeeEssentials extends Plugin {
                 return;
             }
         }
+        reload();
         ProxyServer.getInstance().getScheduler().schedule(this, this::reload, 3, TimeUnit.SECONDS);
     }
 
     @Override
     public void onDisable() {
-        PlayerData.getData("CONSOLE").save();
         Log.reset();
         savePlayerConfig();
     }
@@ -126,6 +127,10 @@ public class BungeeEssentials extends Plugin {
      */
     public String getOfflineUUID(String name) {
         String uuid;
+        String checkUuid = (String) playerData.getData("name", name, "uuid");
+        if (checkUuid != null) {
+            return checkUuid;
+        }
         if (ProxyServer.getInstance().getConfig().isOnlineMode()) {
             try {
                 BufferedReader in = new BufferedReader(new InputStreamReader(new URL("https://api.mojang.com/users/profiles/minecraft/" + name).openStream()));
@@ -144,7 +149,7 @@ public class BungeeEssentials extends Plugin {
     /**
      * Tries to save all the config files.
      *
-     * @throws IOException
+     * @throws IOException The IOException thrown if the files could not be created
      */
     private void saveConfig() throws IOException {
         if (!getDataFolder().exists()) {
@@ -169,7 +174,7 @@ public class BungeeEssentials extends Plugin {
     /**
      * Tries to load all the config files.
      *
-     * @throws IOException
+     * @throws IOException The IOException thrown if the files could not be created
      */
     private void loadConfig() throws IOException {
         if (!configFile.exists()) {
@@ -210,7 +215,8 @@ public class BungeeEssentials extends Plugin {
         ProxyServer.getInstance().getPluginManager().registerListener(this, new Messenger());
         ProxyServer.getInstance().getPluginManager().registerListener(this, new PlayerListener());
 
-        PlayerData.clearData();
+        playerData = new PlayerData();
+        playerData.createDataNotExist("CONSOLE");
         Log.reset();
         enabled = new ArrayList<>();
 
@@ -270,12 +276,6 @@ public class BungeeEssentials extends Plugin {
         }
         getLogger().log(Level.INFO, "Registered {0} commands successfully", commands);
         setupIntegration();
-        for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
-            new PlayerData(p.getUniqueId().toString(), p.getName());
-        }
-        if (!PlayerData.getDatas().containsKey("CONSOLE")) {
-            new PlayerData("CONSOLE", "Console");
-        }
         return true;
     }
 
@@ -367,6 +367,13 @@ public class BungeeEssentials extends Plugin {
      */
     private Configuration getPlayerConfig() {
         return this.players;
+    }
+
+    /**
+     * @return The playerData database.
+     */
+    public PlayerData getPlayerData() {
+        return this.playerData;
     }
 
     /**

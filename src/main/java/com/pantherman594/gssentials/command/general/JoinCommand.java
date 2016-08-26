@@ -19,10 +19,11 @@
 package com.pantherman594.gssentials.command.general;
 
 import com.google.common.collect.ImmutableSet;
+import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.Dictionary;
 import com.pantherman594.gssentials.Permissions;
-import com.pantherman594.gssentials.PlayerData;
 import com.pantherman594.gssentials.command.BECommand;
+import com.pantherman594.gssentials.database.PlayerData;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -32,6 +33,8 @@ import net.md_5.bungee.api.plugin.TabExecutor;
 
 @SuppressWarnings("unused")
 public class JoinCommand extends BECommand implements TabExecutor {
+    private PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
+
     public JoinCommand() {
         super("join", Permissions.General.JOIN);
     }
@@ -46,8 +49,7 @@ public class JoinCommand extends BECommand implements TabExecutor {
 
             ProxiedPlayer player = (ProxiedPlayer) sender;
             ProxiedPlayer join = ProxyServer.getInstance().getPlayer(args[0]);
-            PlayerData pDJ = PlayerData.getData(join.getUniqueId());
-            if (join == null || pDJ.isHidden()) {
+            if (join == null || pD.isHidden(join.getUniqueId().toString())) {
                 sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
                 return;
             }

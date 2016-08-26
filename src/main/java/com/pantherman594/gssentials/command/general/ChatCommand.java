@@ -18,10 +18,11 @@
 
 package com.pantherman594.gssentials.command.general;
 
+import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.Dictionary;
 import com.pantherman594.gssentials.Permissions;
-import com.pantherman594.gssentials.PlayerData;
 import com.pantherman594.gssentials.command.ServerSpecificCommand;
+import com.pantherman594.gssentials.database.PlayerData;
 import com.pantherman594.gssentials.event.GlobalChatEvent;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -29,6 +30,8 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 @SuppressWarnings("unused")
 public class ChatCommand extends ServerSpecificCommand {
+    private PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
+
     public ChatCommand() {
         super("chat", Permissions.General.CHAT);
     }
@@ -40,15 +43,15 @@ public class ChatCommand extends ServerSpecificCommand {
 
             if (sender instanceof ProxiedPlayer) {
                 ProxiedPlayer player = (ProxiedPlayer) sender;
-                PlayerData pD = PlayerData.getData(player.getUniqueId());
+                String uuid = player.getUniqueId().toString();
                 server = player.getServer().getInfo().getName();
                 if (args.length == 1) {
                     if (args[0].equals("on")) {
-                        pD.setGlobalChat(true);
+                        pD.setGlobalChat(uuid, true);
                         player.sendMessage(Dictionary.format(Dictionary.SCHAT_ENABLED));
                         return;
                     } else if (args[0].equals("off")) {
-                        pD.setGlobalChat(false);
+                        pD.setGlobalChat(uuid, false);
                         player.sendMessage(Dictionary.format(Dictionary.SCHAT_DISABLED));
                         return;
                     }
@@ -61,7 +64,7 @@ public class ChatCommand extends ServerSpecificCommand {
             ProxiedPlayer player;
             if (sender instanceof ProxiedPlayer) {
                 player = (ProxiedPlayer) sender;
-                if (PlayerData.getData(player.getUniqueId()).toggleGlobalChat()) {
+                if (pD.toggleGlobalChat(player.getUniqueId().toString())) {
                     player.sendMessage(Dictionary.format(Dictionary.GCHAT_ENABLED));
                 } else {
                     player.sendMessage(Dictionary.format(Dictionary.GCHAT_DISABLED));

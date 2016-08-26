@@ -19,6 +19,7 @@
 package com.pantherman594.gssentials;
 
 import com.google.common.base.Preconditions;
+import com.pantherman594.gssentials.database.PlayerData;
 import com.pantherman594.gssentials.regex.RuleManager;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -38,6 +39,8 @@ public class Messenger implements Listener {
     public static Map<UUID, UUID> messages = new HashMap<>();
     private static Map<UUID, String> sentMessages = new HashMap<>();
     private static Map<UUID, String> chatMessages = new HashMap<>();
+
+    private static PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
 
     public static void chat(ProxiedPlayer player, ChatEvent event) {
         Preconditions.checkNotNull(player, "player null");
@@ -159,13 +162,13 @@ public class Messenger implements Listener {
     }
 
     public static List<ProxiedPlayer> getVisiblePlayers(boolean seeHidden) {
-        return BungeeEssentials.getInstance().getProxy().getPlayers().stream().filter(p -> seeHidden || !PlayerData.getData(p).isHidden()).collect(Collectors.toList());
+        return BungeeEssentials.getInstance().getProxy().getPlayers().stream().filter(p -> seeHidden || !pD.isHidden(p.getUniqueId().toString())).collect(Collectors.toList());
     }
 
     public static Integer hiddenNum() {
         int hiddenNum = 0;
-        for (PlayerData pD : PlayerData.getDatas().values()) {
-            if (pD.isHidden()) {
+        for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
+            if (pD.isHidden(p.getUniqueId().toString())) {
                 hiddenNum++;
             }
         }
@@ -175,7 +178,7 @@ public class Messenger implements Listener {
     static boolean isMutedF(ProxiedPlayer player, String msg) {
         Preconditions.checkNotNull(player, "Invalid player specified");
         BungeeEssentials bInst = BungeeEssentials.getInstance();
-        if (!player.hasPermission(Permissions.Admin.MUTE_EXEMPT) && (PlayerData.getData(player.getUniqueId()).isMuted() || (bInst.isIntegrated() && bInst.getIntegrationProvider().isMuted(player)))) {
+        if (!player.hasPermission(Permissions.Admin.MUTE_EXEMPT) && (pD.isMuted(player.getUniqueId().toString()) || (bInst.isIntegrated() && bInst.getIntegrationProvider().isMuted(player)))) {
             player.sendMessage(Dictionary.format(Dictionary.MUTE_ERROR));
             ruleNotify(Dictionary.MUTE_ERRORN, player, msg);
             return true;

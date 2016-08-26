@@ -19,10 +19,11 @@
 package com.pantherman594.gssentials.command.general;
 
 import com.google.common.collect.ImmutableSet;
+import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.Dictionary;
 import com.pantherman594.gssentials.Permissions;
-import com.pantherman594.gssentials.PlayerData;
 import com.pantherman594.gssentials.command.BECommand;
+import com.pantherman594.gssentials.database.PlayerData;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -30,6 +31,8 @@ import net.md_5.bungee.api.plugin.TabExecutor;
 
 @SuppressWarnings("unused")
 public class FindCommand extends BECommand implements TabExecutor {
+    private PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
+
     public FindCommand() {
         super("find", Permissions.General.FIND);
     }
@@ -41,9 +44,9 @@ public class FindCommand extends BECommand implements TabExecutor {
             if (player == null) {
                 sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
             } else {
-                PlayerData pD = PlayerData.getData(player.getUniqueId());
+                String uuid = player.getUniqueId().toString();
 
-                if (!pD.isHidden()) {
+                if (!pD.isHidden(uuid)) {
                     sender.sendMessage(Dictionary.format(Dictionary.FORMAT_FIND_PLAYER, "SERVER", player.getServer().getInfo().getName(), "PLAYER", player.getName()));
                 } else {
                     sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));

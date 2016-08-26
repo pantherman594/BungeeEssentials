@@ -383,7 +383,7 @@ public class Dictionary {
      * Use reflection and the {@link Load} annotation to load values
      * from the configuration file without typing out all the keys
      *
-     * @throws IllegalAccessException
+     * @throws IllegalAccessException thrown if field cannot be set
      */
     synchronized static void load() throws IllegalAccessException {
         Configuration messages = BungeeEssentials.getInstance().getMessages();

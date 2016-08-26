@@ -18,6 +18,7 @@
 
 package com.pantherman594.gssentials;
 
+import com.pantherman594.gssentials.database.PlayerData;
 import com.pantherman594.gssentials.event.GlobalChatEvent;
 import com.pantherman594.gssentials.event.StaffChatEvent;
 import net.md_5.bungee.api.ProxyServer;
@@ -42,6 +43,7 @@ public class PlayerListener implements Listener {
     private final Map<InetAddress, ServerInfo> redirServer;
     private Map<UUID, String> cmds;
     private Map<UUID, String> cmdLog;
+    private PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
 
     PlayerListener() {
         connections = new HashSet<>();
@@ -59,7 +61,7 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = Byte.MAX_VALUE)
     public void chat(ChatEvent event) {
         final ProxiedPlayer player = (ProxiedPlayer) event.getSender();
-        PlayerData pD = PlayerData.getData(player.getUniqueId());
+        String uuid = player.getUniqueId().toString();
         String sender = player.getName();
         if (event.isCommand()) {
             if (BungeeEssentials.getInstance().contains("fulllog")) {
@@ -81,8 +83,8 @@ public class PlayerListener implements Listener {
                 }, 5, TimeUnit.SECONDS);
             }
             if (!event.isCancelled() && !player.hasPermission(Permissions.Admin.SPY_EXEMPT) && BungeeEssentials.getInstance().contains("commandSpy")) {
-                ProxyServer.getInstance().getPlayers().stream().filter(onlinePlayer -> (onlinePlayer.getUniqueId() != player.getUniqueId()) && (onlinePlayer.hasPermission(Permissions.Admin.SPY_COMMAND)) && PlayerData.getData(onlinePlayer.getUniqueId()).isCSpy()).forEach(onlinePlayer -> onlinePlayer.sendMessage(Dictionary.format(Dictionary.CSPY_COMMAND, "SENDER", sender, "COMMAND", event.getMessage())));
-                if (PlayerData.getData("CONSOLE").isCSpy()) {
+                ProxyServer.getInstance().getPlayers().stream().filter(onlinePlayer -> (onlinePlayer.getUniqueId() != player.getUniqueId()) && (onlinePlayer.hasPermission(Permissions.Admin.SPY_COMMAND)) && pD.isCSpy(onlinePlayer.getUniqueId().toString())).forEach(onlinePlayer -> onlinePlayer.sendMessage(Dictionary.format(Dictionary.CSPY_COMMAND, "SENDER", sender, "COMMAND", event.getMessage())));
+                if (pD.isCSpy("CONSOLE")) {
                     ProxyServer.getInstance().getConsole().sendMessage(Dictionary.format(Dictionary.CSPY_COMMAND, "SENDER", sender, "COMMAND", event.getMessage()).toLegacyText());
                 }
             }
@@ -111,12 +113,12 @@ public class PlayerListener implements Listener {
                 return;
             }
             if (!event.isCancelled() && !event.isCommand()) {
-                if (pD.isStaffChat()) {
+                if (pD.isStaffChat(uuid)) {
                     String server = player.getServer().getInfo().getName();
                     ProxyServer.getInstance().getPluginManager().callEvent(new StaffChatEvent(server, sender, event.getMessage()));
                     event.setCancelled(true);
                 }
-                if (pD.isGlobalChat()) {
+                if (pD.isGlobalChat(uuid)) {
                     String server = player.getServer().getInfo().getName();
                     ProxyServer.getInstance().getPluginManager().callEvent(new GlobalChatEvent(server, sender, event.getMessage()));
                     event.setCancelled(true);
@@ -174,9 +176,8 @@ public class PlayerListener implements Listener {
      */
     @EventHandler(priority = Byte.MAX_VALUE)
     public void postLogin(PostLoginEvent event) {
-        new PlayerData(event.getPlayer().getUniqueId().toString(), event.getPlayer().getName());
         BungeeEssentials.getInstance().savePlayerConfig(event.getPlayer().getName(), event.getPlayer().getAddress().getAddress().getHostAddress());
-        if (BungeeEssentials.getInstance().contains("joinAnnounce") && !PlayerData.getData(event.getPlayer().getUniqueId()).isHidden() && !(Dictionary.FORMAT_JOIN.equals("")) && event.getPlayer().hasPermission(Permissions.General.JOINANNC) && !(BungeeEssentials.getInstance().isIntegrated() && BungeeEssentials.getInstance().getIntegrationProvider().isBanned(event.getPlayer()))) {
+        if (BungeeEssentials.getInstance().contains("joinAnnounce") && !pD.isHidden(event.getPlayer().getUniqueId().toString()) && !(Dictionary.FORMAT_JOIN.equals("")) && event.getPlayer().hasPermission(Permissions.General.JOINANNC) && !(BungeeEssentials.getInstance().isIntegrated() && BungeeEssentials.getInstance().getIntegrationProvider().isBanned(event.getPlayer()))) {
             ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_JOIN, "PLAYER", event.getPlayer().getName()));
         }
         if (BungeeEssentials.getInstance().contains("fulllog")) {
@@ -219,13 +220,12 @@ public class PlayerListener implements Listener {
                 ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), () -> connections.remove(event.getPlayer().getAddress().getAddress()), 3, TimeUnit.SECONDS);
             }
         }
-        if (BungeeEssentials.getInstance().contains("joinAnnounce") && !PlayerData.getData(event.getPlayer().getUniqueId()).isHidden() && !(Dictionary.FORMAT_QUIT.equals("")) && event.getPlayer().hasPermission(Permissions.General.QUITANNC) && !(BungeeEssentials.getInstance().isIntegrated() && BungeeEssentials.getInstance().getIntegrationProvider().isBanned(event.getPlayer()))) {
+        if (BungeeEssentials.getInstance().contains("joinAnnounce") && !pD.isHidden(event.getPlayer().getUniqueId().toString()) && !(Dictionary.FORMAT_QUIT.equals("")) && event.getPlayer().hasPermission(Permissions.General.QUITANNC) && !(BungeeEssentials.getInstance().isIntegrated() && BungeeEssentials.getInstance().getIntegrationProvider().isBanned(event.getPlayer()))) {
             ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_QUIT, "PLAYER", event.getPlayer().getName()));
         }
         if (BungeeEssentials.getInstance().contains("fulllog")) {
             Log.log(Dictionary.format("[QUIT] " + Dictionary.FORMAT_QUIT, "PLAYER", event.getPlayer().getName()).toLegacyText());
         }
-        PlayerData.getData(event.getPlayer().getUniqueId()).save();
     }
 
     /**
@@ -267,13 +267,13 @@ public class PlayerListener implements Listener {
 
         if (BungeeEssentials.getInstance().contains("hoverlist")) {
 
-            PlayerData pD = null;
+            String uuid = null;
 
             for (String p : BungeeEssentials.getInstance().getPlayerList().keySet()) {
                 if (BungeeEssentials.getInstance().getPlayerList().get(p).equals(event.getConnection().getAddress().getAddress().getHostAddress())) {
-                    String uuid = BungeeEssentials.getInstance().getOfflineUUID(p);
-                    if (uuid != null) {
-                        pD = PlayerData.getData(uuid);
+                    String uuidTemp = BungeeEssentials.getInstance().getOfflineUUID(p);
+                    if (uuidTemp != null) {
+                        uuid = uuidTemp;
                         break;
                     }
                 }
@@ -283,13 +283,8 @@ public class PlayerListener implements Listener {
             List<ServerPing.PlayerInfo> infos = new ArrayList<>();
             List<ServerPing.PlayerInfo> friends = new ArrayList<>();
 
-            if (pD != null) {
-                for (String uuid : pD.getFriends()) {
-                    ProxiedPlayer friend = BungeeEssentials.getInstance().getProxy().getPlayer(UUID.fromString(uuid));
-                    if (friend != null && !PlayerData.getData(friend).isHidden()) {
-                        friends.add(new ServerPing.PlayerInfo(friend.getName(), friend.getUniqueId()));
-                    }
-                }
+            if (uuid != null) {
+                friends.addAll(pD.getFriends(uuid).stream().filter(friend -> friend != null && !pD.isHidden(friend)).map(friend -> new ServerPing.PlayerInfo(pD.getName(friend), friend)).collect(Collectors.toList()));
 
                 if (!friends.isEmpty()) {
                     friends.add(0, new ServerPing.PlayerInfo(Dictionary.color(Dictionary.HOVER_FRIEND_HEADER), EMPTY_UUID));
@@ -348,7 +343,7 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = Byte.MAX_VALUE)
     public void tab(TabCompleteResponseEvent event) {
         List<String> suggestions = event.getSuggestions();
-        List<String> remove = suggestions.stream().filter(suggestion -> ProxyServer.getInstance().getPlayer(suggestion) instanceof ProxiedPlayer && PlayerData.getData(ProxyServer.getInstance().getPlayer(suggestion).getUniqueId()).isHidden()).collect(Collectors.toList());
+        List<String> remove = suggestions.stream().filter(suggestion -> ProxyServer.getInstance().getPlayer(suggestion) instanceof ProxiedPlayer && pD.isHidden(ProxyServer.getInstance().getPlayer(suggestion).getUniqueId().toString())).collect(Collectors.toList());
         remove.forEach(suggestions::remove);
     }
 

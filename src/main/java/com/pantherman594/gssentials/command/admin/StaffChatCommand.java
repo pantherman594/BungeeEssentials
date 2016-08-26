@@ -18,10 +18,11 @@
 
 package com.pantherman594.gssentials.command.admin;
 
+import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.Dictionary;
 import com.pantherman594.gssentials.Permissions;
-import com.pantherman594.gssentials.PlayerData;
 import com.pantherman594.gssentials.command.ServerSpecificCommand;
+import com.pantherman594.gssentials.database.PlayerData;
 import com.pantherman594.gssentials.event.StaffChatEvent;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -29,6 +30,8 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 @SuppressWarnings("unused")
 public class StaffChatCommand extends ServerSpecificCommand {
+    private PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
+
     public StaffChatCommand() {
         super("staffchat", Permissions.Admin.CHAT);
     }
@@ -39,15 +42,15 @@ public class StaffChatCommand extends ServerSpecificCommand {
             String server = "CONSOLE";
             if (sender instanceof ProxiedPlayer) {
                 ProxiedPlayer player = (ProxiedPlayer) sender;
-                PlayerData pD = PlayerData.getData(player.getUniqueId());
+                String uuid = player.getUniqueId().toString();
                 server = player.getServer().getInfo().getName();
                 if (args.length == 1) {
                     if (args[0].equals("on")) {
-                        pD.setStaffChat(true);
+                        pD.setStaffChat(uuid, true);
                         player.sendMessage(Dictionary.format(Dictionary.SCHAT_ENABLED));
                         return;
                     } else if (args[0].equals("off")) {
-                        pD.setStaffChat(false);
+                        pD.setStaffChat(uuid, false);
                         player.sendMessage(Dictionary.format(Dictionary.SCHAT_DISABLED));
                         return;
                     }
@@ -60,7 +63,7 @@ public class StaffChatCommand extends ServerSpecificCommand {
             ProxiedPlayer player;
             if (sender instanceof ProxiedPlayer) {
                 player = (ProxiedPlayer) sender;
-                if (PlayerData.getData(player.getUniqueId()).toggleStaffChat()) {
+                if (pD.toggleStaffChat(player.getUniqueId().toString())) {
                     player.sendMessage(Dictionary.format(Dictionary.SCHAT_ENABLED));
                 } else {
                     player.sendMessage(Dictionary.format(Dictionary.SCHAT_DISABLED));

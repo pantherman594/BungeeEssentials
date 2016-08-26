@@ -18,7 +18,11 @@
 
 package com.pantherman594.gssentials.event;
 
-import com.pantherman594.gssentials.*;
+import com.pantherman594.gssentials.BungeeEssentials;
+import com.pantherman594.gssentials.Dictionary;
+import com.pantherman594.gssentials.Messenger;
+import com.pantherman594.gssentials.Permissions;
+import com.pantherman594.gssentials.database.PlayerData;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -29,6 +33,7 @@ import net.md_5.bungee.api.plugin.Event;
 import java.util.concurrent.TimeUnit;
 
 public class MessageEvent extends Event implements Cancellable {
+    private static PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
     private CommandSender sender;
     private CommandSender recipient;
     private String msg;
@@ -47,7 +52,7 @@ public class MessageEvent extends Event implements Cancellable {
         this.recipient = recipient;
         this.msg = msg;
         String message = msg;
-        if (recipient != null && recipient instanceof ProxiedPlayer && !PlayerData.getData(((ProxiedPlayer) recipient).getUniqueId()).isHidden()) {
+        if (recipient != null && recipient instanceof ProxiedPlayer && !pD.isHidden(((ProxiedPlayer) recipient).getUniqueId().toString())) {
             ProxiedPlayer player = null;
             if (sender instanceof ProxiedPlayer) {
                 player = (ProxiedPlayer) sender;
@@ -60,27 +65,27 @@ public class MessageEvent extends Event implements Cancellable {
                     TextComponent spyMessage = Dictionary.format(Dictionary.SPY_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message);
                     for (ProxiedPlayer onlinePlayer : ProxyServer.getInstance().getPlayers()) {
                         if (player.getUniqueId() != onlinePlayer.getUniqueId() && ((ProxiedPlayer) recipient).getUniqueId() != onlinePlayer.getUniqueId()) {
-                            if (onlinePlayer.hasPermission(Permissions.Admin.SPY) && PlayerData.getData(onlinePlayer.getUniqueId()).isSpy()) {
+                            if (onlinePlayer.hasPermission(Permissions.Admin.SPY) && pD.isSpy(onlinePlayer.getUniqueId().toString())) {
                                 onlinePlayer.sendMessage(spyMessage);
                             }
                         }
                     }
-                    if (PlayerData.getData("CONSOLE").isSpy()) {
+                    if (pD.isSpy("CONSOLE")) {
                         ProxyServer.getInstance().getConsole().sendMessage(spyMessage.toLegacyText());
                     }
                 }
                 final ProxiedPlayer recp = (ProxiedPlayer) recipient;
                 final ProxiedPlayer play = player;
                 Messenger.messages.put(play.getUniqueId(), recp.getUniqueId());
-                if (PlayerData.getData(recp.getUniqueId()).isMsging()) {
+                if (pD.isMsging(recp.getUniqueId().toString())) {
                     ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), () -> Messenger.messages.put(recp.getUniqueId(), play.getUniqueId()), 3, TimeUnit.SECONDS);
                 }
             }
-            PlayerData pDR = PlayerData.getData(((ProxiedPlayer) recipient).getUniqueId());
+            String uuidR = ((ProxiedPlayer) recipient).getUniqueId().toString();
             if (sender != ProxyServer.getInstance().getConsole() && BungeeEssentials.getInstance().contains("ignore")) {
-                PlayerData pDS = PlayerData.getData(((ProxiedPlayer) sender).getUniqueId());
-                if (message != null && !pDS.isIgnored(((ProxiedPlayer) recipient).getUniqueId().toString())) {
-                    if (!pDR.isIgnored(((ProxiedPlayer) sender).getUniqueId().toString()) && (pDR.isMsging() || sender.hasPermission(Permissions.Admin.BYPASS_MSG))) {
+                String uuidS = ((ProxiedPlayer) sender).getUniqueId().toString();
+                if (message != null && !pD.isIgnored(uuidS, uuidR)) {
+                    if (!pD.isIgnored(uuidR, uuidS) && (pD.isMsging(uuidR) || sender.hasPermission(Permissions.Admin.BYPASS_MSG))) {
                         recipient.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_RECEIVE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
                     }
                     sender.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_SEND, "SERVER", ((ProxiedPlayer) recipient).getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
@@ -89,7 +94,7 @@ public class MessageEvent extends Event implements Cancellable {
                 }
             } else {
                 sender.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_SEND, "SERVER", ((ProxiedPlayer) recipient).getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
-                if (message != null && pDR.isMsging() || sender.hasPermission(Permissions.Admin.BYPASS_MSG)) {
+                if (message != null && pD.isMsging(uuidR) || sender.hasPermission(Permissions.Admin.BYPASS_MSG)) {
                     recipient.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_RECEIVE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
                 }
             }
