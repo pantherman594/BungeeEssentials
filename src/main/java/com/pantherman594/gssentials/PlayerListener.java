@@ -43,6 +43,7 @@ public class PlayerListener implements Listener {
     private final Map<InetAddress, ServerInfo> redirServer;
     private Map<UUID, String> cmds;
     private Map<UUID, String> cmdLog;
+
     private PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
 
     PlayerListener() {
@@ -176,7 +177,7 @@ public class PlayerListener implements Listener {
      */
     @EventHandler(priority = Byte.MAX_VALUE)
     public void postLogin(PostLoginEvent event) {
-        BungeeEssentials.getInstance().savePlayerConfig(event.getPlayer().getName(), event.getPlayer().getAddress().getAddress().getHostAddress());
+        pD.setIp(event.getPlayer().getUniqueId().toString(), event.getPlayer().getAddress().getAddress().getHostAddress());
         if (BungeeEssentials.getInstance().contains("joinAnnounce") && !pD.isHidden(event.getPlayer().getUniqueId().toString()) && !(Dictionary.FORMAT_JOIN.equals("")) && event.getPlayer().hasPermission(Permissions.General.JOINANNC) && !(BungeeEssentials.getInstance().isIntegrated() && BungeeEssentials.getInstance().getIntegrationProvider().isBanned(event.getPlayer()))) {
             ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_JOIN, "PLAYER", event.getPlayer().getName()));
         }
@@ -267,17 +268,7 @@ public class PlayerListener implements Listener {
 
         if (BungeeEssentials.getInstance().contains("hoverlist")) {
 
-            String uuid = null;
-
-            for (String p : BungeeEssentials.getInstance().getPlayerList().keySet()) {
-                if (BungeeEssentials.getInstance().getPlayerList().get(p).equals(event.getConnection().getAddress().getAddress().getHostAddress())) {
-                    String uuidTemp = BungeeEssentials.getInstance().getOfflineUUID(p);
-                    if (uuidTemp != null) {
-                        uuid = uuidTemp;
-                        break;
-                    }
-                }
-            }
+            String uuid = (String) pD.getData("ip", event.getConnection().getAddress().getAddress().getHostAddress(), "uuid");
 
             UUID EMPTY_UUID = UUID.fromString("0-0-0-0-0");
             List<ServerPing.PlayerInfo> infos = new ArrayList<>();

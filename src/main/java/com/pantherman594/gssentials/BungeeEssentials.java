@@ -47,13 +47,11 @@ import java.util.logging.Level;
 
 public class BungeeEssentials extends Plugin {
     private static BungeeEssentials instance;
-    private Map<String, String> playerList = new HashMap<>();
     private Map<String, String> mainList = new HashMap<>();
     private Map<String, String[]> aliasList = new HashMap<>();
     private RuleManager ruleManager;
     private Configuration config;
     private Configuration messages = null;
-    private Configuration players = null;
     private IntegrationProvider helper;
     private List<String> enabled;
     private File configFile;
@@ -67,10 +65,6 @@ public class BungeeEssentials extends Plugin {
      */
     public static BungeeEssentials getInstance() {
         return instance;
-    }
-
-    public Map<String, String> getPlayerList() {
-        return playerList;
     }
 
     RuleManager getRuleManager() {
@@ -116,7 +110,6 @@ public class BungeeEssentials extends Plugin {
     @Override
     public void onDisable() {
         Log.reset();
-        savePlayerConfig();
     }
 
     /**
@@ -188,8 +181,6 @@ public class BungeeEssentials extends Plugin {
         }
         config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(configFile);
         messages = ConfigurationProvider.getProvider(YamlConfiguration.class).load(messageFile);
-        players = ConfigurationProvider.getProvider(YamlConfiguration.class).load(playerFile);
-        savePlayerConfig();
     }
 
     /**
@@ -363,13 +354,6 @@ public class BungeeEssentials extends Plugin {
     }
 
     /**
-     * @return The player list file.
-     */
-    private Configuration getPlayerConfig() {
-        return this.players;
-    }
-
-    /**
      * @return The playerData database.
      */
     public PlayerData getPlayerData() {
@@ -393,32 +377,6 @@ public class BungeeEssentials extends Plugin {
     void saveMessagesConfig() {
         try {
             ConfigurationProvider.getProvider(YamlConfiguration.class).save(getMessages(), messageFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Adds a player to the list of players.
-     *
-     * @param player The name of the player to add.
-     */
-    void savePlayerConfig(String player, String ip) {
-        playerList.put(player, ip);
-    }
-
-    /**
-     * Saves the player list to a file and reloads it.
-     */
-    private void savePlayerConfig() {
-        try {
-            this.players = ConfigurationProvider.getProvider(YamlConfiguration.class).load(playerFile);
-            if (!playerList.isEmpty()) {
-                getPlayerConfig().set("players", playerList);
-            }
-            ConfigurationProvider.getProvider(YamlConfiguration.class).save(getPlayerConfig(), playerFile);
-            playerList = new HashMap<>();
-            getPlayerConfig().getSection("players").getKeys().stream().filter(player -> !playerList.containsKey(player)).forEachOrdered(player -> playerList.put(player, getPlayerConfig().getString("players." + player)));
         } catch (IOException e) {
             e.printStackTrace();
         }

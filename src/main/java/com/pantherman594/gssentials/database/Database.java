@@ -23,6 +23,8 @@ import com.pantherman594.gssentials.BungeeEssentials;
 import java.io.File;
 import java.io.IOException;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 /**
@@ -67,10 +69,38 @@ public abstract class Database {
 
     public abstract boolean createDataNotExist(String keyVal);
 
-    public Object getData(String key, String keyVal, String label) {
-        if (!createDataNotExist(keyVal)) {
+    public List<Object> listAllData(String label) {
+        List<Object> datas = new ArrayList<>();
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = getSQLConnection();
+            ps = conn.prepareStatement("SELECT * FROM " + dbName + ";");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                datas.add(rs.getObject(label));
+            }
+
+            if (datas.size() > 0) {
+                return datas;
+            }
+
+        } catch (SQLException e) {
+            BungeeEssentials.getInstance().getLogger().log(Level.SEVERE, "Couldn't execute SQLite statement: ", e);
+        } finally {
+            close(ps, conn);
+        }
+        return null;
+    }
+
+    public List<Object> getDataMultiple(String key, String keyVal, String label) {
+        if (key.equals("uuid") && !createDataNotExist(keyVal)) {
             return null;
         }
+
+        List<Object> datas = new ArrayList<>();
 
         Connection conn = null;
         PreparedStatement ps = null;
@@ -82,14 +112,26 @@ public abstract class Database {
 
             while (rs.next()) {
                 if (rs.getString(key).equals(keyVal)) {
-                    return rs.getObject(label);
+                    datas.add(rs.getObject(label));
                 }
+            }
+
+            if (datas.size() > 0) {
+                return datas;
             }
 
         } catch (SQLException e) {
             BungeeEssentials.getInstance().getLogger().log(Level.SEVERE, "Couldn't execute SQLite statement: ", e);
         } finally {
             close(ps, conn);
+        }
+        return null;
+    }
+
+    public Object getData(String key, String keyVal, String label) {
+        List<Object> datas = getDataMultiple(key, keyVal, label);
+        if (datas != null) {
+            return datas.get(0);
         }
         return null;
     }

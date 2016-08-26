@@ -106,6 +106,10 @@ public class PlayerData extends Database {
         return (String) getData(uuid, "ip");
     }
 
+    public void setIp(String uuid, String ip) {
+        setData(uuid, "ip", ip);
+    }
+
     public List<String> getFriends(String uuid) {
         return (List<String>) getData(uuid, "friends");
     }

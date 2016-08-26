@@ -22,6 +22,7 @@ import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.Dictionary;
 import com.pantherman594.gssentials.Permissions;
 import com.pantherman594.gssentials.command.ServerSpecificCommand;
+import com.pantherman594.gssentials.database.PlayerData;
 import net.md_5.bungee.api.CommandSender;
 
 import java.util.HashSet;
@@ -30,6 +31,8 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class LookupCommand extends ServerSpecificCommand {
+    private PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
+
     public LookupCommand() {
         super("lookup", Permissions.Admin.LOOKUP);
     }
@@ -39,10 +42,12 @@ public class LookupCommand extends ServerSpecificCommand {
         Set<String> matches = new HashSet<>();
         if (args.length == 1) {
             String partialPlayerName = args[0].toLowerCase();
-            matches.addAll(BungeeEssentials.getInstance().getPlayerList().keySet().stream().filter(p -> p.toLowerCase().contains(partialPlayerName.toLowerCase())).collect(Collectors.toList()));
             sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_HEADER, "SIZE", String.valueOf(matches.size())));
-            for (String match : matches) {
-                sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_BODY, "PLAYER", match));
+            for (Object nameO : pD.listAllData("name")) {
+                String name = (String) nameO;
+                if (name.toLowerCase().contains(partialPlayerName)) {
+                    sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_BODY, "PLAYER", name));
+                }
             }
         } else if (args.length == 2) {
             boolean error = true;
@@ -59,9 +64,12 @@ public class LookupCommand extends ServerSpecificCommand {
                 }
             }
             if (error) {
-                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <part of name> [-b|-m|-e|-a]"));
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <part of name> [-b|-m|-e|-a|-ip]"));
+            } else if (args[arg].equals("-i")) {
+                matches.addAll(pD.getDataMultiple("ip", partialPlayerName, "name").stream().map(name -> (String) name).collect(Collectors.toList()));
             } else {
-                for (String p : BungeeEssentials.getInstance().getPlayerList().keySet()) {
+                for (Object pO : pD.listAllData("name")) {
+                    String p = (String) pO;
                     switch (args[arg]) {
                         case "-m":
                             if (p.toLowerCase().substring(1, p.length() - 1).contains(partialPlayerName.toLowerCase())) {
@@ -83,11 +91,6 @@ public class LookupCommand extends ServerSpecificCommand {
                                 matches.add(p);
                             }
                             break;
-                        case "-ip":
-                            if (BungeeEssentials.getInstance().getPlayerList().get(p).equals(partialPlayerName)) {
-                                matches.add(p);
-                            }
-                            break;
                         default:
                             break;
                     }
@@ -96,13 +99,6 @@ public class LookupCommand extends ServerSpecificCommand {
                 for (String match : matches) {
                     sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_BODY, "PLAYER", match));
                 }
-            }
-        } else if (args.length == 1) {
-            String partialPlayerName = args[0].toLowerCase();
-            matches.addAll(BungeeEssentials.getInstance().getPlayerList().keySet().stream().filter(p -> p.toLowerCase().startsWith(partialPlayerName.toLowerCase())).collect(Collectors.toList()));
-            sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_HEADER, "SIZE", String.valueOf(matches.size())));
-            for (String match : matches) {
-                sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_BODY, "PLAYER", match));
             }
         } else {
             sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <part of name> [-b|-m|-e|-a|-ip]"));
