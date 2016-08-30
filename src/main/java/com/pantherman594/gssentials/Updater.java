@@ -32,6 +32,9 @@ import java.util.Map;
 import java.util.logging.Level;
 
 class Updater {
+
+    private static final String VERSION_LINK = "https://raw.githubusercontent.com/PantherMan594/BungeeEssentials/master/version.txt";
+
     private BungeeEssentials plugin = BungeeEssentials.getInstance();
 
     /**
@@ -45,43 +48,64 @@ class Updater {
         final int oldVersion = getVersionFromString(oldVerDec);
         File path = new File(ProxyServer.getInstance().getPluginsFolder(), "BungeeEssentials.jar");
 
+        URLConnection con;
         try {
-            String versionLink = "https://raw.githubusercontent.com/PantherMan594/BungeeEssentials/master/version.txt";
-            URL url = new URL(versionLink);
-            URLConnection con = url.openConnection();
-            InputStreamReader isr = new InputStreamReader(con.getInputStream());
-            BufferedReader reader = new BufferedReader(isr);
+            URL url = new URL(VERSION_LINK);
+            con = url.openConnection();
+        } catch (IOException e) {
+            plugin.getLogger().log(Level.WARNING, "Invalid version link. Please contact plugin author.");
+            return false;
+        }
+
+        String newVerDec;
+        try (
+                InputStreamReader isr = new InputStreamReader(con.getInputStream());
+                BufferedReader reader = new BufferedReader(isr)
+        ) {
+
             String newVer = reader.readLine();
             String newBVer = reader.readLine();
-            String newVerDec = beta ? newBVer : newVer;
-            int newVersion = getVersionFromString(newVerDec);
-            reader.close();
+            newVerDec = beta ? newBVer : newVer;
+        } catch (IOException e) {
+            plugin.getLogger().log(Level.WARNING, "Unable to read version from link. Please contact plugin author.");
+            return false;
+        }
 
-            if(newVersion > oldVersion) {
-                plugin.getLogger().log(Level.INFO, "Update found, downloading...");
-                String dlLink = "https://github.com/PantherMan594/BungeeEssentials/releases/download/" + newVerDec + "/BungeeEssentials.jar";
-                url = new URL(dlLink);
+        int newVersion = getVersionFromString(newVerDec);
+
+        if (newVersion > oldVersion) {
+            plugin.getLogger().log(Level.INFO, "Update found, downloading...");
+            String dlLink = "https://github.com/PantherMan594/BungeeEssentials/releases/download/" + newVerDec + "/BungeeEssentials.jar";
+            try {
+                URL url = new URL(dlLink);
                 con = url.openConnection();
-                InputStream in = con.getInputStream();
-                FileOutputStream out = new FileOutputStream(path);
+            } catch (IOException e) {
+                plugin.getLogger().log(Level.WARNING, "Invalid download link. Please contact plugin author.");
+                return false;
+            }
+
+            try (
+                    InputStream in = con.getInputStream();
+                    FileOutputStream out = new FileOutputStream(path)
+            ) {
                 byte[] buffer = new byte[1024];
                 int size;
                 while ((size = in.read(buffer)) != -1) {
                     out.write(buffer, 0, size);
                 }
-                out.close();
-                in.close();
-                plugin.getLogger().log(Level.INFO, "Succesfully updated plugin to v" + newVerDec);
-                plugin.getLogger().log(Level.INFO, "Plugin disabling, restart the server to enable changes!");
-                return true;
-            } else {
-                plugin.getLogger().log(Level.INFO, "You are running the latest version of BungeeEssentials (v" + oldVerDec + ")!");
-                updateConfig();
+            } catch (IOException e) {
+                plugin.getLogger().log(Level.WARNING, "Failed to download update, please update manually from http://www.spigotmc.org/resources/bungeeessentials.1488/");
+                plugin.getLogger().log(Level.WARNING, "Error message: ");
+                e.printStackTrace();
+                return false;
             }
-        } catch(IOException e) {
-            plugin.getLogger().log(Level.WARNING, "Failed to download update, please update manually from http://www.spigotmc.org/resources/bungeeessentials.1488/");
-            plugin.getLogger().log(Level.WARNING, "Please report this error message: ");
-            e.printStackTrace();
+
+            plugin.getLogger().log(Level.INFO, "Succesfully updated plugin to v" + newVerDec);
+            plugin.getLogger().log(Level.INFO, "Plugin disabling, restart the server to enable changes!");
+            return true;
+        } else {
+            plugin.getLogger().log(Level.INFO, "You are running the latest version of BungeeEssentials (v" + oldVerDec + ")!");
+            updateConfig();
         }
         return false;
     }

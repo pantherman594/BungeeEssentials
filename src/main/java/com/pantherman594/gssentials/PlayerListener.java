@@ -244,10 +244,8 @@ public class PlayerListener implements Listener {
         if (event.getKickReasonComponent()[0].toPlainText().equals("Server closed")) {
             sendFallback(event);
         } else {
-            try {
-                Socket s = new Socket();
+            try (Socket s = new Socket()) {
                 s.connect(event.getKickedFrom().getAddress());
-                s.close();
             } catch (IOException e) {
                 sendFallback(event);
             }
@@ -348,10 +346,8 @@ public class PlayerListener implements Listener {
         e.setCancelled(true);
         for (String server : e.getPlayer().getPendingConnection().getListener().getServerPriority()) {
             ServerInfo info = ProxyServer.getInstance().getServerInfo(server);
-            try {
-                Socket s = new Socket();
+            try (Socket s = new Socket()) {
                 s.connect(info.getAddress());
-                s.close();
                 e.getPlayer().connect(info);
                 break;
             } catch (IOException ignored) {

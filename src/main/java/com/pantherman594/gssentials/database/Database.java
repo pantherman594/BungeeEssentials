@@ -160,10 +160,8 @@ public abstract class Database {
     private void load(String setupSql) {
         connection = getSQLConnection();
 
-        try {
-            Statement s = connection.createStatement();
+        try (Statement s = connection.createStatement()) {
             s.executeUpdate("CREATE TABLE IF NOT EXISTS " + dbName + " " + setupSql);
-            s.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

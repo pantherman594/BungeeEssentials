@@ -125,10 +125,8 @@ public class BungeeEssentials extends Plugin {
             return checkUuid;
         }
         if (ProxyServer.getInstance().getConfig().isOnlineMode()) {
-            try {
-                BufferedReader in = new BufferedReader(new InputStreamReader(new URL("https://api.mojang.com/users/profiles/minecraft/" + name).openStream()));
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(new URL("https://api.mojang.com/users/profiles/minecraft/" + name).openStream()))) {
                 uuid = (((JsonObject) new JsonParser().parse(in)).get("id")).toString().replaceAll("\"", "").replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5");
-                in.close();
             } catch (Exception e) {
                 return null;
             }

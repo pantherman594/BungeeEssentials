@@ -56,10 +56,8 @@ public class ServerListCommand extends BECommand {
 
         sender.sendMessage(Dictionary.format(Dictionary.LIST_HEADER, "COUNT", String.valueOf(online), "CURRENT", current));
         for (final ServerInfo info : ProxyServer.getInstance().getServers().values()) {
-            try {
-                Socket s = new Socket();
+            try (Socket s = new Socket()) {
                 s.connect(info.getAddress());
-                s.close();
                 print(sender, canSeeHidden, info, false);
             } catch (IOException e) {
                 if (sender.hasPermission(Permissions.General.LIST_OFFLINE)) {
