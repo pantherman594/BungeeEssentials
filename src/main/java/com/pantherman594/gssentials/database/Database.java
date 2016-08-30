@@ -39,7 +39,7 @@ public abstract class Database {
         load(setupSql);
     }
 
-    private Connection getSQLConnection() {
+    Connection getSQLConnection() {
         File dbFile = new File(BungeeEssentials.getInstance().getDataFolder(), dbName + ".db");
         if (!dbFile.exists()) {
             try {
@@ -72,12 +72,11 @@ public abstract class Database {
     public List<Object> listAllData(String label) {
         List<Object> datas = new ArrayList<>();
 
-        Connection conn = null;
-        PreparedStatement ps = null;
-        try {
-            conn = getSQLConnection();
-            ps = conn.prepareStatement("SELECT * FROM " + dbName + ";");
-            ResultSet rs = ps.executeQuery();
+        try (
+                Connection conn = getSQLConnection();
+                PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + dbName + ";");
+                ResultSet rs = ps.executeQuery()
+        ) {
 
             while (rs.next()) {
                 datas.add(rs.getObject(label));
@@ -89,8 +88,6 @@ public abstract class Database {
 
         } catch (SQLException e) {
             BungeeEssentials.getInstance().getLogger().log(Level.SEVERE, "Couldn't execute SQLite statement: ", e);
-        } finally {
-            close(ps, conn);
         }
         return null;
     }
@@ -102,11 +99,10 @@ public abstract class Database {
 
         List<Object> datas = new ArrayList<>();
 
-        Connection conn = null;
-        PreparedStatement ps = null;
-        try {
-            conn = getSQLConnection();
-            ps = conn.prepareStatement("SELECT * FROM " + dbName + " WHERE " + key + " = ?;");
+        try (
+                Connection conn = getSQLConnection();
+                PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + dbName + " WHERE " + key + " = ?;")
+        ) {
             ps.setObject(1, keyVal);
             ResultSet rs = ps.executeQuery();
 
@@ -122,8 +118,6 @@ public abstract class Database {
 
         } catch (SQLException e) {
             BungeeEssentials.getInstance().getLogger().log(Level.SEVERE, "Couldn't execute SQLite statement: ", e);
-        } finally {
-            close(ps, conn);
         }
         return null;
     }
@@ -141,18 +135,15 @@ public abstract class Database {
             return;
         }
 
-        Connection conn = null;
-        PreparedStatement ps = null;
-        try {
-            conn = getSQLConnection();
-            ps = conn.prepareStatement("UPDATE " + dbName + " SET " + label + " = ? WHERE " + key + " = ?;");
+        try (
+                Connection conn = getSQLConnection();
+                PreparedStatement ps = conn.prepareStatement("UPDATE " + dbName + " SET " + label + " = ? WHERE " + key + " = ?;")
+        ) {
             ps.setObject(1, labelVal);
             ps.setObject(2, keyVal);
             ps.executeUpdate();
         } catch (SQLException e) {
             BungeeEssentials.getInstance().getLogger().log(Level.SEVERE, "Couldn't execute SQLite statement: ", e);
-        } finally {
-            close(ps, conn);
         }
     }
 
@@ -175,17 +166,6 @@ public abstract class Database {
             s.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-    }
-
-    void close(PreparedStatement ps, Connection conn) {
-        try {
-            if (ps != null)
-                ps.close();
-            if (conn != null)
-                conn.close();
-        } catch (SQLException e) {
-            BungeeEssentials.getInstance().getLogger().log(Level.SEVERE, "Failed to close SQLite prepared statement: ", e);
         }
     }
 }

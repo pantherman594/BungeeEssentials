@@ -66,13 +66,13 @@ public class PlayerData extends Database {
             return false;
         }
 
-        Connection conn = null;
-        PreparedStatement ps = null;
-        try {
-            ps = conn.prepareStatement("INSERT INTO " + dbName +
-                    " (uuid, lastname, ip, friends, outRequests, inRequests, ignores, hidden, spy, cSpy, globalChat, staffChat, muted, msging) " +
-                    "VALUES " +
-                    "(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+        try (
+                Connection conn = getSQLConnection();
+                PreparedStatement ps = conn.prepareStatement("INSERT INTO " + dbName +
+                        " (uuid, lastname, ip, friends, outRequests, inRequests, ignores, hidden, spy, cSpy, globalChat, staffChat, muted, msging) " +
+                        "VALUES " +
+                        "(?,?,?,?,?,?,?,?,?,?,?,?,?,?)")
+        ) {
             if (uuid.equals("CONSOLE")) {
                 setValues(ps, uuid, "Console", "127.0.0.1");
             } else {
@@ -84,8 +84,6 @@ public class PlayerData extends Database {
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            close(ps, conn);
         }
         return false;
     }
