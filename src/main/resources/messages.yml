@@ -49,6 +49,9 @@ hoverlist:
 lookup:
   header: '&6Found {{ SIZE }} player(s):'
   body: '&f - {{ PLAYER }}'
+  player:
+    header: '&6=====&l{{ PLAYER }}&6====='
+    format: '&6{{ TYPE }}: &f{{ INFO }}{{ HOVER: Click to copy }}{{ CLICK: SUG: {{ INFO }} }}'
 spy:
   message: '&7[{{ SENDER }} » {{ RECIPIENT }}] &7{{ MESSAGE }}'
   enabled: '&aSpy has been enabled'
@@ -101,8 +104,8 @@ mute:
     exempt: '&cHey, you can''t mute that player!'
     error: '&7{{ PLAYER }} tried to chat while muted!'
 errors:
-  invalid: '&cInvalid arguments provided. Usage: {{ HELP }}'
-  offline: '&cSorry, that player is offline.'
+  invalid: '&cInvalid arguments provided. Usage: {{ HELP }}{{ HOVER: Click to fill in command }}{{ CLICK: SUG: {{ HELP }} }}'
+  notfound: '&cSorry, no player was found.'
   slap: '&cYou are unworthy of slapping people.'
   messages: '&cNobody has messaged you recently.'
   ignoreself: '&cYou can''t ignore yourself!'

@@ -40,15 +40,38 @@ public class LookupCommand extends ServerSpecificCommand {
     @Override
     public void run(CommandSender sender, String[] args) {
         Set<String> matches = new HashSet<>();
-        if (args.length == 1) {
-            String partialPlayerName = args[0].toLowerCase();
-            sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_HEADER, "SIZE", String.valueOf(matches.size())));
+        if (args.length == 1 && sender.hasPermission(Permissions.Admin.LOOKUP_INFO)) {
+            String uuid = null;
             for (Object nameO : pD.listAllData("name")) {
                 String name = (String) nameO;
-                if (name.toLowerCase().contains(partialPlayerName)) {
-                    sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_BODY, "PLAYER", name));
+                if (name.equalsIgnoreCase(args[0])) {
+                    sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_PLAYER_HEADER, "PLAYER", name));
+                    uuid = (String) pD.getData("name", name, "uuid");
+                    break;
                 }
             }
+
+            if (uuid == null) {
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_NOT_FOUND));
+            }
+
+            sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_PLAYER_FORMAT, "TYPE", "UUID", "INFO", uuid));
+            if (sender.hasPermission(Permissions.Admin.LOOKUP_IP) || sender.hasPermission(Permissions.Admin.LOOKUP_ALL))
+                sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_PLAYER_FORMAT, "TYPE", "IP", "INFO", pD.getIp(uuid)));
+            sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_PLAYER_FORMAT, "TYPE", "Messaging", "INFO", Dictionary.capitalizeFirst(pD.isMsging(uuid) + "")));
+            sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_PLAYER_FORMAT, "TYPE", "Muted", "INFO", Dictionary.capitalizeFirst(pD.isMuted(uuid) + "")));
+            if (sender.hasPermission(Permissions.Admin.LOOKUP_HIDDEN) || sender.hasPermission(Permissions.Admin.LOOKUP_ALL))
+                sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_PLAYER_FORMAT, "TYPE", "Hidden", "INFO", Dictionary.capitalizeFirst(pD.isHidden(uuid) + "")));
+            if (sender.hasPermission(Permissions.Admin.LOOKUP_SPY) || sender.hasPermission(Permissions.Admin.LOOKUP_ALL)) {
+                sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_PLAYER_FORMAT, "TYPE", "Spy", "INFO", Dictionary.capitalizeFirst(pD.isSpy(uuid) + "")));
+                sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_PLAYER_FORMAT, "TYPE", "Command Spy", "INFO", Dictionary.capitalizeFirst(pD.isCSpy(uuid) + "")));
+            }
+            String list = Dictionary.combine(", ", pD.getFriends(uuid));
+            sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_PLAYER_FORMAT, "TYPE", "Friends", "INFO", list.equals("") ? "None" : list));
+            list = Dictionary.combine(", ", pD.getOutRequests(uuid));
+            sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_PLAYER_FORMAT, "TYPE", "Outgoing Friend Requests", "INFO", list.equals("") ? "None" : list));
+            list = Dictionary.combine(", ", pD.getInRequests(uuid));
+            sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_PLAYER_FORMAT, "TYPE", "Incoming Friend Requests", "INFO", list.equals("") ? "None" : list));
         } else if (args.length == 2) {
             boolean error = true;
             String partialPlayerName = args[0].toLowerCase();
@@ -101,7 +124,8 @@ public class LookupCommand extends ServerSpecificCommand {
                 }
             }
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <part of name> [-b|-m|-e|-a|-ip]"));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <part of name> <-b|-m|-e|-a|-ip>"));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <full name>"));
         }
     }
 }

@@ -51,7 +51,7 @@ public class IgnoreCommand extends BECommand implements TabExecutor {
                             sender.sendMessage(Dictionary.format(Dictionary.IGNORE_DISABLED, "PLAYER", p.getName()));
                         }
                     else sender.sendMessage(Dictionary.format(Dictionary.ERROR_IGNORE_SELF));
-                } else sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
+                } else sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_NOT_FOUND));
             } else {
                 sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <player>"));
             }

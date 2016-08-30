@@ -132,9 +132,6 @@ public class FriendCommand extends BECommand implements TabExecutor {
                         } else {
                             if (p != null && !pD.isHidden(friendUuid)) { // Will only add if player is online.
 
-                                // playerData2 = PlayerData.getData(p.getUniqueId());  // Doesn't seem to be necessary, already loaded earlier. Will remove if that's the case.
-                                // uuid = p.getUniqueId().toString();
-
                                 if (pD.getInRequests(uuid).contains(friendUuid)) {
                                 /*
                                  * If the command sender already has an incoming request from the target player, will treat as accepting the request.
@@ -161,7 +158,7 @@ public class FriendCommand extends BECommand implements TabExecutor {
                                     sender.sendMessage(Dictionary.format(Dictionary.OUTREQUESTS_OLD, "NAME", p.getName()));
                                 }
                             } else {
-                                sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
+                                sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_NOT_FOUND));
                             }
                         }
                     } else { // For denying/removing

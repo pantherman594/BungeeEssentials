@@ -50,7 +50,7 @@ public class SlapCommand extends BECommand implements TabExecutor {
                     sender.sendMessage(Dictionary.format(Dictionary.SLAPPER_MSG, "SLAPPED", enemy.getName()));
                     enemy.sendMessage(Dictionary.format(Dictionary.SLAPPED_MSG, "SLAPPER", player == null ? "GOD" : player.getName()));
                 } else {
-                    sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
+                    sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_NOT_FOUND));
                 }
             } else {
                 sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <player>"));

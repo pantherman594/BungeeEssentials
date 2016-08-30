@@ -36,6 +36,11 @@ public class Permissions {
         public static final String BYPASS_FILTER = PREFIX + "bypass-filter";
         public static final String BYPASS_MSG = General.MESSAGE + ".bypass";
         public static final String LOOKUP = PREFIX + "lookup";
+        public static final String LOOKUP_INFO = LOOKUP + ".info";
+        public static final String LOOKUP_IP = LOOKUP_INFO + ".ip";
+        public static final String LOOKUP_SPY = LOOKUP_INFO + ".spy";
+        public static final String LOOKUP_HIDDEN = LOOKUP_INFO + ".hidden";
+        public static final String LOOKUP_ALL = LOOKUP_INFO + ".all";
         public static final String NOTIFY = PREFIX + "notify";
         public static final String MUTE = PREFIX + "mute";
         public static final String MUTE_EXEMPT = MUTE + ".exempt";

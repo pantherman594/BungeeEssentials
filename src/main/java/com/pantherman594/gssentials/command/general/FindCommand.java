@@ -42,14 +42,14 @@ public class FindCommand extends BECommand implements TabExecutor {
         if (args.length > 0) {
             ProxiedPlayer player = ProxyServer.getInstance().getPlayer(args[0]);
             if (player == null) {
-                sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_NOT_FOUND));
             } else {
                 String uuid = player.getUniqueId().toString();
 
                 if (!pD.isHidden(uuid)) {
                     sender.sendMessage(Dictionary.format(Dictionary.FORMAT_FIND_PLAYER, "SERVER", player.getServer().getInfo().getName(), "PLAYER", player.getName()));
                 } else {
-                    sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
+                    sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_NOT_FOUND));
                 }
             }
         } else {

@@ -47,7 +47,7 @@ public class ReplyCommand extends BECommand {
                 }
                 ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(uuid);
                 if (recipient == null) {
-                    sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
+                    sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_NOT_FOUND));
                 }
                 ProxyServer.getInstance().getPluginManager().callEvent(new MessageEvent(sender, recipient, Dictionary.combine(args)));
             } else {

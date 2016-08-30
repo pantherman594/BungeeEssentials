@@ -36,6 +36,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.logging.Level;
 
 @SuppressWarnings("WeakerAccess")
@@ -45,9 +46,9 @@ public class Dictionary {
     public static String ERROR_NOBODY_HAS_MESSAGED;
     @Load(key = "errors.slap", def = "&cYou are unworthy of slapping people.")
     public static String ERROR_UNWORTHY_OF_SLAP;
-    @Load(key = "errors.offline", def = "&cSorry, that player is offline.")
-    public static String ERROR_PLAYER_OFFLINE;
-    @Load(key = "errors.invalid", def = "&cInvalid arguments provided. Usage: {{ HELP }}")
+    @Load(key = "errors.notfound", def = "&cSorry, no player was found.")
+    public static String ERROR_PLAYER_NOT_FOUND;
+    @Load(key = "errors.invalid", def = "&cInvalid arguments provided. Usage: {{ HELP }}{{ HOVER: Click to fill in command }}{{ CLICK: SUG: {{ HELP }} }}")
     public static String ERROR_INVALID_ARGUMENTS;
     @Load(key = "errors.ignoreself", def = "&cYou can't ignore yourself!")
     public static String ERROR_IGNORE_SELF;
@@ -127,6 +128,10 @@ public class Dictionary {
     public static String LOOKUP_HEADER;
     @Load(key = "lookup.body", def = "&f - {{ PLAYER }}")
     public static String LOOKUP_BODY;
+    @Load(key = "lookup.player.header", def = "&6=====&l{{ PLAYER }}&6=====")
+    public static String LOOKUP_PLAYER_HEADER;
+    @Load(key = "lookup.player.format", def = "&6{{ TYPE }}: &f{{ INFO }}{{ HOVER: Click to copy }}{{ CLICK: SUG: {{ INFO }} }}")
+    public static String LOOKUP_PLAYER_FORMAT;
     @Load(key = "spy.message", def = "&a({{ SERVER }}) &7[{{ SENDER }} » {{ RECIPIENT }}] &f{{{ MESSAGE }}}")
     public static String SPY_MESSAGE;
     @Load(key = "spy.enabled", def = "&aSpy has been enabled!")
@@ -215,20 +220,29 @@ public class Dictionary {
     }
 
     /**
-     * Combines all strings in an array to a space-delimited string.
+     * Combines all strings in an array to a custom delimited string.
      *
+     * @param delim The delimiter.
      * @param array The array to combine.
      * @return The combined array.
      */
-    public static String combine(String[] array) {
+    public static String combine(String delim, String[] array) {
         StringBuilder builder = new StringBuilder();
         for (String string : array) {
             builder.append(string);
             if (!string.equals(array[array.length - 1])) {
-                builder.append(" ");
+                builder.append(delim);
             }
         }
         return builder.toString();
+    }
+
+    public static String combine(String[] array) {
+        return combine(" ", array);
+    }
+
+    public static String combine(String delim, List<String> array) {
+        return combine(delim, array.toArray(new String[array.size()]));
     }
 
     /**
@@ -249,6 +263,16 @@ public class Dictionary {
             }
         }
         return builder.toString();
+    }
+
+    /**
+     * Capitalizes the first letter of the given string.
+     *
+     * @param input The input string.
+     * @return The capitalized string.
+     */
+    public static String capitalizeFirst(String input) {
+        return input.substring(0, 1).toUpperCase() + input.substring(1);
     }
 
     /**
@@ -309,7 +333,11 @@ public class Dictionary {
                         clickText = clickText.replace(aClickTextStripped, "");
                     }
                     clickText = clickText.replace("{{ CLICK: ", "").replace(" }}", "");
-                    if (clickText != null) {
+                    if (clickText.startsWith("SUG: ")) {
+                        clickText = clickText.substring(5);
+                        clickEvent = new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, clickText);
+                        segment = Joiner.on("").join(clickTextStripped);
+                    } else if (clickText != null) {
                         clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, clickText);
                         segment = Joiner.on("").join(clickTextStripped);
                     }

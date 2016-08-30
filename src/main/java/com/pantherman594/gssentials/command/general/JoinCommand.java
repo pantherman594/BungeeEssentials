@@ -50,7 +50,7 @@ public class JoinCommand extends BECommand implements TabExecutor {
             ProxiedPlayer player = (ProxiedPlayer) sender;
             ProxiedPlayer join = ProxyServer.getInstance().getPlayer(args[0]);
             if (join == null || pD.isHidden(join.getUniqueId().toString())) {
-                sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_NOT_FOUND));
                 return;
             }
 

@@ -106,7 +106,7 @@ public class MessageEvent extends Event implements Cancellable {
                 sender.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_SEND, "SERVER", serverC, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
             }
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_OFFLINE));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_NOT_FOUND));
         }
     }
 
