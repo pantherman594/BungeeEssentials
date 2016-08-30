@@ -56,22 +56,18 @@ class LoadCmds extends Command {
         } else {
             server = "CONSOLE";
         }
-        
-	for (String arg : args) {
-	    arg = arg.replace("{", "Ƃ");
-	}
-		
-        if (command.contains("{*}")) {
-            String joinedArgs = "";
-	    for (String arg : args) {
-	        joinedArgs = joinedArgs + " " + arg;
-	    }
-            command = command.replace("{*}", joinedArgs);
+
+        for (int i = 0; i < args.length; i++) {
+            args[i] = args[i].replace("{", "Ƃ");
         }
-        
+
+        if (command.contains("{*}") && args.length > 0) {
+            command = command.replace("{*}", Dictionary.combine(args));
+        }
+
         while (args.length > num) {
-            if  (command.contains("{" + num + "}")) {
-                if ((args[num] != null) && (!args[num].equals(""))) {
+            if (command.contains("{" + num + "}")) {
+                if (args[num] != null && !args[num].equals("")) {
                     command = command.replace("{" + num + "}", args[num]);
                 } else {
                     sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "VARIES"));
@@ -80,12 +76,12 @@ class LoadCmds extends Command {
             }
             num++;
         }
-        
+
         command = command.replace("{{ PLAYER }}", sender.getName()).replace("{{ SERVER }}", server);
-        
-	for (String arg : args) {
-	    arg = arg.replace("Ƃ", "{");
-	}
+
+        for (int i = 0; i < args.length; i++) {
+            args[i] = args[i].replace("Ƃ", "{");
+        }
 		
         ProxyServer.getInstance().getLogger().info(command);
         switch (command.contains(" ") ? command.split(" ")[0] : command) {
