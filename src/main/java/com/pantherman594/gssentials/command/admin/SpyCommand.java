@@ -18,18 +18,14 @@
 
 package com.pantherman594.gssentials.command.admin;
 
-import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.Dictionary;
 import com.pantherman594.gssentials.Permissions;
 import com.pantherman594.gssentials.command.ServerSpecificCommand;
-import com.pantherman594.gssentials.database.PlayerData;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 @SuppressWarnings("unused")
 public class SpyCommand extends ServerSpecificCommand {
-    private PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
-
     public SpyCommand() {
         super("spy", Permissions.Admin.SPY);
     }

@@ -18,11 +18,9 @@
 
 package com.pantherman594.gssentials.command.general;
 
-import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.Dictionary;
 import com.pantherman594.gssentials.Permissions;
 import com.pantherman594.gssentials.command.ServerSpecificCommand;
-import com.pantherman594.gssentials.database.PlayerData;
 import com.pantherman594.gssentials.event.GlobalChatEvent;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -30,8 +28,6 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 @SuppressWarnings("unused")
 public class ChatCommand extends ServerSpecificCommand {
-    private PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
-
     public ChatCommand() {
         super("chat", Permissions.General.CHAT);
     }

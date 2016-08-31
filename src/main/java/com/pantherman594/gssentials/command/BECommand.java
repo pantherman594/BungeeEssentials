@@ -21,6 +21,7 @@ package com.pantherman594.gssentials.command;
 import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.Messenger;
 import com.pantherman594.gssentials.Permissions;
+import com.pantherman594.gssentials.database.PlayerData;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
@@ -35,6 +36,8 @@ import java.util.stream.Collectors;
  * @author David
  */
 public abstract class BECommand extends Command {
+    public PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
+
     public BECommand(String name, String permission) {
         super(BungeeEssentials.getInstance().getMain(name), permission, BungeeEssentials.getInstance().getAlias(name));
     }

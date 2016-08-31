@@ -19,11 +19,9 @@
 package com.pantherman594.gssentials.command.general;
 
 import com.google.common.collect.ImmutableSet;
-import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.Dictionary;
 import com.pantherman594.gssentials.Permissions;
 import com.pantherman594.gssentials.command.BECommand;
-import com.pantherman594.gssentials.database.PlayerData;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -31,8 +29,6 @@ import net.md_5.bungee.api.plugin.TabExecutor;
 
 @SuppressWarnings("unused")
 public class FindCommand extends BECommand implements TabExecutor {
-    private PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
-
     public FindCommand() {
         super("find", Permissions.General.FIND);
     }

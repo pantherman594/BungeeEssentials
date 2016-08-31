@@ -18,12 +18,10 @@
 
 package com.pantherman594.gssentials.command.general;
 
-import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.Dictionary;
 import com.pantherman594.gssentials.Messenger;
 import com.pantherman594.gssentials.Permissions;
 import com.pantherman594.gssentials.command.BECommand;
-import com.pantherman594.gssentials.database.PlayerData;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -38,8 +36,6 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class ServerListCommand extends BECommand {
-    private PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
-
     public ServerListCommand() {
         super("list", Permissions.General.LIST);
     }

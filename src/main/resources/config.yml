@@ -20,6 +20,7 @@ enable:
 - join
 - list
 - message
+- msggroup
 - slap
 - aliases
 - server
@@ -83,6 +84,9 @@ commands:
   - tell
   - w
   - whisper
+  msggroup:
+  - msggroup
+  - mg
   reply:
   - reply
   - r
@@ -108,4 +112,6 @@ aliases:
   vote:
   - 'CONSOLE: staffchat {{ PLAYER }} wants to vote!'
   - 'TELL: Vote for the server at yourvote.site!'
+  mga:
+  - msggroup admin {*}
 configversion: 2.5.8
