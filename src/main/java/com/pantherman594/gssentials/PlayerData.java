@@ -18,6 +18,8 @@
 
 package com.pantherman594.gssentials;
 
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
@@ -25,16 +27,33 @@ import net.md_5.bungee.config.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.logging.Level;
 
 /**
  * Created by David on 12/05.
  *
  * @author David
  */
-@SuppressWarnings({"WeakerAccess", "ResultOfMethodCallIgnored"})
+@SuppressWarnings({"WeakerAccess", "ResultOfMethodCallIgnored", "UnusedParameters", "unused"})
 public class PlayerData {
 
     private static com.pantherman594.gssentials.database.PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
+
+    private String uuid;
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public PlayerData(String uuid, String name) {
+        this.uuid = uuid;
+        BungeeEssentials.getInstance().getLogger().log(Level.SEVERE, "Please update any plugin that uses BungeeEssentials' old PlayerData. " +
+                "This will NOT be supported in future versions, and the plugin MAY NOT work correctly.");
+    }
 
     /**
      * Converts a all players' PlayerData to SQL format.
@@ -80,5 +99,274 @@ public class PlayerData {
             } catch (IOException ignored) {
             }
         }
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public static Map<String, PlayerData> getDatas() {
+        Map<String, PlayerData> playerDataList = new HashMap<>();
+        for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
+            playerDataList.put(p.getUniqueId().toString(), new PlayerData(p.getUniqueId().toString(), null));
+        }
+        return playerDataList;
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public static PlayerData getData(String uuid) {
+        return new PlayerData(uuid, null);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public static PlayerData getData(UUID uuid) {
+        return getData(uuid.toString());
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public static void setData(String uuid, PlayerData playerData) {
+        // No easy way to convert to new version, plugins using this MUST UPDATE.
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public static void clearData() {
+        // No use in converting this
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public boolean save() {
+        // No easy way to convert to new version, plugins using this MUST UPDATE.
+        return false;
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public List<String> getFriends() {
+        return pD.getFriends(uuid);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public List<String> getOutRequests() {
+        return pD.getOutRequests(uuid);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public List<String> getInRequests() {
+        return pD.getInRequests(uuid);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public boolean isMuted() {
+        return pD.isMuted(uuid);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public void setMuted(boolean muted) {
+        pD.setMuted(uuid, muted);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public boolean toggleMuted() {
+        return pD.toggleMuted(uuid);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public boolean isIgnored(String uuid) {
+        return pD.isIgnored(this.uuid, uuid);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public void setIgnored(String uuid, boolean status) {
+        pD.setIgnored(this.uuid, uuid, status);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public boolean toggleIgnore(String uuid) {
+        return pD.toggleIgnore(this.uuid, uuid);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public boolean isHidden() {
+        return pD.isHidden(uuid);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public void setHidden(boolean hidden) {
+        pD.setHidden(uuid, hidden);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public boolean toggleHidden() {
+        return pD.toggleHidden(uuid);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public boolean isSpy() {
+        return pD.isSpy(uuid);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public void setSpy(boolean spy) {
+        pD.setSpy(uuid, spy);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public boolean toggleSpy() {
+        return pD.toggleSpy(uuid);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public boolean isCSpy() {
+        return pD.isCSpy(uuid);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public void setCSpy(boolean cSpy) {
+        pD.setCSpy(uuid, cSpy);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public boolean toggleCSpy() {
+        return pD.toggleCSpy(uuid);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public boolean isGlobalChat() {
+        return pD.isGlobalChat(uuid);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public void setGlobalChat(boolean globalChat) {
+        pD.setGlobalChat(uuid, globalChat);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public boolean toggleGlobalChat() {
+        return pD.toggleGlobalChat(uuid);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public boolean isStaffChat() {
+        return pD.isStaffChat(uuid);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public void setStaffChat(boolean staffChat) {
+        pD.setStaffChat(uuid, staffChat);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public boolean toggleStaffChat() {
+        return pD.toggleStaffChat(uuid);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public boolean isMsging() {
+        return pD.isMsging(uuid);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public void setMsging(boolean msging) {
+        pD.setMsging(uuid, msging);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    public String getName() {
+        return pD.getName(uuid);
     }
 }
