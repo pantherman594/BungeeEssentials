@@ -24,6 +24,7 @@ import net.md_5.bungee.config.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 /**
  * Created by David on 12/05.
@@ -36,39 +37,48 @@ public class PlayerData {
     private static com.pantherman594.gssentials.database.PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
 
     /**
-     * Converts a player's PlayerData to SQL format.
-     *
-     * @param uuid The uuid of the player.
+     * Converts a all players' PlayerData to SQL format.
      */
-    public static void convertPlayerData(String uuid) {
-        File playerFile = new File(BungeeEssentials.getInstance().getDataFolder() + File.separator + "playerdata" + File.separator + uuid + ".yml");
-        if (playerFile.exists()) {
-            Configuration config;
+    public static void convertPlayerData() {
+        File playerDir = new File(BungeeEssentials.getInstance().getDataFolder() + File.separator + "playerdata");
+        if (playerDir.exists()) {
+            for (File playerFile : playerDir.listFiles()) {
+                if (!playerFile.getName().endsWith(".yml")) {
+                    continue;
+                }
+                String uuid = playerFile.getName().substring(0, 36);
+                Configuration config;
+                try {
+                    config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(playerFile);
+                } catch (IOException e) {
+                    BungeeEssentials.getInstance().getLogger().warning("Unable to load " + uuid + "'s data.");
+                    return;
+                }
+                for (String friend : config.getStringList("friends")) {
+                    pD.addFriend(uuid, friend);
+                }
+                for (String request : config.getStringList("requests.out")) {
+                    pD.addOutRequest(uuid, request);
+                }
+                for (String request : config.getStringList("requests.in")) {
+                    pD.addInRequest(uuid, request);
+                }
+                for (String ignore : config.getStringList("ignorelist")) {
+                    pD.setIgnored(uuid, ignore, true);
+                }
+                pD.setHidden(uuid, config.getBoolean("hidden"));
+                pD.setSpy(uuid, config.getBoolean("spy"));
+                pD.setCSpy(uuid, config.getBoolean("cspy"));
+                pD.setGlobalChat(uuid, config.getBoolean("globalchat"));
+                pD.setStaffChat(uuid, config.getBoolean("staffchat"));
+                pD.setMuted(uuid, config.getBoolean("muted"));
+                pD.setMsging(uuid, config.getBoolean("msging"));
+            }
+            File playerDirArchive = new File(BungeeEssentials.getInstance().getDataFolder() + File.separator + "playerdata_old");
             try {
-                config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(playerFile);
-            } catch (IOException e) {
-                BungeeEssentials.getInstance().getLogger().warning("Unable to load " + uuid + "'s data.");
-                return;
+                Files.move(playerDir.toPath(), playerDirArchive.toPath());
+            } catch (IOException ignored) {
             }
-            for (String friend : config.getStringList("friends")) {
-                pD.addFriend(uuid, friend);
-            }
-            for (String request : config.getStringList("requests.out")) {
-                pD.addOutRequest(uuid, request);
-            }
-            for (String request : config.getStringList("requests.in")) {
-                pD.addInRequest(uuid, request);
-            }
-            for (String ignore : config.getStringList("ignorelist")) {
-                pD.setIgnored(uuid, ignore, true);
-            }
-            pD.setHidden(uuid, config.getBoolean("hidden"));
-            pD.setSpy(uuid, config.getBoolean("spy"));
-            pD.setCSpy(uuid, config.getBoolean("cspy"));
-            pD.setGlobalChat(uuid, config.getBoolean("globalchat"));
-            pD.setStaffChat(uuid, config.getBoolean("staffchat"));
-            pD.setMuted(uuid, config.getBoolean("muted"));
-            pD.setMsging(uuid, config.getBoolean("msging"));
         }
     }
 }

@@ -27,6 +27,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -252,8 +253,15 @@ class Updater {
             case 255:
             case 256:
             case 257:
+            case 258:
+                PlayerData.convertPlayerData();
+                enabledList = config.getStringList("enable");
+                enabledList.add("msggroup");
+                config.set("commands.msggroup", Arrays.asList("msggroup", "mg"));
+                config.set("aliases.mga", Collections.singletonList("msggroup admin {*}"));
+                config.set("enable", enabledList);
                 config.set("configversion", null);
-                config.set("configversion", "2.5.8");
+                config.set("configversion", "2.6.0");
         }
         plugin.saveMainConfig();
         plugin.saveMessagesConfig();
