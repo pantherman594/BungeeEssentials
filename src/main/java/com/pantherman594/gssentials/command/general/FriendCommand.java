@@ -108,7 +108,7 @@ public class FriendCommand extends BECommand implements TabExecutor {
                 String friendUuid;
 
                 if (p == sender) {
-                    sender.sendMessage(Dictionary.color("&cYou can't be friends with yourself!."));
+                    sender.sendMessage(Dictionary.format("&cYou can't be friends with yourself!."));
                 } else {
 
                     if (p != null) { // If the player is online, pull up the player's data.
@@ -195,7 +195,7 @@ public class FriendCommand extends BECommand implements TabExecutor {
                 sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " [list|add <player>|remove <player>]"));
             }
         } else {
-            sender.sendMessage(Dictionary.color("&cConsole does not have any friends."));
+            sender.sendMessage(Dictionary.format("&cConsole does not have any friends."));
         }
     }
 

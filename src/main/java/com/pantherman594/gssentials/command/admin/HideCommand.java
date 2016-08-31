@@ -57,7 +57,7 @@ public class HideCommand extends ServerSpecificCommand {
                 }
             }
         } else {
-            sender.sendMessage(Dictionary.color("&cConsole cannot hide itself"));
+            sender.sendMessage(Dictionary.format("&cConsole cannot hide itself"));
         }
     }
 }

@@ -52,7 +52,7 @@ public class IgnoreCommand extends BECommand implements TabExecutor {
                 sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <player>"));
             }
         } else {
-            sender.sendMessage(Dictionary.color("&cConsole cannot ignore players (how are you seeing messages in the first place?)"));
+            sender.sendMessage(Dictionary.format("&cConsole cannot ignore players (how are you seeing messages in the first place?)"));
         }
     }
 

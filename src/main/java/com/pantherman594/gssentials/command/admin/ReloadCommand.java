@@ -33,9 +33,9 @@ public class ReloadCommand extends BECommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (BungeeEssentials.getInstance().reload()) {
-            sender.sendMessage(Dictionary.color("&aBungeeEssentials has been reloaded!"));
+            sender.sendMessage(Dictionary.format("&aBungeeEssentials has been reloaded!"));
         } else {
-            sender.sendMessage(Dictionary.color("&cUnable to reload BungeeEssentials! :("));
+            sender.sendMessage(Dictionary.format("&cUnable to reload BungeeEssentials! :("));
         }
     }
 }

@@ -95,14 +95,14 @@ class LoadCmds extends Command {
                 String recipient = commToSplit.split("Ƃ")[0].substring(5);
                 if (recipient.equals("ALL")) {
                     for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
-                        p.sendMessage(Dictionary.color(message));
+                        p.sendMessage(Dictionary.format(message));
                     }
                 } else if (command != null && ProxyServer.getInstance().getPlayer(recipient) != null) {
-                    ProxyServer.getInstance().getPlayer(recipient).sendMessage(Dictionary.color(message));
+                    ProxyServer.getInstance().getPlayer(recipient).sendMessage(Dictionary.format(message));
                 }
                 break;
             case "TELL:":
-                sender.sendMessage(Dictionary.color(command.substring(6)));
+                sender.sendMessage(Dictionary.format(command.substring(6)));
                 break;
             default:
                 ProxyServer.getInstance().getPluginManager().dispatchCommand(sender, command);
