@@ -11,7 +11,7 @@ message:
     send: '&7[me » {{ BREAK }}&7{{ RECIPIENT }}{{ HOVER: On the {{ SERVER }} server.
       }}{{ BREAK }}&7] &f{{ MESSAGE }}'
     receive: '&7[{{ BREAK }}&7{{ SENDER }}{{ HOVER: On the {{ SERVER }} server. }}{{
-      BREAK }}&7 » me] &f{{ MESSAGE }}'
+      CLICK: SUG: /msg {{ SENDER }} }}{{ BREAK }}&7 » me] &f{{ MESSAGE }}{{ CLICK: SUG: /msg {{ SENDER }} }}'
   enabled: '&aMessaging is now enabled!'
   disabled: '&cMessaging is now disabled!'
 warnings:

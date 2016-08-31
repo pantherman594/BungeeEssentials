@@ -72,7 +72,7 @@ public class Dictionary {
     public static String FORMAT_ALERT;
     @Load(key = "message.format.send", def = "&7[me » {{ BREAK }}&7{{ RECIPIENT }}{{ HOVER: On the {{ SERVER }} server. }}{{ BREAK }}&7] &f{{ MESSAGE }}")
     public static String MESSAGE_FORMAT_SEND;
-    @Load(key = "message.format.receive", def = "&7[{{ BREAK }}&7{{ SENDER }}{{ HOVER: On the {{ SERVER }} server. }}{{ BREAK }}&7 » me] &f{{ MESSAGE }}")
+    @Load(key = "message.format.receive", def = "&7[{{ BREAK }}&7{{ SENDER }}{{ HOVER: On the {{ SERVER }} server. }}{{ CLICK: SUG: /msg {{ SENDER }} }}{{ BREAK }}&7 » me] &f{{ MESSAGE }}{{ CLICK: SUG: /msg {{ SENDER }} }}")
     public static String MESSAGE_FORMAT_RECEIVE;
     @Load(key = "message.enabled", def = "&aMessaging is now enabled!")
     public static String MESSAGE_ENABLED;
