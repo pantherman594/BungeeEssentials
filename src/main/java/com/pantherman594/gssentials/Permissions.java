@@ -45,6 +45,12 @@ public class Permissions {
         public static final String MUTE = PREFIX + "mute";
         public static final String MUTE_EXEMPT = MUTE + ".exempt";
         public static final String HOVER_LIST = PREFIX + "hover-list";
+        public static final String MSGGROUP = PREFIX + "gmessage.admin";
+        public static final String MG_FORCE_JOIN = MSGGROUP + ".forcejoin";
+        public static final String MG_MAKE_OWNER = MSGGROUP + ".makeowner";
+        public static final String MG_KICK = MSGGROUP + ".kick";
+        public static final String MG_DISBAND = MSGGROUP + ".disband";
+        public static final String MG_ALL = MSGGROUP + ".all";
     }
 
     public static class General {
@@ -68,6 +74,8 @@ public class Permissions {
         public static final String ALIAS = PREFIX + "alias";
         public static final String ANNOUNCEMENT = PREFIX + "announcement";
         public static final String FRIEND = PREFIX + "friend";
+        public static final String MSGGROUP = PREFIX + "gmessage.user";
+        public static final String MG_CREATE = MSGGROUP + ".create";
     }
 
 }

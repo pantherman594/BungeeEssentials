@@ -32,11 +32,13 @@ import java.util.logging.Level;
  */
 public abstract class Database {
     String dbName;
+    String primary;
     private Connection connection;
 
-    public Database(String dbName, String setupSql) {
+    public Database(String dbName, String setupSql, String primary) {
         this.dbName = dbName;
-        load(setupSql);
+        this.primary = primary;
+        load(setupSql, primary);
     }
 
     Connection getSQLConnection() {
@@ -93,9 +95,6 @@ public abstract class Database {
     }
 
     public List<Object> getDataMultiple(String key, String keyVal, String label) {
-        if (key.equals("uuid") && !createDataNotExist(keyVal)) {
-            return null;
-        }
 
         List<Object> datas = new ArrayList<>();
 
@@ -131,7 +130,7 @@ public abstract class Database {
     }
 
     public void setData(String key, String keyVal, String label, Object labelVal) {
-        if (!createDataNotExist(keyVal)) {
+        if (key.equals(primary) && !createDataNotExist(keyVal)) {
             return;
         }
 
@@ -157,11 +156,11 @@ public abstract class Database {
         }
     }
 
-    private void load(String setupSql) {
+    private void load(String setupSql, String primary) {
         connection = getSQLConnection();
 
         try (Statement s = connection.createStatement()) {
-            s.executeUpdate("CREATE TABLE IF NOT EXISTS " + dbName + " " + setupSql);
+            s.executeUpdate("CREATE TABLE IF NOT EXISTS " + dbName + " " + setupSql + ",PRIMARY KEY (`" + primary + "`));");
         } catch (SQLException e) {
             e.printStackTrace();
         }

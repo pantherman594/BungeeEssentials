@@ -14,6 +14,30 @@ message:
       CLICK: SUG: /msg {{ SENDER }} }}{{ BREAK }}&7 » me] &f{{ MESSAGE }}{{ CLICK: SUG: /msg {{ SENDER }} }}'
   enabled: '&aMessaging is now enabled!'
   disabled: '&cMessaging is now disabled!'
+msggroup:
+  format: '&9{{ NAME }} - {{ SENDER }} » &7{{ MESSAGE }}'
+  create: '&aMessage group &f{{ NAME }} &asuccessfuly created! Invite players with /msggroup invite <username> {{ NAME }}!{{ HOVER: Click to prepare command. }}{{ CLICK: SUG: /msggroup invite <username> {{ NAME }} }}'
+  join: '&aSuccessfully joined the &f{{ NAME }} &amessage group.'
+  leave: '&aSuccessfully left the &f{{ NAME }} &amessage group.'
+  invite:
+    send: '&aSuccessfully invited &f{{ PLAYER }} &ato the &f{{ NAME }} &amessage group.'
+    receive: '&aYou''ve been invited to join the &f{{ NAME }} &amessage group. Click to accept!{{ CLICK: /msggroup join {{ NAME }}'
+  kick:
+    send: '&aSuccessfully kicked &f{{ PLAYER }} &afrom the &f{{ NAME }} &amessage group.'
+    receive: '&cYou''ve been kicked from the &f{{ NAME }} &amessage group.'
+  disband: '&aSuccessfully disbanded the &f{{ NAME }} &amessage group.'
+  error:
+    invalidname: '&cMessage group names must contain lowercase letters only, and must be at least 3 letters long.'
+    nametaken: '&cSorry, that name has already been taken.'
+    notinvited: '&cSorry, you can only join message groups with an invite.'
+    notingroup: '&cSorry, you''re not in that message group.'
+    notexist: '&cSorry, that message group doesn''t exist.'
+    alreadyingroup: '&cWhoops, I think you''re already in that group!'
+  admin:
+    listgroups:
+      header: '&6Message Groups:'
+      body: '&f- {{ NAME }}: {{ MEMBERS }}'
+    owner: '&a{{ PLAYER }} is now the owner of the {{ NAME }} message group.'
 warnings:
   similarity: '&cPlease do not spam other players!'
   swearing: '&cPlease do not swear at other players!'

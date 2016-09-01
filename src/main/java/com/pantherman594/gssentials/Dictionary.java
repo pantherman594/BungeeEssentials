@@ -37,6 +37,7 @@ import java.lang.reflect.Modifier;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 
 @SuppressWarnings("WeakerAccess")
@@ -78,6 +79,42 @@ public class Dictionary {
     public static String MESSAGE_ENABLED;
     @Load(key = "message.disabled", def = "&cMessaging is now disabled!")
     public static String MESSAGE_DISABLED;
+    @Load(key = "msggroup.format", def = "&&9{{ NAME }} - {{ SENDER }} » &7{{ MESSAGE }}")
+    public static String MG_FORMAT;
+    @Load(key = "msggroup.create", def = "&aMessage group &f{{ NAME }} &asuccessfuly created! Invite players with /msggroup invite <username> {{ NAME }}!{{ HOVER: Click to prepare command. }}{{ CLICK: SUG: /msggroup invite <username> {{ NAME }} }}")
+    public static String MG_CREATE;
+    @Load(key = "msggroup.join", def = "&aSuccessfully joined the &f{{ NAME }} &amessage group.")
+    public static String MG_JOIN;
+    @Load(key = "msggroup.leave", def = "&aSuccessfully left the &f{{ NAME }} &amessage group.")
+    public static String MG_LEAVE;
+    @Load(key = "msggroup.invite.send", def = "&aSuccessfully invited &f{{ PLAYER }} &ato the &f{{ NAME }} &amessage group.")
+    public static String MG_INVITE_SEND;
+    @Load(key = "msggroup.invite.receive", def = "&aYou've been invited to join the &f{{ NAME }} &amessage group. Click to accept!{{ CLICK: /msggroup join {{ NAME }}")
+    public static String MG_INVITE_RECEIVE;
+    @Load(key = "msggroup.kick.send", def = "&aSuccessfully kicked &f{{ PLAYER }} &afrom the &f{{ NAME }} &amessage group.")
+    public static String MG_KICK_SEND;
+    @Load(key = "msggroup.kick.receive", def = "&cYou've been kicked from the &f{{ NAME }} &amessage group.")
+    public static String MG_KICK_RECEIVE;
+    @Load(key = "msggroup.disband", def = "&aSuccessfully disbanded the &f{{ NAME }} &amessage group.")
+    public static String MG_DISBAND;
+    @Load(key = "msggroup.error.invalidname", def = "&cMessage group names must contain lowercase letters only, and must be at least 3 letters long.")
+    public static String MG_ERROR_INVALID_NAME;
+    @Load(key = "msggroup.error.nametaken", def = "&cSorry, that name has already been taken.")
+    public static String MG_ERROR_NAME_TAKEN;
+    @Load(key = "msggroup.error.notinvited", def = "&cSorry, you can only join message groups with an invite.")
+    public static String MG_ERROR_NOT_INVITED;
+    @Load(key = "msggroup.error.notingroup", def = "&cSorry, you're not in that message group.")
+    public static String MG_ERROR_NOT_IN_GROUP;
+    @Load(key = "msggroup.error.notexist", def = "&cSorry, that message group doesn't exist.")
+    public static String MG_ERROR_NOT_EXIST;
+    @Load(key = "msggroup.error.alreadyingroup", def = "&cWhoops, I think you're already in that group!")
+    public static String MG_ERROR_ALREADY_IN_GROUP;
+    @Load(key = "msggroup.admin.listgroups.header", def = "&6Message Groups:")
+    public static String MGA_LIST_GROUPS_HEADER;
+    @Load(key = "msggroup.admin.listgroups.body", def = "&f- {{ NAME }}: {{ MEMBERS }}")
+    public static String MGA_LIST_GROUPS_BODY;
+    @Load(key = "msggroup.admin.owner", def = "&a{{ PLAYER }} is now the owner of the {{ NAME }} message group.")
+    public static String MGA_OWNER;
     @Load(key = "friend.header", def = "&2Current Friends:")
     public static String FRIEND_HEADER;
     @Load(key = "friend.body", def = "- {{ NAME }} ({{ SERVER }})")
@@ -222,19 +259,26 @@ public class Dictionary {
     /**
      * Combines all strings in an array to a custom delimited string.
      *
+     * @param omit  The position of a string to omit
      * @param delim The delimiter.
      * @param array The array to combine.
      * @return The combined array.
      */
-    public static String combine(String delim, String[] array) {
+    public static String combine(int omit, String delim, String[] array) {
         StringBuilder builder = new StringBuilder();
-        for (String string : array) {
-            builder.append(string);
-            if (!string.equals(array[array.length - 1])) {
-                builder.append(delim);
+        for (int i = 0; i < array.length; i++) {
+            if (i != omit) {
+                builder.append(array[i]);
+                if (i != array.length - 1) {
+                    builder.append(delim);
+                }
             }
         }
         return builder.toString();
+    }
+
+    public static String combine(String delim, String[] array) {
+        return combine(-1, delim, array);
     }
 
     public static String combine(String[] array) {
@@ -242,6 +286,10 @@ public class Dictionary {
     }
 
     public static String combine(String delim, List<String> array) {
+        return combine(delim, array.toArray(new String[array.size()]));
+    }
+
+    public static String combine(String delim, Set<String> array) {
         return combine(delim, array.toArray(new String[array.size()]));
     }
 

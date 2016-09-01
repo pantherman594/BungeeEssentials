@@ -213,7 +213,7 @@ public class BungeeEssentials extends Plugin {
         List<String> BASE;
         String[] TEMP_ALIAS;
         List<String> enable = config.getStringList("enable");
-        for (String comm : Arrays.asList("alert", "commandspy", "hide", "lookup", "mute", "sendall", "send", "spy", "staffchat", "chat", "find", "friend", "ignore", "join", "list", "reply", "message", "slap", "reload")) {
+        for (String comm : Arrays.asList("alert", "commandspy", "hide", "lookup", "mute", "sendall", "send", "spy", "staffchat", "chat", "find", "friend", "ignore", "join", "list", "reply", "message", "msggroup", "slap", "reload")) {
             if (enable.contains(comm) || comm.equals("reply") || comm.equals("reload")) {
                 BASE = config.getStringList("commands." + comm);
                 if (BASE.isEmpty()) {
@@ -321,6 +321,7 @@ public class BungeeEssentials extends Plugin {
         commands.put("list", "com.pantherman594.gssentials.command.general.ServerListCommand");
         commands.put("lookup", "com.pantherman594.gssentials.command.admin.LookupCommand");
         commands.put("message", "com.pantherman594.gssentials.command.general.MessageCommand");
+        commands.put("msggroup", "com.pantherman594.gssentials.command.general.MsgGroupCommand");
         commands.put("mute", "com.pantherman594.gssentials.command.admin.MuteCommand");
         commands.put("reload", "com.pantherman594.gssentials.command.admin.ReloadCommand");
         commands.put("send", "com.pantherman594.gssentials.command.admin.SendCommand");
