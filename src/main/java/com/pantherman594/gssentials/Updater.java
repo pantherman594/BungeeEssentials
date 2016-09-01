@@ -256,10 +256,52 @@ class Updater {
             case 258:
                 PlayerData.convertPlayerData();
                 enabledList = config.getStringList("enable");
+                enabledList.add("hoverlist");
                 enabledList.add("msggroup");
                 config.set("commands.msggroup", Arrays.asList("msggroup", "mg"));
+                config.set("capspam.enabled", "true");
+                config.set("capspam.percent", 50);
                 config.set("aliases.mga", Collections.singletonList("msggroup admin {*}"));
                 config.set("enable", enabledList);
+                if (messages.getString("message.format.receive").equals("&7[{{ BREAK }}&7{{ SENDER }}{{ HOVER: On the {{ SERVER }} server. }}{{ BREAK }}&7 » me] &f{{ MESSAGE }}")) {
+                    messages.set("message.format.receive", "&7[{{ BREAK }}&7{{ SENDER }}{{ HOVER: On the {{ SERVER }} server. }}{{ CLICK: SUG: /msg {{ SENDER }} }}{{ BREAK }}&7 » me] &f{{ MESSAGE }}{{ CLICK: SUG: /msg {{ SENDER }} }}");
+                }
+                messages.set("msggroup.format", "&9{{ NAME }} - {{ SENDER }} » &7{{ MESSAGE }}");
+                messages.set("msggroup.create", "&aMessage group &f{{ NAME }} &asuccessfuly created! Invite players with /msggroup invite <username> {{ NAME }}!{{ HOVER: Click to prepare command. }}{{ CLICK: SUG: /msggroup invite <username> {{ NAME }} }}");
+                messages.set("msggroup.join", "&aSuccessfully joined the &f{{ NAME }} &amessage group.");
+                messages.set("msggroup.leave", "&aSuccessfully left the &f{{ NAME }} &amessage group.");
+                messages.set("msggroup.invite.send", "&aSuccessfully invited &f{{ PLAYER }} &ato the &f{{ NAME }} &amessage group.");
+                messages.set("msggroup.invite.receive", "&aYou've been invited to join the &f{{ NAME }} &amessage group. Click to accept!{{ CLICK: /msggroup join {{ NAME }}");
+                messages.set("msggroup.kick.send", "&aSuccessfully kicked &f{{ PLAYER }} &afrom the &f{{ NAME }} &amessage group.");
+                messages.set("msggroup.kick.receive", "&cYou've been kicked from the &f{{ NAME }} &amessage group.");
+                messages.set("msggroup.disband", "&aSuccessfully disbanded the &f{{ NAME }} &amessage group.");
+                messages.set("msggroup.error.invalidname", "&cMessage group names must contain lowercase letters only, and must be at least 3 letters long.");
+                messages.set("msggroup.error.nametaken", "&cSorry, that name has already been taken.");
+                messages.set("msggroup.error.notinvited", "&cSorry, you can only join message groups with an invite.");
+                messages.set("msggroup.error.notingroup", "&cSorry, you're not in that message group.");
+                messages.set("msggroup.error.notexist", "&cSorry, that message group doesn't exist.");
+                messages.set("msggroup.error.alreadyingroup", "&cWhoops, I think you're already in that group!");
+                messages.set("msggroup.admin.listgroups.header", "&6Message Groups:");
+                messages.set("msggroup.admin.listgroups.body", "&f- {{ NAME }}: {{ MEMBERS }}");
+                messages.set("msggroup.admin.owner", "&a{{ PLAYER }} is now the owner of the {{ NAME }} message group.");
+                messages.set("hoverlist.friend.order", "1");
+                messages.set("hoverlist.friend.header", "&aFriends Online:");
+                messages.set("hoverlist.staff.order", "2");
+                messages.set("hoverlist.staff.header", "&6Staff Online:");
+                messages.set("hoverlist.other.order", "0");
+                messages.set("hoverlist.other.header", "&7Other Players:");
+                messages.set("lookup.player.header", "&6=====&l{{ PLAYER }}&6=====");
+                messages.set("lookup.player.format", "&6{{ TYPE }}: &f{{ INFO }}{{ HOVER: Click to copy }}{{ CLICK: SUG: {{ INFO }} }}");
+                if (messages.getString("errors.invalid").equals("&cInvalid arguments provided. Usage: {{ HELP }}")) {
+                    messages.set("errors.invalid", "&cInvalid arguments provided. Usage: {{ HELP }}{{ HOVER: Click to fill in command }}{{ CLICK: SUG: {{ HELP }} }}");
+                }
+                if (messages.getString("errors.offline").equals("&cSorry, that player is offline")) {
+                    messages.set("errors.notfound", "&cSorry, no player was found.");
+                } else {
+                    messages.set("errors.notfound", messages.getString("errors.offline"));
+                }
+                messages.set("errors.offline", null);
+                new File(plugin.getDataFolder(), "players.yml").delete();
                 config.set("configversion", null);
                 config.set("configversion", "2.6.0");
         }
