@@ -24,8 +24,8 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -49,9 +49,7 @@ public class PlayerData extends Database {
                 "`globalChat` int(1) NOT NULL," +
                 "`staffChat` int(1) NOT NULL," +
                 "`muted` int(1) NOT NULL," +
-                "`msging` int(1) NOT NULL," +
-                "PRIMARY KEY (`uuid`)" +
-                ");");
+                "`msging` int(1) NOT NULL", "uuid");
     }
 
     public boolean createDataNotExist(String uuid) {
@@ -70,8 +68,7 @@ public class PlayerData extends Database {
                 Connection conn = getSQLConnection();
                 PreparedStatement ps = conn.prepareStatement("INSERT INTO " + dbName +
                         " (uuid, lastname, ip, friends, outRequests, inRequests, ignores, hidden, spy, cSpy, globalChat, staffChat, muted, msging) " +
-                        "VALUES " +
-                        "(?,?,?,?,?,?,?,?,?,?,?,?,?,?)")
+                        "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?);")
         ) {
             if (uuid.equals("CONSOLE")) {
                 setValues(ps, uuid, "Console", "127.0.0.1");
@@ -80,7 +77,6 @@ public class PlayerData extends Database {
             }
             insertDefaults(ps);
             ps.executeUpdate();
-            com.pantherman594.gssentials.PlayerData.convertPlayerData(uuid);
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -89,7 +85,7 @@ public class PlayerData extends Database {
     }
 
     private void insertDefaults(PreparedStatement ps) throws SQLException {
-        setValues(4, ps, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), false, false, false, false, false, false, false);
+        setValues(4, ps, new HashSet<String>(), new HashSet<String>(), new HashSet<String>(), new HashSet<String>(), false, false, false, false, false, false, false);
     }
 
     private Object getData(String uuid, String label) {
@@ -108,50 +104,50 @@ public class PlayerData extends Database {
         setData(uuid, "ip", ip);
     }
 
-    public List<String> getFriends(String uuid) {
-        return (List<String>) getData(uuid, "friends");
+    public Set<String> getFriends(String uuid) {
+        return (Set<String>) getData(uuid, "friends");
     }
 
     public void addFriend(String uuid, String friend) {
-        List<String> friends = getFriends(uuid);
+        Set<String> friends = getFriends(uuid);
         friends.add(friend);
         setData(uuid, "friends", friends);
     }
 
     public void removeFriend(String uuid, String friend) {
-        List<String> friends = getFriends(uuid);
+        Set<String> friends = getFriends(uuid);
         friends.remove(friend);
         setData(uuid, "friends", friends);
     }
 
-    public List<String> getOutRequests(String uuid) {
-        return (List<String>) getData(uuid, "outRequests");
+    public Set<String> getOutRequests(String uuid) {
+        return (Set<String>) getData(uuid, "outRequests");
     }
 
     public void addOutRequest(String uuid, String friend) {
-        List<String> friends = getOutRequests(uuid);
+        Set<String> friends = getOutRequests(uuid);
         friends.add(friend);
         setData(uuid, "outRequests", friends);
     }
 
     public void removeOutRequest(String uuid, String friend) {
-        List<String> friends = getOutRequests(uuid);
+        Set<String> friends = getOutRequests(uuid);
         friends.remove(friend);
         setData(uuid, "outRequests", friends);
     }
 
-    public List<String> getInRequests(String uuid) {
-        return (List<String>) getData(uuid, "inRequests");
+    public Set<String> getInRequests(String uuid) {
+        return (Set<String>) getData(uuid, "inRequests");
     }
 
     public void addInRequest(String uuid, String friend) {
-        List<String> friends = getInRequests(uuid);
+        Set<String> friends = getInRequests(uuid);
         friends.add(friend);
         setData(uuid, "inRequests", friends);
     }
 
     public void removeInRequest(String uuid, String friend) {
-        List<String> friends = getInRequests(uuid);
+        Set<String> friends = getInRequests(uuid);
         friends.remove(friend);
         setData(uuid, "inRequests", friends);
     }
@@ -171,16 +167,16 @@ public class PlayerData extends Database {
     }
 
     public boolean isIgnored(String uuid, String ignoreUuid) {
-        List<String> ignoreList = (List<String>) getData(uuid, "ignores");
-        return ignoreList.contains(ignoreUuid);
+        Set<String> ignoreSet = (Set<String>) getData(uuid, "ignores");
+        return ignoreSet.contains(ignoreUuid);
     }
 
     public void setIgnored(String uuid, String ignoreUuid, boolean status) {
-        List<String> ignoreList = (List<String>) getData(uuid, "ignores");
+        Set<String> ignoreSet = (Set<String>) getData(uuid, "ignores");
         if (status) {
-            ignoreList.add(ignoreUuid);
+            ignoreSet.add(ignoreUuid);
         } else {
-            ignoreList.remove(ignoreUuid);
+            ignoreSet.remove(ignoreUuid);
         }
     }
 

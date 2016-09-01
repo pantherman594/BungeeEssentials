@@ -28,7 +28,7 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -46,7 +46,7 @@ public class FriendCommand extends BECommand implements TabExecutor {
     public void execute(CommandSender sender, String[] args) {
         if (sender instanceof ProxiedPlayer) {
             String uuid = ((ProxiedPlayer) sender).getUniqueId().toString();
-            List<String> friends = pD.getFriends(uuid);
+            Set<String> friends = pD.getFriends(uuid);
             if (args.length == 0 || (args.length == 1 && args[0].equalsIgnoreCase("list"))) {
                 sender.sendMessage(Dictionary.format(Dictionary.FRIEND_HEADER, "COUNT", String.valueOf(pD.getFriends(uuid).size())));
 
@@ -66,7 +66,7 @@ public class FriendCommand extends BECommand implements TabExecutor {
 
                 boolean headerSent = false;
 
-                List<String> outRequests = pD.getOutRequests(uuid);
+                Set<String> outRequests = pD.getOutRequests(uuid);
                 for (String outRequest : outRequests) {
                     if (!headerSent) {
                         sender.sendMessage(Dictionary.format(Dictionary.OUTREQUESTS_HEADER, "COUNT", String.valueOf(outRequests.size())));
@@ -86,7 +86,7 @@ public class FriendCommand extends BECommand implements TabExecutor {
 
                 headerSent = false;
 
-                List<String> inRequests = pD.getInRequests(uuid);
+                Set<String> inRequests = pD.getInRequests(uuid);
                 for (String inRequest : inRequests) {
                     if (!headerSent) {
                         sender.sendMessage(Dictionary.format(Dictionary.INREQUESTS_HEADER, "COUNT", String.valueOf(inRequests.size())));
