@@ -56,7 +56,6 @@ public class BungeeEssentials extends Plugin {
     private List<String> enabled;
     private File configFile;
     private File messageFile;
-    private File playerFile;
     private PlayerData playerData;
     private boolean integrated;
 
@@ -92,7 +91,6 @@ public class BungeeEssentials extends Plugin {
         instance = this;
         configFile = new File(getDataFolder(), "config.yml");
         messageFile = new File(getDataFolder(), "messages.yml");
-        playerFile = new File(getDataFolder(), "players.yml");
         try {
             loadConfig();
         } catch (Exception e) {
@@ -152,10 +150,6 @@ public class BungeeEssentials extends Plugin {
         if (!file.exists()) {
             Files.copy(getResourceAsStream("config.yml"), file.toPath());
         }
-        file = new File(getDataFolder(), "players.yml");
-        if (!file.exists()) {
-            Files.copy(getResourceAsStream("players.yml"), file.toPath());
-        }
         file = new File(getDataFolder(), "messages.yml");
         if (!file.exists()) {
             Files.copy(getResourceAsStream("messages.yml"), file.toPath());
@@ -172,9 +166,6 @@ public class BungeeEssentials extends Plugin {
             saveConfig();
         }
         if (!messageFile.exists()) {
-            saveConfig();
-        }
-        if (!playerFile.exists()) {
             saveConfig();
         }
         config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(configFile);
