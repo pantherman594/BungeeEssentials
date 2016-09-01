@@ -27,10 +27,7 @@ import net.md_5.bungee.config.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
@@ -159,7 +156,8 @@ public class PlayerData {
      */
     @Deprecated
     public List<String> getFriends() {
-        return pD.getFriends(uuid);
+        Set<String> friends = pD.getFriends(uuid);
+        return Arrays.asList(friends.toArray(new String[friends.size()]));
     }
 
     /**
@@ -167,7 +165,8 @@ public class PlayerData {
      */
     @Deprecated
     public List<String> getOutRequests() {
-        return pD.getOutRequests(uuid);
+        Set<String> outRequests = pD.getOutRequests(uuid);
+        return Arrays.asList(outRequests.toArray(new String[outRequests.size()]));
     }
 
     /**
@@ -175,7 +174,8 @@ public class PlayerData {
      */
     @Deprecated
     public List<String> getInRequests() {
-        return pD.getInRequests(uuid);
+        Set<String> inRequests = pD.getInRequests(uuid);
+        return Arrays.asList(inRequests.toArray(new String[inRequests.size()]));
     }
 
     /**
