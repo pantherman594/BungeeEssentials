@@ -6,7 +6,7 @@ BungeeEssentials
 [![Issues](https://img.shields.io/github/issues/PantherMan594/BungeeEssentials.svg)](https://github.com/PantherMan594/BungeeEssentials/issues)
 
 Hello, welcome to [BungeeEssentials](http://www.spigotmc.org/resources/bungeeessentials.1488/) by PantherMan594!
-This project was originally created by csh as a port of [The-Zip/LilyEssentials](https://github.com/The-Zip/LilyEssentials) for BungeeCord. Since then, it has gone far beyond just a port, thanks to the awesome suggestions made by the you, community! The latest version of this plugin is always available [here](http://ci.pantherman594.com/job/BungeeEssentials/lastSuccessfulBuild/artifact/target/BungeeEssentials.jar).
+This project was originally created by csh as a port of [The-Zip/LilyEssentials](https://github.com/The-Zip/LilyEssentials) for BungeeCord. Since then, it has gone far beyond just a port, thanks to the awesome suggestions made by the you, community! The latest version of this plugin is always available [here](https://ci.pantherman594.com/job/BungeeEssentials/).
 
 ### Developers
 
