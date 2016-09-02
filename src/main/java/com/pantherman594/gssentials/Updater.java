@@ -258,6 +258,7 @@ class Updater {
                 enabledList = config.getStringList("enable");
                 enabledList.add("hoverlist");
                 enabledList.add("msggroup");
+                enabledList.remove("clean");
                 config.set("commands.msggroup", Arrays.asList("msggroup", "mg"));
                 config.set("capspam.enabled", "true");
                 config.set("capspam.percent", 50);
@@ -271,9 +272,9 @@ class Updater {
                 messages.set("msggroup.join", "&aSuccessfully joined the &f{{ NAME }} &amessage group.");
                 messages.set("msggroup.leave", "&aSuccessfully left the &f{{ NAME }} &amessage group.");
                 messages.set("msggroup.invite.send", "&aSuccessfully invited &f{{ PLAYER }} &ato the &f{{ NAME }} &amessage group.");
-                messages.set("msggroup.invite.receive", "&aYou've been invited to join the &f{{ NAME }} &amessage group. Click to accept!{{ CLICK: /msggroup join {{ NAME }}");
+                messages.set("msggroup.invite.receive", "&aYou've been invited to join the &f{{ NAME }} &amessage group. Click to accept!{{ CLICK: /msggroup join {{ NAME }} }}");
                 messages.set("msggroup.kick.send", "&aSuccessfully kicked &f{{ PLAYER }} &afrom the &f{{ NAME }} &amessage group.");
-                messages.set("msggroup.kick.receive", "&cYou've been kicked from the &f{{ NAME }} &amessage group.");
+                messages.set("msggroup.kick.receive", "&cYou've been kicked from the &f{{ NAME }} &cmessage group.");
                 messages.set("msggroup.disband", "&aSuccessfully disbanded the &f{{ NAME }} &amessage group.");
                 messages.set("msggroup.error.invalidname", "&cMessage group names must contain lowercase letters only, and must be at least 3 letters long.");
                 messages.set("msggroup.error.nametaken", "&cSorry, that name has already been taken.");
@@ -290,12 +291,15 @@ class Updater {
                 messages.set("hoverlist.staff.header", "&6Staff Online:");
                 messages.set("hoverlist.other.order", "0");
                 messages.set("hoverlist.other.header", "&7Other Players:");
+                if (messages.get("lookup.body").equals("&f - {{ PLAYER }}")) {
+                    messages.set("lookup.body", "&f - {{ PLAYER }}{{ HOVER: Click to view player info }}{{ CLICK: /" + config.getStringList("commands.lookup").get(0) + " {{ PLAYER }} }}");
+                }
                 messages.set("lookup.player.header", "&6=====&l{{ PLAYER }}&6=====");
                 messages.set("lookup.player.format", "&6{{ TYPE }}: &f{{ INFO }}{{ HOVER: Click to copy }}{{ CLICK: SUG: {{ INFO }} }}");
                 if (messages.getString("errors.invalid").equals("&cInvalid arguments provided. Usage: {{ HELP }}")) {
                     messages.set("errors.invalid", "&cInvalid arguments provided. Usage: {{ HELP }}{{ HOVER: Click to fill in command }}{{ CLICK: SUG: {{ HELP }} }}");
                 }
-                if (messages.getString("errors.offline").equals("&cSorry, that player is offline")) {
+                if (messages.getString("errors.offline").equals("&cSorry, that player is offline.")) {
                     messages.set("errors.notfound", "&cSorry, no player was found.");
                 } else {
                     messages.set("errors.notfound", messages.getString("errors.offline"));

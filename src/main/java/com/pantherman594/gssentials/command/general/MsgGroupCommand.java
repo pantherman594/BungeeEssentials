@@ -1,5 +1,6 @@
 package com.pantherman594.gssentials.command.general;
 
+import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.Dictionary;
 import com.pantherman594.gssentials.Messenger;
 import com.pantherman594.gssentials.Permissions;
@@ -11,6 +12,7 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -37,9 +39,14 @@ public class MsgGroupCommand extends BECommand {
             if (args.length > 1) {
                 if (args.length == 2 && args[1].equalsIgnoreCase("listgroups")) {
                     sender.sendMessage(Dictionary.format(Dictionary.MGA_LIST_GROUPS_HEADER));
-                    for (Object o : msgGroups.listAllData("groupname")) {
-                        String name = (String) o;
-                        sender.sendMessage(Dictionary.format(Dictionary.MGA_LIST_GROUPS_BODY, "NAME", name, "OWNER", msgGroups.getOwner(name), "MEMBERS", Dictionary.combine(", ", msgGroups.getMembers(name))));
+                    List<Object> groups = msgGroups.listAllData("groupname");
+                    if (groups != null) {
+                        for (Object o : groups) {
+                            String name = (String) o;
+                            sender.sendMessage(Dictionary.format(Dictionary.MGA_LIST_GROUPS_BODY, "NAME", name, "OWNER", msgGroups.getOwner(name), "MEMBERS", Dictionary.combine(", ", msgGroups.getMembers(name))));
+                        }
+                    } else {
+                        sender.sendMessage(Dictionary.format("None found."));
                     }
                 } else if (args.length == 3) {
                     String name = args[2].toLowerCase();
@@ -127,7 +134,7 @@ public class MsgGroupCommand extends BECommand {
                                 boolean online = false;
 
                                 if (recipient == null) {
-                                    recipient = (String) pD.getData("name", args[2], "uuid");
+                                    recipient = (String) pD.getData("lastname", args[2], "uuid");
                                 } else {
                                     online = true;
                                 }
@@ -161,7 +168,7 @@ public class MsgGroupCommand extends BECommand {
             if (sender instanceof ProxiedPlayer) {
                 ProxiedPlayer p = (ProxiedPlayer) sender;
                 String uuid = p.getUniqueId().toString();
-                if (p.hasPermission(Permissions.General.MSGGROUP)) {
+                if (p.hasPermission(Permissions.General.MSGGROUP) && (args[0].equalsIgnoreCase("create") || args[0].equalsIgnoreCase("join") || args[0].equalsIgnoreCase("leave"))) {
                     if (args.length == 2) {
                         String name = args[1].toLowerCase();
                         switch (args[0].toLowerCase()) {
@@ -203,7 +210,7 @@ public class MsgGroupCommand extends BECommand {
                                 if (msgGroups.createDataNotExist(name) && msgGroups.getMembers(name).contains(uuid)) {
                                     if (msgGroups.getOwner(name).equals(uuid)) {
                                         msgGroups.remove(name);
-                                        p.sendMessage(Dictionary.format(Dictionary.MG_DISBAND));
+                                        p.sendMessage(Dictionary.format(Dictionary.MG_DISBAND, "NAME", name));
                                     } else {
                                         msgGroups.removeMember(name, uuid);
                                         p.sendMessage(Dictionary.format(Dictionary.MG_LEAVE, "NAME", name));
@@ -212,13 +219,11 @@ public class MsgGroupCommand extends BECommand {
                                     p.sendMessage(Dictionary.format(Dictionary.MG_ERROR_NOT_IN_GROUP, "NAME", name));
                                 }
                                 break;
-                            default:
-                                helpMsg(p);
                         }
                     } else if (args.length == 3 && (args[0].equalsIgnoreCase("invite") || args[0].equalsIgnoreCase("kick"))) {
-                        String name = args[1].toLowerCase();
+                        String name = args[2].toLowerCase();
                         if (msgGroups.createDataNotExist(name) && msgGroups.getOwner(name).equals(uuid)) {
-                            ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(args[2]);
+                            ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(args[1]);
                             if (recipient != null) {
                                 switch (args[0].toLowerCase()) {
                                     case "invite":
@@ -246,7 +251,7 @@ public class MsgGroupCommand extends BECommand {
                         String name = args[0].toLowerCase();
                         if (msgGroups.createDataNotExist(name) && msgGroups.getMembers(name).contains(uuid)) {
                             Set<String> members = msgGroups.getMembers(name);
-                            String messageS = Messenger.filter(p, Dictionary.combine(0, " ", args), Messenger.ChatType.PRIVATE);
+                            String messageS = BungeeEssentials.getInstance().getMessenger().filter(p, Dictionary.combine(0, " ", args), Messenger.ChatType.PRIVATE);
                             TextComponent msg = Dictionary.format(Dictionary.MG_FORMAT, "NAME", Dictionary.capitalizeFirst(name), "SENDER", p.getName(), "MESSAGE", messageS);
                             TextComponent spyMsg = Dictionary.format(Dictionary.SPY_MESSAGE, "SENDER", p.getName(), "RECIPIENT", ChatColor.BLUE + Dictionary.capitalizeFirst(name), "MESSAGE", messageS);
 
@@ -276,15 +281,15 @@ public class MsgGroupCommand extends BECommand {
 
     private void helpMsg(CommandSender sender) {
         if (sender.hasPermission(Permissions.General.MSGGROUP)) {
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <groupname> <message>"));
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <create|join|leave> <group>"));
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <invite|kick> <username> <group>"));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " <group> <message>"));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " <create|join|leave> <group>"));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " <invite|kick> <username> <group>"));
         }
         if (sender.hasPermission(Permissions.Admin.MSGGROUP)) {
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " admin listgroups"));
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " admin <disband> <group>"));
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " admin <makeowner> <group> <username>"));
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " admin <join|kick> [username] <group>"));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " admin listgroups"));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " admin <disband> <group>"));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " admin <makeowner> <group> <username>"));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " admin <join|kick> [username] <group>"));
         }
     }
 }

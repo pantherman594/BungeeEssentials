@@ -50,7 +50,7 @@ public class CSpyCommand extends ServerSpecificCommand {
                     sender.sendMessage(Dictionary.format(Dictionary.CSPY_DISABLED));
                     break;
                 default:
-                    sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " [on|off]"));
+                    sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " [on|off]"));
                     break;
             }
         } else {

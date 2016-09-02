@@ -18,8 +18,8 @@
 
 package com.pantherman594.gssentials.command.general;
 
+import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.Dictionary;
-import com.pantherman594.gssentials.Messenger;
 import com.pantherman594.gssentials.Permissions;
 import com.pantherman594.gssentials.command.BECommand;
 import com.pantherman594.gssentials.event.MessageEvent;
@@ -40,7 +40,7 @@ public class ReplyCommand extends BECommand {
         if (sender instanceof ProxiedPlayer) {
             if (args.length > 0) {
                 ProxiedPlayer player = (ProxiedPlayer) sender;
-                UUID uuid = Messenger.reply(player);
+                UUID uuid = BungeeEssentials.getInstance().getMessenger().reply(player);
                 if (uuid == null) {
                     sender.sendMessage(Dictionary.format(Dictionary.ERROR_NOBODY_HAS_MESSAGED));
                     return;
@@ -51,7 +51,7 @@ public class ReplyCommand extends BECommand {
                 }
                 ProxyServer.getInstance().getPluginManager().callEvent(new MessageEvent(sender, recipient, Dictionary.combine(args)));
             } else {
-                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <message>"));
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " <message>"));
             }
         } else {
             sender.sendMessage(Dictionary.format("&cSorry, only players can reply to messages."));

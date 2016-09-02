@@ -21,7 +21,7 @@ If you know how to code, great! Feel free to add features or fix bugs via pull r
 <dependency>
     <groupId>com.pantherman594.gssentials</groupId>
     <artifactId>BungeeEssentials</artifactId>
-    <version>2.5.5</version>
+    <version>2.6.0</version>
     <type>jar</type>
     <scope>provided</scope>
 </dependency>

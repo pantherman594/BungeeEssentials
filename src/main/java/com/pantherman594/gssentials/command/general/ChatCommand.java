@@ -66,7 +66,7 @@ public class ChatCommand extends ServerSpecificCommand {
                     player.sendMessage(Dictionary.format(Dictionary.GCHAT_DISABLED));
                 }
             } else {
-                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " [on|off|msg]"));
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " [on|off|msg]"));
             }
         }
     }

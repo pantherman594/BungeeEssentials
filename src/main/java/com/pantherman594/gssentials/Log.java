@@ -20,6 +20,7 @@ package com.pantherman594.gssentials;
 
 import com.google.common.base.Joiner;
 import com.pantherman594.gssentials.regex.Rule;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.io.File;
@@ -149,8 +150,9 @@ public class Log {
      * @param args    The arguments.
      */
     public static void log(String message, Object... args) {
-        if (logger != null)
-            logger.log(Level.FINE, message, args);
+        ProxyServer.getInstance().getScheduler().runAsync(BungeeEssentials.getInstance(), () -> {
+            if (logger != null) logger.log(Level.FINE, message, args);
+        });
     }
 
     private static class LogFormatter extends Formatter {

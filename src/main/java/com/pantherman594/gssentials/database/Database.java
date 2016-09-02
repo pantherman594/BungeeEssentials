@@ -21,18 +21,24 @@ package com.pantherman594.gssentials.database;
 import com.pantherman594.gssentials.BungeeEssentials;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.net.URLConnection;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
  * Created by david on 7/30.
  */
+@SuppressWarnings("WeakerAccess")
 public abstract class Database {
     String dbName;
-    String primary;
+    private String primary;
     private Connection connection;
 
     public Database(String dbName, String setupSql, String primary) {
@@ -41,6 +47,15 @@ public abstract class Database {
         load(setupSql, primary);
     }
 
+    static Set<String> setFromString(String input) {
+        Set<String> set = new HashSet<>();
+        if (!input.equals("")) {
+            Collections.addAll(set, input.split(";"));
+        }
+        return set;
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     Connection getSQLConnection() {
         File dbFile = new File(BungeeEssentials.getInstance().getDataFolder(), dbName + ".db");
         if (!dbFile.exists()) {
@@ -55,15 +70,49 @@ public abstract class Database {
                 return connection;
             }
 
-            Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection("jdbc:sqlite:" + dbFile);
+            File sqliteLib = new File(BungeeEssentials.getInstance().getLibDir(), "sqlite-jdbc-3.8.11.2.jar");
+
+            if (!sqliteLib.exists()) {
+                BungeeEssentials.getInstance().getLogger().log(Level.INFO, "Downloading SQLite JDBC library...");
+                String dlLink = "https://bitbucket.org/xerial/sqlite-jdbc/downloads/sqlite-jdbc-3.8.11.2.jar";
+                URLConnection con;
+                try {
+                    URL url = new URL(dlLink);
+                    con = url.openConnection();
+                } catch (IOException e) {
+                    BungeeEssentials.getInstance().getLogger().log(Level.SEVERE, "Invalid SQLite download link. Please contact plugin author.");
+                    return null;
+                }
+
+                try (
+                        InputStream in = con.getInputStream();
+                        FileOutputStream out = new FileOutputStream(sqliteLib)
+                ) {
+                    byte[] buffer = new byte[1024];
+                    int size;
+                    while ((size = in.read(buffer)) != -1) {
+                        out.write(buffer, 0, size);
+                    }
+                } catch (IOException e) {
+                    BungeeEssentials.getInstance().getLogger().log(Level.WARNING, "Failed to download update, please download it manually from https://bitbucket.org/xerial/sqlite-jdbc/downloads/sqlite-jdbc-3.8.11.2.jar and put it in the /plugins/BungeeEssentials/lib folder.");
+                    BungeeEssentials.getInstance().getLogger().log(Level.WARNING, "Error message: ");
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+
+            URLClassLoader loader = new URLClassLoader(new URL[]{sqliteLib.toURI().toURL()});
+            Method m = DriverManager.class.getDeclaredMethod("getConnection", String.class, Properties.class, Class.class);
+            m.setAccessible(true);
+
+            connection = (Connection) m.invoke(null, "jdbc:sqlite:" + dbFile.getPath(), new Properties(), Class.forName("org.sqlite.JDBC", true, loader));
 
             return connection;
 
-        } catch (SQLException ex) {
-            BungeeEssentials.getInstance().getLogger().log(Level.SEVERE, "SQLite exception on initialize", ex);
-        } catch (ClassNotFoundException ex) {
-            BungeeEssentials.getInstance().getLogger().log(Level.SEVERE, "You need the SQLite JBDC library. Google it. Put it in /lib folder.");
+        } catch (ClassNotFoundException e) {
+            BungeeEssentials.getInstance().getLogger().log(Level.SEVERE, "You need the SQLite JDBC library. Download it from https://bitbucket.org/xerial/sqlite-jdbc/downloads/sqlite-jdbc-3.8.11.2.jar and put it in the /plugins/BungeeEssentials/lib folder.");
+        } catch (Exception e) {
+            BungeeEssentials.getInstance().getLogger().log(Level.SEVERE, "Exception on SQL initialize", e);
         }
 
         return null;
@@ -95,7 +144,7 @@ public abstract class Database {
     }
 
     public List<Object> getDataMultiple(String key, String keyVal, String label) {
-
+        //TODO: Cache queries into memory
         List<Object> datas = new ArrayList<>();
 
         try (

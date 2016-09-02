@@ -54,8 +54,10 @@ public class BungeeEssentials extends Plugin {
     private Configuration messages = null;
     private IntegrationProvider helper;
     private List<String> enabled;
+    private File libDir;
     private File configFile;
     private File messageFile;
+    private Messenger messenger;
     private PlayerData playerData;
     private boolean integrated;
 
@@ -89,6 +91,7 @@ public class BungeeEssentials extends Plugin {
     @Override
     public void onEnable() {
         instance = this;
+        libDir = new File(BungeeEssentials.getInstance().getDataFolder(), "lib");
         configFile = new File(getDataFolder(), "config.yml");
         messageFile = new File(getDataFolder(), "messages.yml");
         try {
@@ -118,7 +121,7 @@ public class BungeeEssentials extends Plugin {
      */
     public String getOfflineUUID(String name) {
         String uuid;
-        String checkUuid = (String) playerData.getData("name", name, "uuid");
+        String checkUuid = (String) playerData.getData("lastname", name, "uuid");
         if (checkUuid != null) {
             return checkUuid;
         }
@@ -161,7 +164,11 @@ public class BungeeEssentials extends Plugin {
      *
      * @throws IOException The IOException thrown if the files could not be created
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void loadConfig() throws IOException {
+        if (!libDir.exists()) {
+            libDir.mkdir();
+        }
         if (!configFile.exists()) {
             saveConfig();
         }
@@ -197,6 +204,7 @@ public class BungeeEssentials extends Plugin {
 
         playerData = new PlayerData();
         playerData.createDataNotExist("CONSOLE");
+        messenger = new Messenger();
         Log.reset();
         enabled = new ArrayList<>();
 
@@ -233,7 +241,6 @@ public class BungeeEssentials extends Plugin {
         addEnabled("server");
         addEnabled("autoredirect");
         addEnabled("rules");
-        addEnabled("clean");
         addEnabled("spam");
         addEnabled("useLog", "log", "fulllog");
         if (contains("useLog")) {
@@ -330,6 +337,13 @@ public class BungeeEssentials extends Plugin {
     }
 
     /**
+     * @return The lib directory.
+     */
+    public File getLibDir() {
+        return this.libDir;
+    }
+
+    /**
      * @return The main config file.
      */
     public Configuration getConfig() {
@@ -341,6 +355,13 @@ public class BungeeEssentials extends Plugin {
      */
     public Configuration getMessages() {
         return this.messages;
+    }
+
+    /**
+     * @return The messenger.
+     */
+    public Messenger getMessenger() {
+        return this.messenger;
     }
 
     /**

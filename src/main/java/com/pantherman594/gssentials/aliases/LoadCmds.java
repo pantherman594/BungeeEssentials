@@ -83,10 +83,8 @@ class LoadCmds extends Command {
             args[i] = args[i].replace("Ƃ", "{");
         }
 		
-        ProxyServer.getInstance().getLogger().info(command);
         switch (command.contains(" ") ? command.split(" ")[0] : command) {
             case "CONSOLE:":
-                ProxyServer.getInstance().getLogger().info(command.substring(9));
                 ProxyServer.getInstance().getPluginManager().dispatchCommand(ProxyServer.getInstance().getConsole(), command.substring(9));
                 break;
             case "TELL":

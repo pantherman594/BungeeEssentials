@@ -19,19 +19,12 @@
 package com.pantherman594.gssentials.event;
 
 import com.pantherman594.gssentials.*;
-import com.pantherman594.gssentials.database.PlayerData;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Cancellable;
-import net.md_5.bungee.api.plugin.Event;
 
-public class GlobalChatEvent extends Event implements Cancellable {
-    private static PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
-    private String server;
-    private String sender;
-    private String msg;
-    private boolean cancelled;
+public class GlobalChatEvent extends BEChatEvent implements Cancellable {
 
     /**
      * The Global Chat event.
@@ -41,16 +34,17 @@ public class GlobalChatEvent extends Event implements Cancellable {
      * @param msgPre The message before formatting/filtering.
      */
     public GlobalChatEvent(String server, String sender, String msgPre) {
-        this.server = server;
-        this.sender = sender;
-        this.msg = msgPre;
+        super(server, sender, msgPre);
+    }
 
+    public void execute() {
+        String msgPre = getMessage();
         if (msgPre != null) {
-            msgPre = Messenger.filter(ProxyServer.getInstance().getPlayer(sender), msgPre, Messenger.ChatType.GLOBAL);
+            msgPre = BungeeEssentials.getInstance().getMessenger().filter(ProxyServer.getInstance().getPlayer(getSender()), msgPre, Messenger.ChatType.GLOBAL);
             if (msgPre != null) {
-                TextComponent msg = Dictionary.formatMsg(Dictionary.FORMAT_GCHAT, "SERVER", server, "SENDER", sender, "MESSAGE", msgPre);
-                ProxiedPlayer senderP = ProxyServer.getInstance().getPlayer(sender);
-                ProxyServer.getInstance().getPlayers().stream().filter(player -> (player.hasPermission(Permissions.General.CHAT + "." + server) || player.hasPermission(Permissions.General.CHAT)) && (senderP == null || !BungeeEssentials.getInstance().contains("ignore") || !pD.isIgnored(player.getUniqueId().toString(), senderP.getUniqueId().toString()))).forEach(player -> player.sendMessage(msg));
+                TextComponent msg = Dictionary.formatMsg(Dictionary.FORMAT_GCHAT, "SERVER", getServer(), "SENDER", getSender(), "MESSAGE", msgPre);
+                ProxiedPlayer senderP = ProxyServer.getInstance().getPlayer(getSender());
+                ProxyServer.getInstance().getPlayers().stream().filter(player -> (player.hasPermission(Permissions.General.CHAT + "." + getServer()) || player.hasPermission(Permissions.General.CHAT)) && (senderP == null || !BungeeEssentials.getInstance().contains("ignore") || !pD.isIgnored(player.getUniqueId().toString(), senderP.getUniqueId().toString()))).forEach(player -> player.sendMessage(msg));
                 if (msg != null) {
                     ProxyServer.getInstance().getConsole().sendMessage(msg);
                     Log.log("[GCHAT] " + msg.toLegacyText());
@@ -59,39 +53,7 @@ public class GlobalChatEvent extends Event implements Cancellable {
         }
     }
 
-    public String getServer() {
-        return server;
-    }
-
-    public void setServer(String server) {
-        this.server = server;
-    }
-
-    public String getSender() {
-        return sender;
-    }
-
-    public void setSender(String sender) {
-        this.sender = sender;
-    }
-
-    public String getMessage() {
-        return msg;
-    }
-
-    public void setMessage(String msg) {
-        this.msg = msg;
-    }
-
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
-    public void setCancelled(boolean cancelled) {
-        this.cancelled = cancelled;
-    }
-
     public String toString() {
-        return "ChatEvent(super=" + super.toString() + ", cancelled=" + this.isCancelled() + ", server=" + this.getServer() + ", sender=" + this.getSender() + ", message=" + this.getMessage() + ")";
+        return "ChatEvent(cancelled=" + this.isCancelled() + ", server=" + this.getServer() + ", sender=" + this.getSender() + ", message=" + this.getMessage() + ")";
     }
 }

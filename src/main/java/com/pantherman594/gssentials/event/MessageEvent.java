@@ -33,7 +33,6 @@ import net.md_5.bungee.api.plugin.Event;
 import java.util.concurrent.TimeUnit;
 
 public class MessageEvent extends Event implements Cancellable {
-    private static PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
     private CommandSender sender;
     private CommandSender recipient;
     private String msg;
@@ -52,11 +51,12 @@ public class MessageEvent extends Event implements Cancellable {
         this.recipient = recipient;
         this.msg = msg;
         String message = msg;
+        PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
         if (recipient != null && recipient instanceof ProxiedPlayer && !pD.isHidden(((ProxiedPlayer) recipient).getUniqueId().toString())) {
             ProxiedPlayer player = null;
             if (sender instanceof ProxiedPlayer) {
                 player = (ProxiedPlayer) sender;
-                message = Messenger.filter(player, msg, Messenger.ChatType.PRIVATE);
+                message = BungeeEssentials.getInstance().getMessenger().filter(player, msg, Messenger.ChatType.PRIVATE);
             }
             String server = player != null ? player.getServer().getInfo().getName() : "CONSOLE";
             if (player != null) {
@@ -76,9 +76,9 @@ public class MessageEvent extends Event implements Cancellable {
                 }
                 final ProxiedPlayer recp = (ProxiedPlayer) recipient;
                 final ProxiedPlayer play = player;
-                Messenger.messages.put(play.getUniqueId(), recp.getUniqueId());
+                BungeeEssentials.getInstance().getMessenger().messages.put(play.getUniqueId(), recp.getUniqueId());
                 if (pD.isMsging(recp.getUniqueId().toString())) {
-                    ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), () -> Messenger.messages.put(recp.getUniqueId(), play.getUniqueId()), 3, TimeUnit.SECONDS);
+                    ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), () -> BungeeEssentials.getInstance().getMessenger().messages.put(recp.getUniqueId(), play.getUniqueId()), 3, TimeUnit.SECONDS);
                 }
             }
             String uuidR = ((ProxiedPlayer) recipient).getUniqueId().toString();

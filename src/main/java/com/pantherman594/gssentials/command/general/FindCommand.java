@@ -49,7 +49,7 @@ public class FindCommand extends BECommand implements TabExecutor {
                 }
             }
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <player>"));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " <player>"));
         }
     }
 

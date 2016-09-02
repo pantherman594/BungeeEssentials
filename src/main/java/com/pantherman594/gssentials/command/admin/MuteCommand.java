@@ -54,7 +54,7 @@ public class MuteCommand extends ServerSpecificCommand implements TabExecutor {
                 sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_NOT_FOUND));
             }
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <player>"));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " <player>"));
         }
     }
 

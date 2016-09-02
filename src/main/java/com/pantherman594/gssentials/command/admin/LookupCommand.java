@@ -22,6 +22,7 @@ import com.pantherman594.gssentials.Dictionary;
 import com.pantherman594.gssentials.Permissions;
 import com.pantherman594.gssentials.command.ServerSpecificCommand;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ProxyServer;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -38,17 +39,18 @@ public class LookupCommand extends ServerSpecificCommand {
         Set<String> matches = new HashSet<>();
         if (args.length == 1 && sender.hasPermission(Permissions.Admin.LOOKUP_INFO)) {
             String uuid = null;
-            for (Object nameO : pD.listAllData("name")) {
+            for (Object nameO : pD.listAllData("lastname")) {
                 String name = (String) nameO;
                 if (name.equalsIgnoreCase(args[0])) {
                     sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_PLAYER_HEADER, "PLAYER", name));
-                    uuid = (String) pD.getData("name", name, "uuid");
+                    uuid = (String) pD.getData("lastname", name, "uuid");
                     break;
                 }
             }
 
             if (uuid == null) {
-                sender.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_NOT_FOUND));
+                ProxyServer.getInstance().getPluginManager().dispatchCommand(sender, getName() + " -a " + args[0]);
+                return;
             }
 
             sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_PLAYER_FORMAT, "TYPE", "UUID", "INFO", uuid));
@@ -83,11 +85,11 @@ public class LookupCommand extends ServerSpecificCommand {
                 }
             }
             if (error) {
-                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <part of name> [-b|-m|-e|-a|-ip]"));
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " <part of name> [-b|-m|-e|-a|-ip]"));
             } else if (args[arg].equals("-i")) {
-                matches.addAll(pD.getDataMultiple("ip", partialPlayerName, "name").stream().map(name -> (String) name).collect(Collectors.toList()));
+                matches.addAll(pD.getDataMultiple("ip", partialPlayerName, "lastname").stream().map(name -> (String) name).collect(Collectors.toList()));
             } else {
-                for (Object pO : pD.listAllData("name")) {
+                for (Object pO : pD.listAllData("lastname")) {
                     String p = (String) pO;
                     switch (args[arg]) {
                         case "-m":
@@ -120,8 +122,8 @@ public class LookupCommand extends ServerSpecificCommand {
                 }
             }
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <part of name> <-b|-m|-e|-a|-ip>"));
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " <full name>"));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " <part of name|ip> <-b|-m|-e|-a|-ip>"));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " <full name>"));
         }
     }
 }

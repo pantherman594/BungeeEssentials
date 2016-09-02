@@ -18,8 +18,8 @@
 
 package com.pantherman594.gssentials.command.general;
 
+import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.Dictionary;
-import com.pantherman594.gssentials.Messenger;
 import com.pantherman594.gssentials.Permissions;
 import com.pantherman594.gssentials.command.BECommand;
 import net.md_5.bungee.api.ChatColor;
@@ -43,7 +43,7 @@ public class ServerListCommand extends BECommand {
     @Override
     public void execute(final CommandSender sender, String[] args) {
         boolean canSeeHidden = sender.hasPermission(Permissions.Admin.SEE_HIDDEN);
-        int online = Messenger.getVisiblePlayers(canSeeHidden).size();
+        int online = BungeeEssentials.getInstance().getMessenger().getVisiblePlayers(canSeeHidden).size();
 
         String current = "CONSOLE";
         if (sender instanceof ProxiedPlayer) {
@@ -103,7 +103,7 @@ public class ServerListCommand extends BECommand {
             return ChatColor.RED;
         }
 
-        int total = Messenger.getVisiblePlayers(canSeeHidden).size();
+        int total = BungeeEssentials.getInstance().getMessenger().getVisiblePlayers(canSeeHidden).size();
         double percent = (players * 100.0f) / total;
         if (percent <= 33) {
             return ChatColor.RED;

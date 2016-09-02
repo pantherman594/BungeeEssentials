@@ -192,7 +192,7 @@ public class FriendCommand extends BECommand implements TabExecutor {
                     }
                 }
             } else {
-                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " [list|add <player>|remove <player>]"));
+                sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " [list|add <player>|remove <player>]"));
             }
         } else {
             sender.sendMessage(Dictionary.format("&cConsole does not have any friends."));

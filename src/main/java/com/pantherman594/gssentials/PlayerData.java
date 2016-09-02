@@ -56,13 +56,15 @@ public class PlayerData {
      * Converts a all players' PlayerData to SQL format.
      */
     public static void convertPlayerData() {
+        com.pantherman594.gssentials.database.PlayerData pD = new com.pantherman594.gssentials.database.PlayerData();
+        pD.createDataNotExist("CONSOLE");
         File playerDir = new File(BungeeEssentials.getInstance().getDataFolder() + File.separator + "playerdata");
         if (playerDir.exists()) {
             for (File playerFile : playerDir.listFiles()) {
                 if (!playerFile.getName().endsWith(".yml")) {
                     continue;
                 }
-                String uuid = playerFile.getName().substring(0, 36);
+                String uuid = playerFile.getName().substring(0, playerFile.getName().length() - 4);
                 Configuration config;
                 try {
                     config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(playerFile);

@@ -55,7 +55,7 @@ public class SendAllCommand extends BECommand implements TabExecutor {
                 }));
             }
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " [fromServer] <toServer>"));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " [fromServer] <toServer>"));
         }
     }
 

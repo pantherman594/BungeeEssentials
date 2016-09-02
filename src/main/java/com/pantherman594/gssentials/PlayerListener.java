@@ -44,6 +44,7 @@ public class PlayerListener implements Listener {
     private Map<UUID, String> cmds;
     private Map<UUID, String> cmdLog;
 
+    private Messenger mess = BungeeEssentials.getInstance().getMessenger();
     private PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
 
     PlayerListener() {
@@ -94,32 +95,28 @@ public class PlayerListener implements Listener {
                 ProxyServer.getInstance().getPluginManager().dispatchCommand(player, BungeeEssentials.getInstance().getMain("list"));
             }
         } else {
-            if (BungeeEssentials.getInstance().getConfig().getBoolean("capspam.enabled", true) && !(player.hasPermission(Permissions.Admin.BYPASS_FILTER)) && event.getMessage().length() >= 5) {
-                int upperC = 0;
-
-                for (char letter : event.getMessage().toCharArray()) {
-                    if (Character.isUpperCase(letter)) upperC++;
-                }
-                BungeeEssentials.getInstance().getLogger().info(upperC + "/" + event.getMessage().length() + "=" + (upperC * 100 / event.getMessage().length()));
-
-                if (upperC * 100 / event.getMessage().length() >= BungeeEssentials.getInstance().getConfig().getDouble("capspam.percent", 50))
-                    event.setMessage(event.getMessage().toLowerCase());
-            }
 
             if (BungeeEssentials.getInstance().contains("fulllog")) {
                 Log.log(Dictionary.format("[CHAT] " + Dictionary.FORMAT_CHAT, "PLAYER", sender, "MESSAGE", event.getMessage()).toLegacyText());
             }
-            if (Messenger.isMutedF(player, event.getMessage())) {
+            if (mess.isMutedF(player, event.getMessage())) {
                 event.setCancelled(true);
                 return;
             }
+
+            if (BungeeEssentials.getInstance().getConfig().getBoolean("capspam.enabled", true) && !(player.hasPermission(Permissions.Admin.BYPASS_FILTER)) && event.getMessage().length() >= 5) {
+                String msg = event.getMessage();
+                int upperC = msg.replaceAll("[^A-Z]", "").length();
+
+                if (upperC * 100 / msg.length() >= BungeeEssentials.getInstance().getConfig().getDouble("capspam.percent", 50))
+                    event.setMessage(event.getMessage().toLowerCase());
+            }
             if (!event.isCancelled() && !event.isCommand()) {
-                if (pD.isStaffChat(uuid)) {
+                if (player.hasPermission(Permissions.Admin.CHAT) && pD.isStaffChat(uuid)) {
                     String server = player.getServer().getInfo().getName();
                     ProxyServer.getInstance().getPluginManager().callEvent(new StaffChatEvent(server, sender, event.getMessage()));
                     event.setCancelled(true);
-                }
-                if (pD.isGlobalChat(uuid)) {
+                } else if (player.hasPermission(Permissions.General.CHAT) && pD.isGlobalChat(uuid)) {
                     String server = player.getServer().getInfo().getName();
                     ProxyServer.getInstance().getPluginManager().callEvent(new GlobalChatEvent(server, sender, event.getMessage()));
                     event.setCancelled(true);
@@ -132,7 +129,7 @@ public class PlayerListener implements Listener {
                 Connection connection = event.getSender();
                 for (ProxiedPlayer onlinePlayer : ProxyServer.getInstance().getPlayers()) {
                     if (onlinePlayer.getAddress() == connection.getAddress()) {
-                        Messenger.chat(onlinePlayer, event);
+                        mess.chat(onlinePlayer, event);
                         return;
                     }
                 }
@@ -263,9 +260,8 @@ public class PlayerListener implements Listener {
     public void ping(ProxyPingEvent event) {
         ServerPing response = event.getResponse();
         ServerPing.Players players = response.getPlayers();
-        ServerPing.PlayerInfo[] sample = players.getSample();
 
-        if (BungeeEssentials.getInstance().contains("hoverlist")) {
+        if (BungeeEssentials.getInstance().contains("hoverlist") && !ProxyServer.getInstance().getPlayers().isEmpty()) {
 
             String uuid = (String) pD.getData("ip", event.getConnection().getAddress().getAddress().getHostAddress(), "uuid");
 
@@ -274,7 +270,14 @@ public class PlayerListener implements Listener {
             List<ServerPing.PlayerInfo> friends = new ArrayList<>();
 
             if (uuid != null) {
-                friends.addAll(pD.getFriends(uuid).stream().filter(friend -> friend != null && !pD.isHidden(friend)).map(friend -> new ServerPing.PlayerInfo(pD.getName(friend), friend)).collect(Collectors.toList()));
+                for (String fUuid : pD.getFriends(uuid)) {
+                    ProxiedPlayer fP;
+                    if ((fP = ProxyServer.getInstance().getPlayer(UUID.fromString(fUuid))) != null) {
+                        if (!pD.isHidden(fUuid)) {
+                            friends.add(new ServerPing.PlayerInfo(fP.getName(), fUuid));
+                        }
+                    }
+                }
 
                 if (!friends.isEmpty()) {
                     friends.add(0, new ServerPing.PlayerInfo(Dictionary.color(Dictionary.HOVER_FRIEND_HEADER), EMPTY_UUID));
@@ -284,7 +287,7 @@ public class PlayerListener implements Listener {
             List<ServerPing.PlayerInfo> staff = new ArrayList<>();
             List<ServerPing.PlayerInfo> other = new ArrayList<>();
 
-            for (ProxiedPlayer p : Messenger.getVisiblePlayers(false)) {
+            for (ProxiedPlayer p : mess.getVisiblePlayers(false)) {
                 ServerPing.PlayerInfo info = new ServerPing.PlayerInfo(p.getName(), p.getUniqueId());
                 if (!friends.contains(info)) {
                     if (p.hasPermission(Permissions.Admin.HOVER_LIST)) {
@@ -310,18 +313,11 @@ public class PlayerListener implements Listener {
 
             orders.keySet().stream().filter(order -> Integer.valueOf(order) > 0).forEach(order -> infos.addAll(orders.get(order)));
 
-            sample = infos.toArray(new ServerPing.PlayerInfo[infos.size() > 12 ? 12 : infos.size()]);
+            players.setSample(infos.toArray(new ServerPing.PlayerInfo[infos.size() > 12 ? 12 : infos.size()]));
+            players.setOnline(mess.getVisiblePlayers(false).size());
+            response.setPlayers(players);
+            event.setResponse(response);
         }
-
-        players.setSample(sample);
-        players.setOnline(Messenger.getVisiblePlayers(false).size());
-        response.setPlayers(players);
-        event.setResponse(response);
-        /*
-        players = new ServerPing.Players(players.getMax(), players.getOnline() - Messenger.hiddenNum(), sample);
-        final ServerPing ping = new ServerPing(response.getVersion(), players, response.getDescription(), response.getFaviconObject());
-        event.setResponse(ping);
-        */
     }
 
     /**

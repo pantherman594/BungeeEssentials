@@ -46,7 +46,7 @@ public class HideCommand extends ServerSpecificCommand {
                         player.sendMessage(Dictionary.format(Dictionary.HIDE_DISABLED));
                         break;
                     default:
-                        sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", getName() + " [on|off]"));
+                        sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " [on|off]"));
                         break;
                 }
             } else {

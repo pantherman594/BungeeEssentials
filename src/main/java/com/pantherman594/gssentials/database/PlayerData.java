@@ -18,20 +18,20 @@
 
 package com.pantherman594.gssentials.database;
 
+import com.pantherman594.gssentials.Dictionary;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 /**
  * Created by david on 7/30.
  */
-@SuppressWarnings("unchecked")
+
 public class PlayerData extends Database {
 
     public PlayerData() {
@@ -58,10 +58,9 @@ public class PlayerData extends Database {
             return true;
         }
 
-        ProxiedPlayer p = ProxyServer.getInstance().getPlayer(UUID.fromString(uuid));
-
-        if (p == null && !uuid.equals("CONSOLE")) {
-            return false;
+        ProxiedPlayer p = null;
+        if (!uuid.equals("CONSOLE")) {
+            p = ProxyServer.getInstance().getPlayer(UUID.fromString(uuid));
         }
 
         try (
@@ -72,8 +71,10 @@ public class PlayerData extends Database {
         ) {
             if (uuid.equals("CONSOLE")) {
                 setValues(ps, uuid, "Console", "127.0.0.1");
-            } else {
+            } else if (p != null) {
                 setValues(ps, uuid, p.getName(), p.getAddress().getAddress().getHostAddress());
+            } else {
+                setValues(ps, uuid, "", "");
             }
             insertDefaults(ps);
             ps.executeUpdate();
@@ -85,7 +86,7 @@ public class PlayerData extends Database {
     }
 
     private void insertDefaults(PreparedStatement ps) throws SQLException {
-        setValues(4, ps, new HashSet<String>(), new HashSet<String>(), new HashSet<String>(), new HashSet<String>(), false, false, false, false, false, false, false);
+        setValues(4, ps, "", "", "", "", false, false, false, false, false, false, true);
     }
 
     private Object getData(String uuid, String label) {
@@ -105,55 +106,55 @@ public class PlayerData extends Database {
     }
 
     public Set<String> getFriends(String uuid) {
-        return (Set<String>) getData(uuid, "friends");
+        return setFromString((String) getData(uuid, "friends"));
     }
 
     public void addFriend(String uuid, String friend) {
         Set<String> friends = getFriends(uuid);
         friends.add(friend);
-        setData(uuid, "friends", friends);
+        setData(uuid, "friends", Dictionary.combine(";", friends));
     }
 
     public void removeFriend(String uuid, String friend) {
         Set<String> friends = getFriends(uuid);
         friends.remove(friend);
-        setData(uuid, "friends", friends);
+        setData(uuid, "friends", Dictionary.combine(";", friends));
     }
 
     public Set<String> getOutRequests(String uuid) {
-        return (Set<String>) getData(uuid, "outRequests");
+        return setFromString((String) getData(uuid, "outRequests"));
     }
 
     public void addOutRequest(String uuid, String friend) {
         Set<String> friends = getOutRequests(uuid);
         friends.add(friend);
-        setData(uuid, "outRequests", friends);
+        setData(uuid, "outRequests", Dictionary.combine(";", friends));
     }
 
     public void removeOutRequest(String uuid, String friend) {
         Set<String> friends = getOutRequests(uuid);
         friends.remove(friend);
-        setData(uuid, "outRequests", friends);
+        setData(uuid, "outRequests", Dictionary.combine(";", friends));
     }
 
     public Set<String> getInRequests(String uuid) {
-        return (Set<String>) getData(uuid, "inRequests");
+        return setFromString((String) getData(uuid, "inRequests"));
     }
 
     public void addInRequest(String uuid, String friend) {
         Set<String> friends = getInRequests(uuid);
         friends.add(friend);
-        setData(uuid, "inRequests", friends);
+        setData(uuid, "inRequests", Dictionary.combine(";", friends));
     }
 
     public void removeInRequest(String uuid, String friend) {
         Set<String> friends = getInRequests(uuid);
         friends.remove(friend);
-        setData(uuid, "inRequests", friends);
+        setData(uuid, "inRequests", Dictionary.combine(";", friends));
     }
 
     public boolean isMuted(String uuid) {
-        return (Boolean) getData(uuid, "muted");
+        return (int) getData(uuid, "muted") == 1;
     }
 
     public void setMuted(String uuid, boolean muted) {
@@ -167,12 +168,12 @@ public class PlayerData extends Database {
     }
 
     public boolean isIgnored(String uuid, String ignoreUuid) {
-        Set<String> ignoreSet = (Set<String>) getData(uuid, "ignores");
+        Set<String> ignoreSet = setFromString((String) getData(uuid, "ignores"));
         return ignoreSet.contains(ignoreUuid);
     }
 
     public void setIgnored(String uuid, String ignoreUuid, boolean status) {
-        Set<String> ignoreSet = (Set<String>) getData(uuid, "ignores");
+        Set<String> ignoreSet = setFromString((String) getData(uuid, "ignores"));
         if (status) {
             ignoreSet.add(ignoreUuid);
         } else {
@@ -187,7 +188,7 @@ public class PlayerData extends Database {
     }
 
     public boolean isHidden(String uuid) {
-        return (Boolean) getData(uuid, "hidden");
+        return (int) getData(uuid, "hidden") == 1;
     }
 
     public void setHidden(String uuid, boolean hidden) {
@@ -201,7 +202,7 @@ public class PlayerData extends Database {
     }
 
     public boolean isSpy(String uuid) {
-        return (Boolean) getData(uuid, "spy");
+        return (int) getData(uuid, "spy") == 1;
     }
 
     public void setSpy(String uuid, boolean spy) {
@@ -215,7 +216,7 @@ public class PlayerData extends Database {
     }
 
     public boolean isCSpy(String uuid) {
-        return (Boolean) getData(uuid, "cSpy");
+        return (int) getData(uuid, "cSpy") == 1;
     }
 
     public void setCSpy(String uuid, boolean cSpy) {
@@ -229,7 +230,7 @@ public class PlayerData extends Database {
     }
 
     public boolean isGlobalChat(String uuid) {
-        return (Boolean) getData(uuid, "globalChat");
+        return (int) getData(uuid, "globalChat") == 1;
     }
 
     public void setGlobalChat(String uuid, boolean globalChat) {
@@ -243,7 +244,7 @@ public class PlayerData extends Database {
     }
 
     public boolean isStaffChat(String uuid) {
-        return (Boolean) getData(uuid, "staffchat");
+        return (int) getData(uuid, "staffchat") == 1;
     }
 
     public void setStaffChat(String uuid, boolean staffChat) {
@@ -257,7 +258,7 @@ public class PlayerData extends Database {
     }
 
     public boolean isMsging(String uuid) {
-        return (Boolean) getData(uuid, "msging");
+        return (int) getData(uuid, "msging") == 1;
     }
 
     public void setMsging(String uuid, boolean msging) {

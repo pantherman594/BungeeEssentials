@@ -79,7 +79,7 @@ public class Dictionary {
     public static String MESSAGE_ENABLED;
     @Load(key = "message.disabled", def = "&cMessaging is now disabled!")
     public static String MESSAGE_DISABLED;
-    @Load(key = "msggroup.format", def = "&&9{{ NAME }} - {{ SENDER }} » &7{{ MESSAGE }}")
+    @Load(key = "msggroup.format", def = "&9{{ NAME }} - {{ SENDER }} » &7{{ MESSAGE }}")
     public static String MG_FORMAT;
     @Load(key = "msggroup.create", def = "&aMessage group &f{{ NAME }} &asuccessfuly created! Invite players with /msggroup invite <username> {{ NAME }}!{{ HOVER: Click to prepare command. }}{{ CLICK: SUG: /msggroup invite <username> {{ NAME }} }}")
     public static String MG_CREATE;
@@ -89,11 +89,11 @@ public class Dictionary {
     public static String MG_LEAVE;
     @Load(key = "msggroup.invite.send", def = "&aSuccessfully invited &f{{ PLAYER }} &ato the &f{{ NAME }} &amessage group.")
     public static String MG_INVITE_SEND;
-    @Load(key = "msggroup.invite.receive", def = "&aYou've been invited to join the &f{{ NAME }} &amessage group. Click to accept!{{ CLICK: /msggroup join {{ NAME }}")
+    @Load(key = "msggroup.invite.receive", def = "&aYou've been invited to join the &f{{ NAME }} &amessage group. Click to accept!{{ CLICK: /msggroup join {{ NAME }} }}")
     public static String MG_INVITE_RECEIVE;
     @Load(key = "msggroup.kick.send", def = "&aSuccessfully kicked &f{{ PLAYER }} &afrom the &f{{ NAME }} &amessage group.")
     public static String MG_KICK_SEND;
-    @Load(key = "msggroup.kick.receive", def = "&cYou've been kicked from the &f{{ NAME }} &amessage group.")
+    @Load(key = "msggroup.kick.receive", def = "&cYou've been kicked from the &f{{ NAME }} &cmessage group.")
     public static String MG_KICK_RECEIVE;
     @Load(key = "msggroup.disband", def = "&aSuccessfully disbanded the &f{{ NAME }} &amessage group.")
     public static String MG_DISBAND;
@@ -163,7 +163,7 @@ public class Dictionary {
     public static String HOVER_OTHER_HEADER;
     @Load(key = "lookup.header", def = "&6Found {{ SIZE }} player(s):")
     public static String LOOKUP_HEADER;
-    @Load(key = "lookup.body", def = "&f - {{ PLAYER }}")
+    @Load(key = "lookup.body", def = "&f - {{ PLAYER }}{{ HOVER: Click to view player info }}{{ CLICK: /lookup {{ PLAYER }} }}")
     public static String LOOKUP_BODY;
     @Load(key = "lookup.player.header", def = "&6=====&l{{ PLAYER }}&6=====")
     public static String LOOKUP_PLAYER_HEADER;

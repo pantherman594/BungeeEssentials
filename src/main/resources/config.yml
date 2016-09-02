@@ -25,7 +25,6 @@ enable:
 - aliases
 - server
 #- betaupdates
-#- clean
 - fulllog
 - log
 - rules

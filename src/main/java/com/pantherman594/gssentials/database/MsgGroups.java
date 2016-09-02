@@ -1,15 +1,16 @@
 package com.pantherman594.gssentials.database;
 
+import com.pantherman594.gssentials.Dictionary;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Created by david on 8/31.
  */
-@SuppressWarnings("unchecked")
+
 public class MsgGroups extends Database {
 
     public MsgGroups() {
@@ -17,7 +18,7 @@ public class MsgGroups extends Database {
                 "`groupname` varchar(32) NOT NULL," +
                 "`owner` varchar(32) NOT NULL," +
                 "`members` varchar(32) NOT NULL," +
-                "`invited` varchar(32) NOT NULL,", "groupname");
+                "`invited` varchar(32) NOT NULL", "groupname");
     }
 
     public boolean createDataNotExist(String groupName) {
@@ -40,9 +41,9 @@ public class MsgGroups extends Database {
 
         try (
                 Connection conn = getSQLConnection();
-                PreparedStatement ps = conn.prepareStatement("INSERT INTO " + dbName + " (groupname, owner, members, invited) VALUES (?,?,?);")
+                PreparedStatement ps = conn.prepareStatement("INSERT INTO " + dbName + " (groupname, owner, members, invited) VALUES (?,?,?,?);")
         ) {
-            setValues(ps, groupName, "", new HashSet<String>(), new HashSet<String>());
+            setValues(ps, groupName, "", "", "");
             ps.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -77,16 +78,17 @@ public class MsgGroups extends Database {
 
     public void setOwner(String groupName, String uuid) {
         setData(groupName, "owner", uuid);
+        addMember(groupName, uuid);
     }
 
     public Set<String> getMembers(String groupName) {
-        return (Set<String>) getData(groupName, "members");
+        return setFromString((String) getData(groupName, "members"));
     }
 
     public void addMember(String groupName, String uuid) {
         Set<String> members = getMembers(groupName);
         members.add(uuid);
-        setData(groupName, "members", members);
+        setData(groupName, "members", Dictionary.combine(";", members));
     }
 
     public void removeMember(String groupName, String uuid) {
@@ -95,27 +97,23 @@ public class MsgGroups extends Database {
         if (members.isEmpty()) {
             remove(groupName);
         } else {
-            setData(groupName, "members", members);
+            setData(groupName, "members", Dictionary.combine(";", members));
         }
     }
 
     public Set<String> getInvited(String groupName) {
-        return (Set<String>) getData(groupName, "invited");
+        return setFromString((String) getData(groupName, "invited"));
     }
 
     public void addInvited(String groupName, String uuid) {
         Set<String> invited = getInvited(groupName);
         invited.add(uuid);
-        setData(groupName, "invited", invited);
+        setData(groupName, "invited", Dictionary.combine(";", invited));
     }
 
     public void removeInvited(String groupName, String uuid) {
         Set<String> invited = getInvited(groupName);
         invited.remove(uuid);
-        if (invited.isEmpty()) {
-            remove(groupName);
-        } else {
-            setData(groupName, "invited", invited);
-        }
+        setData(groupName, "invited", Dictionary.combine(";", invited));
     }
 }

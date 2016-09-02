@@ -18,20 +18,12 @@
 
 package com.pantherman594.gssentials.event;
 
-import com.pantherman594.gssentials.Dictionary;
-import com.pantherman594.gssentials.Log;
-import com.pantherman594.gssentials.Messenger;
-import com.pantherman594.gssentials.Permissions;
+import com.pantherman594.gssentials.*;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Cancellable;
-import net.md_5.bungee.api.plugin.Event;
 
-public class StaffChatEvent extends Event implements Cancellable {
-    private String server;
-    private String sender;
-    private String msg;
-    private boolean cancelled;
+public class StaffChatEvent extends BEChatEvent implements Cancellable {
 
     /**
      * The Staff Chat event.
@@ -41,15 +33,16 @@ public class StaffChatEvent extends Event implements Cancellable {
      * @param msgPre The message before formatting/filtering.
      */
     public StaffChatEvent(String server, String sender, String msgPre) {
-        this.server = server;
-        this.sender = sender;
-        this.msg = msgPre;
+        super(server, sender, msgPre);
+    }
 
+    public void execute() {
+        String msgPre = getMessage();
         if (msgPre != null) {
-            msgPre = Messenger.filter(ProxyServer.getInstance().getPlayer(sender), msgPre, Messenger.ChatType.STAFF);
+            msgPre = BungeeEssentials.getInstance().getMessenger().filter(ProxyServer.getInstance().getPlayer(getSender()), msgPre, Messenger.ChatType.STAFF);
             if (msgPre != null) {
-                TextComponent msg = Dictionary.formatMsg(Dictionary.FORMAT_STAFF_CHAT, "SERVER", server, "SENDER", sender, "MESSAGE", msgPre);
-                ProxyServer.getInstance().getPlayers().stream().filter(player -> player.hasPermission(Permissions.Admin.CHAT + "." + server) || player.hasPermission(Permissions.Admin.CHAT)).forEach(player -> player.sendMessage(msg));
+                TextComponent msg = Dictionary.formatMsg(Dictionary.FORMAT_STAFF_CHAT, "SERVER", getServer(), "SENDER", getSender(), "MESSAGE", msgPre);
+                ProxyServer.getInstance().getPlayers().stream().filter(player -> player.hasPermission(Permissions.Admin.CHAT + "." + getServer()) || player.hasPermission(Permissions.Admin.CHAT)).forEach(player -> player.sendMessage(msg));
                 if (msg != null) {
                     ProxyServer.getInstance().getConsole().sendMessage(msg);
                     Log.log("[SCHAT] " + msg.toLegacyText());
@@ -58,35 +51,7 @@ public class StaffChatEvent extends Event implements Cancellable {
         }
     }
 
-    public String getServer() {
-        return server;
-    }
-
-    public void setServer(String server) {
-        this.server = server;
-    }
-
-    public String getSender() {
-        return sender;
-    }
-
-    public void setSender(String sender) {
-        this.sender = sender;
-    }
-
-    public String getMessage() {
-        return msg;
-    }
-
-    public void setMessage(String msg) {
-        this.msg = msg;
-    }
-
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
-    public void setCancelled(boolean cancelled) {
-        this.cancelled = cancelled;
+    public String toString() {
+        return "StaffChatEvent(cancelled=" + this.isCancelled() + ", server=" + this.getServer() + ", sender=" + this.getSender() + ", message=" + this.getMessage() + ")";
     }
 }

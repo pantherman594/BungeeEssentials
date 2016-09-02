@@ -36,13 +36,13 @@ import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 public class Messenger implements Listener {
-    public static Map<UUID, UUID> messages = new HashMap<>();
-    private static Map<UUID, String> sentMessages = new HashMap<>();
-    private static Map<UUID, String> chatMessages = new HashMap<>();
+    public Map<UUID, UUID> messages = new HashMap<>();
+    private Map<UUID, String> sentMessages = new HashMap<>();
+    private Map<UUID, String> chatMessages = new HashMap<>();
 
-    private static PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
+    private PlayerData pD = BungeeEssentials.getInstance().getPlayerData();
 
-    public static void chat(ProxiedPlayer player, ChatEvent event) {
+    public void chat(ProxiedPlayer player, ChatEvent event) {
         Preconditions.checkNotNull(player, "player null");
         Preconditions.checkNotNull(event, "event null");
         String message = filter(player, event.getMessage(), ChatType.PUBLIC);
@@ -54,7 +54,7 @@ public class Messenger implements Listener {
         }
     }
 
-    public static String filter(ProxiedPlayer player, String msg, ChatType ct) {
+    public String filter(ProxiedPlayer player, String msg, ChatType ct) {
         if (msg == null || player == null) {
             return msg;
         }
@@ -120,7 +120,7 @@ public class Messenger implements Listener {
         return message;
     }
 
-    private static String filterBannedWords(ProxiedPlayer player, String message, String msg) {
+    private String filterBannedWords(ProxiedPlayer player, String message, String msg) {
         if (message != null) {
             for (String word : BungeeEssentials.getInstance().getMessages().getStringList("bannedwords.list")) {
                 String finalReg = "\\b(";
@@ -150,22 +150,22 @@ public class Messenger implements Listener {
         return message;
     }
 
-    private static void ruleNotify(String notification, ProxiedPlayer player, String sentMessage) {
+    private void ruleNotify(String notification, ProxiedPlayer player, String sentMessage) {
         ProxyServer.getInstance().getPlayers().stream().filter(p -> p.hasPermission(Permissions.Admin.NOTIFY)).forEach(p -> {
             p.sendMessage(Dictionary.format(notification, "PLAYER", player.getName()));
             p.sendMessage(ChatColor.GRAY + "Original Message: " + sentMessage);
         });
     }
 
-    public static UUID reply(ProxiedPlayer player) {
+    public UUID reply(ProxiedPlayer player) {
         return messages.get(player.getUniqueId());
     }
 
-    public static List<ProxiedPlayer> getVisiblePlayers(boolean seeHidden) {
+    public List<ProxiedPlayer> getVisiblePlayers(boolean seeHidden) {
         return BungeeEssentials.getInstance().getProxy().getPlayers().stream().filter(p -> seeHidden || !pD.isHidden(p.getUniqueId().toString())).collect(Collectors.toList());
     }
 
-    public static Integer hiddenNum() {
+    public Integer hiddenNum() {
         int hiddenNum = 0;
         for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
             if (pD.isHidden(p.getUniqueId().toString())) {
@@ -175,7 +175,7 @@ public class Messenger implements Listener {
         return hiddenNum;
     }
 
-    static boolean isMutedF(ProxiedPlayer player, String msg) {
+    boolean isMutedF(ProxiedPlayer player, String msg) {
         Preconditions.checkNotNull(player, "Invalid player specified");
         BungeeEssentials bInst = BungeeEssentials.getInstance();
         if (!player.hasPermission(Permissions.Admin.MUTE_EXEMPT) && (pD.isMuted(player.getUniqueId().toString()) || (bInst.isIntegrated() && bInst.getIntegrationProvider().isMuted(player)))) {
@@ -186,7 +186,7 @@ public class Messenger implements Listener {
         return false;
     }
 
-    private static double compare(String first, String second) {
+    private double compare(String first, String second) {
         String longer = first, shorter = second;
         if (first.length() < second.length()) {
             longer = second;
@@ -199,7 +199,7 @@ public class Messenger implements Listener {
         return (longerLength - getDistance(longer, shorter)) / (double) longerLength;
     }
 
-    private static int getDistance(String s1, String s2) {
+    private int getDistance(String s1, String s2) {
         s1 = s1.toLowerCase();
         s2 = s2.toLowerCase();
 
