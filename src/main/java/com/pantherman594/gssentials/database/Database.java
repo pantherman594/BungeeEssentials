@@ -49,7 +49,7 @@ public abstract class Database {
 
     static Set<String> setFromString(String input) {
         Set<String> set = new HashSet<>();
-        if (!input.equals("")) {
+        if (input != null && !input.equals("")) {
             Collections.addAll(set, input.split(";"));
         }
         return set;
