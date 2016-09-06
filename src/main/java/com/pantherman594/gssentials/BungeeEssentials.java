@@ -199,7 +199,6 @@ public class BungeeEssentials extends Plugin {
         ProxyServer.getInstance().getScheduler().cancel(this);
         ProxyServer.getInstance().getPluginManager().unregisterCommands(this);
         ProxyServer.getInstance().getPluginManager().unregisterListeners(this);
-        ProxyServer.getInstance().getPluginManager().registerListener(this, new Messenger());
         ProxyServer.getInstance().getPluginManager().registerListener(this, new PlayerListener());
 
         playerData = new PlayerData();

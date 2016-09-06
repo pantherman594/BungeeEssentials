@@ -25,6 +25,8 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -32,7 +34,22 @@ import java.util.UUID;
  * Created by david on 7/30.
  */
 
+@SuppressWarnings("unchecked")
 public class PlayerData extends Database {
+
+    private Map<String, String> lastname = new HashMap<>();
+    private Map<String, String> ip = new HashMap<>();
+    private Map<String, String> friends = new HashMap<>();
+    private Map<String, String> outRequests = new HashMap<>();
+    private Map<String, String> inRequests = new HashMap<>();
+    private Map<String, String> ignores = new HashMap<>();
+    private Map<String, Integer> hidden = new HashMap<>();
+    private Map<String, Integer> spy = new HashMap<>();
+    private Map<String, Integer> cSpy = new HashMap<>();
+    private Map<String, Integer> globalChat = new HashMap<>();
+    private Map<String, Integer> staffChat = new HashMap<>();
+    private Map<String, Integer> muted = new HashMap<>();
+    private Map<String, Integer> msging = new HashMap<>();
 
     public PlayerData() {
         super("playerdata", "(" +
@@ -63,8 +80,8 @@ public class PlayerData extends Database {
             p = ProxyServer.getInstance().getPlayer(UUID.fromString(uuid));
         }
 
+        Connection conn = getSQLConnection();
         try (
-                Connection conn = getSQLConnection();
                 PreparedStatement ps = conn.prepareStatement("INSERT INTO " + dbName +
                         " (uuid, lastname, ip, friends, outRequests, inRequests, ignores, hidden, spy, cSpy, globalChat, staffChat, muted, msging) " +
                         "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?);")
@@ -89,11 +106,38 @@ public class PlayerData extends Database {
         setValues(4, ps, "", "", "", "", false, false, false, false, false, false, true);
     }
 
+    private Map<String, Map> getData() {
+        Map<String, Map> data = new HashMap<>();
+        data.put("lastname", lastname);
+        data.put("ip", ip);
+        data.put("friends", friends);
+        data.put("outRequests", outRequests);
+        data.put("inRequests", inRequests);
+        data.put("ignores", ignores);
+        data.put("hidden", hidden);
+        data.put("spy", spy);
+        data.put("cSpy", cSpy);
+        data.put("globalChat", globalChat);
+        data.put("staffChat", staffChat);
+        data.put("muted", muted);
+        data.put("msging", msging);
+        return data;
+    }
+
     private Object getData(String uuid, String label) {
+        if (getData().containsKey(label)) {
+            if (!getData().get(label).containsKey(uuid)) {
+                getData().get(label).put(uuid, getData("uuid", uuid, label));
+            }
+            return getData().get(label).get(uuid);
+        }
         return getData("uuid", uuid, label);
     }
 
     private void setData(String uuid, String label, Object labelVal) {
+        if (getData().containsKey(label)) {
+            getData().get(label).put(uuid, labelVal);
+        }
         setData("uuid", uuid, label, labelVal);
     }
 
@@ -192,7 +236,7 @@ public class PlayerData extends Database {
     }
 
     public void setHidden(String uuid, boolean hidden) {
-        setData(uuid, "hidden", hidden);
+        setData(uuid, "hidden", hidden ? 1 : 0);
     }
 
     public boolean toggleHidden(String uuid) {
@@ -206,7 +250,7 @@ public class PlayerData extends Database {
     }
 
     public void setSpy(String uuid, boolean spy) {
-        setData(uuid, "spy", spy);
+        setData(uuid, "spy", spy ? 1 : 0);
     }
 
     public boolean toggleSpy(String uuid) {
@@ -220,7 +264,7 @@ public class PlayerData extends Database {
     }
 
     public void setCSpy(String uuid, boolean cSpy) {
-        setData(uuid, "cSpy", cSpy);
+        setData(uuid, "cSpy", cSpy ? 1 : 0);
     }
 
     public boolean toggleCSpy(String uuid) {
@@ -234,7 +278,7 @@ public class PlayerData extends Database {
     }
 
     public void setGlobalChat(String uuid, boolean globalChat) {
-        setData(uuid, "globalChat", globalChat);
+        setData(uuid, "globalChat", globalChat ? 1 : 0);
     }
 
     public boolean toggleGlobalChat(String uuid) {
@@ -244,11 +288,11 @@ public class PlayerData extends Database {
     }
 
     public boolean isStaffChat(String uuid) {
-        return (int) getData(uuid, "staffchat") == 1;
+        return (int) getData(uuid, "staffChat") == 1;
     }
 
     public void setStaffChat(String uuid, boolean staffChat) {
-        setData(uuid, "staffchat", staffChat);
+        setData(uuid, "staffChat", staffChat ? 1 : 0);
     }
 
     public boolean toggleStaffChat(String uuid) {
@@ -262,7 +306,7 @@ public class PlayerData extends Database {
     }
 
     public void setMsging(String uuid, boolean msging) {
-        setData(uuid, "msging", msging);
+        setData(uuid, "msging", msging ? 1 : 0);
     }
 
     public boolean toggleMsging(String uuid) {

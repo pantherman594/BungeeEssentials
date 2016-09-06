@@ -40,6 +40,7 @@ public abstract class Database {
     String dbName;
     private String primary;
     private Connection connection;
+    private int uses = 0;
 
     public Database(String dbName, String setupSql, String primary) {
         this.dbName = dbName;
@@ -66,7 +67,12 @@ public abstract class Database {
             }
         }
         try {
+            if (uses > 250) {
+                connection.close();
+            }
+
             if (connection != null && !connection.isClosed()) {
+                uses++;
                 return connection;
             }
 
@@ -107,6 +113,7 @@ public abstract class Database {
 
             connection = (Connection) m.invoke(null, "jdbc:sqlite:" + dbFile.getPath(), new Properties(), Class.forName("org.sqlite.JDBC", true, loader));
 
+            uses = 0;
             return connection;
 
         } catch (ClassNotFoundException e) {
@@ -123,8 +130,8 @@ public abstract class Database {
     public List<Object> listAllData(String label) {
         List<Object> datas = new ArrayList<>();
 
+        Connection conn = getSQLConnection();
         try (
-                Connection conn = getSQLConnection();
                 PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + dbName + ";");
                 ResultSet rs = ps.executeQuery()
         ) {
@@ -147,8 +154,8 @@ public abstract class Database {
         //TODO: Cache queries into memory
         List<Object> datas = new ArrayList<>();
 
+        Connection conn = getSQLConnection();
         try (
-                Connection conn = getSQLConnection();
                 PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + dbName + " WHERE " + key + " = ?;")
         ) {
             ps.setObject(1, keyVal);
@@ -183,8 +190,8 @@ public abstract class Database {
             return;
         }
 
+        Connection conn = getSQLConnection();
         try (
-                Connection conn = getSQLConnection();
                 PreparedStatement ps = conn.prepareStatement("UPDATE " + dbName + " SET " + label + " = ? WHERE " + key + " = ?;")
         ) {
             ps.setObject(1, labelVal);

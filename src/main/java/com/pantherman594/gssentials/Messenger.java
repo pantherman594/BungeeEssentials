@@ -26,7 +26,6 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
-import net.md_5.bungee.api.plugin.Listener;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +34,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
-public class Messenger implements Listener {
+public class Messenger {
     public Map<UUID, UUID> messages = new HashMap<>();
     private Map<UUID, String> sentMessages = new HashMap<>();
     private Map<UUID, String> chatMessages = new HashMap<>();

@@ -39,8 +39,8 @@ public class MsgGroups extends Database {
             return true;
         }
 
+        Connection conn = getSQLConnection();
         try (
-                Connection conn = getSQLConnection();
                 PreparedStatement ps = conn.prepareStatement("INSERT INTO " + dbName + " (groupname, owner, members, invited) VALUES (?,?,?,?);")
         ) {
             setValues(ps, groupName, "", "", "");
@@ -57,8 +57,8 @@ public class MsgGroups extends Database {
             return;
         }
 
+        Connection conn = getSQLConnection();
         try (
-                Connection conn = getSQLConnection();
                 PreparedStatement ps = conn.prepareStatement("DELETE FROM " + dbName + " WHERE groupname = ?;")
         ) {
             setValues(ps, groupName);
