@@ -58,7 +58,7 @@ public class FriendCommand extends BECommand implements TabExecutor {
                         server = ProxyServer.getInstance().getPlayer(UUID.fromString(friend)).getServer().getInfo().getName();
                         name = ProxyServer.getInstance().getPlayer(UUID.fromString(friend)).getName();
                     } else {
-                        name = pD.getName(uuid);
+                        name = pD.getName(friend);
                     }
 
                     sender.sendMessage(Dictionary.format(Dictionary.FRIEND_BODY, "NAME", name, "SERVER", server));
