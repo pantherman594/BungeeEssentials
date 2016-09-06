@@ -113,4 +113,4 @@ aliases:
   - 'TELL: Vote for the server at yourvote.site!'
   mga:
   - msggroup admin {*}
-configversion: 2.6.0
+configversion: 2.6.1
