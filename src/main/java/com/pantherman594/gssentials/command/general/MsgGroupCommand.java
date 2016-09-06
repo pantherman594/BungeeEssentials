@@ -14,6 +14,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Created by david on 8/31.
@@ -220,7 +221,7 @@ public class MsgGroupCommand extends BECommand {
                                 }
                                 break;
                         }
-                    } else if (args.length == 3 && (args[0].equalsIgnoreCase("invite") || args[0].equalsIgnoreCase("kick"))) {
+                    } else if (args.length == 3 && (args[0].equalsIgnoreCase("invite") || args[0].equalsIgnoreCase("kick") || args[0].equalsIgnoreCase("rename"))) {
                         String name = args[2].toLowerCase();
                         if (msgGroups.createDataNotExist(name) && msgGroups.getOwner(name).equals(uuid)) {
                             ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(args[1]);
@@ -238,6 +239,29 @@ public class MsgGroupCommand extends BECommand {
                                             p.sendMessage(Dictionary.format(Dictionary.MG_KICK_SEND, "NAME", name, "PLAYER", recipient.getName()));
                                         } else {
                                             p.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_NOT_FOUND));
+                                        }
+                                        break;
+                                    case "rename":
+                                        if (name.length() < 3) {
+                                            p.sendMessage(Dictionary.format(Dictionary.MG_ERROR_INVALID_NAME, "NAME", name));
+                                            return;
+                                        }
+                                        for (char c : args[1].toCharArray()) {
+                                            if (!Character.isLetter(c)) {
+                                                p.sendMessage(Dictionary.format(Dictionary.MG_ERROR_INVALID_NAME, "NAME", name));
+                                                return;
+                                            }
+                                        }
+                                        if (msgGroups.createDataNotExist(name)) {
+                                            sender.sendMessage(Dictionary.format(Dictionary.MG_ERROR_NAME_TAKEN, "NAME", name));
+                                            return;
+                                        }
+                                        msgGroups.setName(args[1].toLowerCase(), name);
+                                        for (String member : msgGroups.getMembers(name)) {
+                                            ProxiedPlayer memberP = ProxyServer.getInstance().getPlayer(UUID.fromString(member));
+                                            if (memberP != null) {
+                                                memberP.sendMessage(Dictionary.format(Dictionary.MG_RENAME, "OLDNAME", args[1].toLowerCase(), "NAME", name));
+                                            }
                                         }
                                         break;
                                 }
@@ -284,6 +308,7 @@ public class MsgGroupCommand extends BECommand {
             sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " <group> <message>"));
             sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " <create|join|leave> <group>"));
             sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " <invite|kick> <username> <group>"));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " rename <oldname> <group>"));
         }
         if (sender.hasPermission(Permissions.Admin.MSGGROUP)) {
             sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " admin listgroups"));

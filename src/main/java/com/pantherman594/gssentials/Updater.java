@@ -306,8 +306,10 @@ class Updater {
                 }
                 messages.set("errors.offline", null);
                 new File(plugin.getDataFolder(), "players.yml").delete();
+            case 260:
+                messages.set("msggroup.rename", "&aMessage group &f{{ OLDNAME }} &arenamed to &f{{ NAME }}&a.");
                 config.set("configversion", null);
-                config.set("configversion", "2.6.0");
+                config.set("configversion", "2.6.1");
         }
         plugin.saveMainConfig();
         plugin.saveMessagesConfig();

@@ -84,6 +84,7 @@ public class PlayerData {
                 for (String ignore : config.getStringList("ignorelist")) {
                     pD.setIgnored(uuid, ignore, true);
                 }
+                pD.setName(uuid, config.getString("lastname"));
                 pD.setHidden(uuid, config.getBoolean("hidden"));
                 pD.setSpy(uuid, config.getBoolean("spy"));
                 pD.setCSpy(uuid, config.getBoolean("cspy"));

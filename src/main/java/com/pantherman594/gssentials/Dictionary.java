@@ -87,6 +87,8 @@ public class Dictionary {
     public static String MG_JOIN;
     @Load(key = "msggroup.leave", def = "&aSuccessfully left the &f{{ NAME }} &amessage group.")
     public static String MG_LEAVE;
+    @Load(key = "msggroup.rename", def = "&aMessage group &f{{ OLDNAME }} &arenamed to &f{{ NAME }}&a.")
+    public static String MG_RENAME;
     @Load(key = "msggroup.invite.send", def = "&aSuccessfully invited &f{{ PLAYER }} &ato the &f{{ NAME }} &amessage group.")
     public static String MG_INVITE_SEND;
     @Load(key = "msggroup.invite.receive", def = "&aYou've been invited to join the &f{{ NAME }} &amessage group. Click to accept!{{ CLICK: /msggroup join {{ NAME }} }}")

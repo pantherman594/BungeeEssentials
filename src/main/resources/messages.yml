@@ -22,6 +22,7 @@ msggroup:
     CLICK: SUG: /msggroup invite <username> {{ NAME }} }}'
   join: '&aSuccessfully joined the &f{{ NAME }} &amessage group.'
   leave: '&aSuccessfully left the &f{{ NAME }} &amessage group.'
+  rename: '&aMessage group &f{{ OLDNAME }} &arenamed to &f{{ NAME }}&a.'
   invite:
     send: '&aSuccessfully invited &f{{ PLAYER }} &ato the &f{{ NAME }} &amessage group.'
     receive: '&aYou''ve been invited to join the &f{{ NAME }} &amessage group. Click
