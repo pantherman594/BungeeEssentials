@@ -169,8 +169,8 @@ public class MsgGroupCommand extends BECommand {
             if (sender instanceof ProxiedPlayer) {
                 ProxiedPlayer p = (ProxiedPlayer) sender;
                 String uuid = p.getUniqueId().toString();
-                if (p.hasPermission(Permissions.General.MSGGROUP) && (args[0].equalsIgnoreCase("create") || args[0].equalsIgnoreCase("join") || args[0].equalsIgnoreCase("leave"))) {
-                    if (args.length == 2) {
+                if (p.hasPermission(Permissions.General.MSGGROUP)) {
+                    if (args.length == 2 && (args[0].equalsIgnoreCase("create") || args[0].equalsIgnoreCase("join") || args[0].equalsIgnoreCase("leave"))) {
                         String name = args[1].toLowerCase();
                         switch (args[0].toLowerCase()) {
                             case "create":
@@ -221,7 +221,7 @@ public class MsgGroupCommand extends BECommand {
                                 }
                                 break;
                         }
-                    } else if (args.length == 3 && (args[0].equalsIgnoreCase("invite") || args[0].equalsIgnoreCase("kick") || args[0].equalsIgnoreCase("rename"))) {
+                    } else if (args.length == 3 && (args[0].equalsIgnoreCase("invite") || args[0].equalsIgnoreCase("kick"))) {
                         String name = args[2].toLowerCase();
                         if (msgGroups.createDataNotExist(name) && msgGroups.getOwner(name).equals(uuid)) {
                             ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(args[1]);
@@ -241,32 +241,37 @@ public class MsgGroupCommand extends BECommand {
                                             p.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_NOT_FOUND));
                                         }
                                         break;
-                                    case "rename":
-                                        if (name.length() < 3) {
-                                            p.sendMessage(Dictionary.format(Dictionary.MG_ERROR_INVALID_NAME, "NAME", name));
-                                            return;
-                                        }
-                                        for (char c : args[1].toCharArray()) {
-                                            if (!Character.isLetter(c)) {
-                                                p.sendMessage(Dictionary.format(Dictionary.MG_ERROR_INVALID_NAME, "NAME", name));
-                                                return;
-                                            }
-                                        }
-                                        if (msgGroups.createDataNotExist(name)) {
-                                            sender.sendMessage(Dictionary.format(Dictionary.MG_ERROR_NAME_TAKEN, "NAME", name));
-                                            return;
-                                        }
-                                        msgGroups.setName(args[1].toLowerCase(), name);
-                                        for (String member : msgGroups.getMembers(name)) {
-                                            ProxiedPlayer memberP = ProxyServer.getInstance().getPlayer(UUID.fromString(member));
-                                            if (memberP != null) {
-                                                memberP.sendMessage(Dictionary.format(Dictionary.MG_RENAME, "OLDNAME", args[1].toLowerCase(), "NAME", name));
-                                            }
-                                        }
-                                        break;
                                 }
                             } else {
                                 p.sendMessage(Dictionary.format(Dictionary.ERROR_PLAYER_NOT_FOUND));
+                            }
+                        } else {
+                            p.sendMessage(Dictionary.format(Dictionary.MG_ERROR_NOT_IN_GROUP, "NAME", name));
+                        }
+                    } else if (args.length == 3 && args[0].equalsIgnoreCase("rename")) {
+                        String oldName = args[1].toLowerCase();
+                        String name = args[2].toLowerCase();
+                        if (msgGroups.createDataNotExist(oldName) && msgGroups.getOwner(oldName).equals(uuid)) {
+                            if (name.length() < 3) {
+                                p.sendMessage(Dictionary.format(Dictionary.MG_ERROR_INVALID_NAME, "NAME", name));
+                                return;
+                            }
+                            for (char c : args[1].toCharArray()) {
+                                if (!Character.isLetter(c)) {
+                                    p.sendMessage(Dictionary.format(Dictionary.MG_ERROR_INVALID_NAME, "NAME", name));
+                                    return;
+                                }
+                            }
+                            if (msgGroups.createDataNotExist(name)) {
+                                sender.sendMessage(Dictionary.format(Dictionary.MG_ERROR_NAME_TAKEN, "NAME", name));
+                                return;
+                            }
+                            msgGroups.setName(oldName, name);
+                            for (String member : msgGroups.getMembers(name)) {
+                                ProxiedPlayer memberP = ProxyServer.getInstance().getPlayer(UUID.fromString(member));
+                                if (memberP != null) {
+                                    memberP.sendMessage(Dictionary.format(Dictionary.MG_RENAME, "OLDNAME", oldName, "NAME", name));
+                                }
                             }
                         } else {
                             p.sendMessage(Dictionary.format(Dictionary.MG_ERROR_NOT_IN_GROUP, "NAME", name));
