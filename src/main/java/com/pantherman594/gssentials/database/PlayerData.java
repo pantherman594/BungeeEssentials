@@ -34,7 +34,7 @@ import java.util.UUID;
  * Created by david on 7/30.
  */
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "MismatchedQueryAndUpdateOfCollection"})
 public class PlayerData extends Database {
 
     private Map<String, String> lastname = new HashMap<>();
