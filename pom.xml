@@ -23,7 +23,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.pantherman594.gssentials</groupId>
     <artifactId>BungeeEssentials</artifactId>
-    <version>2.6.0</version>
+    <version>2.6.1-SNAPSHOT</version>
     <url>http://www.spigotmc.org/resources/bungeeessentials.1488/</url>
     <name>BungeeEssentials</name>
     <description>Full customization of a few necessary features for your server!</description>
@@ -32,7 +32,7 @@
         <bungee.version>1.10-SNAPSHOT</bungee.version>
     </properties>
     <build>
-        <defaultGoal>clean package</defaultGoal>
+        <defaultGoal>clean package install -DperformRelease=true -DcreateChecksum=true</defaultGoal>
         <finalName>BungeeEssentials</finalName>
         <plugins>
             <plugin>
