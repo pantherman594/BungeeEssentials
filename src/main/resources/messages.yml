@@ -10,9 +10,8 @@ message:
   format:
     send: '&7[me » {{ BREAK }}&7{{ RECIPIENT }}{{ HOVER: On the {{ SERVER }} server.
       }}{{ BREAK }}&7] &f{{ MESSAGE }}'
-    receive: '&7[{{ BREAK }}&7{{ SENDER }}{{ HOVER: On the {{ SERVER }} server. }}{{
-      CLICK: SUG: /msg {{ SENDER }} }}{{ BREAK }}&7 » me] &f{{ MESSAGE }}{{ CLICK:
-      SUG: /msg {{ SENDER }} }}'
+    receive: '&7[{{ SENDER }} » me]{{ HOVER: On the {{ SERVER }} server. Click to
+      respond. }}{{ CLICK: SUG: /msg {{ SENDER }}  }} &f{{ MESSAGE }}'
   enabled: '&aMessaging is now enabled!'
   disabled: '&cMessaging is now disabled!'
 msggroup:

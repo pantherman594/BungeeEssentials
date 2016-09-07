@@ -70,8 +70,8 @@ public class MessageEvent extends Event implements Cancellable {
                             }
                         }
                     }
-                    if (pD.isSpy("CONSOLE")) {
-                        ProxyServer.getInstance().getConsole().sendMessage(spyMessage.toLegacyText());
+                    if (pD.isSpy("CONSOLE") && spyMessage != null) {
+                        ProxyServer.getInstance().getConsole().sendMessage(spyMessage);
                     }
                 }
                 final ProxiedPlayer recp = (ProxiedPlayer) recipient;
@@ -84,13 +84,15 @@ public class MessageEvent extends Event implements Cancellable {
             String uuidR = ((ProxiedPlayer) recipient).getUniqueId().toString();
             if (sender != ProxyServer.getInstance().getConsole() && BungeeEssentials.getInstance().contains("ignore")) {
                 String uuidS = ((ProxiedPlayer) sender).getUniqueId().toString();
-                if (message != null && !pD.isIgnored(uuidS, uuidR)) {
-                    if (!pD.isIgnored(uuidR, uuidS) && (pD.isMsging(uuidR) || sender.hasPermission(Permissions.Admin.BYPASS_MSG))) {
-                        recipient.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_RECEIVE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
+                if (message != null) {
+                    if (!pD.isIgnored(uuidS, uuidR)) {
+                        if (!pD.isIgnored(uuidR, uuidS) && (pD.isMsging(uuidR) || sender.hasPermission(Permissions.Admin.BYPASS_MSG))) {
+                            recipient.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_RECEIVE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
+                        }
+                        sender.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_SEND, "SERVER", ((ProxiedPlayer) recipient).getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
+                    } else {
+                        sender.sendMessage(Dictionary.format(Dictionary.ERROR_IGNORING));
                     }
-                    sender.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_SEND, "SERVER", ((ProxiedPlayer) recipient).getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
-                } else {
-                    sender.sendMessage(Dictionary.format(Dictionary.ERROR_IGNORING));
                 }
             } else {
                 sender.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_SEND, "SERVER", ((ProxiedPlayer) recipient).getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));

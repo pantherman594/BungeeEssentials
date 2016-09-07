@@ -308,8 +308,12 @@ class Updater {
                 new File(plugin.getDataFolder(), "players.yml").delete();
             case 260:
                 messages.set("msggroup.rename", "&aMessage group &f{{ OLDNAME }} &arenamed to &f{{ NAME }}&a.");
+            case 261:
+                if (messages.getString("message.format.receive").equals("&7[{{ BREAK }}&7{{ SENDER }}{{ HOVER: On the {{ SERVER }} server. }}{{ CLICK: SUG: /msg {{ SENDER }} }}{{ BREAK }}&7 » me] &f{{ MESSAGE }}{{ CLICK: SUG: /msg {{ SENDER }} }}")) {
+                    messages.set("message.format.receive", "&7[{{ SENDER }} » me]{{ HOVER: On the {{ SERVER }} server. Click to respond. }}{{ CLICK: SUG: /msg {{ SENDER }}  }} &f{{ MESSAGE }}");
+                }
                 config.set("configversion", null);
-                config.set("configversion", "2.6.1");
+                config.set("configversion", "2.6.2");
         }
         plugin.saveMainConfig();
         plugin.saveMessagesConfig();
