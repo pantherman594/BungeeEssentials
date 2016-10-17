@@ -1,5 +1,6 @@
 package com.pantherman594.gssentials.command.general;
 
+import com.google.common.collect.ImmutableSet;
 import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.Dictionary;
 import com.pantherman594.gssentials.Messenger;
@@ -11,6 +12,7 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.plugin.TabExecutor;
 
 import java.util.List;
 import java.util.Set;
@@ -20,7 +22,7 @@ import java.util.UUID;
  * Created by david on 8/31.
  */
 @SuppressWarnings("unused")
-public class MsgGroupCommand extends BECommand {
+public class MsgGroupCommand extends BECommand implements TabExecutor {
 
     private MsgGroups msgGroups;
 
@@ -321,5 +323,11 @@ public class MsgGroupCommand extends BECommand {
             sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " admin <makeowner> <group> <username>"));
             sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " admin <join|kick> [username] <group>"));
         }
+    }
+
+    @Override
+    public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
+        //TODO: Tab completion for invite, maybe for join (show invited), disband (if have permission)
+        return args.length == 1 ? tabPlayers(sender, args[0]) : ImmutableSet.of();
     }
 }

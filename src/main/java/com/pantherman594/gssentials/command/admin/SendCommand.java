@@ -32,7 +32,7 @@ import net.md_5.bungee.api.plugin.TabExecutor;
 @SuppressWarnings({"unused", "Duplicates"})
 public class SendCommand extends ServerSpecificCommand implements TabExecutor {
     public SendCommand() {
-        super(BungeeEssentials.getInstance().getMain("send"), Permissions.Admin.SEND);
+        super("send", Permissions.Admin.SEND);
         ProxyServer.getInstance().getPluginManager().registerCommand(BungeeEssentials.getInstance(), new SendAllCommand());
     }
 
