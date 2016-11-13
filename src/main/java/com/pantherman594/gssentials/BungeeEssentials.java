@@ -91,7 +91,7 @@ public class BungeeEssentials extends Plugin {
     @Override
     public void onEnable() {
         instance = this;
-        libDir = new File(BungeeEssentials.getInstance().getDataFolder(), "lib");
+        libDir = new File(getDataFolder(), "lib");
         configFile = new File(getDataFolder(), "config.yml");
         messageFile = new File(getDataFolder(), "messages.yml");
         try {

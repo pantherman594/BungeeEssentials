@@ -202,7 +202,7 @@ public class PlayerData extends Database {
     }
 
     public void setMuted(String uuid, boolean muted) {
-        setData(uuid, "muted", muted);
+        setData(uuid, "muted", muted ? 1 : 0);
     }
 
     public boolean toggleMuted(String uuid) {
