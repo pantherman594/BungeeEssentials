@@ -29,7 +29,7 @@
     <description>Full customization of a few necessary features for your server!</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <bungee.version>1.10-SNAPSHOT</bungee.version>
+        <bungee.version>1.11-SNAPSHOT</bungee.version>
     </properties>
     <build>
         <defaultGoal>clean package</defaultGoal>
