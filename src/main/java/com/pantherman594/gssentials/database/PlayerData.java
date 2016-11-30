@@ -69,6 +69,24 @@ public class PlayerData extends Database {
                 "`msging` int(1) NOT NULL", "uuid");
     }
 
+    public PlayerData(String url, String username, String password) {
+        super("playerdata", "(" +
+                "`uuid` varchar(32) NOT NULL," +
+                "`lastname` varchar(32) NOT NULL," +
+                "`ip` varchar(32) NOT NULL," +
+                "`friends` varchar(32) NOT NULL," +
+                "`outRequests` varchar(32) NOT NULL," +
+                "`inRequests` varchar(32) NOT NULL," +
+                "`ignores` varchar(32) NOT NULL," +
+                "`hidden` int(1) NOT NULL," +
+                "`spy` int(1) NOT NULL," +
+                "`cSpy` int(1) NOT NULL," +
+                "`globalChat` int(1) NOT NULL," +
+                "`staffChat` int(1) NOT NULL," +
+                "`muted` int(1) NOT NULL," +
+                "`msging` int(1) NOT NULL", "uuid", url, username, password);
+    }
+
     public boolean createDataNotExist(String uuid) {
 
         if (getData("uuid", uuid, "uuid") != null) {

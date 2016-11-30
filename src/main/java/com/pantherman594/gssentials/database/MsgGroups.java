@@ -21,6 +21,14 @@ public class MsgGroups extends Database {
                 "`invited` varchar(32) NOT NULL", "groupname");
     }
 
+    public MsgGroups(String url, String username, String password) {
+        super("msggroups", "(" +
+                "`groupname` varchar(32) NOT NULL," +
+                "`owner` varchar(32) NOT NULL," +
+                "`members` varchar(32) NOT NULL," +
+                "`invited` varchar(32) NOT NULL", "groupname", url, username, password);
+    }
+
     public boolean createDataNotExist(String groupName) {
         return getData(groupName, "groupname") != null;
         // Because we don't want the group being created automatically, we just return whether the group exists.

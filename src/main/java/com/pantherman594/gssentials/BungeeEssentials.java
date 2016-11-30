@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.pantherman594.gssentials.aliases.AliasManager;
 import com.pantherman594.gssentials.announcement.AnnouncementManager;
+import com.pantherman594.gssentials.database.MsgGroups;
 import com.pantherman594.gssentials.database.PlayerData;
 import com.pantherman594.gssentials.integration.IntegrationProvider;
 import com.pantherman594.gssentials.integration.IntegrationTest;
@@ -59,6 +60,7 @@ public class BungeeEssentials extends Plugin {
     private File messageFile;
     private Messenger messenger;
     private PlayerData playerData;
+    private MsgGroups msgGroups;
     private boolean integrated;
 
     /**
@@ -188,10 +190,7 @@ public class BungeeEssentials extends Plugin {
         try {
             loadConfig();
             Dictionary.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        } catch (IllegalAccessException e) {
+        } catch (IOException | IllegalAccessException e) {
             e.printStackTrace();
             return false;
         }
@@ -200,8 +199,21 @@ public class BungeeEssentials extends Plugin {
         ProxyServer.getInstance().getPluginManager().unregisterCommands(this);
         ProxyServer.getInstance().getPluginManager().unregisterListeners(this);
 
-        playerData = new PlayerData();
+        if (config.getString("database.format", "sqlite").equalsIgnoreCase("mysql")) {
+            String host = config.getString("database.host", "127.0.0.1");
+            int port = config.getInt("database.port", 3306);
+            String username = config.getString("database.username", "user");
+            String password = config.getString("database.password", "pass");
+            String database = config.getString("database.database", "bungeecord");
+
+            playerData = new PlayerData(String.format("%s:%d/%s", host, port, database), username, password);
+            msgGroups = new MsgGroups(String.format("%s:%d/%s", host, port, database), username, password);
+        } else {
+            playerData = new PlayerData();
+            msgGroups = new MsgGroups();
+        }
         playerData.createDataNotExist("CONSOLE");
+
         messenger = new Messenger();
         Log.reset();
         enabled = new ArrayList<>();
@@ -369,6 +381,13 @@ public class BungeeEssentials extends Plugin {
      */
     public PlayerData getPlayerData() {
         return this.playerData;
+    }
+
+    /**
+     * @return The msgGroups database.
+     */
+    public MsgGroups getMsgGroups() {
+        return this.msgGroups;
     }
 
     /**

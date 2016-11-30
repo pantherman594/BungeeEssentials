@@ -28,7 +28,7 @@ public class MsgGroupCommand extends BECommand implements TabExecutor {
 
     public MsgGroupCommand() {
         super("msggroup", "");
-        msgGroups = new MsgGroups();
+        msgGroups = BungeeEssentials.getInstance().getMsgGroups();
     }
 
     @Override

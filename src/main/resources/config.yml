@@ -98,6 +98,13 @@ commands:
 capspam:
   enabled: true
   percent: 50 #Will make all lowercase if at least 50% of letters are capitalized.
+database:
+  format: sqlite #If you want to use MySQL, fill replace with "mysql" and uncomment and fill in the following:
+  # host: 127.0.0.1
+  # port: 3306
+  # username: user
+  # password: pass
+  # database: bungeecord
 aliases:
   greet:
   - 'TELL: Joining {0}...'

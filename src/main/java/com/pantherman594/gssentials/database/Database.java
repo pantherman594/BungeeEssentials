@@ -40,11 +40,26 @@ public abstract class Database {
     String dbName;
     private String primary;
     private Connection connection;
+    private boolean mysql;
+    private String url;
+    private String username;
+    private String password;
     private int uses = 0;
 
     public Database(String dbName, String setupSql, String primary) {
         this.dbName = dbName;
         this.primary = primary;
+        mysql = false;
+        load(setupSql, primary);
+    }
+
+    public Database(String dbName, String setupSql, String primary, String url, String username, String password) {
+        this.dbName = dbName;
+        this.primary = primary;
+        mysql = true;
+        this.url = url;
+        this.username = username;
+        this.password = password;
         load(setupSql, primary);
     }
 
@@ -76,48 +91,56 @@ public abstract class Database {
                 return connection;
             }
 
-            File sqliteLib = new File(BungeeEssentials.getInstance().getLibDir(), "sqlite-jdbc-3.8.11.2.jar");
+            if (!mysql) {
+                File sqliteLib = new File(BungeeEssentials.getInstance().getLibDir(), "sqlite-jdbc-3.8.11.2.jar");
 
-            if (!sqliteLib.exists()) {
-                BungeeEssentials.getInstance().getLogger().log(Level.INFO, "Downloading SQLite JDBC library...");
-                String dlLink = "https://bitbucket.org/xerial/sqlite-jdbc/downloads/sqlite-jdbc-3.8.11.2.jar";
-                URLConnection con;
-                try {
-                    URL url = new URL(dlLink);
-                    con = url.openConnection();
-                } catch (IOException e) {
-                    BungeeEssentials.getInstance().getLogger().log(Level.SEVERE, "Invalid SQLite download link. Please contact plugin author.");
-                    return null;
-                }
-
-                try (
-                        InputStream in = con.getInputStream();
-                        FileOutputStream out = new FileOutputStream(sqliteLib)
-                ) {
-                    byte[] buffer = new byte[1024];
-                    int size;
-                    while ((size = in.read(buffer)) != -1) {
-                        out.write(buffer, 0, size);
+                if (!sqliteLib.exists()) {
+                    BungeeEssentials.getInstance().getLogger().log(Level.INFO, "Downloading SQLite JDBC library...");
+                    String dlLink = "https://bitbucket.org/xerial/sqlite-jdbc/downloads/sqlite-jdbc-3.8.11.2.jar";
+                    URLConnection con;
+                    try {
+                        URL url = new URL(dlLink);
+                        con = url.openConnection();
+                    } catch (IOException e) {
+                        BungeeEssentials.getInstance().getLogger().log(Level.SEVERE, "Invalid SQLite download link. Please contact plugin author.");
+                        return null;
                     }
-                } catch (IOException e) {
-                    BungeeEssentials.getInstance().getLogger().log(Level.WARNING, "Failed to download update, please download it manually from https://bitbucket.org/xerial/sqlite-jdbc/downloads/sqlite-jdbc-3.8.11.2.jar and put it in the /plugins/BungeeEssentials/lib folder.");
-                    BungeeEssentials.getInstance().getLogger().log(Level.WARNING, "Error message: ");
-                    e.printStackTrace();
-                    return null;
+
+                    try (
+                            InputStream in = con.getInputStream();
+                            FileOutputStream out = new FileOutputStream(sqliteLib)
+                    ) {
+                        byte[] buffer = new byte[1024];
+                        int size;
+                        while ((size = in.read(buffer)) != -1) {
+                            out.write(buffer, 0, size);
+                        }
+                    } catch (IOException e) {
+                        BungeeEssentials.getInstance().getLogger().log(Level.WARNING, "Failed to download update, please download it manually from https://bitbucket.org/xerial/sqlite-jdbc/downloads/sqlite-jdbc-3.8.11.2.jar and put it in the /plugins/BungeeEssentials/lib folder.");
+                        BungeeEssentials.getInstance().getLogger().log(Level.WARNING, "Error message: ");
+                        e.printStackTrace();
+                        return null;
+                    }
                 }
+
+                URLClassLoader loader = new URLClassLoader(new URL[]{sqliteLib.toURI().toURL()});
+                Method m = DriverManager.class.getDeclaredMethod("getConnection", String.class, Properties.class, Class.class);
+                m.setAccessible(true);
+
+                connection = (Connection) m.invoke(null, "jdbc:sqlite:" + dbFile.getPath(), new Properties(), Class.forName("org.sqlite.JDBC", true, loader));
+
+                uses = 0;
+                return connection;
+            } else {
+                Class.forName("com.mysql.jdbc.Driver");
+                connection = DriverManager.getConnection("jdbc:mysql://" + url, username, password);
+
+                uses = 0;
+                return connection;
             }
 
-            URLClassLoader loader = new URLClassLoader(new URL[]{sqliteLib.toURI().toURL()});
-            Method m = DriverManager.class.getDeclaredMethod("getConnection", String.class, Properties.class, Class.class);
-            m.setAccessible(true);
-
-            connection = (Connection) m.invoke(null, "jdbc:sqlite:" + dbFile.getPath(), new Properties(), Class.forName("org.sqlite.JDBC", true, loader));
-
-            uses = 0;
-            return connection;
-
         } catch (ClassNotFoundException e) {
-            BungeeEssentials.getInstance().getLogger().log(Level.SEVERE, "You need the SQLite JDBC library. Download it from https://bitbucket.org/xerial/sqlite-jdbc/downloads/sqlite-jdbc-3.8.11.2.jar and put it in the /plugins/BungeeEssentials/lib folder.");
+            BungeeEssentials.getInstance().getLogger().log(Level.SEVERE, "You are missing necessary libraries. If using SQLite, download it from https://bitbucket.org/xerial/sqlite-jdbc/downloads/sqlite-jdbc-3.8.11.2.jar and put it in the /plugins/BungeeEssentials/lib folder.");
         } catch (Exception e) {
             BungeeEssentials.getInstance().getLogger().log(Level.SEVERE, "Exception on SQL initialize", e);
         }
