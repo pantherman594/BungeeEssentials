@@ -102,7 +102,7 @@ public class Messenger {
                 }
                 message = filterBannedWords(player, message, msg);
             }
-            if (BungeeEssentials.getInstance().contains(ct.getSpam())) {
+            if (BungeeEssentials.getInstance().contains(ct.getSpam()) && player.getServer().getInfo().getPlayers().size() > 1) {
                 Map<UUID, String> msgs;
                 if (ct.getSpam().equals("spam")) {
                     msgs = sentMessages;

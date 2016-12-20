@@ -241,6 +241,7 @@ public class PlayerData extends Database {
         } else {
             ignoreSet.remove(ignoreUuid);
         }
+        setData(uuid, "ignores", Dictionary.combine(";", ignoreSet));
     }
 
     public boolean toggleIgnore(String uuid, String ignoreUuid) {
