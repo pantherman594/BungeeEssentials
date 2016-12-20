@@ -24,8 +24,8 @@ public class MsgGroups extends Database {
         super("msggroups", SETUP_SQL, "groupname");
     }
 
-    public MsgGroups(String url, String username, String password) {
-        super("msggroups", SETUP_SQL, "groupname", url, username, password);
+    public MsgGroups(String url, String username, String password, String prefix) {
+        super(prefix + "msggroups", SETUP_SQL, "groupname", url, username, password);
     }
 
     public boolean createDataNotExist(String groupName) {
@@ -48,7 +48,7 @@ public class MsgGroups extends Database {
 
         Connection conn = getSQLConnection();
         try (
-                PreparedStatement ps = conn.prepareStatement("INSERT INTO " + dbName + " (groupname, owner, members, invited) VALUES (?,?,?,?);")
+                PreparedStatement ps = conn.prepareStatement("INSERT INTO " + tableName + " (groupname, owner, members, invited) VALUES (?,?,?,?);")
         ) {
             setValues(ps, groupName, "", "", "");
             ps.executeUpdate();
@@ -66,7 +66,7 @@ public class MsgGroups extends Database {
 
         Connection conn = getSQLConnection();
         try (
-                PreparedStatement ps = conn.prepareStatement("DELETE FROM " + dbName + " WHERE groupname = ?;")
+                PreparedStatement ps = conn.prepareStatement("DELETE FROM " + tableName + " WHERE groupname = ?;")
         ) {
             setValues(ps, groupName);
             ps.executeUpdate();

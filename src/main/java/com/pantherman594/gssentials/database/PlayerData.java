@@ -68,8 +68,8 @@ public class PlayerData extends Database {
         super("playerdata", SETUP_SQL, "uuid");
     }
 
-    public PlayerData(String url, String username, String password) {
-        super("playerdata", SETUP_SQL, "uuid", url, username, password);
+    public PlayerData(String url, String username, String password, String prefix) {
+        super(prefix + "playerdata", SETUP_SQL, "uuid", url, username, password);
     }
 
     public void convert() {
@@ -114,7 +114,7 @@ public class PlayerData extends Database {
 
         Connection conn = getSQLConnection();
         try (
-                PreparedStatement ps = conn.prepareStatement("INSERT INTO " + dbName +
+                PreparedStatement ps = conn.prepareStatement("INSERT INTO " + tableName +
                         " (uuid, lastname, ip, friends, outRequests, inRequests, ignores, hidden, spy, cSpy, globalChat, staffChat, muted, msging) " +
                         "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?);")
         ) {

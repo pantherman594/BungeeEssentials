@@ -37,7 +37,7 @@ import java.util.logging.Level;
  */
 @SuppressWarnings("WeakerAccess")
 public abstract class Database {
-    String dbName;
+    String tableName;
     boolean isNewMySql;
 
     private String primary;
@@ -48,15 +48,15 @@ public abstract class Database {
     private String password;
     private int uses = 0;
 
-    public Database(String dbName, String setupSql, String primary) {
-        this.dbName = dbName;
+    public Database(String tableName, String setupSql, String primary) {
+        this.tableName = tableName;
         this.primary = primary;
         mysql = false;
         load(setupSql, primary);
     }
 
-    public Database(String dbName, String setupSql, String primary, String url, String username, String password) {
-        this.dbName = dbName;
+    public Database(String tableName, String setupSql, String primary, String url, String username, String password) {
+        this.tableName = tableName;
         this.primary = primary;
         mysql = true;
         this.url = url;
@@ -75,7 +75,7 @@ public abstract class Database {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     Connection getSQLConnection() {
-        File dbFile = new File(BungeeEssentials.getInstance().getDataFolder(), dbName + ".db");
+        File dbFile = new File(BungeeEssentials.getInstance().getDataFolder(), tableName + ".db");
         if (!dbFile.exists()) {
             try {
                 dbFile.createNewFile();
@@ -138,7 +138,7 @@ public abstract class Database {
                 connection = DriverManager.getConnection("jdbc:mysql://" + url, username, password);
 
                 DatabaseMetaData conMeta = connection.getMetaData();
-                ResultSet findTable = conMeta.getTables(null, null, dbName, null);
+                ResultSet findTable = conMeta.getTables(null, null, tableName, null);
                 isNewMySql = !findTable.next();
 
                 uses = 0;
@@ -161,7 +161,7 @@ public abstract class Database {
 
         Connection conn = getSQLConnection();
         try (
-                PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + dbName + ";");
+                PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + tableName + ";");
                 ResultSet rs = ps.executeQuery()
         ) {
 
@@ -185,7 +185,7 @@ public abstract class Database {
 
         Connection conn = getSQLConnection();
         try (
-                PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + dbName + " WHERE " + key + " = ?;")
+                PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + tableName + " WHERE " + key + " = ?;")
         ) {
             ps.setObject(1, keyVal);
             ResultSet rs = ps.executeQuery();
@@ -221,7 +221,7 @@ public abstract class Database {
 
         Connection conn = getSQLConnection();
         try (
-                PreparedStatement ps = conn.prepareStatement("UPDATE " + dbName + " SET " + label + " = ? WHERE " + key + " = ?;")
+                PreparedStatement ps = conn.prepareStatement("UPDATE " + tableName + " SET " + label + " = ? WHERE " + key + " = ?;")
         ) {
             ps.setObject(1, labelVal);
             ps.setObject(2, keyVal);
@@ -245,7 +245,7 @@ public abstract class Database {
         connection = getSQLConnection();
 
         try (Statement s = connection.createStatement()) {
-            s.executeUpdate("CREATE TABLE IF NOT EXISTS " + dbName + " " + setupSql + ",PRIMARY KEY (`" + primary + "`));");
+            s.executeUpdate("CREATE TABLE IF NOT EXISTS " + tableName + " " + setupSql + ",PRIMARY KEY (`" + primary + "`));");
         } catch (SQLException e) {
             e.printStackTrace();
         }

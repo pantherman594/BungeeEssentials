@@ -205,9 +205,10 @@ public class BungeeEssentials extends Plugin {
             String username = config.getString("database.username", "user");
             String password = config.getString("database.password", "pass");
             String database = config.getString("database.database", "bungeecord");
+            String prefix = config.getString("database.prefix", "BE_");
 
-            playerData = new PlayerData(String.format("%s:%d/%s", host, port, database), username, password);
-            msgGroups = new MsgGroups(String.format("%s:%d/%s", host, port, database), username, password);
+            playerData = new PlayerData(String.format("%s:%d/%s", host, port, database), username, password, prefix);
+            msgGroups = new MsgGroups(String.format("%s:%d/%s", host, port, database), username, password, prefix);
 
             if (config.getBoolean("database.convert", false)) {
                 playerData.convert();
