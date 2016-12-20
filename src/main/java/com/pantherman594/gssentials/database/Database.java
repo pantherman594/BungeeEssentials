@@ -38,6 +38,8 @@ import java.util.logging.Level;
 @SuppressWarnings("WeakerAccess")
 public abstract class Database {
     String dbName;
+    boolean isNewMySql;
+
     private String primary;
     private Connection connection;
     private boolean mysql;
@@ -134,6 +136,10 @@ public abstract class Database {
             } else {
                 Class.forName("com.mysql.jdbc.Driver");
                 connection = DriverManager.getConnection("jdbc:mysql://" + url, username, password);
+
+                DatabaseMetaData conMeta = connection.getMetaData();
+                ResultSet findTable = conMeta.getTables(null, null, dbName, null);
+                isNewMySql = !findTable.next();
 
                 uses = 0;
                 return connection;

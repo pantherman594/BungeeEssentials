@@ -208,6 +208,13 @@ public class BungeeEssentials extends Plugin {
 
             playerData = new PlayerData(String.format("%s:%d/%s", host, port, database), username, password);
             msgGroups = new MsgGroups(String.format("%s:%d/%s", host, port, database), username, password);
+
+            if (config.getBoolean("database.convert", false)) {
+                playerData.convert();
+                msgGroups.convert();
+                config.set("database.convert", false);
+                saveMainConfig();
+            }
         } else {
             playerData = new PlayerData();
             msgGroups = new MsgGroups();

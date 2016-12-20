@@ -122,8 +122,9 @@ public class LookupCommand extends ServerSpecificCommand {
                 }
             }
         } else {
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " <part of name|ip> <-b|-m|-e|-a|-ip>"));
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " <full name>"));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP",
+                    "\n  /" + getName() + " <part of name|ip> <-b|-m|-e|-a|-ip>" +
+                            "\n  /" + getName() + " <full name>"));
         }
     }
 }

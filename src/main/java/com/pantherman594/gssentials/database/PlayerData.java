@@ -18,6 +18,7 @@
 
 package com.pantherman594.gssentials.database;
 
+import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.Dictionary;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -25,10 +26,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by david on 7/30.
@@ -36,6 +34,21 @@ import java.util.UUID;
 
 @SuppressWarnings({"unchecked", "MismatchedQueryAndUpdateOfCollection"})
 public class PlayerData extends Database {
+    private static final String SETUP_SQL = "(" +
+            "`uuid` VARCHAR(36) NOT NULL," +
+            "`lastname` VARCHAR(32) NOT NULL," +
+            "`ip` VARCHAR(32) NOT NULL," +
+            "`friends` TEXT NOT NULL," +
+            "`outRequests` TEXT NOT NULL," +
+            "`inRequests` TEXT NOT NULL," +
+            "`ignores` TEXT NOT NULL," +
+            "`hidden` INT(1) NOT NULL," +
+            "`spy` INT(1) NOT NULL," +
+            "`cSpy` INT(1) NOT NULL," +
+            "`globalChat` INT(1) NOT NULL," +
+            "`staffChat` INT(1) NOT NULL," +
+            "`muted` INT(1) NOT NULL," +
+            "`msging` INT(1) NOT NULL";
 
     private Map<String, String> lastname = new HashMap<>();
     private Map<String, String> ip = new HashMap<>();
@@ -52,39 +65,40 @@ public class PlayerData extends Database {
     private Map<String, Integer> msging = new HashMap<>();
 
     public PlayerData() {
-        super("playerdata", "(" +
-                "`uuid` varchar(32) NOT NULL," +
-                "`lastname` varchar(32) NOT NULL," +
-                "`ip` varchar(32) NOT NULL," +
-                "`friends` varchar(32) NOT NULL," +
-                "`outRequests` varchar(32) NOT NULL," +
-                "`inRequests` varchar(32) NOT NULL," +
-                "`ignores` varchar(32) NOT NULL," +
-                "`hidden` int(1) NOT NULL," +
-                "`spy` int(1) NOT NULL," +
-                "`cSpy` int(1) NOT NULL," +
-                "`globalChat` int(1) NOT NULL," +
-                "`staffChat` int(1) NOT NULL," +
-                "`muted` int(1) NOT NULL," +
-                "`msging` int(1) NOT NULL", "uuid");
+        super("playerdata", SETUP_SQL, "uuid");
     }
 
     public PlayerData(String url, String username, String password) {
-        super("playerdata", "(" +
-                "`uuid` varchar(32) NOT NULL," +
-                "`lastname` varchar(32) NOT NULL," +
-                "`ip` varchar(32) NOT NULL," +
-                "`friends` varchar(32) NOT NULL," +
-                "`outRequests` varchar(32) NOT NULL," +
-                "`inRequests` varchar(32) NOT NULL," +
-                "`ignores` varchar(32) NOT NULL," +
-                "`hidden` int(1) NOT NULL," +
-                "`spy` int(1) NOT NULL," +
-                "`cSpy` int(1) NOT NULL," +
-                "`globalChat` int(1) NOT NULL," +
-                "`staffChat` int(1) NOT NULL," +
-                "`muted` int(1) NOT NULL," +
-                "`msging` int(1) NOT NULL", "uuid", url, username, password);
+        super("playerdata", SETUP_SQL, "uuid", url, username, password);
+    }
+
+    public void convert() {
+        if (isNewMySql) {
+            PlayerData oldPD = new PlayerData();
+            List<Object> uuids = oldPD.listAllData("uuid");
+            if (uuids != null && !uuids.isEmpty()) {
+                BungeeEssentials.getInstance().getLogger().info("New MySQL configuration found. Converting " + uuids.size() + " PlayerDatas...");
+                for (Object uuidO : uuids) {
+                    String uuid = (String) uuidO;
+                    setName(uuid, oldPD.getName(uuid));
+                    setIp(uuid, oldPD.getIp(uuid));
+                    setFriends(uuid, oldPD.getFriends(uuid));
+                    setOutRequests(uuid, oldPD.getOutRequests(uuid));
+                    setInRequests(uuid, oldPD.getInRequests(uuid));
+                    setIgnores(uuid, oldPD.getIgnores(uuid));
+                    setHidden(uuid, oldPD.isHidden(uuid));
+                    setSpy(uuid, oldPD.isSpy(uuid));
+                    setCSpy(uuid, oldPD.isCSpy(uuid));
+                    setGlobalChat(uuid, oldPD.isGlobalChat(uuid));
+                    setStaffChat(uuid, oldPD.isStaffChat(uuid));
+                    setMuted(uuid, oldPD.isMuted(uuid));
+                    setMsging(uuid, oldPD.isMsging(uuid));
+                }
+                BungeeEssentials.getInstance().getLogger().info("PlayerData conversion complete!");
+            }
+        } else {
+            BungeeEssentials.getInstance().getLogger().info("A database conversion was requested, but no empty database was found. If you want to convert, please delete the existing MySQL database.");
+        }
     }
 
     public boolean createDataNotExist(String uuid) {
@@ -174,12 +188,16 @@ public class PlayerData extends Database {
     public void addFriend(String uuid, String friend) {
         Set<String> friends = getFriends(uuid);
         friends.add(friend);
-        setData(uuid, "friends", Dictionary.combine(";", friends));
+        setFriends(uuid, friends);
     }
 
     public void removeFriend(String uuid, String friend) {
         Set<String> friends = getFriends(uuid);
         friends.remove(friend);
+        setFriends(uuid, friends);
+    }
+
+    public void setFriends(String uuid, Set<String> friends) {
         setData(uuid, "friends", Dictionary.combine(";", friends));
     }
 
@@ -187,32 +205,40 @@ public class PlayerData extends Database {
         return setFromString((String) getData(uuid, "outRequests"));
     }
 
-    public void addOutRequest(String uuid, String friend) {
-        Set<String> friends = getOutRequests(uuid);
-        friends.add(friend);
-        setData(uuid, "outRequests", Dictionary.combine(";", friends));
+    public void addOutRequest(String uuid, String outRequest) {
+        Set<String> outRequests = getOutRequests(uuid);
+        outRequests.add(outRequest);
+        setOutRequests(uuid, outRequests);
     }
 
-    public void removeOutRequest(String uuid, String friend) {
-        Set<String> friends = getOutRequests(uuid);
-        friends.remove(friend);
-        setData(uuid, "outRequests", Dictionary.combine(";", friends));
+    public void removeOutRequest(String uuid, String outRequest) {
+        Set<String> outRequests = getOutRequests(uuid);
+        outRequests.remove(outRequest);
+        setOutRequests(uuid, outRequests);
+    }
+
+    public void setOutRequests(String uuid, Set<String> outRequests) {
+        setData(uuid, "outRequests", Dictionary.combine(";", outRequests));
     }
 
     public Set<String> getInRequests(String uuid) {
         return setFromString((String) getData(uuid, "inRequests"));
     }
 
-    public void addInRequest(String uuid, String friend) {
-        Set<String> friends = getInRequests(uuid);
-        friends.add(friend);
-        setData(uuid, "inRequests", Dictionary.combine(";", friends));
+    public void addInRequest(String uuid, String inRequest) {
+        Set<String> inRequests = getInRequests(uuid);
+        inRequests.add(inRequest);
+        setInRequests(uuid, inRequests);
     }
 
-    public void removeInRequest(String uuid, String friend) {
-        Set<String> friends = getInRequests(uuid);
-        friends.remove(friend);
-        setData(uuid, "inRequests", Dictionary.combine(";", friends));
+    public void removeInRequest(String uuid, String inRequest) {
+        Set<String> inRequests = getInRequests(uuid);
+        inRequests.remove(inRequest);
+        setInRequests(uuid, inRequests);
+    }
+
+    public void setInRequests(String uuid, Set<String> inRequests) {
+        setData(uuid, "inRequests", Dictionary.combine(";", inRequests));
     }
 
     public boolean isMuted(String uuid) {
@@ -229,9 +255,12 @@ public class PlayerData extends Database {
         return status;
     }
 
+    public Set<String> getIgnores(String uuid) {
+        return setFromString((String) getData(uuid, "ignores"));
+    }
+
     public boolean isIgnored(String uuid, String ignoreUuid) {
-        Set<String> ignoreSet = setFromString((String) getData(uuid, "ignores"));
-        return ignoreSet.contains(ignoreUuid);
+        return getIgnores(uuid).contains(ignoreUuid);
     }
 
     public void setIgnored(String uuid, String ignoreUuid, boolean status) {
@@ -241,6 +270,10 @@ public class PlayerData extends Database {
         } else {
             ignoreSet.remove(ignoreUuid);
         }
+        setIgnores(uuid, ignoreSet);
+    }
+
+    public void setIgnores(String uuid, Set<String> ignoreSet) {
         setData(uuid, "ignores", Dictionary.combine(";", ignoreSet));
     }
 

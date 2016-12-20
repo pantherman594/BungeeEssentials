@@ -312,16 +312,18 @@ public class MsgGroupCommand extends BECommand implements TabExecutor {
 
     private void helpMsg(CommandSender sender) {
         if (sender.hasPermission(Permissions.General.MSGGROUP)) {
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " <group> <message>"));
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " <create|join|leave> <group>"));
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " <invite|kick> <username> <group>"));
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " rename <oldname> <group>"));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP",
+                    "\n  /" + getName() + " <group> <message>" +
+                            "\n  /" + getName() + " <create|join|leave> <group>" +
+                            "\n  /" + getName() + " <invite|kick> <username> <group>" +
+                            "\n  /" + getName() + " rename <oldname> <group>"));
         }
         if (sender.hasPermission(Permissions.Admin.MSGGROUP)) {
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " admin listgroups"));
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " admin <disband> <group>"));
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " admin <makeowner> <group> <username>"));
-            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP", "/" + getName() + " admin <join|kick> [username] <group>"));
+            sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP",
+                    "\n  /" + getName() + " admin listgroups" +
+                            "\n  /" + getName() + " admin <disband> <group>" +
+                            "\n  /" + getName() + " admin <makeowner> <group> <username>" +
+                            "\n  /" + getName() + " admin <join|kick> [username] <group>"));
         }
     }
 

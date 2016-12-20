@@ -1,10 +1,12 @@
 package com.pantherman594.gssentials.database;
 
+import com.pantherman594.gssentials.BungeeEssentials;
 import com.pantherman594.gssentials.Dictionary;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -12,21 +14,18 @@ import java.util.Set;
  */
 
 public class MsgGroups extends Database {
+    private static final String SETUP_SQL = "(" +
+            "`groupname` VARCHAR(36) NOT NULL," +
+            "`owner` VARCHAR(36) NOT NULL," +
+            "`members` TEXT NOT NULL," +
+            "`invited` TEXT NOT NULL";
 
     public MsgGroups() {
-        super("msggroups", "(" +
-                "`groupname` varchar(32) NOT NULL," +
-                "`owner` varchar(32) NOT NULL," +
-                "`members` varchar(32) NOT NULL," +
-                "`invited` varchar(32) NOT NULL", "groupname");
+        super("msggroups", SETUP_SQL, "groupname");
     }
 
     public MsgGroups(String url, String username, String password) {
-        super("msggroups", "(" +
-                "`groupname` varchar(32) NOT NULL," +
-                "`owner` varchar(32) NOT NULL," +
-                "`members` varchar(32) NOT NULL," +
-                "`invited` varchar(32) NOT NULL", "groupname", url, username, password);
+        super("msggroups", SETUP_SQL, "groupname", url, username, password);
     }
 
     public boolean createDataNotExist(String groupName) {
@@ -76,6 +75,26 @@ public class MsgGroups extends Database {
         }
     }
 
+    public void convert() {
+        if (isNewMySql) {
+            MsgGroups oldMG = new MsgGroups();
+            List<Object> groups = oldMG.listAllData("groupname");
+            if (groups != null && !groups.isEmpty()) {
+                BungeeEssentials.getInstance().getLogger().info("New MySQL configuration found. Converting " + groups.size() + " MsgGroups...");
+                for (Object groupO : groups) {
+                    String groupName = (String) groupO;
+                    create(groupName);
+                    setOwner(groupName, oldMG.getOwner(groupName));
+                    setMembers(groupName, oldMG.getMembers(groupName));
+                    setInvited(groupName, oldMG.getInvited(groupName));
+                }
+                BungeeEssentials.getInstance().getLogger().info("MsgGroup conversion complete!");
+            }
+        } else {
+            BungeeEssentials.getInstance().getLogger().info("A database conversion was requested, but no empty database was found. If you want to convert, please delete the existing MySQL database.");
+        }
+    }
+
     public void setName(String groupName, String newName) {
         setData(groupName, "groupname", newName);
     }
@@ -96,7 +115,7 @@ public class MsgGroups extends Database {
     public void addMember(String groupName, String uuid) {
         Set<String> members = getMembers(groupName);
         members.add(uuid);
-        setData(groupName, "members", Dictionary.combine(";", members));
+        setMembers(groupName, members);
     }
 
     public void removeMember(String groupName, String uuid) {
@@ -105,8 +124,12 @@ public class MsgGroups extends Database {
         if (members.isEmpty()) {
             remove(groupName);
         } else {
-            setData(groupName, "members", Dictionary.combine(";", members));
+            setMembers(groupName, members);
         }
+    }
+
+    public void setMembers(String groupName, Set<String> members) {
+        setData(groupName, "members", Dictionary.combine(";", members));
     }
 
     public Set<String> getInvited(String groupName) {
@@ -116,12 +139,16 @@ public class MsgGroups extends Database {
     public void addInvited(String groupName, String uuid) {
         Set<String> invited = getInvited(groupName);
         invited.add(uuid);
-        setData(groupName, "invited", Dictionary.combine(";", invited));
+        setInvited(groupName, invited);
     }
 
     public void removeInvited(String groupName, String uuid) {
         Set<String> invited = getInvited(groupName);
         invited.remove(uuid);
+        setInvited(groupName, invited);
+    }
+
+    public void setInvited(String groupName, Set<String> invited) {
         setData(groupName, "invited", Dictionary.combine(";", invited));
     }
 }

@@ -105,6 +105,8 @@ database:
   # username: user
   # password: pass
   # database: bungeecord
+  # prefix: BE_
+  # convert: true
 aliases:
   greet:
   - 'TELL: Joining {0}...'
