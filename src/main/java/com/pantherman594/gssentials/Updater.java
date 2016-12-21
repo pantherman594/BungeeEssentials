@@ -313,8 +313,10 @@ class Updater {
                     messages.set("message.format.receive", "&7[{{ SENDER }} » me]{{ HOVER: On the {{ SERVER }} server. Click to respond. }}{{ CLICK: SUG: /msg {{ SENDER }}  }} &f{{ MESSAGE }}");
                 }
             case 262:
+            case 263:
+                config.set("database.format", "sqlite");
                 config.set("configversion", null);
-                config.set("configversion", "2.6.3");
+                config.set("configversion", "2.6.4");
         }
         plugin.saveMainConfig();
         plugin.saveMessagesConfig();
