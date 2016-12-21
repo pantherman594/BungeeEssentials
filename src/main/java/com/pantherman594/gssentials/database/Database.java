@@ -76,7 +76,7 @@ public abstract class Database {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     Connection getSQLConnection() {
         File dbFile = new File(BungeeEssentials.getInstance().getDataFolder(), tableName + ".db");
-        if (!dbFile.exists()) {
+        if (!mysql && !dbFile.exists()) {
             try {
                 dbFile.createNewFile();
             } catch (IOException e) {
