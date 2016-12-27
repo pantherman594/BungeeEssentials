@@ -102,7 +102,7 @@ public class AnnouncementManager {
     private void annc(Collection<ProxiedPlayer> players, String anncName, String... msg) {
         for (String singMsg : msg) {
             if (!players.isEmpty()) {
-                players.stream().filter(p -> p.hasPermission(Permissions.General.ANNOUNCEMENT) || p.hasPermission(Permissions.General.ANNOUNCEMENT + "." + anncName)).forEach(p -> p.sendMessage(Dictionary.format(Dictionary.FORMAT_ALERT, "MESSAGE", singMsg)));
+                players.stream().filter(p -> Permissions.hasPerm(p, Permissions.General.ANNOUNCEMENT) || Permissions.hasPerm(p, Permissions.General.ANNOUNCEMENT + "." + anncName)).forEach(p -> p.sendMessage(Dictionary.format(Dictionary.FORMAT_ALERT, "MESSAGE", singMsg)));
             }
             ProxyServer.getInstance().getConsole().sendMessage(Dictionary.format(Dictionary.FORMAT_ALERT, "MESSAGE", singMsg));
         }

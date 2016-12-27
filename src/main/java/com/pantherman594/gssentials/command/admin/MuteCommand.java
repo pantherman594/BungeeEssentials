@@ -39,13 +39,13 @@ public class MuteCommand extends ServerSpecificCommand implements TabExecutor {
             ProxiedPlayer player = ProxyServer.getInstance().getPlayer(args[0]);
             if (player != null) {
                 String uuid = player.getUniqueId().toString();
-                if (!player.hasPermission(Permissions.Admin.MUTE_EXEMPT)) {
+                if (!Permissions.hasPerm(player, Permissions.Admin.MUTE_EXEMPT)) {
                     if (pD.toggleMuted(uuid)) {
                         player.sendMessage(Dictionary.format(Dictionary.MUTE_ENABLED));
-                        ProxyServer.getInstance().getPlayers().stream().filter(p -> p.hasPermission(Permissions.Admin.NOTIFY)).forEach(p -> p.sendMessage(Dictionary.format(Dictionary.MUTE_ENABLEDN, "PLAYER", player.getName())));
+                        ProxyServer.getInstance().getPlayers().stream().filter(p -> Permissions.hasPerm(p, Permissions.Admin.NOTIFY)).forEach(p -> p.sendMessage(Dictionary.format(Dictionary.MUTE_ENABLEDN, "PLAYER", player.getName())));
                     } else {
                         player.sendMessage(Dictionary.format(Dictionary.MUTE_DISABLED));
-                        ProxyServer.getInstance().getPlayers().stream().filter(p -> p.hasPermission(Permissions.Admin.NOTIFY)).forEach(p -> p.sendMessage(Dictionary.format(Dictionary.MUTE_DISABLEDN, "PLAYER", player.getName())));
+                        ProxyServer.getInstance().getPlayers().stream().filter(p -> Permissions.hasPerm(p, Permissions.Admin.NOTIFY)).forEach(p -> p.sendMessage(Dictionary.format(Dictionary.MUTE_DISABLEDN, "PLAYER", player.getName())));
                     }
                 } else {
                     sender.sendMessage(Dictionary.format(Dictionary.MUTE_EXEMPT));

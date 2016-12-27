@@ -42,7 +42,7 @@ public class StaffChatEvent extends BEChatEvent implements Cancellable {
             msgPre = BungeeEssentials.getInstance().getMessenger().filter(ProxyServer.getInstance().getPlayer(getSender()), msgPre, Messenger.ChatType.STAFF);
             if (msgPre != null) {
                 TextComponent msg = Dictionary.formatMsg(Dictionary.FORMAT_STAFF_CHAT, "SERVER", getServer(), "SENDER", getSender(), "MESSAGE", msgPre);
-                ProxyServer.getInstance().getPlayers().stream().filter(player -> player.hasPermission(Permissions.Admin.CHAT + "." + getServer()) || player.hasPermission(Permissions.Admin.CHAT)).forEach(player -> player.sendMessage(msg));
+                ProxyServer.getInstance().getPlayers().stream().filter(player -> Permissions.hasPerm(player, Permissions.Admin.CHAT + "." + getServer(), Permissions.Admin.CHAT)).forEach(player -> player.sendMessage(msg));
                 if (msg != null) {
                     ProxyServer.getInstance().getConsole().sendMessage(msg);
                     Log.log("[SCHAT] " + msg.toLegacyText());

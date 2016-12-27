@@ -35,7 +35,7 @@ public class SlapCommand extends BECommand implements TabExecutor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if (sender.hasPermission(Permissions.General.SLAP)) {
+        if (Permissions.hasPerm(sender, Permissions.General.SLAP)) {
             ProxiedPlayer player = null;
             if (sender instanceof ProxiedPlayer) {
                 player = (ProxiedPlayer) sender;

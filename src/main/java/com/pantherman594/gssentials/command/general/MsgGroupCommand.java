@@ -33,7 +33,7 @@ public class MsgGroupCommand extends BECommand implements TabExecutor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if (args.length > 0 && args[0].equalsIgnoreCase("admin") && sender.hasPermission(Permissions.Admin.MSGGROUP)) {
+        if (args.length > 0 && args[0].equalsIgnoreCase("admin") && Permissions.hasPerm(sender, Permissions.Admin.MSGGROUP)) {
             String uuid = "CONSOLE";
             if (sender instanceof ProxiedPlayer) {
                 uuid = ((ProxiedPlayer) sender).getUniqueId().toString();
@@ -55,7 +55,7 @@ public class MsgGroupCommand extends BECommand implements TabExecutor {
                     String name = args[2].toLowerCase();
                     switch (args[1]) {
                         case "join":
-                            if (sender.hasPermission(Permissions.Admin.MG_FORCE_JOIN) || sender.hasPermission(Permissions.Admin.MG_ALL)) {
+                            if (Permissions.hasPerm(sender, Permissions.Admin.MG_FORCE_JOIN, Permissions.Admin.MG_ALL)) {
                                 if (msgGroups.createDataNotExist(name)) {
                                     if (msgGroups.getMembers(name).contains(uuid)) {
                                         sender.sendMessage(Dictionary.format(Dictionary.MG_ERROR_ALREADY_IN_GROUP, "NAME", name));
@@ -71,7 +71,7 @@ public class MsgGroupCommand extends BECommand implements TabExecutor {
                             }
                             break;
                         case "disband":
-                            if (sender.hasPermission(Permissions.Admin.MG_DISBAND) || sender.hasPermission(Permissions.Admin.MG_ALL)) {
+                            if (Permissions.hasPerm(sender, Permissions.Admin.MG_DISBAND, Permissions.Admin.MG_ALL)) {
                                 if (msgGroups.createDataNotExist(name)) {
                                     ProxyServer.getInstance().getPlayers().stream().filter(recipient -> msgGroups.getMembers(name).contains(recipient.getUniqueId().toString())).forEach(recipient -> recipient.sendMessage(Dictionary.format(Dictionary.MG_KICK_RECEIVE, "NAME", name)));
                                     msgGroups.remove(name);
@@ -89,7 +89,7 @@ public class MsgGroupCommand extends BECommand implements TabExecutor {
                 } else if (args.length == 4) {
                     switch (args[1]) {
                         case "join":
-                            if (sender.hasPermission(Permissions.Admin.MG_FORCE_JOIN) || sender.hasPermission(Permissions.Admin.MG_ALL)) {
+                            if (Permissions.hasPerm(sender, Permissions.Admin.MG_FORCE_JOIN, Permissions.Admin.MG_ALL)) {
                                 String name = args[3].toLowerCase();
                                 ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(args[2]);
                                 if (recipient != null) {
@@ -112,7 +112,7 @@ public class MsgGroupCommand extends BECommand implements TabExecutor {
                             }
                             break;
                         case "makeowner":
-                            if (sender.hasPermission(Permissions.Admin.MG_MAKE_OWNER) || sender.hasPermission(Permissions.Admin.MG_ALL)) {
+                            if (Permissions.hasPerm(sender, Permissions.Admin.MG_MAKE_OWNER, Permissions.Admin.MG_ALL)) {
                                 String name = args[2].toLowerCase();
                                 ProxiedPlayer recipient = ProxyServer.getInstance().getPlayer(args[3]);
                                 if (msgGroups.createDataNotExist(name)) {
@@ -131,7 +131,7 @@ public class MsgGroupCommand extends BECommand implements TabExecutor {
                             }
                             break;
                         case "kick":
-                            if (sender.hasPermission(Permissions.Admin.MG_KICK) || sender.hasPermission(Permissions.Admin.MG_ALL)) {
+                            if (Permissions.hasPerm(sender, Permissions.Admin.MG_KICK, Permissions.Admin.MG_ALL)) {
                                 String name = args[3].toLowerCase();
                                 String recipient = ProxyServer.getInstance().getPlayer(args[2]).getUniqueId().toString();
                                 boolean online = false;
@@ -171,12 +171,12 @@ public class MsgGroupCommand extends BECommand implements TabExecutor {
             if (sender instanceof ProxiedPlayer) {
                 ProxiedPlayer p = (ProxiedPlayer) sender;
                 String uuid = p.getUniqueId().toString();
-                if (p.hasPermission(Permissions.General.MSGGROUP)) {
+                if (Permissions.hasPerm(p, Permissions.General.MSGGROUP)) {
                     if (args.length == 2 && (args[0].equalsIgnoreCase("create") || args[0].equalsIgnoreCase("join") || args[0].equalsIgnoreCase("leave"))) {
                         String name = args[1].toLowerCase();
                         switch (args[0].toLowerCase()) {
                             case "create":
-                                if (p.hasPermission(Permissions.General.MG_CREATE)) {
+                                if (Permissions.hasPerm(p, Permissions.General.MG_CREATE)) {
                                     if (name.length() < 3) {
                                         p.sendMessage(Dictionary.format(Dictionary.MG_ERROR_INVALID_NAME, "NAME", name));
                                         return;
@@ -311,14 +311,14 @@ public class MsgGroupCommand extends BECommand implements TabExecutor {
     }
 
     private void helpMsg(CommandSender sender) {
-        if (sender.hasPermission(Permissions.General.MSGGROUP)) {
+        if (Permissions.hasPerm(sender, Permissions.General.MSGGROUP)) {
             sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP",
                     "\n  /" + getName() + " <group> <message>" +
                             "\n  /" + getName() + " <create|join|leave> <group>" +
                             "\n  /" + getName() + " <invite|kick> <username> <group>" +
                             "\n  /" + getName() + " rename <oldname> <group>"));
         }
-        if (sender.hasPermission(Permissions.Admin.MSGGROUP)) {
+        if (Permissions.hasPerm(sender, Permissions.Admin.MSGGROUP)) {
             sender.sendMessage(Dictionary.format(Dictionary.ERROR_INVALID_ARGUMENTS, "HELP",
                     "\n  /" + getName() + " admin listgroups" +
                             "\n  /" + getName() + " admin <disband> <group>" +

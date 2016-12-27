@@ -37,7 +37,7 @@ public class LookupCommand extends ServerSpecificCommand {
     @Override
     public void run(CommandSender sender, String[] args) {
         Set<String> matches = new HashSet<>();
-        if (args.length == 1 && sender.hasPermission(Permissions.Admin.LOOKUP_INFO)) {
+        if (args.length == 1 && Permissions.hasPerm(sender, Permissions.Admin.LOOKUP_INFO)) {
             String uuid = null;
             for (Object nameO : pD.listAllData("lastname")) {
                 String name = (String) nameO;
@@ -54,16 +54,23 @@ public class LookupCommand extends ServerSpecificCommand {
             }
 
             sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_PLAYER_FORMAT, "TYPE", "UUID", "INFO", uuid));
-            if (sender.hasPermission(Permissions.Admin.LOOKUP_IP) || sender.hasPermission(Permissions.Admin.LOOKUP_ALL))
+
+            if (Permissions.hasPerm(sender, Permissions.Admin.LOOKUP_IP, Permissions.Admin.LOOKUP_ALL)) {
                 sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_PLAYER_FORMAT, "TYPE", "IP", "INFO", pD.getIp(uuid)));
+            }
+
             sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_PLAYER_FORMAT, "TYPE", "Messaging", "INFO", Dictionary.capitalizeFirst(pD.isMsging(uuid) + "")));
             sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_PLAYER_FORMAT, "TYPE", "Muted", "INFO", Dictionary.capitalizeFirst(pD.isMuted(uuid) + "")));
-            if (sender.hasPermission(Permissions.Admin.LOOKUP_HIDDEN) || sender.hasPermission(Permissions.Admin.LOOKUP_ALL))
+
+            if (Permissions.hasPerm(sender, Permissions.Admin.LOOKUP_HIDDEN, Permissions.Admin.LOOKUP_ALL)) {
                 sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_PLAYER_FORMAT, "TYPE", "Hidden", "INFO", Dictionary.capitalizeFirst(pD.isHidden(uuid) + "")));
-            if (sender.hasPermission(Permissions.Admin.LOOKUP_SPY) || sender.hasPermission(Permissions.Admin.LOOKUP_ALL)) {
+            }
+
+            if (Permissions.hasPerm(sender, Permissions.Admin.LOOKUP_SPY, Permissions.Admin.LOOKUP_ALL)) {
                 sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_PLAYER_FORMAT, "TYPE", "Spy", "INFO", Dictionary.capitalizeFirst(pD.isSpy(uuid) + "")));
                 sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_PLAYER_FORMAT, "TYPE", "Command Spy", "INFO", Dictionary.capitalizeFirst(pD.isCSpy(uuid) + "")));
             }
+
             String list = Dictionary.combine(", ", pD.getFriends(uuid));
             sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_PLAYER_FORMAT, "TYPE", "Friends", "INFO", list.equals("") ? "None" : list));
             list = Dictionary.combine(", ", pD.getOutRequests(uuid));

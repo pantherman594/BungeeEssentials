@@ -49,7 +49,7 @@ public abstract class BECommand extends Command {
      * @return A list of visible players on the proxy that match the search string.
      */
     public Iterable<String> tabPlayers(CommandSender sender, String search) {
-        return BungeeEssentials.getInstance().getMessenger().getVisiblePlayers(sender.hasPermission(Permissions.Admin.SEE_HIDDEN)).stream().filter(player -> !player.getName().equals(sender.getName()) && player.getName().toLowerCase().startsWith(search.toLowerCase())).map(ProxiedPlayer::getName).collect(Collectors.toSet());
+        return BungeeEssentials.getInstance().getMessenger().getVisiblePlayers(Permissions.hasPerm(sender, Permissions.Admin.SEE_HIDDEN)).stream().filter(player -> !player.getName().equals(sender.getName()) && player.getName().toLowerCase().startsWith(search.toLowerCase())).map(ProxiedPlayer::getName).collect(Collectors.toSet());
     }
 
     /**

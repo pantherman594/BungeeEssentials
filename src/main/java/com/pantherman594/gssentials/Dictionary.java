@@ -428,7 +428,7 @@ public class Dictionary {
         ProxiedPlayer player = ProxyServer.getInstance().getPlayer(args[3]);
         if (player != null) {
             int count = (input.length() - input.replace("{{ MESSAGE }}", "").length()) / 13;
-            TextComponent message = format("{{ MESSAGE }}", player.hasPermission(Permissions.General.MESSAGE_COLOR), player.hasPermission(Permissions.General.MESSAGE_HOVER), player.hasPermission(Permissions.General.MESSAGE_CLICK), args);
+            TextComponent message = format("{{ MESSAGE }}", Permissions.hasPerm(player, Permissions.General.MESSAGE_COLOR), Permissions.hasPerm(player, Permissions.General.MESSAGE_HOVER), Permissions.hasPerm(player, Permissions.General.MESSAGE_CLICK), args);
 
             if (input.startsWith("{{ MESSAGE }}")) {
                 count--;

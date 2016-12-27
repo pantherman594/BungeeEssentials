@@ -44,7 +44,7 @@ public class GlobalChatEvent extends BEChatEvent implements Cancellable {
             if (msgPre != null) {
                 TextComponent msg = Dictionary.formatMsg(Dictionary.FORMAT_GCHAT, "SERVER", getServer(), "SENDER", getSender(), "MESSAGE", msgPre);
                 ProxiedPlayer senderP = ProxyServer.getInstance().getPlayer(getSender());
-                ProxyServer.getInstance().getPlayers().stream().filter(player -> (player.hasPermission(Permissions.General.CHAT + "." + getServer()) || player.hasPermission(Permissions.General.CHAT)) && (senderP == null || !BungeeEssentials.getInstance().contains("ignore") || !pD.isIgnored(player.getUniqueId().toString(), senderP.getUniqueId().toString()))).forEach(player -> player.sendMessage(msg));
+                ProxyServer.getInstance().getPlayers().stream().filter(player -> (Permissions.hasPerm(player, Permissions.General.CHAT + "." + getServer()) || Permissions.hasPerm(player, Permissions.General.CHAT)) && (senderP == null || !BungeeEssentials.getInstance().contains("ignore") || !pD.isIgnored(player.getUniqueId().toString(), senderP.getUniqueId().toString()))).forEach(player -> player.sendMessage(msg));
                 if (msg != null) {
                     ProxyServer.getInstance().getConsole().sendMessage(msg);
                     Log.log("[GCHAT] " + msg.toLegacyText());

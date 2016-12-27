@@ -61,11 +61,11 @@ public class MessageEvent extends Event implements Cancellable {
             String server = player != null ? player.getServer().getInfo().getName() : "CONSOLE";
             if (player != null) {
 
-                if (!sender.hasPermission(Permissions.Admin.SPY_EXEMPT)) {
+                if (!Permissions.hasPerm(sender, Permissions.Admin.SPY_EXEMPT)) {
                     TextComponent spyMessage = Dictionary.format(Dictionary.SPY_MESSAGE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message);
                     for (ProxiedPlayer onlinePlayer : ProxyServer.getInstance().getPlayers()) {
                         if (player.getUniqueId() != onlinePlayer.getUniqueId() && ((ProxiedPlayer) recipient).getUniqueId() != onlinePlayer.getUniqueId()) {
-                            if (onlinePlayer.hasPermission(Permissions.Admin.SPY) && pD.isSpy(onlinePlayer.getUniqueId().toString())) {
+                            if (Permissions.hasPerm(onlinePlayer, Permissions.Admin.SPY) && pD.isSpy(onlinePlayer.getUniqueId().toString())) {
                                 onlinePlayer.sendMessage(spyMessage);
                             }
                         }
@@ -86,7 +86,7 @@ public class MessageEvent extends Event implements Cancellable {
                 String uuidS = ((ProxiedPlayer) sender).getUniqueId().toString();
                 if (message != null) {
                     if (!pD.isIgnored(uuidS, uuidR)) {
-                        if (!pD.isIgnored(uuidR, uuidS) && (pD.isMsging(uuidR) || sender.hasPermission(Permissions.Admin.BYPASS_MSG))) {
+                        if (!pD.isIgnored(uuidR, uuidS) && (pD.isMsging(uuidR) || Permissions.hasPerm(sender, Permissions.Admin.BYPASS_MSG))) {
                             recipient.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_RECEIVE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
                         }
                         sender.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_SEND, "SERVER", ((ProxiedPlayer) recipient).getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
@@ -96,7 +96,7 @@ public class MessageEvent extends Event implements Cancellable {
                 }
             } else {
                 sender.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_SEND, "SERVER", ((ProxiedPlayer) recipient).getServer().getInfo().getName(), "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
-                if (message != null && pD.isMsging(uuidR) || sender.hasPermission(Permissions.Admin.BYPASS_MSG)) {
+                if (message != null && pD.isMsging(uuidR) || Permissions.hasPerm(sender, Permissions.Admin.BYPASS_MSG)) {
                     recipient.sendMessage(Dictionary.formatMsg(Dictionary.MESSAGE_FORMAT_RECEIVE, "SERVER", server, "SENDER", sender.getName(), "RECIPIENT", recipient.getName(), "MESSAGE", message));
                 }
             }

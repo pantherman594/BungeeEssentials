@@ -39,7 +39,7 @@ class LoadCmds extends Command {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if (sender.hasPermission(Permissions.General.ALIAS) || sender.hasPermission(Permissions.General.ALIAS + "." + main)) {
+        if (Permissions.hasPerm(sender, Permissions.General.ALIAS, Permissions.General.ALIAS + "." + main)) {
             for (String command : commands) {
                 runCommand(command, sender, args);
             }

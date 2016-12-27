@@ -42,7 +42,7 @@ public class ServerListCommand extends BECommand {
 
     @Override
     public void execute(final CommandSender sender, String[] args) {
-        boolean canSeeHidden = sender.hasPermission(Permissions.Admin.SEE_HIDDEN);
+        boolean canSeeHidden = Permissions.hasPerm(sender, Permissions.Admin.SEE_HIDDEN);
         int online = BungeeEssentials.getInstance().getMessenger().getVisiblePlayers(canSeeHidden).size();
 
         String current = "CONSOLE";
@@ -56,7 +56,7 @@ public class ServerListCommand extends BECommand {
                 s.connect(info.getAddress());
                 print(sender, canSeeHidden, info, false);
             } catch (IOException e) {
-                if (sender.hasPermission(Permissions.General.LIST_OFFLINE)) {
+                if (Permissions.hasPerm(sender, Permissions.General.LIST_OFFLINE)) {
                     print(sender, canSeeHidden, info, true);
                 }
             }
@@ -140,7 +140,7 @@ public class ServerListCommand extends BECommand {
      * @param offline Whether the server is offline.
      */
     private void print(CommandSender sender, boolean canSeeHidden, ServerInfo info, boolean offline) {
-        if (info.canAccess(sender) || sender.hasPermission(Permissions.General.LIST_RESTRICTED)) {
+        if (info.canAccess(sender) || Permissions.hasPerm(sender, Permissions.General.LIST_RESTRICTED)) {
             if (offline) {
                 sender.sendMessage(Dictionary.format(Dictionary.LIST_BODY, "SERVER", info.getName(), "MOTD", info.getMotd(), "DENSITY", "Offline", "COUNT", "Offline", "PLAYERS", ""));
             } else {

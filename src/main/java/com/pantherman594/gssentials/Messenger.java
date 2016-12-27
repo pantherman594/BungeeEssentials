@@ -62,7 +62,7 @@ public class Messenger {
         if (isMutedF(player, msg)) {
             return null;
         }
-        if (!player.hasPermission(Permissions.Admin.BYPASS_FILTER)) {
+        if (!Permissions.hasPerm(player, Permissions.Admin.BYPASS_FILTER)) {
             if (BungeeEssentials.getInstance().contains(ct.getRule())) {
                 List<RuleManager.MatchResult> results = BungeeEssentials.getInstance().getRuleManager().matches(msg);
                 for (RuleManager.MatchResult result : results) {
@@ -150,7 +150,7 @@ public class Messenger {
     }
 
     private void ruleNotify(String notification, ProxiedPlayer player, String sentMessage) {
-        ProxyServer.getInstance().getPlayers().stream().filter(p -> p.hasPermission(Permissions.Admin.NOTIFY)).forEach(p -> {
+        ProxyServer.getInstance().getPlayers().stream().filter(p -> Permissions.hasPerm(p, Permissions.Admin.NOTIFY)).forEach(p -> {
             p.sendMessage(Dictionary.format(notification, "PLAYER", player.getName()));
             p.sendMessage(ChatColor.GRAY + "Original Message: " + sentMessage);
         });
@@ -177,7 +177,7 @@ public class Messenger {
     boolean isMutedF(ProxiedPlayer player, String msg) {
         Preconditions.checkNotNull(player, "Invalid player specified");
         BungeeEssentials bInst = BungeeEssentials.getInstance();
-        if (!player.hasPermission(Permissions.Admin.MUTE_EXEMPT) && (pD.isMuted(player.getUniqueId().toString()) || (bInst.isIntegrated() && bInst.getIntegrationProvider().isMuted(player)))) {
+        if (!Permissions.hasPerm(player, Permissions.Admin.MUTE_EXEMPT) && (pD.isMuted(player.getUniqueId().toString()) || (bInst.isIntegrated() && bInst.getIntegrationProvider().isMuted(player)))) {
             player.sendMessage(Dictionary.format(Dictionary.MUTE_ERROR));
             ruleNotify(Dictionary.MUTE_ERRORN, player, msg);
             return true;
