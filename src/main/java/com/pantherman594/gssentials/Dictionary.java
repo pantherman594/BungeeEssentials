@@ -387,6 +387,10 @@ public class Dictionary {
                         clickText = clickText.substring(5);
                         clickEvent = new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, clickText);
                         segment = Joiner.on("").join(clickTextStripped);
+                    } else if (clickText.startsWith("URL: ")) {
+                        clickText = clickText.substring(5);
+                        clickEvent = new ClickEvent(ClickEvent.Action.OPEN_URL, clickText);
+                        segment = Joiner.on("").join(clickTextStripped);
                     } else if (clickText != null) {
                         clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, clickText);
                         segment = Joiner.on("").join(clickTextStripped);
