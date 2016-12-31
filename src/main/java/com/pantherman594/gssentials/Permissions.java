@@ -23,22 +23,9 @@ import net.md_5.bungee.api.CommandSender;
 @SuppressWarnings("WeakerAccess")
 public class Permissions {
 
-    public static boolean hasPerm(CommandSender sender, String permission) {
-        while (permission.split("\\.").length > 2) {
-            if (sender.hasPermission("-" + permission)) {
-                return false;
-            }
-            if (sender.hasPermission(permission)) {
-                return true;
-            }
-            permission = permission.replaceAll("\\.[^.]+(\\.\\*)?$", ".*");
-        }
-        return sender.hasPermission("*");
-    }
-
     public static boolean hasPerm(CommandSender sender, String... permissions) {
         for (String permission : permissions) {
-            if (hasPerm(sender, permission)) {
+            if (sender.hasPermission(permission)) {
                 return true;
             }
         }
