@@ -72,7 +72,7 @@ public class PlayerListener implements Listener {
             }
             String cmd = event.getMessage().substring(1);
             if (BungeeEssentials.getInstance().contains("spam-command") && !Permissions.hasPerm(player, Permissions.Admin.BYPASS_FILTER)) {
-                if (cmds.get(player.getUniqueId()) != null && cmd.equals(cmds.get(player.getUniqueId())) & cmdLog.containsKey(player.getUniqueId())) {
+                if (cmds.get(player.getUniqueId()) != null && cmd.equals(cmds.get(player.getUniqueId())) && cmdLog.containsKey(player.getUniqueId())) {
                     player.sendMessage(Dictionary.format(Dictionary.WARNING_LEVENSHTEIN_DISTANCE));
                     event.setCancelled(true);
                 }
