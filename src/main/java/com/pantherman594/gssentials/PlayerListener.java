@@ -41,7 +41,7 @@ public class PlayerListener implements Listener {
     private final HashSet<InetAddress> connections;
     private final Map<InetAddress, ServerInfo> redirServer;
     private Map<UUID, String> cmds;
-    private Map<UUID, String> cmdLog;
+    private Map<UUID, Long> cmdLog;
 
     private Messenger mess;
     private PlayerData pD;
@@ -77,7 +77,7 @@ public class PlayerListener implements Listener {
                     event.setCancelled(true);
                 }
                 cmds.put(player.getUniqueId(), cmd);
-                final String time = Dictionary.getTime();
+                final long time = System.currentTimeMillis();
                 cmdLog.put(player.getUniqueId(), time);
                 ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), () -> {
                     if (cmdLog.containsKey(player.getUniqueId()) && cmdLog.get(player.getUniqueId()).equals(time)) {
@@ -105,13 +105,6 @@ public class PlayerListener implements Listener {
                 return;
             }
 
-            if (BungeeEssentials.getInstance().getConfig().getBoolean("capspam.enabled", true) && !(Permissions.hasPerm(player, Permissions.Admin.BYPASS_FILTER)) && event.getMessage().length() >= 5) {
-                String msg = event.getMessage();
-                int upperC = msg.replaceAll("[^A-Z]", "").length();
-
-                if (upperC * 100 / msg.length() >= BungeeEssentials.getInstance().getConfig().getDouble("capspam.percent", 50))
-                    event.setMessage(event.getMessage().toLowerCase());
-            }
             if (!event.isCancelled() && !event.isCommand()) {
                 if (Permissions.hasPerm(player, Permissions.Admin.CHAT) && pD.isStaffChat(uuid)) {
                     String server = player.getServer().getInfo().getName();

@@ -63,6 +63,13 @@ public class Messenger {
             return null;
         }
         if (!Permissions.hasPerm(player, Permissions.Admin.BYPASS_FILTER)) {
+            if (BungeeEssentials.getInstance().getConfig().getBoolean("capspam.enabled", true) && message.length() >= 5) {
+                int upperC = message.replaceAll("[^A-Z]", "").length();
+
+                if (upperC * 100 / message.length() >= BungeeEssentials.getInstance().getConfig().getDouble("capspam.percent", 50))
+                    message = message.toLowerCase();
+            }
+
             if (BungeeEssentials.getInstance().contains(ct.getRule())) {
                 List<RuleManager.MatchResult> results = BungeeEssentials.getInstance().getRuleManager().matches(msg);
                 for (RuleManager.MatchResult result : results) {
