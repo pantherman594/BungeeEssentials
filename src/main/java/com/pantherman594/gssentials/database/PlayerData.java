@@ -127,6 +127,10 @@ public class PlayerData extends Database {
             }
             insertDefaults(ps);
             ps.executeUpdate();
+
+            if (!Dictionary.FORMAT_NEW.equals("")) {
+                ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_NEW, "PLAYER", p.getName(), "NUMBER", Integer.toString(listAllData("uuid").size())));
+            }
             return true;
         } catch (SQLException e) {
             e.printStackTrace();

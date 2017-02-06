@@ -6,6 +6,7 @@ format:
   chat: '{{ PLAYER }}: {{ MESSAGE }}'
   find: '&e{{ PLAYER }} &ais playing on &e{{ SERVER }}'
   send: '&aSending &e{{ PLAYER }} &ato server &e{{ SERVER }}'
+  new: '&6&lWelcome &7{{ PLAYER }} &6&lto the server! &6(Player #{{ NUMBER }})'
 message:
   format:
     send: '&7[me » {{ BREAK }}&7{{ RECIPIENT }}{{ HOVER: On the {{ SERVER }} server.

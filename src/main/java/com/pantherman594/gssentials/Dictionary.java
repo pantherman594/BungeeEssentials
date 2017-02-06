@@ -71,6 +71,8 @@ public class Dictionary {
     public static String FORMAT_CHAT;
     @Load(key = "format.alert", def = "&8[&c!&8] &7{{ MESSAGE }}")
     public static String FORMAT_ALERT;
+    @Load(key = "format.new", def = "&6&lWelcome &7{{ PLAYER }} &6&lto the server! &6(Player #{{ NUMBER }})")
+    public static String FORMAT_NEW;
     @Load(key = "message.format.send", def = "&7[me » {{ BREAK }}&7{{ RECIPIENT }}{{ HOVER: On the {{ SERVER }} server. }}{{ BREAK }}&7] &f{{ MESSAGE }}")
     public static String MESSAGE_FORMAT_SEND;
     @Load(key = "message.format.receive", def = "&7[{{ SENDER }} » me]{{ HOVER: On the {{ SERVER }} server. Click to respond. }}{{ CLICK: SUG: /msg {{ SENDER }}  }} &f{{ MESSAGE }}")
