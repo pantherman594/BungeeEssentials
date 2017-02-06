@@ -86,12 +86,22 @@ public class PlayerListener implements Listener {
                 }, 5, TimeUnit.SECONDS);
             }
             if (!event.isCancelled() && !Permissions.hasPerm(player, Permissions.Admin.SPY_EXEMPT) && BungeeEssentials.getInstance().contains("commandSpy")) {
-                ProxyServer.getInstance().getPlayers().stream().filter(onlinePlayer -> (onlinePlayer.getUniqueId() != player.getUniqueId()) && (Permissions.hasPerm(onlinePlayer, Permissions.Admin.SPY_COMMAND)) && pD.isCSpy(onlinePlayer.getUniqueId().toString())).forEach(onlinePlayer -> onlinePlayer.sendMessage(Dictionary.format(Dictionary.CSPY_COMMAND, "SENDER", sender, "COMMAND", event.getMessage())));
-                if (pD.isCSpy("CONSOLE")) {
-                    ProxyServer.getInstance().getConsole().sendMessage(Dictionary.format(Dictionary.CSPY_COMMAND, "SENDER", sender, "COMMAND", event.getMessage()).toLegacyText());
+                boolean announce = true;
+                for (String command : BungeeEssentials.getInstance().getMessages().getStringList("commandspy.ignore")) {
+                    if (cmd.startsWith(command)) {
+                        announce = false;
+                        break;
+                    }
+                }
+
+                if (announce) {
+                    ProxyServer.getInstance().getPlayers().stream().filter(onlinePlayer -> (onlinePlayer.getUniqueId() != player.getUniqueId()) && (Permissions.hasPerm(onlinePlayer, Permissions.Admin.SPY_COMMAND)) && pD.isCSpy(onlinePlayer.getUniqueId().toString())).forEach(onlinePlayer -> onlinePlayer.sendMessage(Dictionary.format(Dictionary.CSPY_COMMAND, "SENDER", sender, "COMMAND", event.getMessage())));
+                    if (pD.isCSpy("CONSOLE")) {
+                        ProxyServer.getInstance().getConsole().sendMessage(Dictionary.format(Dictionary.CSPY_COMMAND, "SENDER", sender, "COMMAND", event.getMessage()).toLegacyText());
+                    }
                 }
             }
-            if (BungeeEssentials.getInstance().contains("server") && Permissions.hasPerm(player, Permissions.General.LIST) && cmd.split(" ")[0].startsWith("server") && cmd.split(" ").length == 1) {
+            if (BungeeEssentials.getInstance().contains("server") && Permissions.hasPerm(player, Permissions.General.LIST) && cmd.split(" ")[0].equalsIgnoreCase("server") && cmd.split(" ").length == 1) {
                 event.setCancelled(true);
                 ProxyServer.getInstance().getPluginManager().dispatchCommand(player, BungeeEssentials.getInstance().getMain("list"));
             }

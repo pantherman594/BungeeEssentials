@@ -93,6 +93,9 @@ commandspy:
   command: '&7[{{ SENDER }}] &b{{ COMMAND }}'
   enabled: '&aCommand Spy has been enabled'
   disabled: '&cCommand Spy has been disabled'
+  ignore:
+  - login
+  - register
 friend:
   header: '&2Current Friends:'
   body: '- {{ NAME }} ({{ SERVER }}){{ HOVER: Click to join your friend! }}{{ CLICK:
