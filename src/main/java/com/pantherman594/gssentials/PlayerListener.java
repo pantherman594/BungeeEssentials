@@ -329,12 +329,26 @@ public class PlayerListener implements Listener {
      */
     private void sendFallback(ServerKickEvent e) {
         e.setCancelled(true);
+
         for (String server : e.getPlayer().getPendingConnection().getListener().getServerPriority()) {
             ServerInfo info = ProxyServer.getInstance().getServerInfo(server);
             try (Socket s = new Socket()) {
                 s.connect(info.getAddress());
                 e.getPlayer().connect(info);
-                break;
+                return;
+            } catch (IOException ignored) {
+            }
+        }
+
+        ServerInfo def = ProxyServer.getInstance().getServerInfo(e.getPlayer().getPendingConnection().getListener().getDefaultServer());
+        ServerInfo fall = ProxyServer.getInstance().getServerInfo(e.getPlayer().getPendingConnection().getListener().getDefaultServer());
+        try (Socket s = new Socket()) {
+            s.connect(def.getAddress());
+            e.getPlayer().connect(def);
+        } catch (IOException ex) {
+            try (Socket s = new Socket()) {
+                s.connect(fall.getAddress());
+                e.getPlayer().connect(fall);
             } catch (IOException ignored) {
             }
         }
