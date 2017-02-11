@@ -65,7 +65,7 @@ public class Dictionary {
     public static String FORMAT_JOIN;
     @Load(key = "format.quit", def = "&8[&a-&8] &7{{ PLAYER }}")
     public static String FORMAT_QUIT;
-    @Load(key = "format.quit", def = "{{ PLAYER }} was kicked for {{ REASON }}")
+    @Load(key = "format.kick", def = "{{ PLAYER }} was kicked for {{ REASON }}")
     public static String FORMAT_KICK;
     @Load(key = "format.chat", def = "{{ PLAYER }}: {{ MESSAGE }}")
     public static String FORMAT_CHAT;
