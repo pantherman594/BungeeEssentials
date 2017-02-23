@@ -211,6 +211,7 @@ public class PlayerListener implements Listener {
      */
     @EventHandler(priority = Byte.MAX_VALUE)
     public void logout(final PlayerDisconnectEvent event) {
+        BungeeEssentials.getInstance().getPlayerData().setLastSeen(event.getPlayer().getUniqueId().toString(), System.currentTimeMillis());
         if (BungeeEssentials.getInstance().contains("fastRelog")) {
             if (!connections.contains(event.getPlayer().getAddress().getAddress())) {
                 connections.add(event.getPlayer().getAddress().getAddress());

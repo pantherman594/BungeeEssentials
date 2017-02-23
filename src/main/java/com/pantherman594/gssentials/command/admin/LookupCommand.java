@@ -21,11 +21,14 @@ package com.pantherman594.gssentials.command.admin;
 import com.pantherman594.gssentials.Dictionary;
 import com.pantherman594.gssentials.Permissions;
 import com.pantherman594.gssentials.command.ServerSpecificCommand;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
@@ -59,6 +62,44 @@ public class LookupCommand extends ServerSpecificCommand {
                 sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_PLAYER_FORMAT, "TYPE", "IP", "INFO", pD.getIp(uuid)));
             }
 
+            StringBuilder lastSeenString = new StringBuilder();
+
+            if (ProxyServer.getInstance().getPlayer(UUID.fromString(uuid)) != null) {
+                lastSeenString.append(ChatColor.GREEN)
+                        .append("Online ")
+                        .append("(")
+                        .append(ProxyServer.getInstance().getPlayer(UUID.fromString(uuid)).getServer().getInfo().getName())
+                        .append(")");
+            } else {
+                long lastSeen = pD.getLastSeen(uuid);
+                DateFormat format = new SimpleDateFormat("d MMM yyyy h:mm a");
+                lastSeenString.append(ChatColor.RED)
+                        .append(format.format(new Date(lastSeen)))
+                        .append(" (");
+
+                long diffInMillies = System.currentTimeMillis() - lastSeen;
+                List<TimeUnit> units = new ArrayList<>(EnumSet.allOf(TimeUnit.class));
+                Collections.reverse(units);
+                long milliesRest = diffInMillies;
+                for (TimeUnit unit : units) {
+                    long diff = unit.convert(milliesRest, TimeUnit.MILLISECONDS);
+                    long diffInMilliesForUnit = unit.toMillis(diff);
+                    milliesRest = milliesRest - diffInMilliesForUnit;
+                    if (diff > 0) {
+                        lastSeenString.append(diff)
+                                .append(" ")
+                                .append(unit.toString().toLowerCase().substring(0, unit.toString().length() - 2));
+                        if (diff > 1) {
+                            lastSeenString.append("s");
+                        }
+                        lastSeenString.append(", ");
+                    }
+                }
+                lastSeenString.substring(0, lastSeenString.length() - 2);
+                lastSeenString.append(" ago)");
+            }
+
+            sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_PLAYER_FORMAT, "TYPE", "Last Seen", "INFO", lastSeenString.toString()));
             sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_PLAYER_FORMAT, "TYPE", "Messaging", "INFO", Dictionary.capitalizeFirst(pD.isMsging(uuid) + "")));
             sender.sendMessage(Dictionary.format(Dictionary.LOOKUP_PLAYER_FORMAT, "TYPE", "Muted", "INFO", Dictionary.capitalizeFirst(pD.isMuted(uuid) + "")));
 

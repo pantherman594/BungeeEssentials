@@ -38,6 +38,7 @@ public class PlayerData extends Database {
             "`uuid` VARCHAR(36) NOT NULL," +
             "`lastname` VARCHAR(32) NOT NULL," +
             "`ip` VARCHAR(32) NOT NULL," +
+            "`lastseen` BIGINT(32) NOT NULL," +
             "`friends` TEXT NOT NULL," +
             "`outRequests` TEXT NOT NULL," +
             "`inRequests` TEXT NOT NULL," +
@@ -52,6 +53,7 @@ public class PlayerData extends Database {
 
     private Map<String, String> lastname = new HashMap<>();
     private Map<String, String> ip = new HashMap<>();
+    private Map<String, Long> lastseen = new HashMap<>();
     private Map<String, String> friends = new HashMap<>();
     private Map<String, String> outRequests = new HashMap<>();
     private Map<String, String> inRequests = new HashMap<>();
@@ -82,6 +84,7 @@ public class PlayerData extends Database {
                     String uuid = (String) uuidO;
                     setName(uuid, oldPD.getName(uuid));
                     setIp(uuid, oldPD.getIp(uuid));
+                    setLastSeen(uuid, oldPD.getLastSeen(uuid));
                     setFriends(uuid, oldPD.getFriends(uuid));
                     setOutRequests(uuid, oldPD.getOutRequests(uuid));
                     setInRequests(uuid, oldPD.getInRequests(uuid));
@@ -115,8 +118,8 @@ public class PlayerData extends Database {
         Connection conn = getSQLConnection();
         try (
                 PreparedStatement ps = conn.prepareStatement("INSERT INTO " + tableName +
-                        " (uuid, lastname, ip, friends, outRequests, inRequests, ignores, hidden, spy, cSpy, globalChat, staffChat, muted, msging) " +
-                        "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?);")
+                        " (uuid, lastname, ip, lastseen, friends, outRequests, inRequests, ignores, hidden, spy, cSpy, globalChat, staffChat, muted, msging) " +
+                        "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);")
         ) {
             if (uuid.equals("CONSOLE")) {
                 setValues(ps, uuid, "Console", "127.0.0.1");
@@ -139,13 +142,14 @@ public class PlayerData extends Database {
     }
 
     private void insertDefaults(PreparedStatement ps) throws SQLException {
-        setValues(4, ps, "", "", "", "", false, false, false, false, false, false, true);
+        setValues(4, ps, System.currentTimeMillis() / 1000, "", "", "", "", false, false, false, false, false, false, true);
     }
 
     private Map<String, Map> getData() {
         Map<String, Map> data = new HashMap<>();
         data.put("lastname", lastname);
         data.put("ip", ip);
+        data.put("lastseen", lastseen);
         data.put("friends", friends);
         data.put("outRequests", outRequests);
         data.put("inRequests", inRequests);
@@ -183,6 +187,14 @@ public class PlayerData extends Database {
 
     public void setIp(String uuid, String ip) {
         setData(uuid, "ip", ip);
+    }
+
+    public long getLastSeen(String uuid) {
+        return (long) getData(uuid, "lastseen");
+    }
+
+    public void setLastSeen(String uuid, long lastSeen) {
+        setData(uuid, "lastseen", lastSeen);
     }
 
     public Set<String> getFriends(String uuid) {

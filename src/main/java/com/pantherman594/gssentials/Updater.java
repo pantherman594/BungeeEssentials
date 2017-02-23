@@ -19,6 +19,7 @@
 package com.pantherman594.gssentials;
 
 import com.google.common.base.Preconditions;
+import com.pantherman594.gssentials.database.MsgGroups;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.config.Configuration;
 
@@ -315,8 +316,35 @@ class Updater {
             case 262:
             case 263:
                 config.set("database.format", "sqlite");
+            case 264:
+                com.pantherman594.gssentials.database.PlayerData playerData;
+                MsgGroups msgGroups;
+                if (config.getString("database.format", "sqlite").equalsIgnoreCase("mysql")) {
+                    String host = config.getString("database.host", "127.0.0.1");
+                    int port = config.getInt("database.port", 3306);
+                    String username = config.getString("database.username", "user");
+                    String password = config.getString("database.password", "pass");
+                    String database = config.getString("database.database", "bungeecord");
+                    String prefix = config.getString("database.prefix", "BE_");
+
+                    playerData = new com.pantherman594.gssentials.database.PlayerData(String.format("%s:%d/%s", host, port, database), username, password, prefix);
+                    msgGroups = new MsgGroups(String.format("%s:%d/%s", host, port, database), username, password, prefix);
+
+                    if (config.getBoolean("database.convert", false)) {
+                        playerData.convert();
+                        msgGroups.convert();
+                        config.set("database.convert", false);
+                    }
+                } else {
+                    playerData = new com.pantherman594.gssentials.database.PlayerData();
+                    msgGroups = new MsgGroups();
+                }
+                playerData.createDataNotExist("CONSOLE");
+
+                playerData.execute("ALTER TABLE `" + playerData.getTableName() + "` ADD `lastseen` BIGINT(32) NOT NULL DEFAULT " + System.currentTimeMillis() + "AFTER `ip`;");
+
                 config.set("configversion", null);
-                config.set("configversion", "2.6.4");
+                config.set("configversion", "2.6.5");
         }
         plugin.saveMainConfig();
         plugin.saveMessagesConfig();

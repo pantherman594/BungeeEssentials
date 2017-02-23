@@ -73,6 +73,10 @@ public abstract class Database {
         return set;
     }
 
+    public String getTableName() {
+        return tableName;
+    }
+
     @SuppressWarnings("ResultOfMethodCallIgnored")
     Connection getSQLConnection() {
         File dbFile = new File(BungeeEssentials.getInstance().getDataFolder(), tableName + ".db");
@@ -246,6 +250,15 @@ public abstract class Database {
 
         try (Statement s = connection.createStatement()) {
             s.executeUpdate("CREATE TABLE IF NOT EXISTS " + tableName + " " + setupSql + ",PRIMARY KEY (`" + primary + "`));");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void execute(String sql) {
+        Connection conn = getSQLConnection();
+        try (Statement s = conn.createStatement()) {
+            s.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
         }
