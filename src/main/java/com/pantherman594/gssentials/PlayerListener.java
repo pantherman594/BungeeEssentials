@@ -38,8 +38,9 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("WeakerAccess")
 public class PlayerListener implements Listener {
-    private final HashSet<InetAddress> connections;
+    private final Set<InetAddress> connections;
     private final Map<InetAddress, ServerInfo> redirServer;
+    private Set<UUID> quitAnnc;
     private Map<UUID, String> cmds;
     private Map<UUID, Long> cmdLog;
 
@@ -47,6 +48,7 @@ public class PlayerListener implements Listener {
     private PlayerData pD;
 
     PlayerListener() {
+        quitAnnc = new HashSet<>();
         connections = new HashSet<>();
         redirServer = new HashMap<>();
         cmds = new HashMap<>();
@@ -203,6 +205,22 @@ public class PlayerListener implements Listener {
     }
 
     /**
+     * Catches PlayerDisconnectEvent and stores whether the player has the quit
+     * announce permission, before the player's permissions are unloaded by the
+     * permission manager.
+     *
+     * @param event The Disconnect Event.
+     */
+    @EventHandler(priority = Byte.MIN_VALUE)
+    public void logoutPre(final PlayerDisconnectEvent event) {
+        if (event.getPlayer().hasPermission(Permissions.General.QUITANNC)) {
+            quitAnnc.add(event.getPlayer().getUniqueId());
+        } else if (quitAnnc.contains(event.getPlayer().getUniqueId())) {
+            quitAnnc.remove(event.getPlayer().getUniqueId());
+        }
+    }
+
+    /**
      * Event fired when a player disconnects from the server. Player is saved for
      * fast relog, logout is announced and logged, and the PlayerData is saved and
      * removed from the registered list.
@@ -218,7 +236,7 @@ public class PlayerListener implements Listener {
                 ProxyServer.getInstance().getScheduler().schedule(BungeeEssentials.getInstance(), () -> connections.remove(event.getPlayer().getAddress().getAddress()), 3, TimeUnit.SECONDS);
             }
         }
-        if (BungeeEssentials.getInstance().contains("joinAnnounce") && !(Dictionary.FORMAT_QUIT.equals("")) && Permissions.hasPerm(event.getPlayer(), Permissions.General.QUITANNC) && !pD.isHidden(event.getPlayer().getUniqueId().toString())) {
+        if (BungeeEssentials.getInstance().contains("joinAnnounce") && !(Dictionary.FORMAT_QUIT.equals("")) && quitAnnc.contains(event.getPlayer().getUniqueId()) && !pD.isHidden(event.getPlayer().getUniqueId().toString())) {
             ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_QUIT, "PLAYER", event.getPlayer().getName()));
         }
         if (BungeeEssentials.getInstance().contains("fulllog")) {
