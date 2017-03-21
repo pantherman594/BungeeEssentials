@@ -176,6 +176,9 @@ public class PlayerListener implements Listener {
     public void postLogin(PostLoginEvent event) {
         pD.setName(event.getPlayer().getUniqueId().toString(), event.getPlayer().getName());
         pD.setIp(event.getPlayer().getUniqueId().toString(), event.getPlayer().getAddress().getAddress().getHostAddress());
+
+        if (!event.getPlayer().isConnected()) return;
+
         if (BungeeEssentials.getInstance().contains("joinAnnounce") && !pD.isHidden(event.getPlayer().getUniqueId().toString()) && !(Dictionary.FORMAT_JOIN.equals("")) && Permissions.hasPerm(event.getPlayer(), Permissions.General.JOINANNC) && !(BungeeEssentials.getInstance().isIntegrated() && BungeeEssentials.getInstance().getIntegrationProvider().isBanned(event.getPlayer()))) {
             ProxyServer.getInstance().broadcast(Dictionary.format(Dictionary.FORMAT_JOIN, "PLAYER", event.getPlayer().getName()));
         }
@@ -215,7 +218,7 @@ public class PlayerListener implements Listener {
     public void logoutPre(final PlayerDisconnectEvent event) {
         if (event.getPlayer().hasPermission(Permissions.General.QUITANNC)) {
             quitAnnc.add(event.getPlayer().getUniqueId());
-        } else if (quitAnnc.contains(event.getPlayer().getUniqueId())) {
+        } else {
             quitAnnc.remove(event.getPlayer().getUniqueId());
         }
     }
